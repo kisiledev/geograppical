@@ -22,6 +22,9 @@
 .App-link {
   color: #61dafb;
 }
+.sidebar li {
+  list-style-type: none;
+}
 .main {
   width: 50%;
   margin: 0 auto; 

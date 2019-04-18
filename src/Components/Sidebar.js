@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {Component} from 'react';
 import '../App.css';
 
-const Sidebar = (props) => (
-    <div className="sidebar card col-3 ml-5">
-        <ul>
-          <li>Countries: {props.countries.length} </li>
-        </ul>
-      </div>
-)
+class Sidebar extends React.Component {
+    render(){
+        return (
+            <div className="sidebar card col-3 ml-5">
+                <ul>
+                <li>Countries: {this.props.countries.length} </li>
+                <li>Continents: {this.props.countries.filter((location) => {
+                    return location.location === "Afrika"
+                }).length}</li>
+                </ul>
+            </div>
+        )
+    }
+}; 
 
 export default Sidebar;

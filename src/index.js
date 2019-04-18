@@ -15,7 +15,7 @@ const countries = [
             url: "img/ghana.JPG",
             alt: "A view of Lake Volta"
         },
-        key: 1
+        id: 1
     },
     {
         name: "Burkina Faso", 
@@ -26,7 +26,7 @@ const countries = [
             url: "img/bkfaso.jpg",
             alt: "Burkinabe children"
         },
-        key: 2
+        id: 2
     },
     {
         name: "Haiti", 
@@ -37,7 +37,7 @@ const countries = [
             url: "img/haiti.jpg",
             alt: "Haitian beach"
         },
-        key: 3
+        id: 3
     }
 
 ]
