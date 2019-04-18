@@ -3,12 +3,6 @@ import Result from './Result';
 import '../App.css';
 
 class ResultList extends React.Component {
-  constructor(){
-    super();
-    this.state = {
-      countries: this.props.countries
-    }
-  };
   
   render() {
     return(
