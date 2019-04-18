@@ -22,6 +22,27 @@
 .App-link {
   color: #61dafb;
 }
+.main {
+  width: 50%;
+  margin: 0 auto; 
+  padding: 20px;
+}
+.row {
+  margin: 0;
+}
+.card {
+  padding: 15px;
+}
+.search {
+  width: 100%;
+  display: inline-block;
+}
+img {
+  height: 75px;
+  width: 75px;
+  object-fit: cover;
+}
+
 
 @keyframes App-logo-spin {
   from {
