@@ -5,8 +5,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-const props = {
-    locale: {
+const countries = [
+    {
         name: "Ghana", 
         location: "Afrika",
         type: "country",
@@ -15,12 +15,34 @@ const props = {
             url: "img/ghana.JPG",
             alt: "A view of Lake Volta"
         },
-        number: 1
+        key: 1
+    },
+    {
+        name: "Burkina Faso", 
+        location: "Afrika",
+        type: "country",
+        excerpt: "Burkino Faso is a country in West Afrika, with a population of ... ",
+        img: {
+            url: "img/bkfaso.jpg",
+            alt: "Burkinabe children"
         },
-    
-}
+        key: 2
+    },
+    {
+        name: "Haiti", 
+        location: "Caribbean Sea",
+        type: "country",
+        excerpt: "Haiti is an island country in the Caribbean Sea, with a population of ... ",
+        img: {
+            url: "img/haiti.jpg",
+            alt: "Haitian beach"
+        },
+        key: 3
+    }
 
-ReactDOM.render(<App { ... props }  />, document.getElementById('root'));
+]
+
+ReactDOM.render(<App initialCountries = {countries}/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
