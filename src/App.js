@@ -10,17 +10,17 @@ import './App.css';
 
 
 function App(props) {
-  console.log(props.initialCountries);
+  console.log(props.database);
   return (
     <div className="main container card">
       <h1>Geography Search App</h1>
       <Search />
       <div className="row">
       <ResultList 
-        countries = {props.initialCountries}
+        countries = {props.database}
       />
       <Sidebar 
-        countries = {props.initialCountries}
+        countries = {props.database}
       />
       </div>
     </div>
