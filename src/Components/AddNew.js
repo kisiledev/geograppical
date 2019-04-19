@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
 
-class AddNew extends React.Component {
+class AddNew extends Component {
     render() {  
         return(
             <div className="addNew col-8">

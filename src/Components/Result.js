@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import '../App.css';
 
-class Result extends React.Component {
+class Result extends Component {
+
     render() {
         return(
             <div className="card mb-3">
@@ -13,9 +14,12 @@ class Result extends React.Component {
                     <p className="excerpt">
                     {this.props.excerpt}
                     </p>
+                    <button className="btn btn-primary btn-sm">Read More</button>
                     </div>  
-                    <img className="ml-3" src={this.props.imgurl} alt={this.props.imgalt}/> 
+                    <img className="ml-3" src={this.props.imgurl} alt={this.props.imgalt}/>
+                    
                 </div>
+                
             </div>
         )
     }

@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import Result from './Result';
 import '../App.css';
 
-class ResultList extends React.Component {
-  
+class ResultList extends Component {
   render() {
     return(
       <div className="resultList col-8">
