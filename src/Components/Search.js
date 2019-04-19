@@ -7,7 +7,7 @@ class Search extends Component {
     return(
       <div>
         <div className="input-group mb-3">
-            <input type="text" className="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" value={this.props.searchText} onChange={this.props.passInput}/>
+            <input type="text" className="form-control" placeholder="Type a country to begin" aria-label="" aria-describedby="basic-addon1" value={this.props.searchText} onChange={this.props.passInput}/>
             <div className="input-group-append">
               <button className="btn btn-primary" type="button">Search</button>
             </div>

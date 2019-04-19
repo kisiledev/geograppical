@@ -50,14 +50,19 @@ class App extends Component {
   }
 
   handleInput = (e) => {
-    this.setState({ 
-      searchText: e.target.value, 
-      filteredData: this.state.countries.filter(country => country.name.includes(this.state.searchText))
-    })
+    if(e.target.value !== ""){
+      this.setState({ 
+        searchText: e.target.value, 
+        filteredData: this.state.countries.filter(country => country.name.includes(this.state.searchText))
+      });
+    } else {
+      this.setState({ 
+        searchText: e.target.value, 
+        filteredData: []
+      });
+    }
   };
   render(){
-    console.log(this.state.searchText);
-    console.log(this.state.filteredData);
     return (
       <div className="main container card mt-5">
         <h1 className="text-center">Geography Search App</h1>
