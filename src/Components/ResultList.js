@@ -13,8 +13,8 @@ class ResultList extends Component {
         type = {country.type}
         excerpt = {country.excerpt}
         number = {country.number}
-        imgurl = {country.img.url}
-        imgalt = {country.img.alt}        
+        imgurl = {country.imgurl}
+        imgalt = {country.imgalt}        
         key={country.id.toString()}
         />
       )}
