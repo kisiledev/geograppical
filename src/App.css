@@ -19,6 +19,34 @@
   color: white;
 }
 
+/* HIDE RADIO */
+/* [type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+} */
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  box-shadow: 0 0 0  red;
+}
+
+.radio-label {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 6px 11px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -41,6 +69,11 @@
   display: inline-block;
 }
 img {
+  height: 75px;
+  width: 75px;
+  object-fit: cover;
+}
+.img-thumbnail {
   height: 75px;
   width: 75px;
   object-fit: cover;

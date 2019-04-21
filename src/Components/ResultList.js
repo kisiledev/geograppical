@@ -5,7 +5,8 @@ import '../App.css';
 class ResultList extends Component {
   render() {
     return(
-      <div className="resultList col-8">
+      <div className="col-sm-12 col-md-8 mb-3">
+      
       {this.props.countries.map( country => 
         <Result 
         name={country.name}

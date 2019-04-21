@@ -4,7 +4,7 @@ import '../App.css';
 class Sidebar extends Component {
     render(){
         return (
-            <div className="sidebar card col-3 ml-5">
+            <div className="sidebar card col-sm-12 col-md-3">
                 <ul>
                 <li><strong>Countries:</strong> {this.props.countries.length} </li>
                 {this.props.countries.map(country => 

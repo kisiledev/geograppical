@@ -64,7 +64,7 @@ class App extends Component {
   };
 
   prevCountryCount = 3;
-  addNewCountry = (name, location, type, excerpt) => {
+  addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
         ...this.state.countries, 
@@ -73,6 +73,7 @@ class App extends Component {
           location,
           type,
           excerpt,
+          imgurl,
           id: this.prevCountryCount += 1
         }
       ],

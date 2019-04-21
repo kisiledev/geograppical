@@ -8,34 +8,41 @@ class AddView extends Component {
         location: "",
         type: "",
         excerpt: "Enter Value Here",
-        value: "Select Locale Type"
+        value: "Select Locale Type",
+        imgurl: "",
+        imgalt: ""
     };
     handleChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value,
-            [e.target.location]: e.target.value,
-            [e.target.type]: e.target.value
+        const {name, location, type, excerpt, imgurl, value, checked} = e.target;
+        type === "checkbox" ? this.setState({[name]: checked}) : this.setState({
+            [name]: value,
+            [location]: value,
+            [type]: value,
+            [excerpt]: value,
+            [imgurl]: value
         })
+        console.log(this.state.imgurl);
     };
 
     handleSubmit = (event) =>  {
         event.persist();
         event.preventDefault();
-        console.log("submitted");
-        console.log(event.target.name.value, event.target.location.value, event.target.type.value, event.target.excerpt.value);
-        this.props.addCountry(event.target.name.value, event.target.location.value, event.target.type.value, event.target.excerpt.value);
+        const {name, location, type, excerpt, imgurl} = event.target;
+        this.props.addCountry(name.value, location.value, type.value, excerpt.value, imgurl.value);
         this.setState({
             name: "",
             location: "",
             type: "",
             excerpt: "Enter Value Here",
-            value: "Select Locale Type"
+            value: "Select Locale Type",
+            imgurl: ""
+            
         })
       }
     
     render() {
       return(
-        <div className="addNew col-8">
+        <div className="col-sm-12 col-md-9">
             <form onSubmit={this.handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="">Locale Name</label>
@@ -87,8 +94,28 @@ class AddView extends Component {
                     </textarea>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="exampleFormControlFile1" className="btn btn-default btn-file">Upload Image File</label>
-                    <input type="file" className="form-control-file" id="exampleFormControlFile1"/>
+                    <label htmlFor="exampleFormControlFile1" className="radio-label text-center">Zambia <br/>
+                        <input 
+                            type="radio" 
+                            name="imgurl" 
+                            value="img/zambia.jpg" 
+                            checked={this.state.imgurl === "img/zambia.jpg"}
+                            className="form-control-radio" 
+                            onChange={this.handleChange}
+                        />
+                        <img src="img/zambia.jpg"  alt="" className="img-thumbnail"/>
+                    </label>
+                    <label htmlFor="exampleFormControlFile1" className="radio-label text-center">Jamaica <br/>
+                        <input 
+                            type="radio" 
+                            name="imgurl" 
+                            value="img/jamaica.jpg"
+                            checked={this.state.imgurl === "img/jamaica.jpg"}
+                            className="form-control-radio" 
+                            onChange={this.handleChange}
+                        />
+                        <img src="img/jamaica.jpg"  alt="" className="img-thumbnail"/>
+                    </label>                    
                 </div>
                 <div className="btn-group">
                     <button type="submit" className="btn btn-success">Submit</button>
