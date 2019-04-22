@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
+import Sidebar from './Sidebar';
 import Result from './Result';
 import '../App.css';
 
-class ResultList extends Component {
+class ResultView extends Component {
   render() {
     return(
       <div className="col-sm-12 col-md-8 mb-3">
@@ -20,8 +21,11 @@ class ResultList extends Component {
         />
       )}
       </div>
+      <div className="sidebar card col-sm-12 col-md-4">
+        <Sidebar />
+      </div>
     )
   }
 }
 
-export default ResultList;
+export default ResultView;

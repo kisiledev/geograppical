@@ -22,7 +22,7 @@ class App extends Component {
           excerpt: "Ghana is a country in West Afrika, with a population of ... ",
           imgurl: "img/ghana.JPG",
           imgalt: "A view of Lake Volta",
-          id: "1"
+          id: 1
       },
       {
           name: "Burkina Faso", 
@@ -31,7 +31,7 @@ class App extends Component {
           excerpt: "Burkino Faso is a country in West Afrika, with a population of ... ",
           imgurl: "img/bkfaso.jpg",
           imgalt: "Burkinabe children",
-          id: "2"
+          id: 2
       },
       {
           name: "Haiti (Ayiti)", 
@@ -40,14 +40,14 @@ class App extends Component {
           excerpt: "Haiti is an island country in the Caribbean Sea, with a population of ... ",
           imgurl: "img/haiti.jpg",
           imgalt: "Haitian beach",
-          id: "3"
+          id: 3
       }
     ]
   }
 
   filterByValue(array, string) {
     return array.filter(o =>
-        Object.keys(o).some(value => o[value].toLowerCase().includes(string.toLowerCase())));
+        Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
 }
 
   handleViews = (e) => {
@@ -63,7 +63,7 @@ class App extends Component {
     }
   };
 
-  prevCountryCount = 3;
+  prevCountryCount = this.state.countries.length;
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -97,8 +97,8 @@ class App extends Component {
   };
   render(){
     return (
-      <div className="main container card mt-5">
-        <h1 className="text-center">Geography Search App</h1>
+      <div className="main container mt-5">
+        <h2 className="text-center">Geography Search App</h2>
         <Search
           searchText = {this.state.searchText}
           passInput = {this.handleInput}
@@ -107,18 +107,15 @@ class App extends Component {
           
         />
         <div className="row">
-        { this.state.view === "default" ? 
-          <ResultList 
+        { (this.state.view === "default") ?   
+          (<ResultList 
             countries = {this.state.filteredData}
-          /> :
+          />) :
           <AddView 
             changeView = {this.handleViews}
             addNew= {this.addNewCountry}
             addCountry={this.addNewCountry}/>
         }
-        <Sidebar 
-          countries = {this.state.countries}
-        />
         </div>
       </div>
     )
