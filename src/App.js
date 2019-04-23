@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Search from './Components/Search';
-import ResultList from './Components/ResultList';
+import ResultView from './Components/ResultView';
 import AddView from './Components/AddView';
-import Sidebar from './Components/Sidebar';
 import './App.css';
+import Axios from 'axios';
 
 
 
@@ -11,8 +11,10 @@ import './App.css';
 class App extends Component {
 
   state = {
+    nations: [],
     view: "default",
     filteredData: [],
+    filterNations: [],
     searchText: '',
     countries: [
         {
@@ -45,6 +47,42 @@ class App extends Component {
     ]
   }
 
+  getCountries() {
+    Axios.get('https://restcountries.eu/rest/v2/all')
+      .then(res => {
+        console.log(res.data);
+        this.setState({
+          nations: res.data
+        })
+      });
+
+  }
+  
+  filterByName(string){
+   return Axios
+    .get('https://restcountries.eu/rest/v2/name/' + string)
+    .then(res => {
+      if(res.status === 200 && res !== null){
+        this.setState(prevState =>({
+          filterNations: res.data
+        }))
+      } else {
+        throw new Error('No country found');
+      }
+      })
+      .catch(error => {
+        console.log(error)
+        return []
+      });
+  };
+
+  componentDidMount() {
+    this.getCountries();  
+    this.filterByName();  
+  }
+
+  
+
   filterByValue(array, string) {
     return array.filter(o =>
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
@@ -55,11 +93,9 @@ class App extends Component {
     if(e.target.value === "add"){
       this.setState(prevState => ({
         view: e.target.value}))
-      console.log(this.state.view)
     } else {
       this.setState(prevState => ({
         view: "default"}))
-      console.log(this.state.view);
     }
   };
 
@@ -83,15 +119,16 @@ class App extends Component {
 
   handleInput = (e) => {
     e.persist();
+    console.log(e.target.value);
     if(e.target.value !== ""){
       this.setState(prevState => ({ 
         searchText: e.target.value, 
-        filteredData: this.filterByValue(this.state.countries, e.target.value)
+        filterNations: this.filterByName(e.target.value)
       }));
     } else {
       this.setState(prevState => ({ 
         searchText: e.target.value, 
-        filteredData: []
+        filterNations: []
       }));
     }
   };
@@ -100,23 +137,22 @@ class App extends Component {
       <div className="main container mt-5">
         <h2 className="text-center">Geography Search App</h2>
         <Search
+          view={this.state.view}
           searchText = {this.state.searchText}
           passInput = {this.handleInput}
-          searchData = {this.filterData}
           changeView = {this.handleViews}
           
         />
-        <div className="row">
         { (this.state.view === "default") ?   
-          (<ResultList 
-            countries = {this.state.filteredData}
+          (<ResultView 
+            countries = {this.state.filterNations}
+            geodata = {this.state.nations} 
           />) :
           <AddView 
             changeView = {this.handleViews}
             addNew= {this.addNewCountry}
             addCountry={this.addNewCountry}/>
         }
-        </div>
       </div>
     )
   }

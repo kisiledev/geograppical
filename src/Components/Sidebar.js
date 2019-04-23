@@ -6,10 +6,7 @@ class Sidebar extends Component {
         return (
             <div className="sidebar card col-sm-12 col-md-4">
                 <ul>
-                <li><strong>Countries:</strong> {this.props.countries.length} </li>
-                {this.props.countries.map(country => 
-                <li key={country.id}>{country.id}) {country.name}</li>
-                )}
+                <li><strong>Countries:</strong> {this.props.geodata.length} </li>
                 </ul>
             </div>
         )

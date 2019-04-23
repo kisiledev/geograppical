@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 
 class Search extends Component {
@@ -8,13 +11,25 @@ class Search extends Component {
       <div>
         <div className="input-group mb-3">
             <input type="text" className="form-control" placeholder="Type a country to begin" aria-label="" aria-describedby="basic-addon1" value={this.props.searchText} onChange={this.props.passInput}/>
-            <span className="fa fa-search"></span>
             <div className="input-group-append">
             </div>
           </div>
-          <div className="alert alert-info" role="alert">
-            Can't find what you're looking for? Create an entry here. <button className="btn btn-outline-dark" onClick={this.props.changeView} value="add">Add</button>
-          </div>
+          { (this.props.view === "default") ?   
+            (<div className="alert alert-info text-center" role="alert">
+            <small>
+              Add to Database <button className="btn btn-sm btn-outline-dark" onClick={this.props.changeView} value="add">
+              <FontAwesomeIcon icon={faPlus} />
+              </button>
+              </small>
+            </div>) :
+            <div className="alert alert-info text-center" role="alert">
+            <small>
+              Return to Database  <button className="btn btn-sm btn-outline-dark" onClick={this.props.changeView}>
+              <FontAwesomeIcon icon={faHome} />
+              </button>
+              </small>
+            </div>
+          }
         </div>  
     );
   }

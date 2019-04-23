@@ -93,7 +93,7 @@ class AddView extends Component {
                         rows="5">
                     </textarea>
                 </div>
-                <div className="form-group">
+                <div className="form-group text-center">
                     <label htmlFor="exampleFormControlFile1" className="radio-label text-center">Zambia <br/>
                         <input 
                             type="radio" 
@@ -117,10 +117,13 @@ class AddView extends Component {
                         <img src="img/jamaica.jpg"  alt="" className="img-thumbnail"/>
                     </label>                    
                 </div>
-                <div className="btn-group">
-                    <button type="submit" className="btn btn-success">Submit</button>
-                    <button type="button" className="btn btn-danger" onClick={this.props.changeView}>Cancel</button>
+                <div className="form-group text-center">
+                    <div className="btn-group btn-block">
+                        <button type="submit" className="btn btn-lg btn-success">Submit</button>
+                        <button type="button" className="btn btn-lg btn-danger" onClick={this.props.changeView}>Cancel</button>
+                    </div>
                 </div>
+                
             </form>
         </div>
       )
