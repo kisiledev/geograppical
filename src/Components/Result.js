@@ -5,7 +5,7 @@ class Result extends Component {
 
     render() {
         return(
-            <div className="card col-12 mb-3">
+            <div className="card col-sm-12 col-md-9 mb-3 mb-3">
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">

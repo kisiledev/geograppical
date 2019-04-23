@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faPlus } from "@fortawesome/free-solid-svg-icons";
+// import { faHome } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 
 class Search extends Component {
@@ -14,7 +14,12 @@ class Search extends Component {
             <div className="input-group-append">
             </div>
           </div>
-          { (this.props.view === "default") ?   
+          <div className="alert alert-info text-center" role="alert">
+            <small>
+              Sorting Functionality and Linking to External Sites with More Info Coming Soon
+              </small>
+            </div>
+          {/* { (this.props.view === "default") ?   
             (<div className="alert alert-info text-center" role="alert">
             <small>
               Add to Database <button className="btn btn-sm btn-outline-dark" onClick={this.props.changeView} value="add">
@@ -29,7 +34,7 @@ class Search extends Component {
               </button>
               </small>
             </div>
-          }
+          } */}
         </div>  
     );
   }

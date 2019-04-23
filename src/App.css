@@ -53,8 +53,11 @@ svg {
 .App-link {
   color: #61dafb;
 }
-.sidebar li {
+/* .sidebar li {
   list-style-type: none;
+} */
+.sidebar {
+  height: auto;
 }
 .main {
   max-width: 1200px;
