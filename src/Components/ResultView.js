@@ -11,10 +11,6 @@ class ResultView extends Component {
       return array.filter((v) => (v === value)).length;
     }
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
-    console.log(uniqueRegions);
-    console.log(getOccurrence(totalRegions, uniqueRegions[2]))
-    console.log(totalRegions);
-    console.log(this.props.countries);
     if(this.props.countries[0] === undefined){
       return(<div className="text-center"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div>
         )
@@ -27,9 +23,9 @@ class ResultView extends Component {
           name={country.name}
           region = {country.region}
           subregion = {country.subregion}
-          type = {country.type}
+          capital = {country.capital}
           excerpt = {country.excerpt}
-          number = {country.number}
+          population = {country.population}
           flag = {country.flag}
           imgalt = {country.name + "'s flag"}        
           key={country.alpha2Code}

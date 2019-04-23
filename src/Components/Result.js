@@ -9,8 +9,9 @@ class Result extends Component {
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name}
+                        {this.props.name} <small>Capital: {this.props.capital}</small>
                     </h4>
+                    <p>Pop: {this.props.population}</p>
                     <p className="region">
                     <strong>Region: </strong>{this.props.region}
                     </p>
