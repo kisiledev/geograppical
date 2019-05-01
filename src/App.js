@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import Search from './Components/Search';
 import ResultView from './Components/ResultView';
 import AddView from './Components/AddView';
+import globe from './img/logo.png';
 import './App.css';
 import Axios from 'axios';
-
-
-
  
 class App extends Component {
 
@@ -16,6 +14,7 @@ class App extends Component {
     filteredData: [],
     filterNations: [],
     searchText: '',
+    regionData: [],
     countries: [
         {
           name: "Ghana", 
@@ -47,7 +46,16 @@ class App extends Component {
     ]
   }
 
-  getCountries() {
+  componentDidMount() {
+    this.getCountries();  
+    this.filterByName();
+    this.findAllByRegion();  
+    this.sideBarData();
+  }
+  // componentWillUpdate(){
+  //   this.sideBarData();
+  // }
+  getCountries = () => {
     Axios.get('https://restcountries.eu/rest/v2/all')
       .then(res => {
         this.setState({
@@ -56,8 +64,7 @@ class App extends Component {
       });
 
   }
-  
-  filterByName(string){
+  filterByName = (string) =>{
    return Axios
     .get('https://restcountries.eu/rest/v2/name/' + string)
     .then(res => {
@@ -75,10 +82,44 @@ class App extends Component {
       });
   };
 
-  componentDidMount() {
-    this.getCountries();  
-    this.filterByName();  
+  sideBarData = () => {
+    console.log('running sidebardata');
+    let totalRegions = this.state.nations.map(a => a.region)
+    console.log(totalRegions);
+    function getOccurrence(array, value) {
+      return array.filter((v) => (v === value)).length;
+    }
+    let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
+    console.log(this.state.regionData);
+    for (let i = 0; i < uniqueRegions.length -1; i++) {
+      this.setState({
+        regionData: this.findAllByRegion(uniqueRegions[i])
+      })
+      console.log(this.state.regionData);
+    }
   }
+  
+  
+
+
+  findAllByRegion = (region) =>{
+    return Axios
+     .get('https://restcountries.eu/rest/v2/region/' + region)
+     .then(res => {
+       if(res.status === 200 && res !== null){
+        this.setState(prevState =>({
+          regionData: res.data
+        }))
+         console.log(this.state.regionData);
+       } else {
+         throw new Error('No country found');
+       }
+       })
+       .catch(error => {
+         console.log(error)
+         return []
+       });
+   };
 
   
 
@@ -134,7 +175,12 @@ class App extends Component {
   render(){
     return (
       <div className="main container mt-5">
-        <h2 className="text-center">Geography Search App</h2>
+        <h2 className="text-center">
+          <img 
+            className="logo" 
+            src={globe} 
+            alt="logo" 
+          />  Geography Search App</h2>
         <Search
           view={this.state.view}
           searchText = {this.state.searchText}
@@ -144,8 +190,13 @@ class App extends Component {
         />
         { (this.state.view === "default") ?   
           (<ResultView 
+            regionData = {this.state.regionData}
             countries = {this.state.filterNations}
-            geodata = {this.state.nations} 
+            geodata = {this.state.nations}
+            sideBarData = {this.sideBarData}
+            totalRegions = {this.totalRegions}
+            uniqueRegions = {this.uniqueRegions}
+            getOccurrence = {this.getOccurrence}
           />) :
           <AddView 
             changeView = {this.handleViews}

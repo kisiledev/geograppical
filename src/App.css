@@ -59,6 +59,13 @@ svg {
 .sidebar {
   height: auto;
 }
+.card-img {
+  object-fit: cover;
+}
+.card-img-overlay {
+  background-color: rgba(255,255,255,0.8);
+}
+
 .main {
   max-width: 1200px;
   margin: 0 auto; 
@@ -76,8 +83,15 @@ svg {
   display: inline-block;
 }
 img {
-  width: 75px;
+  width: 300px;
   object-fit: cover;
+}
+.logo{
+  height: 100px;
+  width: auto;
+}
+.col-md-9 {
+  padding-left: 0;
 }
 .img-thumbnail {
   height: 75px;
