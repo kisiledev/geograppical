@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import Search from './Components/Search';
 import ResultView from './Components/ResultView';
@@ -50,7 +51,7 @@ class App extends Component {
     this.getCountries();  
     this.filterByName();
     this.findAllByRegion();  
-    this.sideBarData();
+    this.filterRegion();
   }
   // componentWillUpdate(){
   //   this.sideBarData();
@@ -59,18 +60,20 @@ class App extends Component {
     Axios.get('https://restcountries.eu/rest/v2/all')
       .then(res => {
         this.setState({
-          nations: res.data
+          nations: res && res.data || []
         })
       });
 
   }
   filterByName = (string) =>{
+  if(string !==undefined)
    return Axios
     .get('https://restcountries.eu/rest/v2/name/' + string)
     .then(res => {
       if(res.status === 200 && res !== null){
+        console.log(res.data)
         this.setState(prevState =>({
-          filterNations: res.data
+          filterNations: res && res.data || []
         }))
       } else {
         throw new Error('No country found');
@@ -83,19 +86,16 @@ class App extends Component {
   };
 
   sideBarData = () => {
-    console.log('running sidebardata');
-    let totalRegions = this.state.nations.map(a => a.region)
-    console.log(totalRegions);
+    let totalRegions = this.state.nations.map(a => a.region);
+    console.log('triggered');
     function getOccurrence(array, value) {
       return array.filter((v) => (v === value)).length;
     }
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
-    console.log(this.state.regionData);
     for (let i = 0; i < uniqueRegions.length -1; i++) {
       this.setState({
         regionData: this.findAllByRegion(uniqueRegions[i])
       })
-      console.log(this.state.regionData);
     }
   }
   
@@ -103,14 +103,15 @@ class App extends Component {
 
 
   findAllByRegion = (region) =>{
+  if(region !==undefined)
     return Axios
      .get('https://restcountries.eu/rest/v2/region/' + region)
      .then(res => {
        if(res.status === 200 && res !== null){
         this.setState(prevState =>({
-          regionData: res.data
+          regionData: res && res.data || [] 
         }))
-         console.log(this.state.regionData);
+         console.log(res.data);
        } else {
          throw new Error('No country found');
        }
@@ -120,6 +121,25 @@ class App extends Component {
          return []
        });
    };
+
+   filterRegion = (region) =>{
+    if(region !==undefined)
+      return Axios
+       .get('https://restcountries.eu/rest/v2/region/' + region)
+       .then(res => {
+         if(res.status === 200 && res !== null){
+          this.setState(prevState =>({
+            [region]: res && res.data || [] 
+          }))
+          } else {
+           throw new Error('No country found');
+         }
+         })
+         .catch(error => {
+           console.log(error)
+           return []
+         });
+     };
 
   
 
@@ -189,7 +209,7 @@ class App extends Component {
           
         />
         { (this.state.view === "default") ?   
-          (<ResultView 
+          (<ResultView
             regionData = {this.state.regionData}
             countries = {this.state.filterNations}
             geodata = {this.state.nations}
@@ -197,6 +217,7 @@ class App extends Component {
             totalRegions = {this.totalRegions}
             uniqueRegions = {this.uniqueRegions}
             getOccurrence = {this.getOccurrence}
+            filterRegion = {this.filterRegion}
           />) :
           <AddView 
             changeView = {this.handleViews}

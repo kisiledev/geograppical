@@ -8,33 +8,18 @@ import Sidebar from './Sidebar';
 class ResultView extends Component {
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
-    let totalRegions = this.props.geodata.map(a => a.region)
+    const totalRegions = this.props.geodata.map(a => a.region)
+    console.log(this.props.countries);
     function getOccurrence(array, value) {
       return array.filter((v) => (v === value)).length;
     }
-    
-    let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
+    const uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
 
-    let lis = [];
-    for (let i = 0; i < uniqueRegions.length -1; i++) {
-      lis.push(
-        <li className="nav-item" key={i}>
-          <span className="nav-link bg-success mb-1"><strong>{uniqueRegions[i]}</strong> - {getOccurrence(totalRegions, uniqueRegions[i])}</span>
-          <ul>
-          </ul>
-        </li>
-
-      )
-      
-    }
-    if(this.props.countries[0] === undefined){
-      return(<div className="text-center"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div>
-        )
-    } else {
     return(
       <div className="row">
         <main className="col-md-9">
-          {this.props.countries.map( country => 
+          {this.props.countries[0] === undefined ? <div className="text-center"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> : null }
+          {this.props.countries[0] && this.props.countries.map( country => 
             <Result 
             name={country.name}
             region = {country.region}
@@ -52,14 +37,13 @@ class ResultView extends Component {
           regionData={this.props.regionData}
           geodata = {this.props.geodata}
           sideBar= {this.props.sideBarData}
-          totalRegions = {this.props.totalRegions}
-            uniqueRegions = {this.props.uniqueRegions}
-            getOccurrence = {this.props.getOccurrence}
+          totalRegions = {totalRegions}
+          uniqueRegions = {uniqueRegions}
+          getOccurrence = {getOccurrence}
+          filterRegion = {this.props.filterRegion}
         />
       </div>
     )
   }
 }
-}
-
 export default ResultView;
