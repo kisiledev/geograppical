@@ -39,6 +39,9 @@ svg {
 [type=radio]:checked + img {
   box-shadow: 0 0 0  red;
 }
+input, input[placeholder] {
+    text-align: center;
+}
 
 .radio-label {
   display: inline-block;
@@ -61,6 +64,10 @@ svg {
 }
 .card-img {
   object-fit: cover;
+}
+.img-fluid {
+  width: 30%;
+  height: auto;
 }
 .card-img-overlay {
   background-color: rgba(255,255,255,0.8);
@@ -89,6 +96,8 @@ img {
 .logo{
   height: 100px;
   width: auto;
+  display: block;
+  margin: 0 auto;
 }
 .col-md-9 {
   padding-left: 0;

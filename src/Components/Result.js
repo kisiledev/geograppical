@@ -9,7 +9,7 @@ class Result extends Component {
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name} <small>Capital: {this.props.capital}</small>
+                        {this.props.name} <br/><small>Capital: {this.props.capital}</small>
                     </h4>
                     <p>Pop: {this.props.population}</p>
                     <p className="region">
@@ -20,7 +20,7 @@ class Result extends Component {
                     </p>
                     <button className="btn btn-primary btn-sm" onClick={this.props.changeView} value={this.props.name}>Read More</button>
                     </div>  
-                    <img className="ml-3" src={this.props.flag} alt={this.props.imgalt}/>
+                    <img className="ml-3 img-fluid" src={this.props.flag} alt={this.props.imgalt}/>
                     
                 </div>
                 
