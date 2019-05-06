@@ -8,14 +8,12 @@ class Sidebar extends Component {
 
     state = {};
 
-    componentDidMount(){
-        this.filterRegion();
-        console.log(this.props.uniqueRegions);
-        console.log('running')
-        this.loadMore();
-        this.setDynamicRegions(this.props.uniqueRegions);
-    }
-
+    componentDidUpdate(prevProps, prevState) {
+        // only update chart if the data has changed
+        if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
+          this.setDynamicRegions(this.props.uniqueRegions)
+        }
+      };
     filterRegion = (region) =>{
         if(region !==undefined ){
             this.setState({
@@ -37,118 +35,86 @@ class Sidebar extends Component {
                console.log(error)
                return []
              });
-         };
         };
+    };
         
-    loadMore = (region) => {
-        let stateRegion = [region];
-    }
     setDynamicRegions = regions => {
         if (!regions) {
+            console.log('no regions')
           return;
         }
-        if(regions)
+        if(regions) 
         console.log(regions);
         const regionsState = {};
       
-        regions.forEach((item, index) => {
-            console.log(item)
-          regionsState[item] = { visible: 0 };
+        regions.forEach((region, index) => {
+            if(this.state[region] && this.state[region].countries[0]){
+                regionsState[region] = { visible: 5, countries: this.state[region].countries, open: false};
+            } else {
+                this.filterRegion(region);
+                regionsState[region] = { visible: 5, countries: [], open: false};
+            }
         });
       
         // set state here outside the foreach function
-         this.setState({
-           regionsState: regionsState
-         });
-      };        
-    // setDynamicRegions = regions => {
-    // if (!regions) {
-    //     return;
-    // }
+         this.setState((prevState => ({
+           ...regionsState
+         })))
+      };
 
-    // console.log({regions});
 
-    // const regionsState = {};
 
-    // regions.forEach((item, index) => {
-    //     console.log(item)
-    //     this.setState(prevState => ({
-    //         [item]: {visible: 5, countries: []}
-    //     }));
-    //     console.log(this.state[item])
-    // });
-    // };
 
-             handleRegion =(region) =>{
-                this.filterRegion(region);
-                if(this.state[region] && this.state[region].open){
-                    this.setState(prevState =>({
-                        [region]: {...prevState[region],
-                            open: false
-                        }
-                      }))
-                } else {
-                    this.setState(prevState =>({
-                        [region]: {...prevState[region],
-                            open: true
-                        }
-                      }))
-                }
-            }
-                      
+    updateOpen = (region) => {
+            let open = {visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
+            this.setState(prevState => ({ [region]: open}));
+            console.log(this.state[region].open);
+       };
+    loadMore = (event, region) =>  {
+        console.log(event);
+        event.stopPropagation();
+        let more = {visible: this.state[region].visible + 5, open: true, countries: this.state[region].countries}
+        console.log(more);
+        this.setState(prevState => ({[region]: more}));
+        console.log(this.state[region].visible)
+    }
+      
+    handleRegion =(e, region) =>{
+        e.stopPropagation();
+        this.updateOpen(region);
+        // this.updateVisibility(region);       
+    }
     render(){
-        const handleSidebarClick = (string) => {
-            console.log(string);
-            this.props.handleSideBar(string);
-            if(string.length > 3)
-            this.handleRegion(string); 
-        };
+        const handleSidebarClick = (region) => {
+            console.log(region);
+            this.props.handleSideBar(region);
+            if(region.length > 3)
+            this.handleRegion(region);
 
-        
-        // const loadMore = (region) =>  {
-        //     console.log(this.state[region])
-        //     if(this.state[region]){
-        //         if(this.state[region] && !this.state[region].visible){
-        //             console.log(this.state[region].visible)
-        //             this.setState(prevState => ({
-        //                 [region]: {
-        //                     visible: 5,
-        //                     open: false
-        //                 }
-        //             }))
-        //         } else {
-        //             console.log(this.state[region].visible);
-        //             this.setState(prevState => ({
-        //                 [region]: {
-        //                     visible: prevState[region].visible +5,
-        //                     open: false
-        //                 }
-        //             }))   
-        //         }
-        //     }
-        // }
+
+        };
         return (
             <nav className="sidebar card col-md-3">
                 <div className="sidebar-sticky">
-                    <h5 className="text-center" onClick={() => this.setDynamicRegions(this.props.uniqueRegions)}>
+                    <h5 className="text-center">
                         <strong>Countries:</strong> 
                         {this.props.geodata.length} 
                     </h5>
                     {/* <div className="collapse navbar-collapse"> */}
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
-                        <li className="nav-item" key={index} onClick={() => this.handleRegion(region)} >
+                        <li className="nav-item" key={index} onClick={(e) => this.handleRegion(e, region)} >
                             <span className="nav-link bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
                             </span>
                             <Collapse in={this.state[region] && this.state[region].open}>
                             <ul>
-                            {this.state[region] && this.state[region].countries[0] && this.state[region].countries.map((country, index) => 
+                            {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(0, this.state[region].visible).map((country, index) => 
                                 <li key={index} className="nav-item" onClick={() => handleSidebarClick(country.alpha2Code)}>
                                     <span className="nav-link bg-info mb-1">{country.name}</span>
                                 </li>
                             )}
-                            {this.state[region] && <button onClick={() => this.loadMore(region)} className="load-more nav-link bg-warning mb-1">Load more</button>}
+                            {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && <button onClick={(e) => this.loadMore(e, region)} className="btn load-more nav-link bg-warning mb-1">Load more</button>}
                             </ul>
                             </Collapse>
                         </li>

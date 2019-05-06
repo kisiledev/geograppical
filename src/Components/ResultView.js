@@ -14,7 +14,6 @@ class ResultView extends Component {
     }
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean);
-    console.log(uniqueRegions);
 
     return(
       <div className="row">
