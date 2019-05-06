@@ -49,10 +49,10 @@ class Sidebar extends Component {
       
         regions.forEach((region, index) => {
             if(this.state[region] && this.state[region].countries[0]){
-                regionsState[region] = { visible: 5, countries: this.state[region].countries, open: false};
+                regionsState[region] = { visible: 5, start: 0, countries: this.state[region].countries, open: false};
             } else {
                 this.filterRegion(region);
-                regionsState[region] = { visible: 5, countries: [], open: false};
+                regionsState[region] = { visible: 5, start: 0, countries: [], open: false};
             }
         });
       
@@ -66,14 +66,22 @@ class Sidebar extends Component {
 
 
     updateOpen = (region) => {
-            let open = {visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
+            let open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
             this.setState(prevState => ({ [region]: open}));
             console.log(this.state[region].open);
        };
     loadMore = (event, region) =>  {
         console.log(event);
         event.stopPropagation();
-        let more = {visible: this.state[region].visible + 5, open: true, countries: this.state[region].countries}
+        let more = {visible: this.state[region].visible + 5, start: this.state[region].start, open: true, countries: this.state[region].countries}
+        console.log(more);
+        this.setState(prevState => ({[region]: more}));
+        console.log(this.state[region].visible)
+    }
+    nextFive = (event, region) =>  {
+        console.log(event);
+        event.stopPropagation();
+        let more = {visible: this.state[region].visible +5, start: this.state[region].start + 5, open: true, countries: this.state[region].countries}
         console.log(more);
         this.setState(prevState => ({[region]: more}));
         console.log(this.state[region].visible)
@@ -109,12 +117,16 @@ class Sidebar extends Component {
                             </span>
                             <Collapse in={this.state[region] && this.state[region].open}>
                             <ul>
-                            {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(0, this.state[region].visible).map((country, index) => 
+                            {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
                                 <li key={index} className="nav-item" onClick={() => handleSidebarClick(country.alpha2Code)}>
                                     <span className="nav-link bg-info mb-1">{country.name}</span>
                                 </li>
                             )}
-                            {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && <button onClick={(e) => this.loadMore(e, region)} className="btn load-more nav-link bg-warning mb-1">Load more</button>}
+                            {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
+                                <div>
+                                <button onClick={(e) => this.loadMore(e, region)} className="btn load-more nav-link bg-warning mb-1 mr-3">Load more</button> 
+                                <button onClick={(e) => this.nextFive(e, region)} className="btn load-more nav-link bg-warning mb-1">Next 5</button>
+                                </div>}
                             </ul>
                             </Collapse>
                         </li>

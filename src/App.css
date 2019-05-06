@@ -107,7 +107,9 @@ img {
   width: 75px;
   object-fit: cover;
 }
-
+.load-more {
+  display: inline;
+}
 
 @keyframes App-logo-spin {
   from {
