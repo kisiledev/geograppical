@@ -125,7 +125,7 @@ class Sidebar extends Component {
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
                                 <div>
                                 <button onClick={(e) => this.loadMore(e, region)} className="btn load-more nav-link bg-warning mb-1 mr-3">Load more</button> 
-                                <button onClick={(e) => this.nextFive(e, region)} className="btn load-more nav-link bg-warning mb-1">Next 5</button>
+                                <button onClick={(e) => this.nextFive(e, region)} className="btn load-more nav-link bg-warning mb-1">Next {this.state[region].visible - this.state[region].start}</button>
                                 </div>}
                             </ul>
                             </Collapse>
