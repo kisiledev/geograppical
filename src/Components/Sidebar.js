@@ -78,6 +78,14 @@ class Sidebar extends Component {
         this.setState(prevState => ({[region]: more}));
         console.log(this.state[region].visible)
     }
+    prevFive = (event, region) =>  {
+        console.log(event);
+        event.stopPropagation();
+        let more = {visible: this.state[region].visible -5, start: this.state[region].start - 5, open: true, countries: this.state[region].countries}
+        console.log(more);
+        this.setState(prevState => ({[region]: more}));
+        console.log(this.state[region].visible)
+    }
     nextFive = (event, region) =>  {
         console.log(event);
         event.stopPropagation();
@@ -102,7 +110,7 @@ class Sidebar extends Component {
 
         };
         return (
-            <nav className="sidebar card col-md-3">
+            <nav className="sidebar card col-md-4">
                 <div className="sidebar-sticky">
                     <h5 className="text-center">
                         <strong>Countries:</strong> 
@@ -123,9 +131,22 @@ class Sidebar extends Component {
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
-                                <div>
-                                <button onClick={(e) => this.loadMore(e, region)} className="btn load-more nav-link bg-warning mb-1 mr-3">Load more</button> 
-                                <button onClick={(e) => this.nextFive(e, region)} className="btn load-more nav-link bg-warning mb-1">Next {this.state[region].visible - this.state[region].start}</button>
+                                <div className="btn-group">
+                                <button 
+                                    onClick={(e) => this.loadMore(e, region)} 
+                                    className="btn load-more nav-link bg-secondary mt-1 mb-3">
+                                    Load More
+                                </button> 
+                                <button 
+                                    onClick={(e) => this.prevFive(e, region)} 
+                                    className="btn load-more nav-link bg-warning mt-1 mb-3">
+                                    Previous {this.state[region].visible - this.state[region].start}
+                                </button>
+                                <button 
+                                    onClick={(e) => this.nextFive(e, region)} 
+                                    className="btn load-more nav-link bg-success mt-1 mb-3">
+                                    Next {this.state[region].visible - this.state[region].start}
+                                </button>
                                 </div>}
                             </ul>
                             </Collapse>

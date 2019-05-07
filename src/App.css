@@ -108,7 +108,10 @@ img {
   object-fit: cover;
 }
 .load-more {
-  display: inline;
+  display: inline;  
+}
+ul .collapse, ul .show, ul .collapsing {
+  padding-inline-start: 0px;
 }
 
 @keyframes App-logo-spin {

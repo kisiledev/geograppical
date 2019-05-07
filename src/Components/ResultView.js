@@ -17,7 +17,7 @@ class ResultView extends Component {
 
     return(
       <div className="row">
-        <main className="col-md-9">
+        <main className="col-md-8">
           {this.props.countries[0] === undefined ? <div className="text-center mb-3"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> : null }
           {this.props.countries[0] && this.props.countries.map( country => 
             <Result 
