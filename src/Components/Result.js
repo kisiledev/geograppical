@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
+import Flag from 'react-flags';
 import '../App.css';
 
 class Result extends Component {
-
     render() {
         return(
-            <div className="card mb-3 mb-3">
+            <div onClick={() => this.props.getCountryInfo(this.props.name)}  className="card mb-3 mb-3">
+
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name} <br/><small>Capital: {this.props.capital}</small>
+                        {this.props.name}<br/><small>Capital: {this.props.capital}</small>
                     </h4>
                     <p>Pop: {this.props.population}</p>
                     <p className="region">
@@ -19,8 +20,15 @@ class Result extends Component {
                     <strong>Subregion: </strong>{this.props.subregion}
                     </p>
                     <button className="btn btn-primary btn-sm" onClick={this.props.changeView} value={this.props.name}>Read More</button>
-                    </div>  
-                    <img className="ml-3 img-fluid" src={this.props.flag} alt={this.props.imgalt}/>
+                    </div> 
+                    <Flag 
+                        name={this.props.code}
+                        format="svg"
+                        pngSize={64}
+                        shiny={false}
+                        alt={`${this.props.name}'s Flag`}
+                        basePath="/img/flags"
+                    /> 
                     
                 </div>
                 

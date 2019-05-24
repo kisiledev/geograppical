@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import Search from './Components/Search';
 import ResultView from './Components/ResultView';
-import AddView from './Components/AddView';
+import DetailView from './Components/DetailView';
 import globe from './img/logo.png';
 import './App.css';
-import Axios from 'axios';
+import axios from 'axios';
  
 class App extends Component {
 
@@ -16,6 +16,8 @@ class App extends Component {
     filterNations: [],
     searchText: '',
     regionData: [],
+    worldData: [],
+    countryDetail: [],
     countries: [
         {
           name: "Ghana", 
@@ -48,38 +50,51 @@ class App extends Component {
   }
 
   componentDidMount() {
+    
     this.getCountries();  
     this.filterByName();
     this.findAllByRegion();  
     this.filterRegion();
     this.filterByCode();
+    this.loadWorldData();
   }
   // componentWillUpdate(){
   //   this.sideBarData();
   // }
+ async loadWorldData() {
+   await axios.get("../factbook.json")
+    .then(res => {
+      console.log('setting state')
+      this.setState({ worldData: res && Object.values(res.data)[0] || []})
+      console.log(this.state.worldData);
+    })
+  }
+
+  getCountryInfo = (string) => {
+    console.log(string.toLowerCase());
+    let data = Object.values(this.state.worldData).filter(countries => countries.data.name === string)[0].data;
+    console.log(data);
+    this.setState({countryDetail: data});
+    this.handleViews('detail');
+  }
+
   getCountries = () => {
-    Axios.get('https://restcountries.eu/rest/v2/all')
+    axios.get('https://restcountries.eu/rest/v2/all')
       .then(res => {
-        this.setState({
-          nations: res && res.data || []
-        })
+        this.setState({nations: res && res.data || []})
       });
 
   }
   filterByName = (string) =>{
   if(string !==undefined)
-   return Axios
+   return axios
     .get('https://restcountries.eu/rest/v2/name/' + string)
     .then(res => {
       if(res.status === 200 && res !== null){
-        console.log(res.data)
-        this.setState(prevState =>({
-          filterNations: res && res.data || []
-        }))
+        this.setState(({filterNations: res && res.data || []}))
       } else {
         throw new Error('No country found');
-      }
-      })
+      }})
       .catch(error => {
         console.log(error)
         return []
@@ -87,20 +102,16 @@ class App extends Component {
   };
   filterByCode = (string) =>{
     if(string !==undefined)
-     return Axios
+     return axios
       .get('https://restcountries.eu/rest/v2/alpha/' + string)
       .then(res => {
         if(res.status === 200 && res !== null){
-          console.log(res.data)
           let nation = []
           nation.push(res && res.data || []);
-          this.setState(prevState =>({
-            filterNations: nation
-          }))
+          this.setState(({filterNations: nation}))
         } else {
           throw new Error('No country found');
-        }
-        })
+        }})
         .catch(error => {
           console.log(error)
           return []
@@ -112,18 +123,15 @@ class App extends Component {
 
   findAllByRegion = (region) =>{
   if(region !==undefined)
-    return Axios
+    return axios
      .get('https://restcountries.eu/rest/v2/region/' + region)
      .then(res => {
        if(res.status === 200 && res !== null){
-        this.setState(prevState =>({
-          regionData: res && res.data || [] 
-        }))
+        this.setState(({regionData: res && res.data || [] }))
          console.log(res.data);
        } else {
          throw new Error('No country found');
-       }
-       })
+       }})
        .catch(error => {
          console.log(error)
          return []
@@ -132,17 +140,14 @@ class App extends Component {
 
    filterRegion = (region) =>{
     if(region !==undefined)
-      return Axios
+      return axios
        .get('https://restcountries.eu/rest/v2/region/' + region)
        .then(res => {
          if(res.status === 200 && res !== null){
-          this.setState(prevState =>({
-            [region]: res && res.data || [] 
-          }))
+          this.setState(({[region]: res && res.data || [] }))
           } else {
            throw new Error('No country found');
-         }
-         })
+         }})
          .catch(error => {
            console.log(error)
            return []
@@ -157,17 +162,13 @@ class App extends Component {
 }
 
   handleViews = (e) => {
-    e.persist();
-    if(e.target.value === "add"){
-      this.setState(prevState => ({
-        view: e.target.value}))
+    if(e === "detail"){
+      this.setState(({view: e}))
     } else {
-      this.setState(prevState => ({
-        view: "default"}))
+      this.setState(({view: "default"}))
     }
   };
 
-  prevCountryCount = this.state.countries.length;
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -178,27 +179,24 @@ class App extends Component {
           type,
           excerpt,
           imgurl,
-          id: this.prevCountryCount += 1
+          id: prevState.countries.length += 1
         }
       ],
       view: "default"
     }))
   }
   handleSideBar = (string) => {
-    this.setState(prevState => ({
-      filterNations: this.filterByCode(string)
-    }))
+    this.setState(({filterNations: this.filterByCode(string)}))
   };
   handleInput = (e) => {
     e.persist();
-    console.log(e.target.value);
     if(e.target.value !== ""){
-      this.setState(prevState => ({ 
+      this.setState(({ 
         searchText: e.target.value, 
         filterNations: this.filterByName(e.target.value)
       }));
     } else {
-      this.setState(prevState => ({ 
+      this.setState(({ 
         searchText: e.target.value, 
         filterNations: []
       }));
@@ -227,11 +225,20 @@ class App extends Component {
             geodata = {this.state.nations}
             filterRegion = {this.filterRegion}
             handleSideBar = {this.handleSideBar}
-          />) :
-          <AddView 
+            data = {this.state.worldData}
+            getCountryInfo = {this.getCountryInfo}
             changeView = {this.handleViews}
-            addNew= {this.addNewCountry}
-            addCountry={this.addNewCountry}/>
+          />) :
+          <DetailView 
+            regionData = {this.state.regionData}
+            countries = {this.state.filterNations}
+            geodata = {this.state.nations}
+            filterRegion = {this.filterRegion}
+            handleSideBar = {this.handleSideBar}
+            data = {this.state.worldData}
+            changeView = {this.handleViews}
+            countryDetail = {this.state.countryDetail}
+          />
         }
       </div>
     )

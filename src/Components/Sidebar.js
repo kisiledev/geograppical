@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import Collapse from 'react-bootstrap/Collapse';
 import '../App.css';
 
@@ -8,7 +8,7 @@ class Sidebar extends Component {
 
     state = {};
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // only update chart if the data has changed
         if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
           this.setDynamicRegions(this.props.uniqueRegions)
@@ -19,7 +19,7 @@ class Sidebar extends Component {
             this.setState({
                 [region]: {countries: ['']}
             })
-          return Axios
+          return axios
            .get('https://restcountries.eu/rest/v2/region/' + region)
            .then(res => {
              if(res.status === 200 && res !== null){
@@ -43,8 +43,7 @@ class Sidebar extends Component {
             console.log('no regions')
           return;
         }
-        if(regions) 
-        console.log(regions);
+        // console.log(regions);
         const regionsState = {};
       
         regions.forEach((region, index) => {
@@ -57,9 +56,7 @@ class Sidebar extends Component {
         });
       
         // set state here outside the foreach function
-         this.setState((prevState => ({
-           ...regionsState
-         })))
+         this.setState({...regionsState})
       };
 
 
@@ -67,7 +64,7 @@ class Sidebar extends Component {
 
     updateOpen = (region) => {
             let open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
-            this.setState(prevState => ({ [region]: open}));
+            this.setState(({ [region]: open}));
             console.log(this.state[region].open);
        };
     loadMore = (event, region) =>  {
@@ -75,7 +72,7 @@ class Sidebar extends Component {
         event.stopPropagation();
         let more = {visible: this.state[region].visible + 5, start: this.state[region].start, open: true, countries: this.state[region].countries}
         console.log(more);
-        this.setState(prevState => ({[region]: more}));
+        this.setState(({[region]: more}));
         console.log(this.state[region].visible)
     }
     prevFive = (event, region) =>  {
@@ -83,7 +80,7 @@ class Sidebar extends Component {
         event.stopPropagation();
         let more = {visible: this.state[region].visible -5, start: this.state[region].start - 5, open: true, countries: this.state[region].countries}
         console.log(more);
-        this.setState(prevState => ({[region]: more}));
+        this.setState(({[region]: more}));
         console.log(this.state[region].visible)
     }
     nextFive = (event, region) =>  {
@@ -91,7 +88,7 @@ class Sidebar extends Component {
         event.stopPropagation();
         let more = {visible: this.state[region].visible +5, start: this.state[region].start + 5, open: true, countries: this.state[region].countries}
         console.log(more);
-        this.setState(prevState => ({[region]: more}));
+        this.setState(({[region]: more}));
         console.log(this.state[region].visible)
     }
       

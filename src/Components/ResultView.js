@@ -6,6 +6,7 @@ import '../App.css';
 import Sidebar from './Sidebar';
 
 class ResultView extends Component {
+
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
     const totalRegions = this.props.geodata.map(a => a.region)
@@ -20,7 +21,10 @@ class ResultView extends Component {
         <main className="col-md-8">
           {this.props.countries[0] === undefined ? <div className="text-center mb-3"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> : null }
           {this.props.countries[0] && this.props.countries.map( country => 
-            <Result 
+            <Result
+            worldData = {this.props.data}
+            changeView = {this.props.changeView}
+            getCountryInfo = {this.props.getCountryInfo}
             name={country.name}
             region = {country.region}
             subregion = {country.subregion}
@@ -30,17 +34,15 @@ class ResultView extends Component {
             flag = {country.flag}
             imgalt = {country.name + "'s flag"}        
             key={country.alpha2Code}
+            code={country.alpha3Code}
             />
           )}
         </main>
         <Sidebar 
-          regionData={this.props.regionData}
-          geodata = {this.props.geodata}
-          totalRegions = {totalRegions}
-          uniqueRegions = {uniqueRegions}
-          getOccurrence = {getOccurrence}
-          filterRegion = {this.props.filterRegion}
-          handleSideBar = {this.props.handleSideBar}
+            geodata = {this.props.geodata}
+            totalRegions = {totalRegions}
+            uniqueRegions = {uniqueRegions}
+            getOccurrence = {getOccurrence}
         />
       </div>
     )
