@@ -71,8 +71,8 @@ class App extends Component {
   }
 
   getCountryInfo = (string) => {
-    console.log(string.toLowerCase());
-    let data = Object.values(this.state.worldData).filter(countries => countries.data.name === string)[0].data;
+    console.log(string.toLowerCase().split(' ').join('_'));
+    let data = Object.values(this.state.worldData).filter(countries => countries.data.name === string.split(' ').join('_'))[0].data;
     console.log(data);
     this.setState({countryDetail: data});
     this.handleViews('detail');
@@ -91,6 +91,7 @@ class App extends Component {
     .get('https://restcountries.eu/rest/v2/name/' + string)
     .then(res => {
       if(res.status === 200 && res !== null){
+        console.log(res.data);
         this.setState(({filterNations: res && res.data || []}))
       } else {
         throw new Error('No country found');
