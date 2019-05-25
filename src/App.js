@@ -64,20 +64,17 @@ class App extends Component {
  async loadWorldData() {
    await axios.get("../factbook.json")
     .then(res => {
-      console.log('setting state')
       this.setState({ worldData: res && Object.values(res.data)[0] || []})
-      console.log(this.state.worldData);
     })
   }
 
   getCountryInfo = (string) => {
-    console.log(string.toLowerCase().split(' ').join('_'));
-    let data = Object.values(this.state.worldData).filter(countries => countries.data.name === string.split(' ').join('_'))[0].data;
-    console.log(data);
+    let searchDB = Object.values(this.state.worldData);
+    let match = searchDB.filter(countries => countries.data.name.toLowerCase() === string.toLowerCase())[0].data;
+    const data = (string && match) || match;
     this.setState({countryDetail: data});
     this.handleViews('detail');
   }
-
   getCountries = () => {
     axios.get('https://restcountries.eu/rest/v2/all')
       .then(res => {
@@ -91,7 +88,6 @@ class App extends Component {
     .get('https://restcountries.eu/rest/v2/name/' + string)
     .then(res => {
       if(res.status === 200 && res !== null){
-        console.log(res.data);
         this.setState(({filterNations: res && res.data || []}))
       } else {
         throw new Error('No country found');
@@ -162,11 +158,12 @@ class App extends Component {
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
 }
 
-  handleViews = (e) => {
-    if(e === "detail"){
-      this.setState(({view: e}))
-    } else {
+  handleViews = () => {
+    if(this.state.view === "detail"){
+      console.log('changing view')
       this.setState(({view: "default"}))
+    } else {
+      this.setState(({view: "detail"}))
     }
   };
 

@@ -107,6 +107,10 @@ img {
   width: 75px;
   object-fit: cover;
 }
+.media img {
+  max-width: 100%;
+  width: 25%;
+}
 .load-more {
   display: inline;  
 }

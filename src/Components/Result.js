@@ -5,12 +5,12 @@ import '../App.css';
 class Result extends Component {
     render() {
         return(
-            <div onClick={() => this.props.getCountryInfo(this.props.name)}  className="card mb-3 mb-3">
+            <div className="card mb-3 mb-3">
 
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name}{this.props.code}<br/><small>Capital: {this.props.capital}</small>
+                        {this.props.name} ({this.props.code})<br/><small>Capital: {this.props.capital}</small>
                     </h4>
                     <p>Pop: {this.props.population}</p>
                     <p className="region">
@@ -19,7 +19,7 @@ class Result extends Component {
                     <p className="subregion">
                     <strong>Subregion: </strong>{this.props.subregion}
                     </p>
-                    <button className="btn btn-primary btn-sm" onClick={this.props.changeView} value={this.props.name}>Read More</button>
+                    <button className="btn btn-primary" onClick={() => this.props.getCountryInfo(this.props.name)}>Read More</button>
                     </div> 
                     <Flag 
                         name={this.props.code}

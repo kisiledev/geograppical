@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import JSONTree from 'react-json-tree';
-import axios from 'axios';
 import '../App.css';
 import Sidebar from './Sidebar';
+import AudioPlayer from './AudioPlayer';
 
 class DetailView extends Component {
     render() {
@@ -15,8 +15,12 @@ class DetailView extends Component {
       return(
         <div className="row">
             <div className="col-sm-12 col-md-8">
+                <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
                 <JSONTree data={this.props.countryDetail}/>
                 <div className="card mb-3">
+                    <AudioPlayer 
+                    nation={this.props.countryDetail}
+                    audio={this.props.countryDetail.government.national_anthem.audio_url}/>
                     <h1>{this.props.countryDetail.name}</h1>
                     <h2>Geography</h2>
                     <p>{this.props.countryDetail.geography.location}</p>
