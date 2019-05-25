@@ -14,7 +14,7 @@ class DetailView extends Component {
     uniqueRegions = uniqueRegions.filter(Boolean);
       return(
         <div className="row">
-            <div className="col-sm-12 col-md-8">
+            <div className="col-sm-12 col-md-9">
                 <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
                 <JSONTree data={this.props.countryDetail}/>
                 <div className="card mb-3">
@@ -22,12 +22,14 @@ class DetailView extends Component {
                     nation={this.props.countryDetail}
                     audio={this.props.countryDetail.government.national_anthem.audio_url}/>
                     <h1>{this.props.countryDetail.name}</h1>
+                    <hr />
                     <h2>Geography</h2>
                     <p>{this.props.countryDetail.geography.location}</p>
                     <p>{this.props.countryDetail.geography.climate}</p>
                     <p>{this.props.countryDetail.geography.terrain}</p>
                     <p>{this.props.countryDetail.introduction.background}</p>
                     <p>{this.props.countryDetail.people.demographic_profile}</p>
+                    <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
                 </div>
             </div>
             <Sidebar 

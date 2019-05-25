@@ -14,11 +14,11 @@ class Search extends Component {
             <div className="input-group-append">
             </div>
           </div>
-          <div className="alert alert-info text-center" role="alert">
+          {/* <div className="alert alert-info text-center" role="alert">
             <small>
               Sorting Functionality and Linking to External Sites with More Info Coming Soon
               </small>
-            </div>
+            </div> */}
           {/* { (this.props.view === "default") ?   
             (<div className="alert alert-info text-center" role="alert">
             <small>

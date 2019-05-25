@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import Search from './Components/Search';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
-import globe from './img/logo.png';
+import NavBar from './Components/NavBar';
+import Breakpoint, { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
  
@@ -113,11 +114,7 @@ class App extends Component {
           console.log(error)
           return []
         });
-    };
-  
-  
-
-
+  };
   findAllByRegion = (region) =>{
   if(region !==undefined)
     return axios
@@ -133,9 +130,8 @@ class App extends Component {
          console.log(error)
          return []
        });
-   };
-
-   filterRegion = (region) =>{
+  };
+  filterRegion = (region) =>{
     if(region !==undefined)
       return axios
        .get('https://restcountries.eu/rest/v2/region/' + region)
@@ -149,15 +145,11 @@ class App extends Component {
            console.log(error)
            return []
          });
-     };
-
-  
-
+  };
   filterByValue(array, string) {
     return array.filter(o =>
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
-}
-
+  };
   handleViews = () => {
     if(this.state.view === "detail"){
       console.log('changing view')
@@ -166,7 +158,6 @@ class App extends Component {
       this.setState(({view: "detail"}))
     }
   };
-
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -182,7 +173,7 @@ class App extends Component {
       ],
       view: "default"
     }))
-  }
+  };
   handleSideBar = (string) => {
     this.setState(({filterNations: this.filterByCode(string)}))
   };
@@ -202,20 +193,23 @@ class App extends Component {
   };
   render(){
     return (
-      <div className="main container mt-5">
-        <img 
-            className="logo" 
-            src={globe} 
-            alt="logo" 
-          />  
-        <h2 className="text-center">Geography Search App</h2>
-        <Search
+      <BreakpointProvider>
+      <div>
+        <NavBar 
           view={this.state.view}
           searchText = {this.state.searchText}
           passInput = {this.handleInput}
           changeView = {this.handleViews}
-          
         />
+        <div className="main container">
+        <Breakpoint small down>
+          <Search
+            view={this.state.view}
+            searchText = {this.state.searchText}
+            passInput = {this.handleInput}
+            changeView = {this.handleViews}
+          />
+        </Breakpoint>
         { (this.state.view === "default") ?   
           (<ResultView
             regionData = {this.state.regionData}
@@ -238,7 +232,9 @@ class App extends Component {
             countryDetail = {this.state.countryDetail}
           />
         }
+        </div>
       </div>
+      </BreakpointProvider>
     )
   }
 };

@@ -5,7 +5,7 @@ class AudioPlayer extends React.Component {
     return (
       <div>
         <h5>{this.props.nation.name}'s National Anthem, {this.props.nation.government.national_anthem.name}</h5>
-        <audio ref="audio_tag" src={this.props.audio} controls autoPlay/>
+        <audio ref="audio_tag" src={this.props.audio} controls/>
       </div>
     );
   }

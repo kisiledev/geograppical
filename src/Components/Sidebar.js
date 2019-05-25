@@ -107,7 +107,7 @@ class Sidebar extends Component {
 
         };
         return (
-            <nav className="sidebar card col-md-4">
+            <nav className="sidebar card col-md-3">
                 <div className="sidebar-sticky">
                     <h5 className="text-center">
                         <strong>Countries:</strong> 

@@ -18,8 +18,10 @@ class ResultView extends Component {
 
     return(
       <div className="row">
-        <main className="col-md-8">
-          {this.props.countries[0] === undefined ? <div className="text-center mb-3"><h3>Waiting for Input</h3> <FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> : null }
+        <main className="col-md-9 px-0">
+          {this.props.countries[0] === undefined ? 
+              <h5 className="text-center mb-3">Search Above to Begin</h5>
+           : null }
           {this.props.countries[0] && this.props.countries.map( country => 
             <Result
             worldData = {this.props.data}
@@ -38,7 +40,8 @@ class ResultView extends Component {
             />
           )}
         </main>
-        <Sidebar 
+        <Sidebar
+            handleSideBar = {this.props.handleSideBar} 
             geodata = {this.props.geodata}
             totalRegions = {totalRegions}
             uniqueRegions = {uniqueRegions}
