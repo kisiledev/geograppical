@@ -6,20 +6,15 @@ class Result extends Component {
     render() {
         return(
             <div className="card mb-3 mb-3">
-
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name} ({this.props.code})<br/><small>Capital: {this.props.capital}</small>
+                        {this.props.name} ({this.props.code})<br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
                     </h4>
-                    <p>Pop: {this.props.population}</p>
-                    <p className="region">
-                    <strong>Region: </strong>{this.props.region}
-                    </p>
                     <p className="subregion">
-                    <strong>Subregion: </strong>{this.props.subregion}
+                    <strong>Location: </strong>{this.props.subregion}
                     </p>
-                    <button className="btn btn-primary" onClick={() => this.props.getCountryInfo(this.props.name)}>Read More</button>
+                    <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name)}>Read More</button>
                     </div> 
                     <Flag 
                         name={this.props.code}

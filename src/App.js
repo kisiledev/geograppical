@@ -180,15 +180,19 @@ class App extends Component {
   handleInput = (e) => {
     e.persist();
     if(e.target.value !== ""){
+      console.log(e.target.value)
       this.setState(({ 
         searchText: e.target.value, 
         filterNations: this.filterByName(e.target.value)
       }));
+      console.log(this.state.filterNations)
     } else {
+      console.log(e.target.value  )
       this.setState(({ 
         searchText: e.target.value, 
         filterNations: []
       }));
+      console.log(this.state.filterNations)
     }
   };
   render(){
@@ -205,6 +209,7 @@ class App extends Component {
         <Breakpoint small down>
           <Search
             view={this.state.view}
+            countries={this.state.filterNations}
             searchText = {this.state.searchText}
             passInput = {this.handleInput}
             changeView = {this.handleViews}
