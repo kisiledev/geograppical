@@ -1,6 +1,7 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import axios from 'axios';
+import Breakpoint, { BreakpointProvider } from 'react-socks';
 import Collapse from 'react-bootstrap/Collapse';
 import '../App.css';
 
@@ -13,7 +14,7 @@ class Sidebar extends Component {
         if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
           this.setDynamicRegions(this.props.uniqueRegions)
         }
-      };
+    };
     filterRegion = (region) =>{
         if(region !==undefined ){
             this.setState({
@@ -36,8 +37,7 @@ class Sidebar extends Component {
                return []
              });
         };
-    };
-        
+    };    
     setDynamicRegions = regions => {
         if (!regions) {
             console.log('no regions')
@@ -57,16 +57,12 @@ class Sidebar extends Component {
       
         // set state here outside the foreach function
          this.setState({...regionsState})
-      };
-
-
-
-
+    };
     updateOpen = (region) => {
             let open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
             this.setState(({ [region]: open}));
             console.log(this.state[region].open);
-       };
+    };
     loadMore = (event, region) =>  {
         console.log(event);
         event.stopPropagation();
@@ -107,41 +103,50 @@ class Sidebar extends Component {
 
         };
         return (
+            <BreakpointProvider>
             <nav className="sidebar card col-md-3">
+                <Breakpoint small down>
+                    <button 
+                    className="btn btn-sm btn-block btn-outline-secondary mb-3" 
+                    onClick={()=> this.props.viewSidebar()}
+                    >
+                    { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
+                    </button>
+                </Breakpoint>
                 <div className="sidebar-sticky">
-                    <h5 className="text-center">
+                    {/* <h5 className="text-center">
                         <strong>Countries:</strong> 
                         {this.props.geodata.length} 
-                    </h5>
+                    </h5> */}
                     {/* <div className="collapse navbar-collapse"> */}
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
                         <li className="nav-item" key={index} onClick={(e) => this.handleRegion(e, region)} >
-                            <span className="nav-link bg-success mb-1">
+                            <span className="nav-link btn-sm bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
                             </span>
                             <Collapse in={this.state[region] && this.state[region].open}>
                             <ul>
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
                                 <li key={index} className="nav-item" onClick={() => handleSidebarClick(country.alpha2Code)}>
-                                    <span className="nav-link bg-info mb-1">{country.name}</span>
+                                    <span className="nav-link btn-sm bg-info mb-1">{country.name}</span>
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
                                 <div className="btn-group">
                                 <button 
                                     onClick={(e) => this.loadMore(e, region)} 
-                                    className="btn load-more nav-link bg-secondary mt-1 mb-3">
+                                    className="btn load-more nav-link btn-sm bg-secondary mt-1 mb-3">
                                     Load More
                                 </button> 
                                 <button 
                                     onClick={(e) => this.prevFive(e, region)} 
-                                    className="btn load-more nav-link bg-warning mt-1 mb-3">
+                                    className="btn load-more nav-link btn-sm bg-warning mt-1 mb-3">
                                     Previous {this.state[region].visible - this.state[region].start}
                                 </button>
                                 <button 
                                     onClick={(e) => this.nextFive(e, region)} 
-                                    className="btn load-more nav-link bg-success mt-1 mb-3">
+                                    className="btn load-more nav-link btn-sm bg-success mt-1 mb-3">
                                     Next {this.state[region].visible - this.state[region].start}
                                 </button>
                                 </div>}
@@ -153,6 +158,7 @@ class Sidebar extends Component {
                     {/* </div> */}
                 </div>
             </nav>
+            </BreakpointProvider>
         )
     }
 }

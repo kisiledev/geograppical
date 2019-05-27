@@ -12,6 +12,7 @@ class App extends Component {
 
   state = {
     nations: [],
+    sidebar: "Show",
     view: "default",
     filteredData: [],
     filterNations: [],
@@ -158,6 +159,13 @@ class App extends Component {
       this.setState(({view: "detail"}))
     }
   };
+  viewSidebar = () => {
+    if(this.state.sidebar === "Show"){
+      this.setState(({sidebar: "Hide"}))
+    } else {
+      this.setState(({sidebar: "Show"}))
+    }
+  }
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -205,7 +213,7 @@ class App extends Component {
           passInput = {this.handleInput}
           changeView = {this.handleViews}
         />
-        <div className="main container">
+        <div className="main container-fluid">
         <Breakpoint small down>
           <Search
             view={this.state.view}
@@ -225,6 +233,8 @@ class App extends Component {
             data = {this.state.worldData}
             getCountryInfo = {this.getCountryInfo}
             changeView = {this.handleViews}
+            viewSidebar={this.viewSidebar}
+            sidebar={this.state.sidebar}
           />) :
           <DetailView 
             regionData = {this.state.regionData}
@@ -235,6 +245,8 @@ class App extends Component {
             data = {this.state.worldData}
             changeView = {this.handleViews}
             countryDetail = {this.state.countryDetail}
+            viewSidebar={this.viewSidebar}
+            sidebar={this.state.sidebar}
           />
         }
         </div>

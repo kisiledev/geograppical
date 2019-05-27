@@ -15,7 +15,7 @@ class DetailView extends Component {
       return(
         <div className="row">
             <div className="col-sm-12 col-md-9">
-                <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
+                <button className="btn btn-block btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
                 <JSONTree data={this.props.countryDetail}/>
                 <div className="card mb-3">
                     <AudioPlayer 
@@ -32,12 +32,15 @@ class DetailView extends Component {
                     <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
                 </div>
             </div>
+            {this.props.sidebar === "Show" ?
             <Sidebar 
                 geodata = {this.props.geodata}
+                viewSidebar={this.props.viewSidebar}
                 totalRegions = {totalRegions}
                 uniqueRegions = {uniqueRegions}
                 getOccurrence = {getOccurrence}
-            />
+                sidebar={this.props.sidebar}
+            /> : null }
         </div>
       )
     }

@@ -5,7 +5,7 @@ import globe from '../img/logo.png';
 class NavBar extends Component {
     render(){
         return(
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <a className="navbar-brand" href="#">Geography</a>
                 <img 
                     className="logo" 
@@ -40,7 +40,7 @@ class NavBar extends Component {
                     </ul>
                     <form className="form-inline my-2 my-lg-0">
                         <input className="form-control mr-sm-2" type="search" placeholder="Type to begin" aria-label="Search" value={this.props.searchText} onChange={this.props.passInput} />
-                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        <button className="btn btn-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                 </div>
             </nav>

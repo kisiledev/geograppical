@@ -8,7 +8,7 @@ p {
 h4 {
   font-size: 1rem;
 }
-
+.
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -111,8 +111,10 @@ input, input[placeholder] {
     opacity: 0;
   }
 }
+.breakpoint__small-down {
+  width: 100%;
+}
 .main {
-  max-width: 90%;
   margin: 0 auto; 
   padding: 20px;
   background-color: #eeeeee;

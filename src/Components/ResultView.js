@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Result from './Result';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import Breakpoint, { BreakpointProvider } from 'react-socks';
 import '../App.css';
 import Sidebar from './Sidebar';
 
@@ -17,6 +16,7 @@ class ResultView extends Component {
     uniqueRegions = uniqueRegions.filter(Boolean);
 
     return(
+      <BreakpointProvider>
       <div className="row">
         <main className="col-md-9 px-0">
           {this.props.countries[0] === undefined ? 
@@ -40,14 +40,29 @@ class ResultView extends Component {
             />
           )}
         </main>
+        {this.props.sidebar === "Show" ?
         <Sidebar
-            handleSideBar = {this.props.handleSideBar} 
+            handleSideBar = {this.props.handleSideBar}
+            viewSidebar={this.props.viewSidebar}
             geodata = {this.props.geodata}
             totalRegions = {totalRegions}
             uniqueRegions = {uniqueRegions}
             getOccurrence = {getOccurrence}
-        />
+            sidebar={this.props.sidebar}
+        /> :     
+        <Breakpoint small down>
+            <div className="col-12 text-center px-0">
+            <button 
+            className="btn btn-sm btn-block btn-outline-secondary" 
+            onClick={()=> this.props.viewSidebar()}
+            >
+            { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
+            </button>
+            </div>
+        </Breakpoint> 
+      }
       </div>
+      </BreakpointProvider>
     )
   }
 }
