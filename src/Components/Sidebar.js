@@ -63,26 +63,11 @@ class Sidebar extends Component {
             this.setState(({ [region]: open}));
             console.log(this.state[region].open);
     };
-    loadMore = (event, region) =>  {
+
+    sidebarDataHandling = (event, region, change, start) => {
         console.log(event);
         event.stopPropagation();
-        let more = {visible: this.state[region].visible + 5, start: this.state[region].start, open: true, countries: this.state[region].countries}
-        console.log(more);
-        this.setState(({[region]: more}));
-        console.log(this.state[region].visible)
-    }
-    prevFive = (event, region) =>  {
-        console.log(event);
-        event.stopPropagation();
-        let more = {visible: this.state[region].visible -5, start: this.state[region].start - 5, open: true, countries: this.state[region].countries}
-        console.log(more);
-        this.setState(({[region]: more}));
-        console.log(this.state[region].visible)
-    }
-    nextFive = (event, region) =>  {
-        console.log(event);
-        event.stopPropagation();
-        let more = {visible: this.state[region].visible +5, start: this.state[region].start + 5, open: true, countries: this.state[region].countries}
+        let more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
         console.log(more);
         this.setState(({[region]: more}));
         console.log(this.state[region].visible)
@@ -135,17 +120,17 @@ class Sidebar extends Component {
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
                                 <div className="btn-group">
                                 <button 
-                                    onClick={(e) => this.loadMore(e, region)} 
+                                    onClick={(e) => this.sidebarDataHandling(e, region, 5, 0)} 
                                     className="btn load-more nav-link btn-sm bg-secondary mt-1 mb-3">
                                     Load More
                                 </button> 
                                 <button 
-                                    onClick={(e) => this.prevFive(e, region)} 
+                                    onClick={(e) => this.sidebarDataHandling(e, region, -5, -5)} 
                                     className="btn load-more nav-link btn-sm bg-warning mt-1 mb-3">
                                     Previous {this.state[region].visible - this.state[region].start}
                                 </button>
                                 <button 
-                                    onClick={(e) => this.nextFive(e, region)} 
+                                    onClick={(e) => this.sidebarDataHandling(e, region, 5, 5)} 
                                     className="btn load-more nav-link btn-sm bg-success mt-1 mb-3">
                                     Next {this.state[region].visible - this.state[region].start}
                                 </button>

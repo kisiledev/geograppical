@@ -5,7 +5,7 @@ import '../App.css';
 class Result extends Component {
     render() {
         return(
-            <div className="card mb-3 mb-3">
+            <div className="mr-md-3 card mb-3">
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">

@@ -20,7 +20,7 @@ class ResultView extends Component {
       <div className="row">
         <main className="col-md-9 px-0">
           {this.props.countries[0] === undefined ? 
-              <h5 className="text-center mb-3">Search Above to Begin</h5>
+              <h5 className="text-center mb-3">Welcome to the Geography App</h5>
            : null }
           {this.props.countries[0] && this.props.countries.map( country => 
             <Result

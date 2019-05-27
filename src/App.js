@@ -72,6 +72,8 @@ class App extends Component {
 
   getCountryInfo = (string) => {
     let searchDB = Object.values(this.state.worldData);
+    console.log(searchDB);
+    console.log(string);
     let match = searchDB.filter(countries => countries.data.name.toLowerCase() === string.toLowerCase())[0].data;
     const data = (string && match) || match;
     this.setState({countryDetail: data});
@@ -214,7 +216,7 @@ class App extends Component {
           changeView = {this.handleViews}
         />
         <div className="main container-fluid">
-        <Breakpoint small down>
+        {/* <Breakpoint small down>
           <Search
             view={this.state.view}
             countries={this.state.filterNations}
@@ -222,7 +224,7 @@ class App extends Component {
             passInput = {this.handleInput}
             changeView = {this.handleViews}
           />
-        </Breakpoint>
+        </Breakpoint> */}
         { (this.state.view === "default") ?   
           (<ResultView
             regionData = {this.state.regionData}
