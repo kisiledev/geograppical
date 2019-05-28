@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import JSONTree from 'react-json-tree';
+import RecursiveProperty from './DataList';
 import '../App.css';
 import Sidebar from './Sidebar';
 import AudioPlayer from './AudioPlayer';
@@ -15,21 +15,16 @@ class DetailView extends Component {
       return(
         <div className="row">
             <div className="col-sm-12 col-md-9">
-                <button className="btn btn-block btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
-                <JSONTree data={this.props.countryDetail}/>
                 <div className="card mb-3">
-                    <AudioPlayer 
-                    nation={this.props.countryDetail}
-                    audio={this.props.countryDetail.government.national_anthem.audio_url}/>
-                    <h1>{this.props.countryDetail.name}</h1>
-                    <hr />
-                    <h2>Geography</h2>
-                    <p>{this.props.countryDetail.geography.location}</p>
-                    <p>{this.props.countryDetail.geography.climate}</p>
-                    <p>{this.props.countryDetail.geography.terrain}</p>
-                    <p>{this.props.countryDetail.introduction.background}</p>
-                    <p>{this.props.countryDetail.people.demographic_profile}</p>
-                    <button className="btn btn-primary" value={"default"} onClick={() => this.props.changeView()}>Back to Results</button>
+                <button className="btn btn-block btn-primary" onClick={() => this.props.changeView('default')}>Back to Results</button>
+                <RecursiveProperty
+                  property={this.props.countryDetail} 
+                  expanded={Boolean}
+                  propertyName={this.props.countryDetail.name} 
+                  excludeBottomBorder={false} 
+                  rootProperty={true}
+                />
+                <button className="btn btn-primary" onClick={() => this.props.changeView('default')}>Back to Results</button>
                 </div>
             </div>
             {this.props.sidebar === "Show" ?
@@ -40,6 +35,8 @@ class DetailView extends Component {
                 uniqueRegions = {uniqueRegions}
                 getOccurrence = {getOccurrence}
                 sidebar={this.props.sidebar}
+                getCountryInfo = {this.props.getCountryInfo}
+                handleSideBar = {this.props.handleSideBar}
             /> : null }
         </div>
       )

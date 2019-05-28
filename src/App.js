@@ -74,7 +74,6 @@ class App extends Component {
       let Data = res && Object.values(res.data)[0] || [];
       let exposedData = Object.values(Data);
       let newData = this.removeNull(exposedData);
-      console.log(newData);
       this.setState({ worldData: newData || []})
     });
   }
@@ -93,11 +92,7 @@ class App extends Component {
     country.data.government.country_name.conventional_short_form === name || 
     country.data.government.capital.name === capital
     )[0].data;
-    console.log(match);
-    const data = (name && match) || match;
-    console.log(data);
     this.setState({countryDetail: match});
-    console.log(this.state.countryDetail);
     this.handleViews('detail');
   }
   getCountries = () => {
@@ -174,13 +169,8 @@ class App extends Component {
     return array.filter(o =>
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
   };
-  handleViews = () => {
-    if(this.state.view === "detail"){
-      console.log('changing view')
-      this.setState(({view: "default"}))
-    } else {
-      this.setState(({view: "detail"}))
-    }
+  handleViews = (view) => {
+      this.setState(({view}))
   };
   viewSidebar = () => {
     if(this.state.sidebar === "Show"){
@@ -266,6 +256,7 @@ class App extends Component {
             countryDetail = {this.state.countryDetail}
             viewSidebar={this.viewSidebar}
             sidebar={this.state.sidebar}
+            getCountryInfo = {this.getCountryInfo}
           />
         }
         </div>

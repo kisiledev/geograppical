@@ -49,6 +49,7 @@ class ResultView extends Component {
             uniqueRegions = {uniqueRegions}
             getOccurrence = {getOccurrence}
             sidebar={this.props.sidebar}
+            getCountryInfo = {this.props.getCountryInfo}
         /> :     
         <Breakpoint small down>
             <div className="col-12 text-center px-0">

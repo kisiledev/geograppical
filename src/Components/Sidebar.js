@@ -8,12 +8,12 @@ import '../App.css';
 class Sidebar extends Component {
 
     state = {};
-    componentDidMount(prevProps, prevState){
+    componentDidMount(prevState){
         if(prevState !== this.state){
             this.setDynamicRegions(this.props.uniqueRegions)  
         };
     }
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         // only update chart if the data has changed
         if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
           this.setDynamicRegions(this.props.uniqueRegions)
@@ -65,7 +65,6 @@ class Sidebar extends Component {
     updateOpen = (region) => {
             let open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
             this.setState(({ [region]: open}));
-            console.log(this.state[region].open);
     };
 
     sidebarDataHandling = (event, region, change, start) => {
@@ -81,7 +80,6 @@ class Sidebar extends Component {
     }
     render(){
         const handleSidebarClick = (region) => {
-            console.log(region);
             this.props.handleSideBar(region);
             if(region.length > 3)
             this.handleRegion(region);
@@ -115,7 +113,7 @@ class Sidebar extends Component {
                             <ul>
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
                                 <li key={index} className="nav-item" onClick={() => handleSidebarClick(country.alpha2Code)}>
-                                    <span className="nav-link btn-sm bg-info mb-1">{country.name}</span>
+                                    <span className="nav-link btn-sm bg-info mb-1">{country.name}<button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button></span>
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
