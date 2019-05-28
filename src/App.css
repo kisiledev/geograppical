@@ -8,7 +8,6 @@ p {
 h4 {
   font-size: 1rem;
 }
-.
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -142,11 +141,13 @@ input, input[placeholder] {
 .media-body {
   flex: 1;
 }
+.fas {
+  margin-left: -40px;
+}
 @media (min-width: 576px){
   .form-inline .form-control {
     display: inline-block;
     max-width: 768px;
-    width: 100%;
     vertical-align: middle;
   }
 }

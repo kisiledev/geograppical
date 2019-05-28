@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import globe from '../img/logo.png';
 
 
 class NavBar extends Component {

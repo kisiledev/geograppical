@@ -8,8 +8,12 @@ import '../App.css';
 class Sidebar extends Component {
 
     state = {};
-
-    componentDidUpdate(prevProps) {
+    componentDidMount(prevProps, prevState){
+        if(prevState !== this.state){
+            this.setDynamicRegions(this.props.uniqueRegions)  
+        };
+    }
+    componentDidUpdate(prevProps, prevState) {
         // only update chart if the data has changed
         if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
           this.setDynamicRegions(this.props.uniqueRegions)
@@ -65,12 +69,9 @@ class Sidebar extends Component {
     };
 
     sidebarDataHandling = (event, region, change, start) => {
-        console.log(event);
         event.stopPropagation();
         let more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
-        console.log(more);
         this.setState(({[region]: more}));
-        console.log(this.state[region].visible)
     }
       
     handleRegion =(e, region) =>{

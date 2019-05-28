@@ -1,10 +1,10 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
-import Search from './Components/Search';
+// import Search from './Components/Search';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
 import NavBar from './Components/NavBar';
-import Breakpoint, { BreakpointProvider } from 'react-socks';
+import { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
  
@@ -63,20 +63,41 @@ class App extends Component {
   // componentWillUpdate(){
   //   this.sideBarData();
   // }
+  removeNull(array){
+    return array
+      .filter(item => item.data.government.capital !== undefined && item.data.government.country_name !==undefined && item.data.name)
+      .map(item => Array.isArray(item) ? this.removeNull(item) : item);
+  }
  async loadWorldData() {
    await axios.get("../factbook.json")
     .then(res => {
-      this.setState({ worldData: res && Object.values(res.data)[0] || []})
-    })
+      let Data = res && Object.values(res.data)[0] || [];
+      let exposedData = Object.values(Data);
+      let newData = this.removeNull(exposedData);
+      console.log(newData);
+      this.setState({ worldData: newData || []})
+    });
   }
+  
+  
 
-  getCountryInfo = (string) => {
+
+
+
+  getCountryInfo = (name, capital) => {
     let searchDB = Object.values(this.state.worldData);
-    console.log(searchDB);
-    console.log(string);
-    let match = searchDB.filter(countries => countries.data.name.toLowerCase() === string.toLowerCase())[0].data;
-    const data = (string && match) || match;
-    this.setState({countryDetail: data});
+    this.removeNull(searchDB);
+    let match = searchDB.filter(country => 
+    country.data.name === name || 
+    country.data.government.country_name.conventional_long_form === name || 
+    country.data.government.country_name.conventional_short_form === name || 
+    country.data.government.capital.name === capital
+    )[0].data;
+    console.log(match);
+    const data = (name && match) || match;
+    console.log(data);
+    this.setState({countryDetail: match});
+    console.log(this.state.countryDetail);
     this.handleViews('detail');
   }
   getCountries = () => {
@@ -190,19 +211,15 @@ class App extends Component {
   handleInput = (e) => {
     e.persist();
     if(e.target.value !== ""){
-      console.log(e.target.value)
       this.setState(({ 
         searchText: e.target.value, 
         filterNations: this.filterByName(e.target.value)
       }));
-      console.log(this.state.filterNations)
     } else {
-      console.log(e.target.value  )
       this.setState(({ 
         searchText: e.target.value, 
         filterNations: []
       }));
-      console.log(this.state.filterNations)
     }
   };
   render(){
