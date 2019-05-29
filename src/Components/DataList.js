@@ -10,7 +10,7 @@ const RecursivePropertyContainer = styled.div`
   ${props => props.excludeBottomBorder ? '' : 'border-bottom: 1px solid #b2d6ff;'}
   color: #666;    
   font-size: 16px;
-`;
+`;  
 
 export const PropertyName = styled.span`
   color: black;

@@ -24,7 +24,6 @@ class DetailView extends Component {
                   excludeBottomBorder={false} 
                   rootProperty={true}
                 />
-                <button className="btn btn-primary" onClick={() => this.props.changeView('default')}>Back to Results</button>
                 </div>
             </div>
             {this.props.sidebar === "Show" ?

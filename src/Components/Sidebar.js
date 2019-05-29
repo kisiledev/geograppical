@@ -63,13 +63,13 @@ class Sidebar extends Component {
          this.setState({...regionsState})
     };
     updateOpen = (region) => {
-            let open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
+            const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
             this.setState(({ [region]: open}));
     };
 
     sidebarDataHandling = (event, region, change, start) => {
         event.stopPropagation();
-        let more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
+        const more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
         this.setState(({[region]: more}));
     }
       
