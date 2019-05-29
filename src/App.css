@@ -74,8 +74,7 @@ input, input[placeholder] {
 .sidebar li {
   list-style-type: none;
 }
-.sidebar {
-  max-height: 500px;
+.sidebar {  
   height: auto;
 }
 .card-img {
@@ -157,6 +156,21 @@ input, input[placeholder] {
 }
 .row {
   margin: 0;
+}
+.countryul {
+  margin-left: 10px;
+}
+.countrylist {
+  display: flex;
+  flex-direction: column;
+}
+.countryactions {
+  display: flex;
+}
+.countryname {
+  justify-content: space-between;
+  display: inline-flex;
+  align-items: center;
 }
 .card {
   padding: 15px;

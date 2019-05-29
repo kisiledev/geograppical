@@ -105,34 +105,34 @@ class Sidebar extends Component {
                     {/* <div className="collapse navbar-collapse"> */}
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
-                        <li className="nav-item" key={index} onClick={(e) => this.handleRegion(e, region)} >
+                        <li className="nav-item regionlist" key={index} onClick={(e) => this.handleRegion(e, region)} >
                             <span className="nav-link btn-sm bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
                             </span>
                             <Collapse in={this.state[region] && this.state[region].open}>
-                            <ul>
+                            <ul className="countryul">
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
-                                <li key={index} className="nav-item" onClick={() => handleSidebarClick(country.alpha2Code)}>
-                                    <span className="nav-link btn-sm bg-info mb-1">{country.name}<button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button></span>
+                                <li key={index} className="nav-item countrylist" onClick={() => handleSidebarClick(country.alpha2Code)}>
+                                    <span className="nav-link countryname btn-sm bg-info mb-1">{country.name}<button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button></span>
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
-                                <div className="btn-group">
-                                <button 
-                                    onClick={(e) => this.sidebarDataHandling(e, region, 5, 0)} 
-                                    className="btn load-more nav-link btn-sm bg-secondary mt-1 mb-3">
-                                    Load More
-                                </button> 
-                                <button 
-                                    onClick={(e) => this.sidebarDataHandling(e, region, -5, -5)} 
-                                    className="btn load-more nav-link btn-sm bg-warning mt-1 mb-3">
-                                    Previous {this.state[region].visible - this.state[region].start}
-                                </button>
-                                <button 
-                                    onClick={(e) => this.sidebarDataHandling(e, region, 5, 5)} 
-                                    className="btn load-more nav-link btn-sm bg-success mt-1 mb-3">
-                                    Next {this.state[region].visible - this.state[region].start}
-                                </button>
+                                <div className="btn-group countryactions">
+                                    <button 
+                                        onClick={(e) => this.sidebarDataHandling(e, region, 5, 0)} 
+                                        className="btn load-more nav-link btn-sm bg-secondary mb-1">
+                                        Load More
+                                    </button> 
+                                    <button 
+                                        onClick={(e) => this.sidebarDataHandling(e, region, -5, -5)} 
+                                        className="btn load-more nav-link btn-sm bg-warning mb-1">
+                                        Previous {this.state[region].visible - this.state[region].start}
+                                    </button>
+                                    <button 
+                                        onClick={(e) => this.sidebarDataHandling(e, region, 5, 5)} 
+                                        className="btn load-more nav-link btn-sm bg-success mb-1">
+                                        Next {this.state[region].visible - this.state[region].start}
+                                    </button>
                                 </div>}
                             </ul>
                             </Collapse>
