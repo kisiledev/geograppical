@@ -157,6 +157,19 @@ input, input[placeholder] {
 .row {
   margin: 0;
 }
+.recursive {
+  padding-top: 10px;
+  padding-left: 3px;
+  margin-left: 10px;
+  border-bottom: 1px solid #b2d6ff;
+  color: #666;    
+  font-size: 16px;
+}
+.recursivename {
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+}
 .countryul {
   margin-left: 10px;
 }

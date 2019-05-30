@@ -57,7 +57,6 @@ class App extends Component {
     this.filterByName();
     this.findAllByRegion();  
     this.filterRegion();
-    this.filterByCode();
     this.loadWorldData();
   }
   // componentWillUpdate(){
@@ -117,23 +116,13 @@ class App extends Component {
         return []
       });
   };
-  filterByCode = (string) =>{
-    if(string !==undefined)
-     return axios
-      .get('https://restcountries.eu/rest/v2/alpha/' + string)
-      .then(res => {
-        if(res.status === 200 && res !== null){
-          let nation = []
-          nation.push(res && res.data || []);
-          this.setState(({filterNations: nation}))
-        } else {
-          throw new Error('No country found');
-        }})
-        .catch(error => {
-          console.log(error)
-          return []
-        });
-  };
+  getCountry = (string) => {
+    console.log(string)
+    let searchDB = Object.values(this.state.worldData);
+    let match = searchDB.filter(place => place.data.name === string)[0].data;
+    console.log(match);
+    return match;
+}
   findAllByRegion = (region) =>{
   if(region !==undefined)
     return axios
@@ -196,7 +185,10 @@ class App extends Component {
     }))
   };
   handleSideBar = (string) => {
-    this.setState(({filterNations: this.filterByCode(string)}))
+    console.log(string);
+    console.log(this.getCountry(string));
+    this.setState(({filterNations: this.getCountry(string)}))
+    console.log(this.state.filterNations);
   };
   handleInput = (e) => {
     e.persist();

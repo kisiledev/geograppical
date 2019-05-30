@@ -8,7 +8,7 @@ class ResultView extends Component {
 
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
-    const totalRegions = this.props.geodata.map(a => a.region)
+    const totalRegions = this.props.data.map(a => a.data.geography.map_references)
     function getOccurrence(array, value) {
       return array.filter((v) => (v === value)).length;
     }
@@ -45,6 +45,7 @@ class ResultView extends Component {
             handleSideBar = {this.props.handleSideBar}
             viewSidebar={this.props.viewSidebar}
             geodata = {this.props.geodata}
+            data={this.props.data}
             totalRegions = {totalRegions}
             uniqueRegions = {uniqueRegions}
             getOccurrence = {getOccurrence}

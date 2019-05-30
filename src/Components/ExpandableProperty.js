@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export const PropertyName = styled.div`
   font-weight: bold;
   cursor: pointer;
+  padding: 5px 0;
 `;
 
 export default class ExpandableProperty extends React.Component {

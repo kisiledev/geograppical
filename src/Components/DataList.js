@@ -7,7 +7,7 @@ const RecursivePropertyContainer = styled.div`
   padding-top: 10px;
   padding-left: 3px;
   margin-left: 10px;
-  ${props => props.excludeBottomBorder ? '' : 'border-bottom: 1px solid #b2d6ff;'}
+  ${props => props.excludeBottomBorder ? '' : 'border-bottom: 2px solid #eeeeee;'}
   color: #666;    
   font-size: 16px;
 `;  
@@ -49,7 +49,7 @@ const RecursiveProperty = props => {
       );
 };
 
-const camelCaseToNormal = (str) => str.replace(/([A-Z])/g, ' $1').replace(/^./, str2 => str2.toUpperCase());
+const camelCaseToNormal = (str) => str.split("_").join(" ").replace(/([A-Z])/g, ' $1').replace(/^./, str2 => str2.toUpperCase());
 
 RecursiveProperty.propTypes = {
     name: PropTypes.string

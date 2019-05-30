@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import Collapse from 'react-bootstrap/Collapse';
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 
 class Sidebar extends Component {
@@ -10,15 +12,30 @@ class Sidebar extends Component {
     state = {};
     componentDidMount(prevState){
         if(prevState !== this.state){
-            this.setDynamicRegions(this.props.uniqueRegions)  
+            this.setDynamicRegions(this.props.uniqueRegions)
         };
     }
     componentDidUpdate(prevProps) {
         // only update chart if the data has changed
-        if (prevProps.uniqueRegions !== this.props.uniqueRegions) {
+        if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
           this.setDynamicRegions(this.props.uniqueRegions)
         }
     };
+    removeNull(array){
+        return array
+          .filter(item => item.data.government.capital !== undefined && item.data.government.country_name !==undefined && item.data.name)
+          .map(item => Array.isArray(item) ? this.removeNull(item) : item);
+      }
+
+    getRegion = (region) => {
+        let searchDB = Object.values(this.props.data);
+        this.removeNull(searchDB);
+        let match = searchDB.filter(place => place.data.geography.map_references === region);
+        return match;
+    }
+    //     this.setState({countryDetail: match});
+    //     this.handleViews('detail');
+    // }
     filterRegion = (region) =>{
         if(region !==undefined ){
             this.setState({
@@ -28,6 +45,7 @@ class Sidebar extends Component {
            .get('https://restcountries.eu/rest/v2/region/' + region)
            .then(res => {
              if(res.status === 200 && res !== null){
+                 console.log(res.data);
               this.setState(prevState =>({
                 [region]: {...prevState[region],
                     countries: (res && res.data || [])} 
@@ -50,15 +68,15 @@ class Sidebar extends Component {
         // console.log(regions);
         const regionsState = {};
       
-        regions.forEach((region, index) => {
+        regions.forEach((region) => {
             if(this.state[region] && this.state[region].countries[0]){
                 regionsState[region] = { visible: 5, start: 0, countries: this.state[region].countries, open: false};
             } else {
-                this.filterRegion(region);
-                regionsState[region] = { visible: 5, start: 0, countries: [], open: false};
+                this.getRegion(region);
+                regionsState[region] = { visible: 5, start: 0, countries: this.getRegion(region), open: false};
             }
         });
-      
+        console.log(regionsState);
         // set state here outside the foreach function
          this.setState({...regionsState})
     };
@@ -81,7 +99,6 @@ class Sidebar extends Component {
     render(){
         const handleSidebarClick = (region) => {
             this.props.handleSideBar(region);
-            if(region.length > 3)
             this.handleRegion(region);
 
 
@@ -112,8 +129,12 @@ class Sidebar extends Component {
                             <Collapse in={this.state[region] && this.state[region].open}>
                             <ul className="countryul">
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
-                                <li key={index} className="nav-item countrylist" onClick={() => handleSidebarClick(country.alpha2Code)}>
-                                    <span className="nav-link countryname btn-sm bg-info mb-1">{country.name}<button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button></span>
+                                <li key={index} className="nav-item countrylist" onClick={() => handleSidebarClick(country.data.name)}>
+                                    <span className="nav-link countryname btn-sm bg-info mb-1">
+                                        {country.data.name}
+                                        <span onClick={() => this.props.getCountryInfo(country.name, country.capital)}><FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></span>
+                                        {/* <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button> */}
+                                    </span>
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 
