@@ -1,12 +1,13 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
-// import Search from './Components/Search';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
 import NavBar from './Components/NavBar';
 import { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
+import i18n from 'i18n-iso-countries';
+
  
 class App extends Component {
 
@@ -20,59 +21,34 @@ class App extends Component {
     regionData: [],
     worldData: [],
     countryDetail: [],
-    countries: [
-        {
-          name: "Ghana", 
-          location: "Afrika",
-          type: "country",
-          excerpt: "Ghana is a country in West Afrika, with a population of ... ",
-          imgurl: "img/ghana.JPG",
-          imgalt: "A view of Lake Volta",
-          id: 1
-      },
-      {
-          name: "Burkina Faso", 
-          location: "Afrika",
-          type: "country",
-          excerpt: "Burkino Faso is a country in West Afrika, with a population of ... ",
-          imgurl: "img/bkfaso.jpg",
-          imgalt: "Burkinabe children",
-          id: 2
-      },
-      {
-          name: "Haiti (Ayiti)", 
-          location: "Caribbean Sea",
-          type: "country",
-          excerpt: "Haiti is an island country in the Caribbean Sea, with a population of ... ",
-          imgurl: "img/haiti.jpg",
-          imgalt: "Haitian beach",
-          id: 3
-      }
-    ]
+    countries: []
   }
 
   componentDidMount() {
-    
-    this.getCountries();  
-    this.filterByName();
-    this.findAllByRegion();  
-    this.filterRegion();
     this.loadWorldData();
   }
-  // componentWillUpdate(){
-  //   this.sideBarData();
-  // }
   removeNull(array){
+    if(array !==undefined)
     return array
-      .filter(item => item.data.government.capital !== undefined && item.data.government.country_name !==undefined && item.data.name)
+      .filter(item => item.government.capital !== undefined && item.government.country_name !==undefined && item.name)
       .map(item => Array.isArray(item) ? this.removeNull(item) : item);
   }
  async loadWorldData() {
    await axios.get("../factbook.json")
     .then(res => {
-      let Data = res && Object.values(res.data)[0] || [];
+      let Data = res && res.data.countries;
+      Data = Object.values(Data).map(country => country.data) || [];
       let exposedData = Object.values(Data);
       let newData = this.removeNull(exposedData);
+      i18n.registerLocale(require("i18n-iso-countries/langs/en.json"));
+      let codes = i18n.getNames('en');
+      let newCodes = {};
+      const keys = Object.keys(codes);
+      keys.forEach(key => {
+        let val = codes[key];
+        newCodes[val]=key;
+      })
+      this.setState({flagCodes: newCodes})
       this.setState({ worldData: newData || []})
     });
   }
@@ -80,85 +56,29 @@ class App extends Component {
   
 
 
-
-
-  getCountryInfo = (name, capital) => {
+  getCountryInfo = (name) =>{
     let searchDB = Object.values(this.state.worldData);
-    this.removeNull(searchDB);
-    let match = searchDB.filter(country => 
-    country.data.name === name || 
-    country.data.government.country_name.conventional_long_form === name || 
-    country.data.government.country_name.conventional_short_form === name || 
-    country.data.government.capital.name === capital
-    )[0].data;
-    this.setState({countryDetail: match});
+    console.log(searchDB);
+    console.log(name )
+    let match = searchDB.filter(country => country.name === name)
+    console.log(match);
+    this.setState(({countryDetail: match[0]}))
     this.handleViews('detail');
   }
-  getCountries = () => {
-    axios.get('https://restcountries.eu/rest/v2/all')
-      .then(res => {
-        this.setState({nations: res && res.data || []})
-      });
-
-  }
-  filterByName = (string) =>{
-  if(string !==undefined)
-   return axios
-    .get('https://restcountries.eu/rest/v2/name/' + string)
-    .then(res => {
-      if(res.status === 200 && res !== null){
-        this.setState(({filterNations: res && res.data || []}))
-      } else {
-        throw new Error('No country found');
-      }})
-      .catch(error => {
-        console.log(error)
-        return []
-      });
-  };
-  getCountry = (string) => {
-    console.log(string)
+filterCountryByName = (string) =>{
     let searchDB = Object.values(this.state.worldData);
-    let match = searchDB.filter(place => place.data.name === string)[0].data;
-    console.log(match);
-    return match;
-}
-  findAllByRegion = (region) =>{
-  if(region !==undefined)
-    return axios
-     .get('https://restcountries.eu/rest/v2/region/' + region)
-     .then(res => {
-       if(res.status === 200 && res !== null){
-        this.setState(({regionData: res && res.data || [] }))
-         console.log(res.data);
-       } else {
-         throw new Error('No country found');
-       }})
-       .catch(error => {
-         console.log(error)
-         return []
-       });
-  };
-  filterRegion = (region) =>{
-    if(region !==undefined)
-      return axios
-       .get('https://restcountries.eu/rest/v2/region/' + region)
-       .then(res => {
-         if(res.status === 200 && res !== null){
-          this.setState(({[region]: res && res.data || [] }))
-          } else {
-           throw new Error('No country found');
-         }})
-         .catch(error => {
-           console.log(error)
-           return []
-         });
-  };
+    console.log(searchDB)
+    let match = searchDB.filter(place => place.name.toLowerCase().includes(string.toLowerCase()));
+    console.log(match)
+    return match
+  }
+
   filterByValue(array, string) {
     return array.filter(o =>
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
   };
   handleViews = (view) => {
+    console.log(view);
       this.setState(({view}))
   };
   viewSidebar = () => {
@@ -186,16 +106,14 @@ class App extends Component {
   };
   handleSideBar = (string) => {
     console.log(string);
-    console.log(this.getCountry(string));
-    this.setState(({filterNations: this.getCountry(string)}))
-    console.log(this.state.filterNations);
+    this.setState({filterNations: this.filterCountryByName(string)})
   };
   handleInput = (e) => {
     e.persist();
     if(e.target.value !== ""){
       this.setState(({ 
         searchText: e.target.value, 
-        filterNations: this.filterByName(e.target.value)
+        filterNations: this.filterCountryByName(e.target.value)
       }));
     } else {
       this.setState(({ 
@@ -226,6 +144,7 @@ class App extends Component {
         </Breakpoint> */}
         { (this.state.view === "default") ?   
           (<ResultView
+            flagCodes = {this.state.flagCodes}
             regionData = {this.state.regionData}
             countries = {this.state.filterNations}
             geodata = {this.state.nations}
@@ -238,6 +157,7 @@ class App extends Component {
             sidebar={this.state.sidebar}
           />) :
           <DetailView 
+            flagCodes = {this.state.flagCodes}
             regionData = {this.state.regionData}
             countries = {this.state.filterNations}
             geodata = {this.state.nations}

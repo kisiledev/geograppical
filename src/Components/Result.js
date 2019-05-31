@@ -9,15 +9,15 @@ class Result extends Component {
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name} ({this.props.code})<br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
+                        {this.props.name} ({this.props.flagCode})<br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
                     </h4>
                     <p className="subregion">
                     <strong>Location: </strong>{this.props.subregion}
                     </p>
-                    <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name, this.props.capital)}>Read More</button>
+                    <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name)}>Read More</button>
                     </div> 
                     <Flag 
-                        name={this.props.code}
+                        name={(this.props.flagCode)? this.props.flagCode : "_unknown"}
                         format="svg"
                         pngSize={64}
                         shiny={false}

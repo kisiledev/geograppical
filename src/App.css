@@ -196,6 +196,13 @@ input, input[placeholder] {
 .fas {
   margin-left: -40px;
 }
+.media img, .detailFlag {
+  width: 25%;
+  object-fit: contain;
+}
+.detailFlag {
+  margin-left: auto;
+}
 @media (min-width: 576px){
   .form-inline .form-control {
     display: inline-block;
@@ -209,6 +216,9 @@ input, input[placeholder] {
   }
   .main {
     padding: 20px;
+  }
+  .detailFlag  {
+    width: 15%;
   }
 }
 .navbar {
@@ -233,10 +243,6 @@ input, input[placeholder] {
   height: 75px;
   width: 75px;
   object-fit: cover;
-}
-.media img {
-  width: 25%;
-  object-fit: contain;
 }
 .load-more {
   display: inline;  
