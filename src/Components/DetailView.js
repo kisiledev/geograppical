@@ -45,7 +45,6 @@ class DetailView extends Component {
             <Sidebar 
                 data={this.props.data}
                 changeView = {this.props.changeView}
-                geodata = {this.props.geodata}
                 viewSidebar={this.props.viewSidebar}
                 totalRegions = {totalRegions}
                 uniqueRegions = {uniqueRegions}

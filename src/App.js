@@ -18,7 +18,6 @@ class App extends Component {
     filteredData: [],
     filterNations: [],
     searchText: '',
-    regionData: [],
     worldData: [],
     countryDetail: [],
     countries: []
@@ -38,8 +37,12 @@ class App extends Component {
     .then(res => {
       let Data = res && res.data.countries;
       Data = Object.values(Data).map(country => country.data) || [];
-      let exposedData = Object.values(Data);
-      let newData = this.removeNull(exposedData);
+      let newData = this.removeNull(Object.values(Data));
+      newData.forEach(function(element, index, newData) {
+        newData[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, "")
+        if(newData[index].geography.map_references === "AsiaEurope")
+        newData[index].geography.map_references = "Europe"
+      });
       i18n.registerLocale(require("i18n-iso-countries/langs/en.json"));
       let codes = i18n.getNames('en');
       let newCodes = {};
@@ -60,7 +63,7 @@ class App extends Component {
     let searchDB = Object.values(this.state.worldData);
     console.log(searchDB);
     console.log(name )
-    let match = searchDB.filter(country => country.name === name)
+    let match = searchDB.filter(country => country.name === name || country.government.country_name.conventional_long_form === name)
     console.log(match);
     this.setState(({countryDetail: match[0]}))
     this.handleViews('detail');
@@ -105,7 +108,6 @@ filterCountryByName = (string) =>{
     }))
   };
   handleSideBar = (string) => {
-    console.log(string);
     this.setState({filterNations: this.filterCountryByName(string)})
   };
   handleInput = (e) => {
@@ -133,21 +135,10 @@ filterCountryByName = (string) =>{
           changeView = {this.handleViews}
         />
         <div className="main container-fluid">
-        {/* <Breakpoint small down>
-          <Search
-            view={this.state.view}
-            countries={this.state.filterNations}
-            searchText = {this.state.searchText}
-            passInput = {this.handleInput}
-            changeView = {this.handleViews}
-          />
-        </Breakpoint> */}
         { (this.state.view === "default") ?   
           (<ResultView
             flagCodes = {this.state.flagCodes}
-            regionData = {this.state.regionData}
             countries = {this.state.filterNations}
-            geodata = {this.state.nations}
             filterRegion = {this.filterRegion}
             handleSideBar = {this.handleSideBar}
             data = {this.state.worldData}
@@ -158,9 +149,7 @@ filterCountryByName = (string) =>{
           />) :
           <DetailView 
             flagCodes = {this.state.flagCodes}
-            regionData = {this.state.regionData}
             countries = {this.state.filterNations}
-            geodata = {this.state.nations}
             filterRegion = {this.filterRegion}
             handleSideBar = {this.handleSideBar}
             data = {this.state.worldData}

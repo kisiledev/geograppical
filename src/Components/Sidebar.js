@@ -73,14 +73,16 @@ class Sidebar extends Component {
         this.updateOpen(region);
         // this.updateVisibility(region);       
     }
+    highlightRegion = (e, region) => {
+        let countries = Object.values(region)[2];
+        countries.map((country, i) => console.log(country.name))
+    }
     render(){
         const handleSidebarClick = (e, region) => {
             this.props.handleSideBar(region);
             e.stopPropagation();
             // if(this.uniqueRegions.includes(region))
             // this.handleRegion(region);
-
-
         };
         return (
             <BreakpointProvider>
@@ -94,14 +96,9 @@ class Sidebar extends Component {
                     </button>
                 </Breakpoint>
                 <div className="sidebar-sticky">
-                    {/* <h5 className="text-center">
-                        <strong>Countries:</strong> 
-                        {this.props.geodata.length} 
-                    </h5> */}
-                    {/* <div className="collapse navbar-collapse"> */}
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
-                        <li className="nav-item regionlist" key={index} onClick={(e) => this.handleRegion(e, region)} >
+                        <li className="nav-item regionlist" key={index} onClick={(e) => this.handleRegion(e, region)} onMouseOver={(e) => this.highlightRegion(e, this.state[region])} >
                             <span className="nav-link btn-sm bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
                             </span>

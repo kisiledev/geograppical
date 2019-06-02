@@ -3,12 +3,14 @@ import Result from './Result';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import '../App.css';
 import Sidebar from './Sidebar';
+import Maps from './Maps';
+
 
 class ResultView extends Component {
 
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
-    const totalRegions = this.props.data.map(a => a.geography.map_references)
+    const totalRegions = this.props.data.map(a => a.geography.map_references.replace(/;/g, ""))
     function getOccurrence(array, value) {
       return array.filter((v) => (v === value)).length;
     }
@@ -22,6 +24,11 @@ class ResultView extends Component {
           {this.props.countries[0] === undefined ? 
               <h5 className="text-center mb-3">Welcome to the Geography App</h5>
            : null }
+          <Maps 
+            worldData = {this.props.data}
+            changeView = {this.props.changeView}
+            getCountryInfo = {this.props.getCountryInfo}
+          />
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
             worldData = {this.props.data}
@@ -46,7 +53,6 @@ class ResultView extends Component {
             changeView = {this.props.changeView}
             handleSideBar = {this.props.handleSideBar}
             viewSidebar={this.props.viewSidebar}
-            geodata = {this.props.geodata}
             data={this.props.data}
             totalRegions = {totalRegions}
             uniqueRegions = {uniqueRegions}
