@@ -22,9 +22,12 @@ class ResultView extends Component {
       <div className="row">
         <main className="col-md-9 px-0">
           {this.props.countries[0] === undefined ? 
-              <h5 className="text-center mb-3">Welcome to the Geography App</h5>
+              null
            : null }
-          <Maps 
+          
+          <Maps
+            mapVisible = {this.props.mapVisible}
+            mapView={this.props.mapView} 
             worldData = {this.props.data}
             changeView = {this.props.changeView}
             getCountryInfo = {this.props.getCountryInfo}

@@ -13,6 +13,7 @@ class App extends Component {
 
   state = {
     nations: [],
+    mapView: "Show",
     sidebar: "Show",
     view: "default",
     filteredData: [],
@@ -144,6 +145,13 @@ filterCountryByName = (string) =>{
       this.setState(({sidebar: "Show"}))
     }
   }
+  mapView = () => {
+    if(this.state.mapView === "Show"){
+      this.setState(({mapView: "Hide"}))
+    } else {
+      this.setState(({mapView: "Show"}))
+    }
+  }
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -207,6 +215,7 @@ filterCountryByName = (string) =>{
         <div className="main container-fluid">
         { (this.state.view === "default") ?   
           (<ResultView
+            mapView = {this.mapView}
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}
@@ -216,6 +225,7 @@ filterCountryByName = (string) =>{
             changeView = {this.handleViews}
             viewSidebar={this.viewSidebar}
             sidebar={this.state.sidebar}
+            mapVisible={this.state.mapView}
             hoverOnRegion = {this.hoverOnRegion}
             hoverOffRegion = {this.hoverOffRegion}
           />) :
