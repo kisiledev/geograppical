@@ -24,13 +24,6 @@ class ResultView extends Component {
           {this.props.countries[0] === undefined ? 
               <h5 className="text-center mb-3">Welcome to the Geography App</h5>
            : null }
-          <Maps 
-            worldData = {this.props.data}
-            changeView = {this.props.changeView}
-            getCountryInfo = {this.props.getCountryInfo}
-            hoverOnRegion = {this.props.hoverOnRegion}
-            hoverOffRegion = {this.props.hoverOffRegion}
-          />
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
             worldData = {this.props.data}
