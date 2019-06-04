@@ -73,10 +73,7 @@ class Sidebar extends Component {
         this.updateOpen(region);
         // this.updateVisibility(region);       
     }
-    highlightRegion = (e, region) => {
-        let countries = Object.values(region)[2];
-        countries.map((country, i) => console.log(country.name))
-    }
+
     render(){
         const handleSidebarClick = (e, region) => {
             this.props.handleSideBar(region);
@@ -98,7 +95,13 @@ class Sidebar extends Component {
                 <div className="sidebar-sticky">
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
-                        <li className="nav-item regionlist" key={index} onClick={(e) => this.handleRegion(e, region)} onMouseOver={(e) => this.highlightRegion(e, this.state[region])} >
+                        <li 
+                            className="nav-item regionlist" 
+                            key={index} 
+                            onClick={(e) => this.handleRegion(e, region)} 
+                            onMouseOver={(e) => this.props.hoverOnRegion(e, this.state[region])} 
+                            onMouseLeave={(e) => this.props.hoverOffRegion(e, this.state[region])} 
+                        >
                             <span className="nav-link btn-sm bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
                             </span>

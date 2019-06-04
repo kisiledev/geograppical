@@ -28,6 +28,8 @@ class ResultView extends Component {
             worldData = {this.props.data}
             changeView = {this.props.changeView}
             getCountryInfo = {this.props.getCountryInfo}
+            hoverOnRegion = {this.props.hoverOnRegion}
+            hoverOffRegion = {this.props.hoverOffRegion}
           />
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
@@ -50,6 +52,8 @@ class ResultView extends Component {
         </main>
         {this.props.sidebar === "Show" ?
         <Sidebar
+            hoverOnRegion = {this.props.hoverOnRegion}
+            hoverOffRegion = {this.props.hoverOffRegion}
             changeView = {this.props.changeView}
             handleSideBar = {this.props.handleSideBar}
             viewSidebar={this.props.viewSidebar}

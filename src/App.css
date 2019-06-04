@@ -192,7 +192,7 @@ input, input[placeholder] {
   outline: none;
 }
 .country:hover {
-  fill: #CFD8DC;
+  fill: #60c080;
   stroke: #607D8B;
   stroke-width: 1;
   outline: none;

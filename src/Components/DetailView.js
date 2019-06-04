@@ -52,6 +52,8 @@ class DetailView extends Component {
                 sidebar={this.props.sidebar}
                 getCountryInfo = {this.props.getCountryInfo}
                 handleSideBar = {this.props.handleSideBar}
+                hoverOffRegion = {this.props.hoverOffRegion}
+                hoverOnRegion = {this.props.hoverOnRegion}
             /> : null }
         </div>
       )

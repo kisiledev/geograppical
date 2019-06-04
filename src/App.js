@@ -56,17 +56,70 @@ class App extends Component {
     });
   }
   
+  hoverOnRegion = (e, region) => {
+    let svgs = [];
+    e.stopPropagation();
+    const countries = Object.values(region)[2];
+    if(typeof countries === "object"){
+    this.svgs = countries.map((country, i) => country.name)
+    this.setState({SVG: this.svgs})
+    }
+    svgs = this.svgs
+    let nodes = (document.getElementsByClassName("country"));
+    nodes = [...nodes]
+    nodes = nodes.filter(e => svgs.includes(e.dataset.tip.normalize('NFD').replace(/[\u0300-\u036f]/g, "")));
+    nodes.forEach( node => {
+      console.log('changing style');
+      node.style.fill =  "#60c080";
+      node.style.stroke =  "#607D8B";
+      node.style.strokeWidth =  1;
+      node.style.outline =  "none"
+    })
+  }
+
+  hoverOffRegion = (e, region) => {
+    let svgs = [];
+    e.stopPropagation();
+    const countries = Object.values(region)[2];
+    if(typeof countries === "object"){
+    this.svgs = countries.map((country, i) => country.name)
+    this.setState({SVG: this.svgs})
+    }
+    svgs = this.svgs
+    let nodes = (document.getElementsByClassName("country"));
+    nodes = [...nodes]
+    nodes = nodes.filter(e => svgs.includes(e.dataset.tip.normalize('NFD').replace(/[\u0300-\u036f]/g, "")));
+    console.log(nodes);
+    nodes.forEach( node => {
+      console.log('changing style');
+      node.style.fill =  "#ECEFF1";
+      node.style.stroke =  "#607D8B";
+      node.style.strokeWidth =  .75;
+      node.style.outline =  "none"
+    })
+  }
   
 
 
   getCountryInfo = (name) =>{
     let searchDB = Object.values(this.state.worldData);
     console.log(searchDB);
-    console.log(name )
-    let match = searchDB.filter(country => country.name === name || country.government.country_name.conventional_long_form === name)
-    console.log(match);
-    this.setState(({countryDetail: match[0]}))
-    this.handleViews('detail');
+    name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    if(name === "Dem. Rep. Congo"){
+      let match = searchDB[48];
+      console.log(match);
+      this.setState(({countryDetail: match}))
+      this.handleViews('detail');
+    } else {
+      let match = searchDB.filter(country => 
+        country.name.toLowerCase() === name.toLowerCase() 
+        || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase()
+        || country.government.country_name.conventional_long_form.toLowerCase().includes(name.toLowerCase()))
+        console.log(match);
+        this.setState(({countryDetail: match[0]}))
+        this.handleViews('detail');
+      }
+    
   }
 filterCountryByName = (string) =>{
     let searchDB = Object.values(this.state.worldData);
@@ -117,6 +170,23 @@ filterCountryByName = (string) =>{
         searchText: e.target.value, 
         filterNations: this.filterCountryByName(e.target.value)
       }));
+      let nodes = [...(document.getElementsByClassName("country"))];
+      let searchNations = this.state.filterNations.map((country, i) => country.name)
+      nodes.forEach( node => {
+        node.style.fill =  "#ECEFF1";
+        node.style.stroke =  "#607D8B";
+        node.style.strokeWidth =  .75;
+        node.style.outline =  "none"
+      })
+      nodes = nodes.filter(e => searchNations.includes(e.dataset.tip));
+      console.log(nodes);
+      nodes.forEach( node => {
+        node.style.fill =  "#60c080";
+        node.style.stroke =  "#607D8B";
+        node.style.strokeWidth =  1;
+        node.style.outline =  "none"
+      })
+
     } else {
       this.setState(({ 
         searchText: e.target.value, 
@@ -146,6 +216,8 @@ filterCountryByName = (string) =>{
             changeView = {this.handleViews}
             viewSidebar={this.viewSidebar}
             sidebar={this.state.sidebar}
+            hoverOnRegion = {this.hoverOnRegion}
+            hoverOffRegion = {this.hoverOffRegion}
           />) :
           <DetailView 
             flagCodes = {this.state.flagCodes}
@@ -158,6 +230,8 @@ filterCountryByName = (string) =>{
             viewSidebar={this.viewSidebar}
             sidebar={this.state.sidebar}
             getCountryInfo = {this.getCountryInfo}
+            hoverOnRegion = {this.hoverOnRegion}
+            hoverOffRegion = {this.hoverOffRegion}
           />
         }
         </div>

@@ -6,9 +6,25 @@ import {
     Geography,
   } from 'react-simple-maps';
   import data from '../Data/world-110m.json';
-  import ReactTooltip from 'react-tooltip'
+  import ReactTooltip from 'react-tooltip';
+  import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Maps extends Component {
+  state = {
+    zoom: 1
+  }
+
+  handleZoomIn() {
+    this.setState({
+      zoom: this.state.zoom * 2,
+    })
+  }
+  handleZoomOut() {
+    this.setState({
+      zoom: this.state.zoom / 2,
+    })
+  }
   // countryRef = [];
   // countryRef = createRef();
   // componentDidMount(){
@@ -23,9 +39,13 @@ class Maps extends Component {
         console.log(e.properties.NAME)
         this.props.getCountryInfo(e.properties.NAME)
     }
-      console.log(data)
         return(
             <div>
+              <div className="btn-group">
+                <button className="btn btn-info" onClick={() => this.handleZoomOut() }><FontAwesomeIcon icon={faMinus}/></button>
+                <button className="btn btn-info" onClick={() => this.handleZoomIn() }><FontAwesomeIcon icon={faPlus}/></button>
+              </div>
+            <hr />
             <ComposableMap 
               projection="robinson"
               width={980}
@@ -35,7 +55,7 @@ class Maps extends Component {
                 height: "auto",
               }}
               >
-              <ZoomableGroup disablePanning>
+              <ZoomableGroup zoom={this.state.zoom}>
               <Geographies  geography={data}>
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
