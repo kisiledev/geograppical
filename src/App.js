@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
-import Maps from './Components/Maps';
 import NavBar from './Components/NavBar';
 import { BreakpointProvider } from 'react-socks';
 import './App.css';
@@ -207,15 +206,7 @@ filterCountryByName = (string) =>{
         />
         <div className="main container-fluid">
         { (this.state.view === "default") ?   
-          (<>
-          <Maps 
-            worldData = {this.state.worldData}
-            changeView = {this.changeView}
-            getCountryInfo = {this.getCountryInfo}
-            hoverOnRegion = {this.hoverOnRegion}
-            hoverOffRegion = {this.hoverOffRegion}
-          />
-          <ResultView
+          (<ResultView
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}
@@ -227,8 +218,7 @@ filterCountryByName = (string) =>{
             sidebar={this.state.sidebar}
             hoverOnRegion = {this.hoverOnRegion}
             hoverOffRegion = {this.hoverOffRegion}
-          />
-          </>) :
+          />) :
           <DetailView 
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
