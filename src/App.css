@@ -191,6 +191,10 @@ input, input[placeholder] {
   stroke-width: 0.75;
   outline: none;
 }
+.rsm-svg {
+  border: 1px solid black;
+  border-radius: 10px;
+}
 .country:hover {
   fill: #60c080;
   stroke: #607D8B;

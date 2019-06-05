@@ -108,10 +108,13 @@ class Sidebar extends Component {
                             <Collapse in={this.state[region] && this.state[region].open}>
                             <ul className="countryul">
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
-                                <li key={index} className="nav-item countrylist" onClick={(e) => handleSidebarClick(e, country.name)}>
+                                <li 
+                                    key={index} 
+                                    className="nav-item countrylist" 
+                                    onClick={(e) => handleSidebarClick(e, country.name)}>
                                     <span className="nav-link countryname btn-sm bg-info mb-1">
                                         {country.name}
-                                        <span onClick={() => this.props.getCountryInfo(country.name)}><FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></span>
+                                        <span onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}><FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></span>
                                         {/* <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button> */}
                                     </span>
                                 </li>

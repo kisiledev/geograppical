@@ -14,7 +14,7 @@ class Result extends Component {
                     <p className="subregion">
                     <strong>Location: </strong>{this.props.subregion}
                     </p>
-                    <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name)}>Read More</button>
+                    <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name, this.props.capital)}>Read More</button>
                     </div> 
                     <Flag 
                         name={(this.props.flagCode)? this.props.flagCode : "_unknown"}

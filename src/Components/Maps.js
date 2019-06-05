@@ -25,26 +25,21 @@ class Maps extends Component {
       zoom: this.state.zoom / 2,
     })
   }
-  // countryRef = [];
-  // countryRef = createRef();
-  // componentDidMount(){
-  //   console.log(this.countryRef)
-  // }
-  // componentDidUpdate(){
-  //   console.log(this.countryRef.current.props)
-  // }
     render() {
       const handleClick = (e) => {
         // access to e.target here
-        console.log(e.properties.NAME)
-        this.props.getCountryInfo(e.properties.NAME)
+        console.log(e.properties.NAME_LONG)
+        this.props.getCountryInfo(e.properties.NAME_LONG)
     }
         return(
-            <div>
+            <div className="mr-md-3 card mb-3">
               <div className="btn-group">
                 <button className="btn btn-info" onClick={() => this.handleZoomOut() }><FontAwesomeIcon icon={faMinus}/></button>
                 <button className="btn btn-info" onClick={() => this.handleZoomIn() }><FontAwesomeIcon icon={faPlus}/></button>
               </div>
+              {this.props.countries[0] === undefined ? 
+              <h5 className="text-center mb-3">Welcome to the Geography App</h5>
+           : null }
             <hr />
             <ComposableMap 
               projection="robinson"
@@ -60,7 +55,9 @@ class Maps extends Component {
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
                   <Geography
-                    data-tip={geography.properties.NAME}
+                    data-longname={geography.properties.NAME_LONG}
+                    data-tip={geography.properties.NAME_LONG}
+                    data-shortname={geography.properties.NAME}
                     onClick={((e) => handleClick(e))}
                     key={i}
                     geography={geography}
