@@ -47,6 +47,8 @@ class App extends Component {
 
          return container;
        })
+       console.log(codes);
+       console.log(isoCodes);
        this.setState({isoCodes: isoCodes})
      });
    }
@@ -70,50 +72,31 @@ class App extends Component {
         newCodes[val]=key;
       })
       const iso = this.state.isoCodes;
-
-      let lookup = {};
-      lookup.list = newData;
-      for (let i = 0, len = lookup.list.length; i < len; i++){
-        lookup[lookup.list[i].name] = lookup.list[i]
-      }
-      let otherLookup = {};
-      otherLookup.list = iso;
-      for (let i = 0, len = otherLookup.list.length; i < len; i++){
-        // console.log(otherLookup.list[i])
-        otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
-      }
-
-
-      let i = 0;
-      let len = otherLookup.list.length
-      for (i; i < len; i++){
-        // console.log(otherLookup.list[i]);
-        if(lookup[otherLookup.list[i].name]){
-          // console.log(lookup[otherLookup.list[i].name])
-          lookup[otherLookup.list[i].name].isoCode = otherLookup.list[i].isoCode
-        }
-      }
-      // console.log(lookup)
-      // console.log(newData)
-      this.setState({ worldData: lookup.list || []})
+      console.log(newData)
+      console.log(newCodes);
+      console.log(newData);
+      console.log(iso); 
+      this.setState({flagCodes: newCodes})
+      this.setState({ worldData: newData || []})
     });
   }
-  simplifyString(string){
-    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toLowerCase()
-  }
+  
   hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
     const countries = Object.values(region)[2];
     if(typeof countries === "object"){
-    this.svgs = countries.map((country, i) => this.simplifyString(country.name))
+    this.svgs = countries.map((country, i) => country.name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase())
     this.setState({SVG: this.svgs})
     }
     svgs = this.svgs
     let nodes = (document.getElementsByClassName("country"));
     nodes = [...nodes]
-    nodes = nodes.filter(e => this.svgs.includes(this.simplifyString(e.dataset.longname)) || this.svgs.includes(this.simplifyString(e.dataset.shortname)));
+    console.log(svgs);
+    console.log(nodes);
+    nodes = nodes.filter(e => this.svgs.includes(e.dataset.longname.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()) || this.svgs.includes(e.dataset.shortname.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()));
     nodes.forEach( node => {
+      console.log('changing style');
       node.style.fill =  "#60c080";
       node.style.stroke =  "#607D8B";
       node.style.strokeWidth =  1;
@@ -126,14 +109,19 @@ class App extends Component {
     e.stopPropagation();
     const countries = Object.values(region)[2];
     if(typeof countries === "object"){
-    this.svgs = countries.map((country, i) => this.simplifyString(country.name))
+    this.svgs = countries.map((country, i) => country.name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase())
     this.setState({SVG: this.svgs})
     }
     svgs = this.svgs
     let nodes = (document.getElementsByClassName("country"));
     nodes = [...nodes]
-    nodes = nodes.filter(e => this.svgs.includes(this.simplifyString(e.dataset.longname)) || this.svgs.includes(this.simplifyString(e.dataset.shortname)));
+    console.log(svgs);
+    console.log(nodes.map(e => e.dataset.longname))
+    console.log(nodes.map(e => e.dataset.shortname))
+    nodes = nodes.filter(e => this.svgs.includes(e.dataset.longname.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()) || this.svgs.includes(e.dataset.shortname.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()));
+    console.log(nodes);
     nodes.forEach( node => {
+      console.log('changing style');
       node.removeAttribute("style")
     })
     this.setState({SVG: []})
@@ -147,7 +135,7 @@ class App extends Component {
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')
     console.log(name);
     let match = searchDB.filter(country => 
-      this.simplifyString(country.name) === this.simplifyString(name)
+      country.name.toLowerCase() === name.toLowerCase()
       || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase())
       console.log(match);
       this.setState(({countryDetail: match[0]}))
@@ -156,15 +144,15 @@ class App extends Component {
     
 filterCountryByName = (string) =>{
     let searchDB = Object.values(this.state.worldData);
-    // console.log(string)
-    // console.log(this.state.filterNations)
-    // console.log(searchDB)
+    console.log(string)
+    console.log(this.state.filterNations)
+    console.log(searchDB)
     let match = searchDB.filter(country => country.name.toLowerCase() === string.toLowerCase()
       || country.name.toLowerCase().includes(string.toLowerCase())
       || country.government.country_name.conventional_long_form.toLowerCase() === string.toLowerCase()
       || country.government.country_name.conventional_long_form.toLowerCase().includes(string.toLowerCase())
     );
-    // console.log(match)
+    console.log(match)
     this.setState({filterNations: match})
     if(string.length === 0 || string === " ")
       { console.log(string);
@@ -178,7 +166,7 @@ filterCountryByName = (string) =>{
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
   };
   handleViews = (view) => {
-    // console.log(view);
+    console.log(view);
       this.setState(({view}))
   };
   viewSidebar = () => {
@@ -216,13 +204,13 @@ filterCountryByName = (string) =>{
   };
   handleInput = (e) => {
     e.persist();
-    // console.log('changing')
+    console.log('changing')
     if(e.target.value != null && e.target.value.trim() !== ''){
       this.setState({searchText: e.target.value}, () => this.filterCountryByName(e.target.value));
       let nodes = [...(document.getElementsByClassName("country"))];
-      // console.log(this.state.filterNations)
+      console.log(this.state.filterNations)
       let searchNations = this.filterCountryByName(e.target.value).map((country, i) => country.name)
-      // console.log(searchNations)
+      console.log(searchNations)
       nodes.forEach( node => {
         node.style.fill =  "#ECEFF1";
         node.style.stroke =  "#607D8B";
@@ -230,7 +218,7 @@ filterCountryByName = (string) =>{
         node.style.outline =  "none"
       })
       nodes = nodes.filter(e => searchNations.includes(e.dataset.tip));
-      // console.log(nodes);
+      console.log(nodes);
       nodes.forEach( node => {
         node.style.fill =  "#60c080";
         node.style.stroke =  "#607D8B";
@@ -244,9 +232,9 @@ filterCountryByName = (string) =>{
         filterNations: []
       }));
       let nodes = [...(document.getElementsByClassName("country"))];
-      // console.log(this.state.filterNations)
+      console.log(this.state.filterNations)
       let searchNations = this.filterCountryByName(e.target.value).map((country, i) => country.name)
-      // console.log(searchNations)
+      console.log(searchNations)
       nodes.forEach( node => {
         node.removeAttribute("style")
       })
@@ -261,7 +249,6 @@ filterCountryByName = (string) =>{
           searchText = {this.state.searchText}
           passInput = {this.handleInput}
           changeView = {this.handleViews}
-          filterNations = {this.state.filterNations}
         />
         <div className="main container-fluid">
         { (this.state.view === "default") ?   

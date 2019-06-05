@@ -29,12 +29,12 @@ class Maps extends Component {
     render() {
       const handleClick = (e) => {
         // access to e.target here
-        console.log(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
-        this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
+        console.log(e.properties.NAME_LONG)
+        this.props.getCountryInfo(e.properties.NAME_LONG)
     }
         return(
             <BreakpointProvider>
-            <div className="card mr-3 mb-3">
+            <div className="card mr-3">
               <Breakpoint small up>
               <div className="d-flex justify-content-between">
               <div className="btn-group d-inline">
@@ -67,8 +67,8 @@ class Maps extends Component {
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
                   <Geography
-                    data-longname={geography.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
-                    data-tip={geography.properties.NAME}
+                    data-longname={geography.properties.NAME_LONG}
+                    data-tip={geography.properties.NAME_LONG}
                     data-shortname={geography.properties.NAME}
                     onClick={((e) => handleClick(e))}
                     key={i}

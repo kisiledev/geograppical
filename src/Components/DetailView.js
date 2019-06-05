@@ -15,7 +15,7 @@ class DetailView extends Component {
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean)
     console.log(uniqueRegions);
-    console.log(this.props.countryDetail.isoCode)
+    console.log(this.props.countryDetail)
       return(
         <div className="row">
             <div className="col-sm-12 col-md-9">
@@ -23,8 +23,8 @@ class DetailView extends Component {
                 <div className="row">
                 <button className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</button>
                 <Flag
-                  className="detailFlag align-self-end text-right img-thumbnail"
-                  name={this.props.countryDetail.isoCode}
+                  className="detailFlag align-self-end text-right"
+                  name={(this.props.flagCodes[this.props.countryDetail.name])? this.props.flagCodes[this.props.countryDetail.name] : "_unknown"}
                   format="svg"
                   pngSize={64}
                   shiny={false}
