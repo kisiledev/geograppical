@@ -47,7 +47,7 @@ class ResultView extends Component {
             excerpt = {country.excerpt}
             population = {country.people.population.total}
             flag = {country.flag}
-            flagCode = {this.props.flagCodes[country.name]}
+            flagCode = {country.isoCode}
             imgalt = {country.name + "'s flag"}        
             key={index}
             code={country.alpha3Code}
