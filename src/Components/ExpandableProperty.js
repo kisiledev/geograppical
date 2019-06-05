@@ -14,7 +14,19 @@ export default class ExpandableProperty extends React.Component {
     state = {
       isOpen: false
     };
-  
+    componentDidMount() {
+      this.setTrue();
+    }
+
+    setTrue = () => {
+      if(this.props.country.name){
+      console.log('truuuu');
+      this.setState({isOpen: true})
+    } else {
+      return
+    }
+  }
+    
     render() {
       return (
         <React.Fragment>

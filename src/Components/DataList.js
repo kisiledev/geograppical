@@ -19,7 +19,7 @@ export const PropertyName = styled.span`
 `;
 
 const RecursiveProperty = props => {
-    console.log(props.property);
+
     return (
         <RecursivePropertyContainer excludeBottomBorder={props.excludeBottomBorder}>
           {props.property ? (
@@ -31,7 +31,7 @@ const RecursiveProperty = props => {
                 {props.property.toString()}
               </React.Fragment>
             ) : (
-              <ExpandableProperty title={camelCaseToNormal(props.propertyName)} expanded={!!props.rootProperty}>
+              <ExpandableProperty country={props.property} title={camelCaseToNormal(props.propertyName)} expanded={!!props.rootProperty}>
                 {Object.values(props.property).map((property, index, { length }) => (
                   <RecursiveProperty
                     key={index}
