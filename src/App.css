@@ -192,8 +192,9 @@ input, input[placeholder] {
   outline: none;
 }
 .rsm-svg {
-  border: 1px solid black;
+  border: 1px solid darkslateblue;
   border-radius: 10px;
+  background-color: lightskyblue
 }
 .country:hover {
   fill: #60c080;
@@ -227,6 +228,9 @@ svg, g, path {
 }
 .detailFlag {
   margin-left: auto;
+}
+.form-group {
+  position: relative;
 }
 @media (min-width: 576px){
   .form-inline .form-control {
@@ -265,8 +269,6 @@ svg, g, path {
   margin: 0 auto;
 }
 .img-thumbnail {
-  height: 75px;
-  width: 75px;
   object-fit: cover;
 }
 .load-more {
