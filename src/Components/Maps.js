@@ -7,8 +7,9 @@ import {
   } from 'react-simple-maps';
   import data from '../Data/world-110m.json';
   import ReactTooltip from 'react-tooltip';
-  import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+  import { faPlus, faMinus, faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Breakpoint, { BreakpointProvider } from 'react-socks';
 
 class Maps extends Component {
   state = {
@@ -32,15 +33,26 @@ class Maps extends Component {
         this.props.getCountryInfo(e.properties.NAME_LONG)
     }
         return(
-            <div className="mr-md-3 card mb-3">
-              <div className="btn-group">
+            <BreakpointProvider>
+            <div className="card mr-3">
+              <Breakpoint small up>
+              <div className="d-flex justify-content-between">
+              <div className="btn-group d-inline">
                 <button className="btn btn-info" onClick={() => this.handleZoomOut() }><FontAwesomeIcon icon={faMinus}/></button>
                 <button className="btn btn-info" onClick={() => this.handleZoomIn() }><FontAwesomeIcon icon={faPlus}/></button>
               </div>
-              {this.props.countries[0] === undefined ? 
               <h5 className="text-center mb-3">Welcome to the Geography App</h5>
-           : null }
+              <button 
+                className="btn btn-info" 
+                onClick={() => this.props.mapView() }
+              >
+                <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
+              </button>
+
+              </div>
+              </Breakpoint>
             <hr />
+            {this.props.mapVisible === "Show" ?
             <ComposableMap 
               projection="robinson"
               width={980}
@@ -69,8 +81,10 @@ class Maps extends Component {
               </ Geographies>
               </ZoomableGroup>
             </ComposableMap>
+            : null }
             <ReactTooltip place="top" type="dark" effect="float" />
             </div>
+            </BreakpointProvider>
         )
       }
     }

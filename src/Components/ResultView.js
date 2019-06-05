@@ -21,7 +21,13 @@ class ResultView extends Component {
       <BreakpointProvider>
       <div className="row">
         <main className="col-md-9 px-0">
-          <Maps 
+          {this.props.countries[0] === undefined ? 
+              null
+           : null }
+          
+          <Maps
+            mapVisible = {this.props.mapVisible}
+            mapView={this.props.mapView} 
             worldData = {this.props.data}
             countries = {this.props.countries}
             changeView = {this.props.changeView}
