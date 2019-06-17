@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import Collapse from 'react-bootstrap/Collapse';
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { Link } from 'react-router-dom'
+import { faInfoCircle, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
+
 
 class Sidebar extends Component {
 
@@ -57,7 +59,6 @@ class Sidebar extends Component {
          this.setState({...regionsState})
     };
     updateOpen = (region) => {
-            console.log(this.state[region])
             const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
             this.setState(({ [region]: open}));
     };
@@ -67,6 +68,13 @@ class Sidebar extends Component {
         const more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
         this.setState(({[region]: more}));
     }
+    highlightSidebarCountry = (e, region, country) => {
+        // e.preventDefault();
+        // alert(this.state[region].open + " " + country);
+        // const more = {visible: this.state[region].visible, start: this.state[region].start, open: true, countries: this.state[region].countries}
+        // this.setState(({[region]: more}))
+        this.props.hoverOnCountry(e, region,country);
+    }
       
     handleRegion =(e, region) =>{
         e.stopPropagation();
@@ -75,12 +83,6 @@ class Sidebar extends Component {
     }
 
     render(){
-        const handleSidebarClick = (e, region) => {
-            this.props.handleSideBar(region);
-            e.stopPropagation();
-            // if(this.uniqueRegions.includes(region))
-            // this.handleRegion(region);
-        };
         return (
             <BreakpointProvider>
             <nav className="sidebar card col-md-3">
@@ -99,8 +101,8 @@ class Sidebar extends Component {
                             className="nav-item regionlist" 
                             key={index} 
                             onClick={(e) => this.handleRegion(e, region)} 
-                            onMouseOver={(e) => this.props.hoverOnRegion(e, this.state[region])} 
-                            onMouseLeave={(e) => this.props.hoverOffRegion(e, this.state[region])} 
+                            onMouseOver={(e) => this.props.hoverOnRegion(e, this.state[region], region)} 
+                            onMouseLeave={(e) => this.props.hoverOffRegion(e, this.state[region], region)} 
                         >
                             <span className="nav-link btn-sm bg-success mb-1">
                                 <strong>{region}</strong> - {this.props.getOccurrence(this.props.totalRegions, region)}
@@ -110,13 +112,24 @@ class Sidebar extends Component {
                             {this.state[region] && this.state[region].countries[0] && this.state[region].countries.slice(this.state[region].start, this.state[region].visible).map((country, index) => 
                                 <li 
                                     key={index} 
-                                    className="nav-item countrylist" 
-                                    onClick={(e) => handleSidebarClick(e, country.name)}>
-                                    <span className="nav-link countryname btn-sm bg-info mb-1">
-                                        {country.name}
-                                        <span onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}><FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></span>
-                                        {/* <button className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(country.name, country.capital)}>Read More</button> */}
-                                    </span>
+                                    className="nav-item countrylist">
+                                    <div className="btn-group d-flex">
+                                    <Link to={country.name.toLowerCase()} className="btn-group w-100">
+                                        <button 
+                                            onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}
+                                            className="btn nav-link countryname btn-sm bg-info mb-1">{country.name}</button>
+                                    </Link>
+                                    <div className="btn-group w-100">
+                                        <button className="btn load-more nav-link btn-sm bg-info mb-1"
+                                            onClick={(e) => this.highlightSidebarCountry(e, this.state[region], country.name)} >Locate
+                                            <FontAwesomeIcon size="2x" color="white" icon={faMapMarkerAlt} /></button>
+                                    </div>
+                                    <Link to={country.name.toLowerCase()} className="btn-group w-100">
+                                        <button className="btn load-more nav-link btn-sm bg-info mb-1"
+                                            onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}>More Info<FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></button>
+                                    </Link>
+                                    </div>
+                                    
                                 </li>
                             )}
                             {this.state[region] && this.state[region].open && (this.state[region].visible < this.state[region].countries.length) && 

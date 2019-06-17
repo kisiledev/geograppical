@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import RecursiveProperty from './DataList';
-import Flag from 'react-flags'
+import AudioPlayer from './AudioPlayer';
+import Flag from 'react-flags';
+import { Link } from 'react-router-dom';
 import '../App.css';
 import Sidebar from './Sidebar';
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -15,16 +17,17 @@ class DetailView extends Component {
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean)
     console.log(uniqueRegions);
-    console.log(this.props.countryDetail.isoCode)
+    console.log(this.props.countryDetail.government.country_name.isoCode)
       return(
         <div className="row">
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
-                <div className="row">
-                <button className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</button>
+                <div className="row justify-content-between">
+                <Link to="/" className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
+                <AudioPlayer nation={this.props.countryDetail} />
                 <Flag
                   className="detailFlag align-self-end text-right img-thumbnail"
-                  name={this.props.countryDetail.isoCode}
+                  name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}
                   format="svg"
                   pngSize={64}
                   shiny={false}
@@ -54,6 +57,8 @@ class DetailView extends Component {
                 handleSideBar = {this.props.handleSideBar}
                 hoverOffRegion = {this.props.hoverOffRegion}
                 hoverOnRegion = {this.props.hoverOnRegion}
+                filterCountryByName = {this.props.filterCountryByName}
+                hoverOnCountry = {this.props.hoverOnCountry}
             /> : null }
         </div>
       )

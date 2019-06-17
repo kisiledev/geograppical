@@ -5,6 +5,7 @@ import {
     Geographies,
     Geography,
   } from 'react-simple-maps';
+import { Link } from 'react-router-dom';
   import data from '../Data/world-110m.json';
   import ReactTooltip from 'react-tooltip';
   import { faPlus, faMinus, faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
@@ -66,6 +67,7 @@ class Maps extends Component {
               <Geographies  geography={data}>
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
+                  <Link to={geography.properties.NAME.toLowerCase()}>
                   <Geography
                     data-longname={geography.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
                     data-tip={geography.properties.NAME}
@@ -76,6 +78,7 @@ class Maps extends Component {
                     projection={projection}
                     className="country"       
                   />
+                  </Link>
                 )
                 }
               </ Geographies>

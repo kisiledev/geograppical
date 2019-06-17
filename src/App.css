@@ -93,8 +93,11 @@ input, input[placeholder] {
   width: 32px;
   height: 32px;
 }
-.svg-inline--fa.fa-w-10 {
-  margin-left: 5px;
+.svg-inline--fa {
+  margin-left: 10px;
+}
+.countryname {
+  vertical-align: middle;
 }
 .data-view {
   color: #008080;
@@ -186,8 +189,8 @@ input, input[placeholder] {
   align-items: center;
 }
 .country {
-  fill: #ECEFF1;
-  stroke: #607D8B;
+  fill: #60c080;
+  stroke: #000;
   stroke-width: 0.75;
   outline: none;
 }
@@ -197,14 +200,14 @@ input, input[placeholder] {
   background-color: lightskyblue
 }
 .country:hover {
-  fill: #60c080;
-  stroke: #607D8B;
+  fill: #024e1b;
+  stroke: #000;
   stroke-width: 1;
   outline: none;
 }
 .country:focus {
   fill: #FF5722;
-  stroke: #607D8B;
+  stroke: #000;
   stroke-width: 1;
   outline: none;
 }
@@ -225,9 +228,6 @@ svg, g, path {
 .media img, .detailFlag {
   width: 25%;
   object-fit: contain;
-}
-.detailFlag {
-  margin-left: auto;
 }
 .form-group {
   position: relative;

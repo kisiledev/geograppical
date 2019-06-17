@@ -47,7 +47,7 @@ class ResultView extends Component {
             excerpt = {country.excerpt}
             population = {country.people.population.total}
             flag = {country.flag}
-            flagCode = {country.isoCode}
+            flagCode = {country.government.country_name.isoCode}
             imgalt = {country.name + "'s flag"}        
             key={index}
             code={country.alpha3Code}
@@ -67,6 +67,8 @@ class ResultView extends Component {
             getOccurrence = {getOccurrence}
             sidebar={this.props.sidebar}
             getCountryInfo = {this.props.getCountryInfo}
+            filterCountryByName = {this.props.filterCountryByName}
+            hoverOnCountry = {this.props.hoverOnCountry}
         /> :     
         <Breakpoint small down>
             <div className="col-12 text-center px-0">
