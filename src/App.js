@@ -284,7 +284,7 @@ class App extends Component {
         />
         <div className="main container-fluid">
           <Switch>
-          <Route exact path="/" render={props => <ResultView
+          <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView
             mapView = {this.mapView}
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
@@ -301,7 +301,7 @@ class App extends Component {
             filterCountryByName = {this.filterCountryByName}
             hoverOnCountry = {this.hoverOnCountry}
           /> }/>
-          <Route path="/:country" render={props => <DetailView 
+          <Route path={`${process.env.PUBLIC_URL}/:country`} render={props => <DetailView 
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}

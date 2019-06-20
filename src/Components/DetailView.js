@@ -23,7 +23,7 @@ class DetailView extends Component {
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
                 <div className="row justify-content-between">
-                <Link to="/" className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
+                <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
                 <AudioPlayer nation={this.props.countryDetail} />
                 <Flag
                   className="detailFlag align-self-end text-right img-thumbnail"
