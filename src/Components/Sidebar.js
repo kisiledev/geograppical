@@ -117,7 +117,7 @@ class Sidebar extends Component {
                                     <Link to={country.name.toLowerCase()} className="btn-group w-100">
                                         <button 
                                             onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}
-                                            className="btn nav-link countryname btn-sm bg-info mb-1">{country.name}</button>
+                                            className="btn nav-link countryname btn-sm bg-info mb-1"><strong>{country.name}</strong></button>
                                     </Link>
                                     <div className="btn-group w-100">
                                         <button className="btn load-more nav-link btn-sm bg-info mb-1"

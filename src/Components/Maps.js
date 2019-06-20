@@ -42,7 +42,7 @@ class Maps extends Component {
                 <button className="btn btn-info" onClick={() => this.handleZoomOut() }><FontAwesomeIcon icon={faMinus}/></button>
                 <button className="btn btn-info" onClick={() => this.handleZoomIn() }><FontAwesomeIcon icon={faPlus}/></button>
               </div>
-              <h5 className="text-center mb-3">Welcome to the Geography App</h5>
+              <h2 className="text-center"><strong>Capstone Geography</strong></h2>
               <button 
                 className="btn btn-info" 
                 onClick={() => this.props.mapView() }
