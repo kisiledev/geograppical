@@ -7,7 +7,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 render(
-    <BrowserRouter basename={'/geography'}>
+    <BrowserRouter>
         <App/>
     </BrowserRouter>, 
     document.getElementById('root'));
