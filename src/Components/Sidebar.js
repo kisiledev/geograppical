@@ -114,7 +114,7 @@ class Sidebar extends Component {
                                     key={index} 
                                     className="nav-item countrylist">
                                     <div className="btn-group d-flex">
-                                    <Link to={`${process.env.PUBLIC_URL}/country.name.toLowerCase()`} className="btn-group w-100">
+                                    <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
                                         <button 
                                             onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}
                                             className="btn nav-link countryname btn-sm bg-info mb-1"><strong>{country.name}</strong></button>
@@ -124,7 +124,7 @@ class Sidebar extends Component {
                                             onClick={(e) => this.highlightSidebarCountry(e, this.state[region], country.name)} >Locate
                                             <FontAwesomeIcon size="2x" color="white" icon={faMapMarkerAlt} /></button>
                                     </div>
-                                    <Link to={`${process.env.PUBLIC_URL}/country.name.toLowerCase()`} className="btn-group w-100">
+                                    <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
                                         <button className="btn load-more nav-link btn-sm bg-info mb-1"
                                             onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}>More Info<FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></button>
                                     </Link>

@@ -67,7 +67,7 @@ class Maps extends Component {
               <Geographies  geography={data}>
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
-                  <Link to={`${process.env.PUBLIC_URL}/geography.properties.NAME.toLowerCase()`}>
+                  <Link to={`${process.env.PUBLIC_URL}/${geography.properties.NAME.toLowerCase()}`}>
                   <Geography
                     data-longname={geography.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
                     data-tip={geography.properties.NAME}
