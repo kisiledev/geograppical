@@ -109,6 +109,9 @@ class App extends Component {
   }
   hoverOnCountry = (e, region, country) => {
     e.stopPropagation();
+    if(this.state.view === "detail"){
+      this.setState({view: 'default'})
+    };
     let nodes = (document.getElementsByClassName("country"));
     nodes = [...nodes]
     nodes = nodes.filter(e => this.simplifyString(country) === this.simplifyString(e.dataset.longname) || this.simplifyString(country) === this.simplifyString(e.dataset.shortname))
