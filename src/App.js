@@ -8,6 +8,7 @@ import { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
 import i18n from 'i18n-iso-countries';
+import Scoreboard from './Components/Scoreboard';
 
  
 class App extends Component {
@@ -22,7 +23,8 @@ class App extends Component {
     searchText: '',
     worldData: [],
     countryDetail: [],
-    countries: []
+    countries: [],
+    mode: ""
   }
 
   componentDidMount() {
@@ -221,6 +223,12 @@ class App extends Component {
       this.setState(({mapView: "Show"}))
     }
   }
+  changeMode = (event) => {
+    event.persist();
+    console.log(event)
+    console.log(event.target.textContent)
+    this.setState(({mode: event.target.textContent}));
+  }
   addNewCountry = (name, location, type, excerpt, imgurl) => {
     this.setState(prevState =>({
       countries: [
@@ -284,7 +292,9 @@ class App extends Component {
           handleInput = {this.handleInput}
           changeView = {this.handleViews}
           filterNations = {this.state.filterNations}
+          changeMode = {this.changeMode}
         />
+        {this.state.mode === "Play" && <Scoreboard />}
         <div className="main container-fluid">
           <Switch>
           <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView

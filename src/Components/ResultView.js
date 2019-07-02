@@ -54,7 +54,7 @@ class ResultView extends Component {
             />
           )}
         </main>
-        {this.props.sidebar === "Show" ?
+        {this.props.sidebar === "Show" ?  
         <Sidebar
             hoverOnRegion = {this.props.hoverOnRegion}
             hoverOffRegion = {this.props.hoverOffRegion}
