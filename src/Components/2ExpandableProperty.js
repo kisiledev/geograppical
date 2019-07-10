@@ -11,27 +11,23 @@ export const PropertyName = styled.div`
 `;
 
 const ExpandableProperty = (props) => {
-    let [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-      setTrue(); 
-      console.log(isOpen);
-    }, []);
+      setTrue(isOpen); 
+    }, [isOpen]);
 
     const setTrue = () => {
       console.log(isOpen)
       if(props.country.name){
-      setIsOpen(true);
+      setIsOpen(isOpen);
     } else {
       return
     }
   }
-  const toggleValue = () => {
-    setIsOpen(!isOpen);
-  }
       return (
         <React.Fragment>
-          <PropertyName onClick={() => toggleValue()}>
+          <PropertyName onClick={() => setTrue(!isOpen)}>
             {props.title}
             {isOpen ? <FontAwesomeIcon icon={faAngleUp} /> : <FontAwesomeIcon icon={faAngleDown} />}
           </PropertyName>

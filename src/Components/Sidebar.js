@@ -83,6 +83,9 @@ class Sidebar extends Component {
     }
 
     render(){
+        if(this.props === null){
+            return <h2>Loading</h2>
+        } else {
         return (
             <BreakpointProvider>
             <nav className="sidebar card col-md-3">
@@ -159,6 +162,7 @@ class Sidebar extends Component {
             </nav>
             </BreakpointProvider>
         )
+        }
     }
 }
 

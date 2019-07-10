@@ -8,7 +8,7 @@ import { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
 import i18n from 'i18n-iso-countries';
-import Scoreboard from './Components/Scoreboard';
+import Game from './Components/Game';
 
  
 class App extends Component {
@@ -101,8 +101,6 @@ class App extends Component {
           lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
         }
       }
-      console.log(lookup)
-      console.log(newData)
       this.setState({ worldData: lookup.list || []})
     });
   }
@@ -294,9 +292,19 @@ class App extends Component {
           filterNations = {this.state.filterNations}
           changeMode = {this.changeMode}
         />
-        {this.state.mode === "Play" && <Scoreboard />}
         <div className="main container-fluid">
           <Switch>
+          <Route exact path={`${process.env.PUBLIC_URL}/play`} 
+                render={props => 
+                <Game 
+                      mapView = {this.mapView}
+                      mapVisible={this.state.mapView}
+                      flagCodes = {this.state.flagCodes}
+                      data = {this.state.worldData}
+                      getCountryInfo = {this.getCountryInfo}
+                /> 
+                } 
+          />
           <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView
             mapView = {this.mapView}
             flagCodes = {this.state.flagCodes}

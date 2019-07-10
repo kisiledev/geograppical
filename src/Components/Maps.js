@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {
     ComposableMap,
     ZoomableGroup,
@@ -12,48 +12,41 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 
-class Maps extends Component {
-  state = {
-    zoom: 1
-  }
+const Maps = (props) => {
+  const [zoom, setZoom] = useState(1)
 
-  handleZoomIn() {
-    this.setState({
-      zoom: this.state.zoom * 2,
-    })
+  const handleZoomIn = (zoom) => {
+    setZoom(zoom * 2)
   }
-  handleZoomOut() {
-    this.setState({
-      zoom: this.state.zoom / 2,
-    })
+  const handleZoomOut = (zoom) => {
+    setZoom(zoom/2)
   }
-    render() {
-      const handleClick = (e) => {
+  const handleClick = (e) => {
         // access to e.target here
-        console.log(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
-        this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
-    }
+  console.log(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
+  props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
+  }
         return(
             <BreakpointProvider>
             <div className="card mr-3 mb-3">
               <Breakpoint small up>
               <div className="d-flex justify-content-between">
               <div className="btn-group d-inline">
-                <button className="btn btn-info" onClick={() => this.handleZoomOut() }><FontAwesomeIcon icon={faMinus}/></button>
-                <button className="btn btn-info" onClick={() => this.handleZoomIn() }><FontAwesomeIcon icon={faPlus}/></button>
+                <button className="btn btn-info" onClick={() => handleZoomOut(zoom) }><FontAwesomeIcon icon={faMinus}/></button>
+                <button className="btn btn-info" onClick={() => handleZoomIn(zoom) }><FontAwesomeIcon icon={faPlus}/></button>
               </div>
               <h2 className="text-center"><strong>Capstone Geography</strong></h2>
               <button 
                 className="btn btn-info" 
-                onClick={() => this.props.mapView() }
+                onClick={() => props.mapView() }
               >
-                <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
+                <FontAwesomeIcon icon={faGlobeAfrica}/>{ (props.mapVisible === "Show") ? "Hide" : "Show"} Map
               </button>
 
               </div>
               </Breakpoint>
             <hr />
-            {this.props.mapVisible === "Show" ?
+            {props.mapVisible === "Show" ?
             <ComposableMap 
               projection="robinson"
               width={980}
@@ -61,13 +54,13 @@ class Maps extends Component {
               style={{
                 width: "100%",
                 height: "auto",
-              }}
+              }}  
               >
-              <ZoomableGroup zoom={this.state.zoom}>
+              <ZoomableGroup zoom={zoom}>
               <Geographies  geography={data}>
                 {(geographies, projection) =>
                   geographies.map((geography, i) =>
-                  <Link to={`${process.env.PUBLIC_URL}/${geography.properties.NAME.toLowerCase()}`}>
+                <Link key={i} to={`${process.env.PUBLIC_URL}/${geography.properties.NAME.toLowerCase()}`}>
                   <Geography
                     data-longname={geography.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
                     data-tip={geography.properties.NAME}
@@ -90,6 +83,5 @@ class Maps extends Component {
             </BreakpointProvider>
         )
       }
-    }
 
     export default Maps;
