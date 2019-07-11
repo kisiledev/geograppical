@@ -6,6 +6,8 @@ import Choice from './Choice';
 class Game extends React.Component {
     state = {
         score: 0,
+        correct: 0,
+        incorrect: 0,
         gameMode: null,
         isStarted: false,
         time: {
@@ -45,6 +47,15 @@ class Game extends React.Component {
         })
         clearInterval(this.intervalId)
       }
+
+      resetTimer = () => {
+          this.setState({
+              time: {
+                  isRunning: false,
+                  currentCount: 60
+              }
+          })
+      }
     
       // decrement every second i.e 1000
       componentDidMount =() => {
@@ -61,6 +72,16 @@ class Game extends React.Component {
             isStarted: true
         })
     }
+    endGame = () => {
+        this.resetTimer();
+        this.setState({
+            isStarted: false
+        });
+        clearInterval(this.intervalId)
+    }
+    handlePoints = (correct, questions) => {
+        this.setState(prevState =>({correct: prevState.correct + correct, incorrect: (10-questions)-correct}));
+    }
     updateScore = (int) => {
         this.setState(prevState =>({score: prevState.score + int}))
     }
@@ -75,22 +96,27 @@ class Game extends React.Component {
             })
     }
     render(){
+        let back = !this.props.isStarted && <button className="btn btn-info" onClick={() => this.setState({gameMode: null})}>Go Back</button>
         let gameMode;
         if(this.state.gameMode==="choice"){
             gameMode = 
             <div>
+            {back}
             <Choice 
                 isStarted={this.state.isStarted}
                 flagCodes = {this.props.flagCodes}
                 data = {this.props.data}
                 getCountryInfo = {this.props.getCountryInfo}
                 startGame = {this.startGame}
-                updateScore = {this.updateScore}/>
+                endGame = {this.endGame}
+                updateScore = {this.updateScore}
+                handlePoints = {this.handlePoints}/>
             
             </div>
         } else if (this.state.gameMode==="find"){
             gameMode = 
             <div>
+                {back}
                 <Maps
                         mapVisible = {this.props.mapVisible}
                         mapView={this.props.mapView} 
@@ -104,6 +130,7 @@ class Game extends React.Component {
             </div>
         } else if (this.state.gameMode==="highlight"){
             gameMode = <div>
+                {back}
                 <Maps
                         mapVisible = {this.props.mapVisible}
                         mapView={this.props.mapView} 
@@ -125,7 +152,9 @@ class Game extends React.Component {
             time={this.state.time}
             startTimer={this.startTimer}
             stopTimer={this.stopTimer}
-            timer={this.timer}/> 
+            timer={this.timer}
+            correct={this.state.correct}
+            incorrect={this.state.incorrect}/> 
         <div className="card mt-5 col-8 mx-auto">
             <h1 className="text-center">{this.state.gameMode ? this.titleCase(this.state.gameMode) : "Choose a Game Mode"}</h1>
             {!this.state.gameMode && <div>

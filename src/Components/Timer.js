@@ -7,7 +7,7 @@ export default class Timer extends Component {
   // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
   render() {
     return <div>
-      {this.props.time.isRunning ? <div className="text-danger">{this.props.time.currentCount}</div> : <div className="text-success">{this.props.time.currentCount}</div>}
+      {this.props.time.isRunning ? <h5 className="text-danger"><strong>{this.props.time.currentCount}</strong></h5> : <h5 className="text-success"><strong>{this.props.time.currentCount}</strong></h5>}
       <div></div>
     </div>;
   }
