@@ -5,6 +5,8 @@ import Choice from './Choice';
 
 class Game extends React.Component {
     state = {
+        questionsRemaining: null,
+        questions: null,
         score: 0,
         correct: 0,
         incorrect: 0,
@@ -79,8 +81,11 @@ class Game extends React.Component {
         });
         clearInterval(this.intervalId)
     }
-    handlePoints = (correct, questions) => {
-        this.setState(prevState =>({correct: prevState.correct + correct, incorrect: (10-questions)-correct}));
+    handlePointsQuestions = (c, i, q) => {
+        this.setState(prevState =>({
+            correct: prevState.correct + c, 
+            incorrect: i,
+            questions: q}));
     }
     updateScore = (int) => {
         this.setState(prevState =>({score: prevState.score + int}))
@@ -110,7 +115,7 @@ class Game extends React.Component {
                 startGame = {this.startGame}
                 endGame = {this.endGame}
                 updateScore = {this.updateScore}
-                handlePoints = {this.handlePoints}/>
+                handlePoints = {this.handlePointsQuestions}/>
             
             </div>
         } else if (this.state.gameMode==="find"){
@@ -154,7 +159,9 @@ class Game extends React.Component {
             stopTimer={this.stopTimer}
             timer={this.timer}
             correct={this.state.correct}
-            incorrect={this.state.incorrect}/> 
+            incorrect={this.state.incorrect}
+            questions={this.state.questions}
+            questionsRemaining={this.state.questionsRemaining}/> 
         <div className="card mt-5 col-8 mx-auto">
             <h1 className="text-center">{this.state.gameMode ? this.titleCase(this.state.gameMode) : "Choose a Game Mode"}</h1>
             {!this.state.gameMode && <div>

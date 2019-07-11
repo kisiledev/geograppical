@@ -75,7 +75,7 @@ class Choice extends React.Component {
                 correct = 1
             }
             this.setState(prevState => ({correct: prevState.correct + correct, guesses: null}))
-            this.props.handlePoints(correct, this.state.questions);
+            this.props.handlePoints(correct, this.state.incorrect, this.state.questions);
             setTimeout(() => this.takeTurn(), 300);   
         } else {
             this.setState(prevState =>({guesses: prevState.guesses + 1}));
