@@ -77,7 +77,13 @@ class Game extends React.Component {
     endGame = () => {
         this.resetTimer();
         this.setState({
-            isStarted: false
+            isStarted: false,
+            questionsRemaining: null,
+            questions: null,
+            score: 0,
+            correct: 0,
+            incorrect: 0
+
         });
         clearInterval(this.intervalId)
     }
