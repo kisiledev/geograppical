@@ -9,14 +9,12 @@ class Choice extends React.Component {
         answers: null,
         questions:10,
         correct: 0,
+        ran: null,
         incorrect: 0,
         currentIncorrect: 0,
         pointsLost: 0
     }
     componentDidMount(){
-        this.props.handlePoints(this.state.correct, this.state.incorrect, this.state.questions);
-    }
-    componentDidUpdate(){
         this.props.handlePoints(this.state.correct, this.state.incorrect, this.state.questions);
     }
     shuffle = (a) => {
@@ -44,9 +42,7 @@ class Choice extends React.Component {
     }
 
     getAnswers = (currentCountry) => {
-        console.log(this.props.data)
         let answers = [];
-        console.log(currentCountry)
         currentCountry && answers.push({
             name: currentCountry.government.capital.name.split(';')[0],
             id: 0,
@@ -54,8 +50,8 @@ class Choice extends React.Component {
         });
         for (let x = 0; x < 3; x++) {
             let ran = this.randomExcluded(0, this.props.data.length -1, this.state.currentCountryId);
+            this.setState({ran: ran})
             let newName;
-            console.log(ran)
             if(this.props.data[ran].government.capital.name || ran < 0){
                 newName = this.props.data[ran].government.capital.name.split(';')[0]
             } else {
@@ -66,7 +62,6 @@ class Choice extends React.Component {
                 name: newName,
                 id: x + 1, 
                 correct: 2}
-            console.log(capital);
             answers.push(capital);
             this.shuffle(answers);
             
@@ -76,8 +71,8 @@ class Choice extends React.Component {
     takeTurn = (answers) => {
             !this.props.isStarted && this.props.startGame();
             let country = this.getRandomCountry();
-            this.setState(prevState => ({guesses: prevState.guesses +1, questions: prevState.questions -1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
-            if(this.state.questions < 0){
+            this.setState(prevState => ({guesses: prevState.guesses +1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
+            if(this.state.questions === 0){
                 alert("Congrats! You've reached the end of the game. You answered " + this.state.correct + " questions correctly and " + this.state.incorrect + " incorrectly");
                 this.setState({questions: 10, answers: [], guesses: null})
                 this.props.endGame();
@@ -95,12 +90,19 @@ class Choice extends React.Component {
             if(this.state.guesses === 1){
                 correct = 1;
             }
-            this.setState(prevState => ({correct: prevState.correct + correct, guesses: null, incorrect: prevState.incorrect + this.state.currentIncorrect}))
-            this.props.handlePoints(correct, this.state.incorrect, this.state.questions);
+            this.setState(prevState => ({correct: prevState.correct + correct, questions: prevState.questions - 1, guesses: null}), () => {this.props.handlePoints(correct, this.state.incorrect, this.state.questions)}
+            )
             setTimeout(() => this.takeTurn(), 300);   
         } else {
-            this.setState(prevState =>({guesses: prevState.guesses + 1, currentIncorrect: 1}));
-            answer['correct'] = 1; 
+            let rand = this.state.ran;
+            if(rand === this.state.ran){
+                answer['correct'] = 1;
+                let incorrect = 1;
+                this.setState(prevState =>({guesses: prevState.guesses + 1, currentIncorrect: 1, incorrect: prevState.incorrect + incorrect}), () => {
+                this.props.handlePoints(this.state.correct, this.state.incorrect, this.state.questions)
+            });
+            ;    
+            }
         }
     }
     render(){
@@ -123,6 +125,7 @@ class Choice extends React.Component {
                 <p>A statement will be shown with four choices. Select the correct answer for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
                 {!this.props.isStarted && <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>}
                 {this.props.isStarted && <div>What is the capital of {this.state.currentCountry && this.state.currentCountry.name}?</div>}
+                {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} guesses</div>}
                 {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
                 {this.state.answers && this.state.answers.length > 0 && <ul className="px-0">{answerChoices}</ul>}
             </div>

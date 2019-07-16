@@ -106,8 +106,23 @@ class Game extends React.Component {
                 return (firstMatch ? " " : "") + secondMatch.toUpperCase();
             })
     }
+    resetMode = () => {
+        this.setState({
+            questionsRemaining: null,
+            questions: null,
+            score: 0,
+            correct: 0,
+            incorrect: 0,
+            gameMode: null,
+            isStarted: false,
+            time: {
+                currentCount: 60,
+                isRunning: false
+            }
+        })
+    }
     render(){
-        let back = !this.props.isStarted && <button className="btn btn-info" onClick={() => this.setState({gameMode: null})}>Go Back</button>
+        let back = !this.props.isStarted && <button className="btn btn-info" onClick={() => this.resetMode()}>Go Back</button>
         let gameMode;
         if(this.state.gameMode==="choice"){
             gameMode = 
