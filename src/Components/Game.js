@@ -184,7 +184,7 @@ class Game extends React.Component {
             questions={this.state.questions}
             questionsRemaining={this.state.questionsRemaining}/> 
         <div className="card mt-5 col-md-8 mx-auto">
-            <h3 className="text-center">{this.state.gameMode ? this.titleCase(this.state.gameMode) : "Choose a Game Mode"}</h3>
+            <h3 className="text-center">{this.state.gameMode ? ("Game Mode: " + this.titleCase(this.state.gameMode)) : "Choose a Game Mode"}</h3>
             {!this.state.gameMode && <div>
                 <div className="row">
                     <div className="col-md-12 mx-auto">

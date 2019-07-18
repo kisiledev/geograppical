@@ -139,6 +139,12 @@ class Choice extends React.Component {
         }
     }
     render(){
+        let directions = 
+        <div className="directions">
+            <h5>Directions</h5>
+            <p>A statement will be shown with four choices. Select the correct answer for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
+            <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>
+        </div>;
         let answerChoices;
         if(this.state.answers && this.state.answers.length > 0){
             if(this.state.questions < 0){
@@ -154,9 +160,7 @@ class Choice extends React.Component {
         }
         return(
             <div>
-                <h5>Directions</h5>
-                <p>A statement will be shown with four choices. Select the correct answer for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
-                {!this.props.isStarted && <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>}
+                {!this.props.isStarted && directions}
                 {this.props.isStarted && <div>What is the capital of {this.state.currentCountry && this.state.currentCountry.name}?</div>}
                 {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
                 {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
