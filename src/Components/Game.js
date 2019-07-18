@@ -89,9 +89,9 @@ class Game extends React.Component {
     }
     handlePointsQuestions = (c, i, q) => {
         this.setState(prevState =>({
-            correct: prevState.correct + c, 
+            correct: c, 
             incorrect: i,
-            questions: q}));
+            questions: q.length}));
     }
     updateScore = (int) => {
         this.setState(prevState =>({score: prevState.score + int}))
@@ -183,20 +183,20 @@ class Game extends React.Component {
             incorrect={this.state.incorrect}
             questions={this.state.questions}
             questionsRemaining={this.state.questionsRemaining}/> 
-        <div className="card mt-5 col-8 mx-auto">
-            <h1 className="text-center">{this.state.gameMode ? this.titleCase(this.state.gameMode) : "Choose a Game Mode"}</h1>
+        <div className="card mt-5 col-md-8 mx-auto">
+            <h3 className="text-center">{this.state.gameMode ? this.titleCase(this.state.gameMode) : "Choose a Game Mode"}</h3>
             {!this.state.gameMode && <div>
                 <div className="row">
-                    <div className="col-12 mx-auto">
-                        <ul className="text-center">
-                            <button className="choice btn btn-info mr-3" onClick={() => this.setState({gameMode: 'choice'})}>Questions</button>
-                            <button className="choice btn btn-info mr-3" onClick={() => this.setState({gameMode: 'find'})}>Find Country on Map</button>
-                            <button className="choice btn btn-info mr-3" onClick={() => this.setState({gameMode: 'highlight'})}>Select Highlighted Country</button>
+                    <div className="col-md-12 mx-auto">
+                        <ul className="px-0 text-center">
+                            <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'choice'})}>Questions</li>
+                            <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'find'})}>Find Country on Map</li>
+                            <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'highlight'})}>Select Highlighted Country</li>
                         </ul>
                     </div>
                 </div>
             </div>}
-            <div className="text-center col-8 mx-auto">{gameMode}</div>
+            <div className="text-center col-md-8 mx-auto">{gameMode}</div>
         </div>
         </>
         )

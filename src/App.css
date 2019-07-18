@@ -249,6 +249,20 @@ audio {
 .form-group {
   position: relative;
 }
+@media (max-width: 768px){
+  .navbar-nav {
+    flex-direction: row;
+  }
+  .nav-item {
+    padding: 10px;
+  }
+  .choice {
+    padding-inline-start: 0;
+  }
+  .card {
+    padding: 5px;
+  }
+}
 @media (min-width: 576px){
   .form-inline .form-control {
     display: inline-block;
@@ -271,6 +285,8 @@ audio {
   flex-wrap: nowrap;
 }
 .navbar {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 .navbar.transparent.navbar-inverse .navbar-inner {
