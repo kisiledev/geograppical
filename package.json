@@ -43,11 +43,12 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@storybook/react": "^5.0.11",
+    "@babel/core": "^7.4.4",
     "@storybook/addon-actions": "^5.0.11",
     "@storybook/addon-links": "^5.0.11",
     "@storybook/addons": "^5.0.11",
-    "@babel/core": "^7.4.4",
-    "babel-loader": "^8.0.5"
+    "@storybook/react": "^5.0.11",
+    "babel-loader": "^8.0.5",
+    "eslint-plugin-react-hooks": "^1.6.1"
   }
 }

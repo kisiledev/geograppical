@@ -203,6 +203,13 @@ a:hover {
   outline: none;
   stroke-linecap: round;
 }
+.gameCountry {
+  fill: #e2fceb;
+  stroke: #000;
+  stroke-width: 0.5;
+  outline: none;
+  stroke-linecap: round;
+}
 .rsm-svg {
   border: 1px solid darkslateblue;
   border-radius: 10px;
