@@ -127,6 +127,7 @@ class Game extends React.Component {
                 isRunning: false
             }
         })
+        this.resetTimer();
     }
     render(){
         let back = !this.props.isStarted && <button className="btn btn-info mb-3" onClick={() => this.resetMode()}>Go Back</button>
@@ -153,32 +154,36 @@ class Game extends React.Component {
             <div>
                 {back}
                 <Find
-                        mapVisible = {this.props.mapVisible}
-                        mapView={this.props.mapView} 
-                        worldData = {this.props.data}
-                        countries = {this.props.countries}
-                        changeView = {this.props.changeView}
-                        getCountryInfo = {this.props.getCountryInfo}
-                        hoverOnRegion = {this.props.hoverOnRegion}
-                        hoverOffRegion = {this.props.hoverOffRegion}
-                        startGame = {this.startGame}
-                        endGame = {this.endGame}
-                        updateScore = {this.updateScore}
-                        handlePoints = {this.handlePointsQuestions}/>
+                    simplifyString={this.props.simplifyString}
+                    isStarted={this.state.isStarted}
+                    correct = {this.state.correct}
+                    incorrect = {this.state.incorrect}
+                    mapVisible = {this.props.mapVisible}
+                    mapView={this.props.mapView} 
+                    worldData = {this.props.data}
+                    countries = {this.props.countries}
+                    changeView = {this.props.changeView}
+                    getCountryInfo = {this.props.getCountryInfo}
+                    hoverOnRegion = {this.props.hoverOnRegion}
+                    hoverOffRegion = {this.props.hoverOffRegion}
+                    startGame = {this.startGame}
+                    endGame = {this.endGame}
+                    updateScore = {this.updateScore}
+                    handlePoints = {this.handlePointsQuestions}/>
             </div>
         } else if (this.state.gameMode==="highlight"){
             gameMode = <div>
                 {back}
                 <Maps
-                        mapVisible = {this.props.mapVisible}
-                        mapView={this.props.mapView} 
-                        worldData = {this.props.data}
-                        countries = {this.props.countries}
-                        changeView = {this.props.changeView}
-                        getCountryInfo = {this.props.getCountryInfo}
-                        hoverOnRegion = {this.props.hoverOnRegion}
-                        hoverOffRegion = {this.props.hoverOffRegion}
-                        startGame = {this.startGame}/>
+                    mapVisible = {this.props.mapVisible}
+                    mapView={this.props.mapView} 
+                    worldData = {this.props.data}
+                    countries = {this.props.countries}
+                    changeView = {this.props.changeView}
+                    getCountryInfo = {this.props.getCountryInfo}
+                    hoverOnRegion = {this.props.hoverOnRegion}
+                    hoverOffRegion = {this.props.hoverOffRegion}
+                    startGame = {this.startGame}/>
             </div>
         } else {
             gameMode = <div></div>

@@ -6,7 +6,7 @@ import {
     Geography,
   } from 'react-simple-maps';
 import { Link } from 'react-router-dom';
-  import data from '../Data/world-110m.json';
+  import data from '../Data/world-50m.json';
   import ReactTooltip from 'react-tooltip';
   import { faPlus, faMinus, faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

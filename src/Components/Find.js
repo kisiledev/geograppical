@@ -5,7 +5,7 @@ import {
     Geographies,
     Geography,
   } from 'react-simple-maps';
-import data from '../Data/world-110m.json';
+import data from '../Data/world-50m.json';
 import ReactTooltip from 'react-tooltip';
 import { faPlus, faMinus, faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,9 +73,9 @@ class Find extends Component {
         question['correct'] = null;
         let answers = [];
         console.log(currentCountry.name);
+        console.log(currentCountry)
         currentCountry && answers.push({
             name: currentCountry.name.split(';')[0],
-            id: 0,
             correct: 2
         });
         // for (let x = 0; x < 3; x++) {
@@ -103,6 +103,11 @@ class Find extends Component {
             !this.props.isStarted && this.props.startGame();
             let country = this.getRandomCountry();
             this.setState(prevState => ({guesses: prevState.guesses +1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
+            let nodes = [...(document.getElementsByClassName("gameCountry"))];
+            // console.log(this.state.filterNations)
+            nodes.forEach( node => {
+              node.removeAttribute("style")
+            })
             if(this.state.questions && this.state.questions.length > 10){
                 alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
                 this.setState({questions: [], answers: [], guesses: null})
@@ -110,18 +115,38 @@ class Find extends Component {
                 
             }
     }
-    
-    checkAnswer = (country) => {
+    getCountryInfo = (e, country) => {
+      let nodes = (document.getElementsByClassName("gameCountry"));
+      nodes = [...nodes]
+      console.log(nodes)
+      nodes = nodes.filter(e => this.handleText(country) === this.handleText(e.dataset.longname) || this.handleText(country) === this.handleText(e.dataset.shortname))
+      console.log(nodes);
+      this.changeStyle = (nodes) => {
+        nodes.forEach( node => {
+          node.style.fill =  "#FF0000";
+          node.style.stroke =  "#111";
+          node.style.strokeWidth =  5;
+          node.style.outline =  "none"
+        })
+      }
+      setTimeout(() => this.changeStyle(nodes), 300);
+      
+    }
+
+    checkAnswer = (e, country) => {
         //if answer is correct answer (all correct answers have ID of 0)
         let correct, incorrect;
         let questions = this.state.questions;
         let question = questions.find(question => question.country === this.state.currentCountry);
         let guesses = this.state.guesses;
-        if(answer.id === 0){
+        console.log(e)
+        console.log(country)
+        console.log(this.state.currentCountry)
+        if((country === this.state.currentCountry.name || country === this.state.currentCountry.name) || this.state.guesses === 4){
             //give score of 2
             this.props.updateScore(3-this.state.guesses);
             //set answer style
-            answer['correct'] = 0;
+            // answer['correct'] = 0;
             //initialize correct counter for game
             console.log(question);
             if(this.state.guesses === 1){
@@ -130,10 +155,15 @@ class Find extends Component {
             guesses = null;
             setTimeout(() => this.takeTurn(), 300);   
         } else {
-            answer['correct'] = 1;
+            // answer['correct'] = 1;
             console.log(question);
             question['correct'] = false;
             guesses ++
+            if(this.state.guesses === 3){
+              console.log(this.state.currentCountry.name)
+              console.log('3 guesses, time up')
+              this.getCountryInfo(e, this.state.currentCountry.name);
+            }
         }
         this.setState({correct, incorrect, guesses}, () => {this.props.handlePoints(this.state.questions)})
     }
@@ -148,6 +178,8 @@ class Find extends Component {
         <BreakpointProvider>
         <div className="card mr-3 mb-3">
             {!this.props.isStarted && directions}
+            {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
+            {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
           <Breakpoint small up>
           <div className="d-flex justify-content-between">
           <div className="btn-group d-inline">
@@ -180,14 +212,14 @@ class Find extends Component {
             {(geographies, projection) =>
               geographies.map((geography, i) =>
               <Geography
+                data-idkey={i}
                 data-longname={this.handleText(geography.properties.NAME_LONG)}
-                data-tip={geography.properties.NAME}
                 data-shortname={geography.properties.NAME}
-                onClick={((e) => this.handleClick(e))}
+                onClick={((e) => this.checkAnswer(e, geography.properties.NAME_LONG))}
                 key={i}
                 geography={geography}
                 projection={projection}
-                className="country"       
+                className="gameCountry"       
               />
             )
             }

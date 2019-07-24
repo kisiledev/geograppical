@@ -297,6 +297,7 @@ class App extends Component {
           <Route exact path={`${process.env.PUBLIC_URL}/play`} 
                 render={props => 
                 <Game 
+                      simplifyString = {this.simplifyString}
                       mapView = {this.mapView}
                       mapVisible={this.state.mapView}
                       flagCodes = {this.state.flagCodes}
