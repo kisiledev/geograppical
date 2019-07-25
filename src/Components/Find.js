@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useRef, useEffect} from 'react';
 import {
     ComposableMap,
     ZoomableGroup,
@@ -24,6 +24,7 @@ class Find extends Component {
         ran: null
     }
 
+    
     handleZoomIn = (zoom) => {
         this.setState(prevState => ({zoom: prevState.zoom * 2}))
     }
@@ -39,9 +40,25 @@ class Find extends Component {
         console.log(this.state.currentCountry.name);
         alert(this.handleText(e.properties.NAME_LONG) === this.state.currentCountry.name)
     }
+    handleWheel = event => {
+      const oldZoom = this.state.zoom;
+      const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
+      console.log(zoomDirectionFactor)
+  
+      // Set new zoom level
+      const newZoom = oldZoom + zoomDirectionFactor;
+      console.log(newZoom)
+      // Ignore nonsens
+      if (newZoom > 10 || newZoom < 1) {
+        return;
+      }
+      this.setState({zoom: newZoom})
+    }
+
     componentDidMount(){
         this.props.handlePoints(this.state.questions);
     }
+    
     shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -175,6 +192,7 @@ class Find extends Component {
         <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>
     </div>;
     return(
+        
         <BreakpointProvider>
         <div className="card mr-3 mb-3">
             {!this.props.isStarted && directions}
@@ -198,6 +216,12 @@ class Find extends Component {
         <hr />
         {this.state.currentCountry && <div>Find {this.state.currentCountry.name}</div>}
         {this.props.mapVisible === "Show" ?
+        <BlockPageScroll>
+          <div 
+            ref={wrapper => (this._wrapper = wrapper)}
+            onWheel={this.handleWheel}
+
+          >
         <ComposableMap 
           projection="robinson"
           width={980}
@@ -226,6 +250,8 @@ class Find extends Component {
           </ Geographies>
           </ZoomableGroup>
         </ComposableMap>
+        </div>
+        </BlockPageScroll>
         : null }
         <ReactTooltip place="top" type="dark" effect="float" />
         </div>
@@ -235,3 +261,13 @@ class Find extends Component {
   }
 
     export default Find;
+    const BlockPageScroll = ({ children }) => {
+      const scrollRef = useRef(null);
+      useEffect(() => {
+        const scrollEl = scrollRef.current;
+        scrollEl.addEventListener("wheel", stopScroll);
+        return () => scrollEl.removeEventListener("wheel", stopScroll);
+      }, []);
+      const stopScroll = e => e.preventDefault();
+      return <div ref={scrollRef}>{children}</div>;
+    };
