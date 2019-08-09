@@ -199,9 +199,27 @@ a:hover {
 .country {
   fill: #60c080;
   stroke: #000;
+  stroke-width: .1;
+  outline: none;
+  stroke-linecap: round;
+}
+.gameCountry {
+  fill: #e2fceb;
+  stroke: #000;
   stroke-width: 0.5;
   outline: none;
   stroke-linecap: round;
+}
+.gameCountry:hover {
+  fill: #013313;
+  stroke: #000;
+  stroke-width: 0.5;
+  outline: none;
+  stroke-linecap: round;
+  cursor: pointer;
+}
+.mapFlag {
+  width: 50px;
 }
 .rsm-svg {
   border: 1px solid darkslateblue;
@@ -213,6 +231,7 @@ a:hover {
   stroke: #000;
   stroke-width: .7;
   outline: none;
+  cursor: pointer;
 }
 .country:focus {
   fill: #FF5722;

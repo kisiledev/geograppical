@@ -15,7 +15,7 @@ const NavBar = (props) => {
                     </li>
                     </ul>
                 <form className="form-inline form-group d-inline justify-content-center mx-auto my-2 my-lg-0 w-100">
-                        <input className="form-control form-control-lg search mr-sm-2" type="search" placeholder="Type to begin" aria-label="Search" value={props.searchText} onChange={props.handleInput} />
+                        <input className="form-control form-control-lg search mr-sm-2" type="search" placeholder="Type to begin" aria-label="Search" value={props.searchText} onChange={(e) => props.handleInput(e)} />
                         {/* <span className="badge badge-primary count">{props.filterNations.length}</span> */}
                 </form>
             </nav>

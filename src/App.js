@@ -14,6 +14,8 @@ import Game from './Components/Game';
 class App extends Component {
 
   state = {
+    highlighted: "",
+    hovered: false, 
     nations: [],
     mapView: "Show",
     sidebar: "Show",
@@ -107,6 +109,7 @@ class App extends Component {
   simplifyString(string){
     return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toLowerCase()
   }
+  
   hoverOnCountry = (e, region, country) => {
     e.stopPropagation();
     if(this.state.view === "detail"){
@@ -250,27 +253,33 @@ class App extends Component {
   handleInput = (e) => {
     e.persist();
     // console.log('changing')
-    if(e.target.value != null && e.target.value.trim() !== ''){
-      this.setState({searchText: e.target.value}, () => this.filterCountryByName(e.target.value));
-      let nodes = [...(document.getElementsByClassName("country"))];
+    let value = e.target.value
+    if(value != null && value.trim() !== ''){
+      this.setState({searchText: value}, () => this.filterCountryByName(value));
+      let nodes = [...(document.getElementsByClassName("country"))];  
       nodes.forEach( node => {
         node.style.fill =  "#ECEFF1";
         node.style.stroke =  "#111";
         node.style.strokeWidth =  .75;
-        node.style.outline =  "none"
+        node.style.outline =  "none";
+        node.style.transition = "all 250ms"
       })
-      nodes = nodes.filter(e => this.filterCountryByName(e.target.value).map((country, i) => country.name).includes(e.dataset.tip));
+      console.log(e);
+      console.log(e.target)
+      console.log(value)
+      nodes = nodes.filter(e => this.filterCountryByName(value).map((country, i) => country.name).includes(e.dataset.tip));
       // console.log(nodes);
       nodes.forEach( node => {
         node.style.fill =  "#024e1b";
         node.style.stroke =  "#111";
         node.style.strokeWidth =  1;
-        node.style.outline =  "none"
+        node.style.outline =  "none";
+        node.style.transition = "all 250ms"
       })
 
     } else {
       this.setState(({ 
-        searchText: e.target.value, 
+        searchText: value, 
         filterNations: []
       }));
       let nodes = [...(document.getElementsByClassName("country"))];
@@ -297,6 +306,7 @@ class App extends Component {
           <Route exact path={`${process.env.PUBLIC_URL}/play`} 
                 render={props => 
                 <Game 
+                      simplifyString = {this.simplifyString}
                       mapView = {this.mapView}
                       mapVisible={this.state.mapView}
                       flagCodes = {this.state.flagCodes}
@@ -321,6 +331,11 @@ class App extends Component {
             hoverOffRegion = {this.hoverOffRegion}
             filterCountryByName = {this.filterCountryByName}
             hoverOnCountry = {this.hoverOnCountry}
+            hoverOffCountry = {this.hoverOffCountry}
+            handleMove = {this.handleMove}
+            handleLeave = {this.handleLeave}
+            hovered = {this.state.hovered}
+            highlighted = {this.state.highlighted}
           /> }/>
           <Route path={`${process.env.PUBLIC_URL}/:country`} render={props => <DetailView 
             flagCodes = {this.state.flagCodes}
@@ -337,6 +352,11 @@ class App extends Component {
             hoverOffRegion = {this.hoverOffRegion}
             filterCountryByName = {this.filterCountryByName}
             hoverOnCountry = {this.hoverOnCountry}
+            hoverOffCountry = {this.hoverOffCountry}
+            handleMove = {this.handleMove}
+            handleLeave = {this.handleLeave}
+            hovered = {this.state.hovered}
+            highlighted = {this.state.highlighted}
           />}/>
           </Switch>
         </div>

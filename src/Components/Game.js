@@ -1,5 +1,6 @@
 import React from 'react';
 import Maps from './Maps';
+import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
 
@@ -87,7 +88,13 @@ class Game extends React.Component {
         });
         clearInterval(this.intervalId)
     }
-    handlePointsQuestions = (c, i, q) => {
+    handlePointsQuestions = (q) => {
+        let correctCount = q.filter(question => question.correct === true);
+        let incorrectCount = q.filter(question => question.correct === false);
+        console.log(correctCount);
+        console.log(incorrectCount);
+        let c = correctCount.length;
+        let i = incorrectCount.length;
         this.setState(prevState =>({
             correct: c, 
             incorrect: i,
@@ -120,9 +127,10 @@ class Game extends React.Component {
                 isRunning: false
             }
         })
+        this.resetTimer();
     }
     render(){
-        let back = !this.props.isStarted && <button className="btn btn-info" onClick={() => this.resetMode()}>Go Back</button>
+        let back = !this.props.isStarted && <button className="btn btn-info mb-3" onClick={() => this.resetMode()}>Go Back</button>
         let gameMode;
         if(this.state.gameMode==="choice"){
             gameMode = 
@@ -130,6 +138,8 @@ class Game extends React.Component {
             {back}
             <Choice 
                 isStarted={this.state.isStarted}
+                correct = {this.state.correct}
+                incorrect = {this.state.incorrect}
                 flagCodes = {this.props.flagCodes}
                 data = {this.props.data}
                 getCountryInfo = {this.props.getCountryInfo}
@@ -143,30 +153,37 @@ class Game extends React.Component {
             gameMode = 
             <div>
                 {back}
-                <Maps
-                        mapVisible = {this.props.mapVisible}
-                        mapView={this.props.mapView} 
-                        worldData = {this.props.data}
-                        countries = {this.props.countries}
-                        changeView = {this.props.changeView}
-                        getCountryInfo = {this.props.getCountryInfo}
-                        hoverOnRegion = {this.props.hoverOnRegion}
-                        hoverOffRegion = {this.props.hoverOffRegion}
-                        startGame = {this.startGame}/>
+                <Find
+                    simplifyString={this.props.simplifyString}
+                    isStarted={this.state.isStarted}
+                    correct = {this.state.correct}
+                    incorrect = {this.state.incorrect}
+                    mapVisible = {this.props.mapVisible}
+                    mapView={this.props.mapView} 
+                    worldData = {this.props.data}
+                    countries = {this.props.countries}
+                    changeView = {this.props.changeView}
+                    getCountryInfo = {this.props.getCountryInfo}
+                    hoverOnRegion = {this.props.hoverOnRegion}
+                    hoverOffRegion = {this.props.hoverOffRegion}
+                    startGame = {this.startGame}
+                    endGame = {this.endGame}
+                    updateScore = {this.updateScore}
+                    handlePoints = {this.handlePointsQuestions}/>
             </div>
         } else if (this.state.gameMode==="highlight"){
             gameMode = <div>
                 {back}
                 <Maps
-                        mapVisible = {this.props.mapVisible}
-                        mapView={this.props.mapView} 
-                        worldData = {this.props.data}
-                        countries = {this.props.countries}
-                        changeView = {this.props.changeView}
-                        getCountryInfo = {this.props.getCountryInfo}
-                        hoverOnRegion = {this.props.hoverOnRegion}
-                        hoverOffRegion = {this.props.hoverOffRegion}
-                        startGame = {this.startGame}/>
+                    mapVisible = {this.props.mapVisible}
+                    mapView={this.props.mapView} 
+                    worldData = {this.props.data}
+                    countries = {this.props.countries}
+                    changeView = {this.props.changeView}
+                    getCountryInfo = {this.props.getCountryInfo}
+                    hoverOnRegion = {this.props.hoverOnRegion}
+                    hoverOffRegion = {this.props.hoverOffRegion}
+                    startGame = {this.startGame}/>
             </div>
         } else {
             gameMode = <div></div>
@@ -196,7 +213,7 @@ class Game extends React.Component {
                     </div>
                 </div>
             </div>}
-            <div className="text-center col-md-8 mx-auto">{gameMode}</div>
+            <div className="text-center col-md-8 col-lg-12 mx-auto">{gameMode}</div>
         </div>
         </>
         )
