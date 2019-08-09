@@ -124,9 +124,9 @@ class Choice extends React.Component {
                 answerChoices = []
             } else {
                 answerChoices = this.state.answers.map((answer) => {
-                    let navClass = "possible card mt-3";
-                    let correct = "bg-success possible card mt-3"
-                    let incorrect = "bg-danger possible card mt-3 disabled"
+                    let navClass = "possible card mx-1 mt-3";
+                    let correct = "bg-success possible card mx-1 mt-3"
+                    let incorrect = "bg-danger possible card mx-1 mt-3 disabled"
                     return <li role="button" onClick={() => this.checkAnswer(answer)}className={answer.correct === 2 ? navClass : (answer.correct === 1 ? incorrect : correct)} value={answer.id} key={answer.id}>{answer.name}</li>
                 })
             }
@@ -137,7 +137,7 @@ class Choice extends React.Component {
                 {this.props.isStarted && <div>What is the capital of {this.state.currentCountry && this.state.currentCountry.name}?</div>}
                 {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
                 {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
-                {this.state.answers && this.state.answers.length > 0 && <ul className="px-0">{answerChoices}</ul>}
+                {this.state.answers && this.state.answers.length > 0 && <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>}
             </div>
 
         )

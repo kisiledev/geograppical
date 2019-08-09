@@ -1,5 +1,5 @@
 import React from 'react';
-import Maps from './Maps';
+import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
@@ -174,7 +174,11 @@ class Game extends React.Component {
         } else if (this.state.gameMode==="highlight"){
             gameMode = <div>
                 {back}
-                <Maps
+                <Highlight
+                    simplifyString={this.props.simplifyString}
+                    isStarted={this.state.isStarted}
+                    correct = {this.state.correct}
+                    incorrect = {this.state.incorrect}
                     mapVisible = {this.props.mapVisible}
                     mapView={this.props.mapView} 
                     worldData = {this.props.data}
@@ -183,7 +187,10 @@ class Game extends React.Component {
                     getCountryInfo = {this.props.getCountryInfo}
                     hoverOnRegion = {this.props.hoverOnRegion}
                     hoverOffRegion = {this.props.hoverOffRegion}
-                    startGame = {this.startGame}/>
+                    startGame = {this.startGame}
+                    endGame = {this.endGame}
+                    updateScore = {this.updateScore}
+                    handlePoints = {this.handlePointsQuestions}/>
             </div>
         } else {
             gameMode = <div></div>
