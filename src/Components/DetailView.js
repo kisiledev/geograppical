@@ -59,6 +59,7 @@ class DetailView extends Component {
                 hoverOnRegion = {this.props.hoverOnRegion}
                 filterCountryByName = {this.props.filterCountryByName}
                 hoverOnCountry = {this.props.hoverOnCountry}
+                hoverOffCountry = {this.props.hoverOffCountry}
             /> : null }
         </div>
       )

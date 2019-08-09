@@ -124,7 +124,9 @@ class Sidebar extends Component {
                                     </Link>
                                     <div className="btn-group w-100">
                                         <button className="btn load-more nav-link btn-sm bg-info mb-1"
-                                            onClick={(e) => this.highlightSidebarCountry(e, this.state[region], country.name)} >Locate
+                                            onClick={(e) => this.highlightSidebarCountry(e, this.state[region], country.name)}
+                                            onMouseOver={(e) => this.props.hoverOnCountry(e, this.state[region], country.name)} 
+                                            onMouseLeave={(e) => this.props.hoverOffCountry(e, this.state[region], country.name)} >Locate
                                             <FontAwesomeIcon size="2x" color="white" icon={faMapMarkerAlt} /></button>
                                     </div>
                                     <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">

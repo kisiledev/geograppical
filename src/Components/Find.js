@@ -4,8 +4,10 @@ import {
     ZoomableGroup,
     Geographies,
     Geography,
+    Graticule
   } from 'react-simple-maps';
 import data from '../Data/world-50m.json';
+import { geoEqualEarth } from 'd3-geo'
 import ReactTooltip from 'react-tooltip';
 import { faPlus, faMinus, faGlobeAfrica } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,18 +15,189 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 
 class Find extends Component {
     state = {
-        center: [0, 20],
+        center: [0, 0],
         zoom: 1,
         currentCountry: null,
         currentCountryId: null,
+        bypassClick: false,
         capitals: [],
         guesses: null,
         answers: null,
         questions:[],
-        ran: null
+        ran: null,
+        countries: [],
+        regions: [],
+        continents: []
+    }
+    proj = () => {
+      return geoEqualEarth()
+      .translate([800 / 2, 400 / 2])
+      .scale(150);
+    }
+    // getCursorLocation = (event) => {
+    //   const zoom = this.state.zoom;
+  
+    //   console.log("Zoom: " + zoom);
+  
+    //   const { width, height } = this.props;
+    //   const projection = this.projection();
+    //   const box = this._wrapper.querySelector("svg").getBoundingClientRect();
+    //   const { top, left } = box;
+  
+    //   const resizeFactorX = box.width / width;
+    //   const resizeFactorY = box.height / height;
+  
+    //   // position cursor as position within width and height of composableMap
+    //   const clientX = (event.clientX - left) / resizeFactorX;
+    //   const clientY = (event.clientY - top) / resizeFactorY;
+  
+    //   const originalCenter = [width / 2, height / 2];
+  
+    //   // position in Composable map that current center has when map is centered
+    //   const currentCenter = projection(this.state.center);
+    //   console.log(currentCenter);
+  
+    //   // compensation in "Composable map units" needed due to being off-center(panned)
+    //   const offsetX = currentCenter[0] - originalCenter[0];
+    //   const offsetY = currentCenter[1] - originalCenter[1];
+  
+    //   console.log("offsetX: " + offsetX + " - offsetY: " + offsetY);
+  
+    //   // position in Composable map that cursor would have been if the map was centered at this zoom level???
+    //   let x = clientX + offsetX;
+    //   let y = clientY + offsetY;
+  
+    //   console.log("Corrected x: " + x + " - Corrected y: " + y);
+    //   // let xTodo,
+    //   //   yTodo = 0;
+    //   // if (x > 400) {
+    //   //   xTodo = 400 - x;
+    //   //   x = 400;
+    //   // }
+    //   // if (x < 0) {
+    //   //   xTodo = 0 + x;
+    //   //   x = 0;
+    //   // }
+    //   // if (y > 250) {
+    //   //   yTodo = 250 - y;
+    //   //   y = 250;
+    //   // }
+    //   // if (y < 0) {
+    //   //   yTodo = 0 + y;
+    //   //   y = 0;
+    //   // }
+  
+    //   const uncompensatedCursor = projection.invert([x, y]);
+  
+    //   const cursor = [
+    //     this.state.center[0] +
+    //       (uncompensatedCursor[0] - this.state.center[0]) / zoom,
+    //     this.state.center[1] +
+    //       (uncompensatedCursor[1] - this.state.center[1]) / zoom
+    //   ];
+  
+    //   return cursor;
+    // }
+    componentDidMount(){
+      this.getMapNations();
+      this.props.handlePoints(this.state.questions);
+  }
+  
+  componentDidUpdate(prevProps) {
+    // only update chart if the data has changed
+    if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
+      this.setDynamicRegions(this.state.regions)
+    }
+  };
+
+  getMapNations = () => {
+    const mapCountries = [...(document.getElementsByClassName("gameCountry"))];
+    const totalMapRegions = mapCountries.map(a => a.dataset.subregion.replace(/;/g, ""));
+    let uniqueMapRegions = totalMapRegions.filter((v, i, a) => a.indexOf(v) === i);
+    uniqueMapRegions = uniqueMapRegions.filter(Boolean);
+    const totalMapContinents = mapCountries.map(a => a.dataset.continent.replace(/;/g, ""));
+    let uniqueMapContinents = totalMapContinents.filter((v, i, a) => a.indexOf(v) === i);
+    uniqueMapContinents = uniqueMapContinents.filter(Boolean);
+    this.setState({
+      countries: mapCountries,
+      regions: uniqueMapRegions,
+      continents: uniqueMapContinents
+    }, () => {this.setLocations(this.state.regions, this.state.continents)})
+  }
+
+    getRegion = (region) => {
+      let nodes = [...(document.getElementsByClassName("gameCountry"))];
+      let match = nodes.filter(node => node.dataset.subregion === region);
+      return match;
+    }
+
+    getContinent = (continent) => {
+      let nodes = [...(document.getElementsByClassName("gameCountry"))];
+      let match = nodes.filter(node => node.dataset.continent === continent);
+      return match;
+    }
+
+    setDynamicRegions = regions => {
+      if (!regions) {
+        return;
+      }
+    
+      const regionsState = {};
+      regions.forEach((region) => {
+          if(this.state[region] && this.state[region].countries[0]){
+              regionsState[region] = {id: region, countries: this.state[region].countries};
+          } else {
+              this.getRegion(region);
+              regionsState[region] = {id: region, countries: this.getRegion(region)};
+          }
+      });
+      // set state here outside the foreach function
+       this.setState({regions: {...regionsState}})
+    };
+
+    setDynamicContinents = continents => {
+      if (!continents) {
+        return;
+      }
+    
+      const continentsState = {};
+      continents.forEach((continent) => {
+          if(this.state[continent] && this.state[continent].countries[0]){
+              continentsState[continent] = {id: continent, countries: this.state[continent].countries};
+          } else {
+              this.getContinent(continent);
+              continentsState[continent] = {id: continent, countries: this.getContinent(continent)};
+          }
+      });
+      // set state here outside the foreach function
+       this.setState({continents: {...continentsState}})
+    };
+    setLocations = (regions, continents) => {
+      this.setDynamicContinents(continents);
+      this.setDynamicRegions(regions);
     }
 
     
+    // onRegionHover = (geo) => {
+    //   let regions = Object.values(this.state.regions);
+    //   let match = regions.filter(region => region.id === geo.properties.SUBREGION)[0];
+    //   match = match.countries;
+    //   match.forEach( node => {
+    //     node.style.fill =  "#ee0a43";
+    //     node.style.stroke =  "#111";
+    //     node.style.strokeWidth =  1;
+    //     node.style.outline =  "solid black"
+    //     node.style.outlineOffset = "1px"
+    //   })
+    // }
+    // onRegionLeave = (geo) => {
+    //   let regions = Object.values(this.state.regions);
+    //   let match = regions.filter(region => region.id === geo.properties.SUBREGION)[0];
+    //   match = match.countries;
+    //   match.forEach( node => {
+    //     node.removeAttribute('style');
+    //   })
+    // }
     handleZoomIn = (zoom) => {
         this.setState(prevState => ({zoom: prevState.zoom * 2}))
     }
@@ -34,6 +207,20 @@ class Find extends Component {
     handleText = (str) => {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '');
     }
+    handleMoveStart = newCenter => {
+      this.setState({
+        center: newCenter,
+        bypassClick: true
+      });
+    };
+  
+    handleMoveEnd = newCenter => {
+      this.setState({
+        center: newCenter,
+        bypassClick:
+          JSON.stringify(newCenter) !== JSON.stringify(this.state.center)
+      });
+    };
     handleClick = (e) => {
         // access to e.target here
         console.log(this.handleText(e.properties.NAME_LONG));
@@ -52,11 +239,16 @@ class Find extends Component {
       if (newZoom > 10 || newZoom < 1) {
         return;
       }
-      this.setState({zoom: newZoom})
-    }
+      // const cursor = this.getCursorLocation(event);
+      // const oldCenter = this.state.center;
 
-    componentDidMount(){
-        this.props.handlePoints(this.state.questions);
+      // const newCenter = [
+      //   oldCenter[0] +
+      //     ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
+      //   oldCenter[1] +
+      //     ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
+      // ];
+      // this.setState({zoom: newZoom, center: newCenter})
     }
     
     shuffle = (a) => {
@@ -136,14 +328,17 @@ class Find extends Component {
       let nodes = (document.getElementsByClassName("gameCountry"));
       nodes = [...nodes]
       console.log(nodes)
+      console.log('getting country data in Find')
       nodes = nodes.filter(e => this.handleText(country) === this.handleText(e.dataset.longname) || this.handleText(country) === this.handleText(e.dataset.shortname))
       console.log(nodes);
       this.changeStyle = (nodes) => {
         nodes.forEach( node => {
           node.style.fill =  "#FF0000";
           node.style.stroke =  "#111";
-          node.style.strokeWidth =  5;
+          node.style.strokeWidth =  1;
           node.style.outline =  "none"
+          node.style.boxShadow = "0 0 10px #9ecaed"
+          node.style.transition = "all 250ms"
         })
       }
       setTimeout(() => this.changeStyle(nodes), 300);
@@ -222,27 +417,37 @@ class Find extends Component {
             onWheel={this.handleWheel}
 
           >
-        <ComposableMap 
-          projection="robinson"
-          width={980}
-          height={551}
+        <ComposableMap
+          width={800}
+          height={400} 
+          projection={this.proj}
           style={{
             width: "100%",
             height: "auto",
           }}  
           >
-          <ZoomableGroup zoom={this.state.zoom} center={this.state.center}>
+          <ZoomableGroup 
+            zoom={this.state.zoom} 
+            center={this.state.center}
+            onMoveStart={this.handleMoveStart}
+            onMoveEnd={this.handleMoveEnd}
+          >
+            <Graticule />
           <Geographies  geography={data}>
-            {(geographies, projection) =>
-              geographies.map((geography, i) =>
+            {(geos, proj) =>
+              geos.map((geo, i) =>
               <Geography
                 data-idkey={i}
-                data-longname={this.handleText(geography.properties.NAME_LONG)}
-                data-shortname={geography.properties.NAME}
-                onClick={((e) => this.checkAnswer(e, geography.properties.NAME_LONG))}
+                data-longname={this.handleText(geo.properties.NAME_LONG)}
+                data-shortname={geo.properties.NAME}
+                data-continent ={geo.properties.CONTINENT}
+                data-subregion = {geo.properties.SUBREGION}
+                // onMouseEnter={(() => this.onRegionHover(geo))}
+                // onMouseLeave={(() => this.onRegionLeave(geo))}
+                onClick={((e) => this.checkAnswer(e, geo.properties.NAME_LONG))}
                 key={i}
-                geography={geography}
-                projection={projection}
+                geography={geo}
+                projection={proj}
                 className="gameCountry"       
               />
             )
@@ -259,6 +464,7 @@ class Find extends Component {
     )
   }
   }
+  
 
     export default Find;
     const BlockPageScroll = ({ children }) => {

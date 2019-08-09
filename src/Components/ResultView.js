@@ -34,6 +34,13 @@ class ResultView extends Component {
             getCountryInfo = {this.props.getCountryInfo}
             hoverOnRegion = {this.props.hoverOnRegion}
             hoverOffRegion = {this.props.hoverOffRegion}
+            handleMove = {this.props.handleMove}
+            handleLeave = {this.props.handleLeave}
+            hovered = {this.props.hovered}
+            highlighted = {this.props.highlighted}
+            totalRegions = {totalRegions}
+            uniqueRegions = {uniqueRegions}
+            getOccurrence = {getOccurrence}
           />
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
@@ -69,6 +76,11 @@ class ResultView extends Component {
             getCountryInfo = {this.props.getCountryInfo}
             filterCountryByName = {this.props.filterCountryByName}
             hoverOnCountry = {this.props.hoverOnCountry}
+            hoverOffCountry = {this.props.hoverOffCountry}
+            handleMove = {this.props.handleMove}
+            handleLeave = {this.props.handleLeave}
+            hovered = {this.props.hovered}
+            highlighted = {this.props.highlighted}
         /> :     
         <Breakpoint small down>
             <div className="col-12 text-center px-0">
