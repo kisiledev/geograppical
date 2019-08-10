@@ -285,6 +285,7 @@ class Highlight extends Component {
         console.log(currentCountry)
         currentCountry && answers.push({
             name: currentCountry.name.split(';')[0],
+            id: 0,
             correct: 2
         });
         for (let x = 0; x < 3; x++) {
@@ -303,8 +304,10 @@ class Highlight extends Component {
                 correct: 2}
             answers.push(capital);
             this.shuffle(answers);
+            console.log(answers)
             this.setState({answers: answers})
         }
+        console.log(answers)
         questions.push(question);
         this.setState({questions});
     }
@@ -374,7 +377,7 @@ class Highlight extends Component {
             //give score of 2
             this.props.updateScore(3-this.state.guesses);
             //set answer style
-            // answer['correct'] = 0;
+            country['correct'] = 0;
             //initialize correct counter for game
             console.log(question);
             if(this.state.guesses === 1){
@@ -383,7 +386,7 @@ class Highlight extends Component {
             guesses = null;
             setTimeout(() => this.takeTurn(), 300);   
         } else {
-            // answer['correct'] = 1;
+            country['correct'] = 1;
             console.log(question);
             question['correct'] = false;
             guesses ++
@@ -460,7 +463,6 @@ class Highlight extends Component {
             onMoveStart={this.handleMoveStart}
             onMoveEnd={this.handleMoveEnd}
           >
-            <Graticule />
           <Geographies  geography={data}>
             {(geos, proj) =>
               geos.map((geo, i) =>

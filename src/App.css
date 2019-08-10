@@ -204,14 +204,14 @@ a:hover {
   stroke-linecap: round;
 }
 .gameCountry {
-  fill: #e2fceb;
+  fill: #ffffff;
   stroke: #000;
   stroke-width: 0.5;
   outline: none;
   stroke-linecap: round;
 }
 .gameCountry:hover {
-  fill: #013313;
+  fill: #13d45a;
   stroke: #000;
   stroke-width: 0.5;
   outline: none;

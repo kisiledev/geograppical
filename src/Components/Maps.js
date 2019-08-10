@@ -95,8 +95,6 @@ class Maps extends Component {
   }
 
   setDynamicRegions = regions => {
-    console.log(this.totalMapRegions);
-        console.log(this.uniqueMapRegions)
     if (!regions) {
         console.log('no regions')
       return;
@@ -117,7 +115,6 @@ class Maps extends Component {
   };
   handleClick = (e) => {
           // access to e.target here
-    console.log(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
     this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
     }
 
