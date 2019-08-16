@@ -32,20 +32,18 @@ class Maps extends Component {
       return "";
     }
     const obj = JSON.parse(dataTip)
-    
-
     return obj.NAME ? (
       <div>
         <strong>{obj.NAME}</strong> <br />
         <Flag
-                  className="mapFlag text-center"
-                  name={(obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`}
-                  format="svg"
-                  pngSize={64}
-                  shiny={false}
-                  alt={`${obj.NAME}'s Flag`}
-                  basePath="/img/flags"
-                />
+          className="mapFlag text-center"
+          name={(obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`}
+          format="svg"
+          pngSize={64}
+          shiny={false}
+          alt={`${obj.NAME}'s Flag`}
+          basePath="/img/flags"
+        />
       </div>
     ) : null;
   };
@@ -58,10 +56,6 @@ class Maps extends Component {
       countries: mapCountries,
       regions: uniqueMapRegions
     })
-  }
-  
-  getOccurrence(array, value) {
-      return array.filter((v) => (v === value)).length;
   }
 
   componentDidMount(prevState){

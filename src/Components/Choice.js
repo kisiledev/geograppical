@@ -43,7 +43,6 @@ class Choice extends React.Component {
         question['country'] = currentCountry;
         question['correct'] = null;
         let answers = [];
-        console.log(currentCountry.government.capital.name);
         currentCountry && answers.push({
             name: currentCountry.government.capital.name.split(';')[0],
             id: 0,
@@ -76,18 +75,16 @@ class Choice extends React.Component {
             !this.props.isStarted && this.props.startGame();
             let country = this.getRandomCountry();
             this.setState(prevState => ({guesses: prevState.guesses +1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
-            console.log(this.state.questions.length)
             if(this.state.questions && this.state.questions.length > 10){
-                alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
-                this.setState({questions: [], answers: [], guesses: null})
-                this.props.endGame();
+                console.log('showing scores')
+                this.props.handleOpen();
+                // this.setState({questions: [], answers: [], guesses: null})   
                 
             }
     }
     
     checkAnswer = (answer) => {
         //if answer is correct answer (all correct answers have ID of 0)
-        let correct, incorrect;
         let questions = this.state.questions;
         let question = questions.find(question => question.country === this.state.currentCountry);
         let guesses = this.state.guesses;
@@ -97,7 +94,6 @@ class Choice extends React.Component {
             //set answer style
             answer['correct'] = 0;
             //initialize correct counter for game
-            console.log(question);
             if(this.state.guesses === 1){
                 question['correct'] = true;
             }
@@ -105,39 +101,43 @@ class Choice extends React.Component {
             setTimeout(() => this.takeTurn(), 300);   
         } else {
             answer['correct'] = 1;
-            console.log(question);
             question['correct'] = false;
             guesses ++
         }
-        this.setState({correct, incorrect, guesses}, () => {this.props.handlePoints(this.state.questions)})
+        this.setState({guesses}, () => {this.props.handlePoints(this.state.questions)})
     }
     render(){
+        const { isStarted } = this.props;
+        const { guesses, currentCountry, answers, questions} = this.state;
+        const { takeTurn, checkAnswer} = this;
         let directions = 
         <div className="directions">
             <h5>Directions</h5>
             <p>A statement will be shown with four choices. Select the correct answer for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
-            <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>
+            <button className="btn btn-lg btn-success" onClick={() => takeTurn()}>Start Game</button>
         </div>;
         let answerChoices;
-        if(this.state.answers && this.state.answers.length > 0){
-            if(this.state.questions < 0){
+        if(answers && answers.length > 0){
+            if(questions < 0){
                 answerChoices = []
             } else {
-                answerChoices = this.state.answers.map((answer) => {
+                answerChoices = answers.map((answer) => {
                     let navClass = "possible card mx-1 mt-3";
                     let correct = "bg-success possible card mx-1 mt-3"
                     let incorrect = "bg-danger possible card mx-1 mt-3 disabled"
-                    return <li role="button" onClick={() => this.checkAnswer(answer)}className={answer.correct === 2 ? navClass : (answer.correct === 1 ? incorrect : correct)} value={answer.id} key={answer.id}>{answer.name}</li>
+                    return <li role="button" onClick={() => checkAnswer(answer)}className={answer.correct === 2 ? navClass : (answer.correct === 1 ? incorrect : correct)} value={answer.id} key={answer.id}>{answer.name}</li>
                 })
             }
         }
         return(
             <div>
-                {!this.props.isStarted && directions}
-                {this.props.isStarted && <div>What is the capital of {this.state.currentCountry && this.state.currentCountry.name}?</div>}
-                {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
-                {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
-                {this.state.answers && this.state.answers.length > 0 && <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>}
+                {!isStarted && directions}
+                {isStarted && <div>What is the capital of {currentCountry && currentCountry.name}?</div>}
+                <div className="guesses">
+                    {isStarted && guesses && <div>{guesses} {(guesses === 1)     ? 'guess' : 'guesses' }</div>}
+                    {isStarted && guesses && <div>For {3-guesses} {(guesses === 2 || guesses ===4) ? 'point' : 'points' }</div>}
+                </div>
+                {answers && answers.length > 0 && <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>}
             </div>
 
         )

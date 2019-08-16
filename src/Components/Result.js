@@ -1,9 +1,28 @@
 import React, {Component} from 'react';
 import Flag from 'react-flags';
 import { Link } from 'react-router-dom';
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
+import {db} from './Firebase/firebase'
+
 
 class Result extends Component {
+    state = {
+        loggedIn: true,
+        favorite: false
+    }
+    makeFavorite = (e) => {
+        if(!this.state.favorite){
+            console.log(e.target.value)
+            this.setState({favorite: true});
+            db.collection('favorites').add({
+                countries: e.target.value
+            })
+        } else {
+            this.setState({favorite: false})
+        }
+    }
     render() {
         return(
             <div className="mr-md-3 card mb-3">
@@ -16,7 +35,8 @@ class Result extends Component {
                     <strong>Location: </strong>{this.props.subregion}
                     </p>
                     <Link to={`${process.env.PUBLIC_URL}/${this.props.name}`} className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name, this.props.capital)}>Read More</Link>
-                    </div> 
+                    {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
+                    </div>
                     <Flag 
                         name={(this.props.flagCode)? this.props.flagCode : "_unknown"}
                         format="svg"
@@ -24,7 +44,7 @@ class Result extends Component {
                         shiny={false}
                         alt={`${this.props.name}'s Flag`}
                         basePath="/img/flags"
-                    /> 
+                    />  
                     
                 </div>
                 

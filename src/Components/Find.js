@@ -29,75 +29,76 @@ class Find extends Component {
         regions: [],
         continents: []
     }
+    // const { zoom, center, currentCountry, currentCountryId, bypassClick, capitals, guesses, answers, questions, ran, countries, regions, continents}
     proj = () => {
       return geoEqualEarth()
       .translate([800 / 2, 400 / 2])
       .scale(150);
     }
-    // getCursorLocation = (event) => {
-    //   const zoom = this.state.zoom;
+    getCursorLocation = (event) => {
+      const zoom = this.state.zoom;
   
-    //   console.log("Zoom: " + zoom);
+      console.log("Zoom: " + zoom);
   
-    //   const { width, height } = this.props;
-    //   const projection = this.projection();
-    //   const box = this._wrapper.querySelector("svg").getBoundingClientRect();
-    //   const { top, left } = box;
+      const { width, height } = this.props;
+      const projection = this.proj();
+      const box = this._wrapper.querySelector("svg").getBoundingClientRect();
+      const { top, left } = box;
   
-    //   const resizeFactorX = box.width / width;
-    //   const resizeFactorY = box.height / height;
+      const resizeFactorX = box.width / width;
+      const resizeFactorY = box.height / height;
   
-    //   // position cursor as position within width and height of composableMap
-    //   const clientX = (event.clientX - left) / resizeFactorX;
-    //   const clientY = (event.clientY - top) / resizeFactorY;
+      // position cursor as position within width and height of composableMap
+      const clientX = (event.clientX - left) / resizeFactorX;
+      const clientY = (event.clientY - top) / resizeFactorY;
   
-    //   const originalCenter = [width / 2, height / 2];
+      const originalCenter = [width / 2, height / 2];
   
-    //   // position in Composable map that current center has when map is centered
-    //   const currentCenter = projection(this.state.center);
-    //   console.log(currentCenter);
+      // position in Composable map that current center has when map is centered
+      const currentCenter = projection(this.state.center);
+      console.log(currentCenter);
   
-    //   // compensation in "Composable map units" needed due to being off-center(panned)
-    //   const offsetX = currentCenter[0] - originalCenter[0];
-    //   const offsetY = currentCenter[1] - originalCenter[1];
+      // compensation in "Composable map units" needed due to being off-center(panned)
+      const offsetX = currentCenter[0] - originalCenter[0];
+      const offsetY = currentCenter[1] - originalCenter[1];
   
-    //   console.log("offsetX: " + offsetX + " - offsetY: " + offsetY);
+      console.log("offsetX: " + offsetX + " - offsetY: " + offsetY);
   
-    //   // position in Composable map that cursor would have been if the map was centered at this zoom level???
-    //   let x = clientX + offsetX;
-    //   let y = clientY + offsetY;
+      // position in Composable map that cursor would have been if the map was centered at this zoom level???
+      let x = clientX + offsetX;
+      let y = clientY + offsetY;
   
-    //   console.log("Corrected x: " + x + " - Corrected y: " + y);
-    //   // let xTodo,
-    //   //   yTodo = 0;
-    //   // if (x > 400) {
-    //   //   xTodo = 400 - x;
-    //   //   x = 400;
-    //   // }
-    //   // if (x < 0) {
-    //   //   xTodo = 0 + x;
-    //   //   x = 0;
-    //   // }
-    //   // if (y > 250) {
-    //   //   yTodo = 250 - y;
-    //   //   y = 250;
-    //   // }
-    //   // if (y < 0) {
-    //   //   yTodo = 0 + y;
-    //   //   y = 0;
-    //   // }
+      console.log("Corrected x: " + x + " - Corrected y: " + y);
+      // let xTodo,
+      //   yTodo = 0;
+      // if (x > 400) {
+      //   xTodo = 400 - x;
+      //   x = 400;
+      // }
+      // if (x < 0) {
+      //   xTodo = 0 + x;
+      //   x = 0;
+      // }
+      // if (y > 250) {
+      //   yTodo = 250 - y;
+      //   y = 250;
+      // }
+      // if (y < 0) {
+      //   yTodo = 0 + y;
+      //   y = 0;
+      // }
   
-    //   const uncompensatedCursor = projection.invert([x, y]);
+      const uncompensatedCursor = projection.invert([x, y]);
   
-    //   const cursor = [
-    //     this.state.center[0] +
-    //       (uncompensatedCursor[0] - this.state.center[0]) / zoom,
-    //     this.state.center[1] +
-    //       (uncompensatedCursor[1] - this.state.center[1]) / zoom
-    //   ];
+      const cursor = [
+        this.state.center[0] +
+          (uncompensatedCursor[0] - this.state.center[0]) / zoom,
+        this.state.center[1] +
+          (uncompensatedCursor[1] - this.state.center[1]) / zoom
+      ];
   
-    //   return cursor;
-    // }
+      return cursor;
+    }
     componentDidMount(){
       this.getMapNations();
       this.props.handlePoints(this.state.questions);
@@ -239,16 +240,16 @@ class Find extends Component {
       if (newZoom > 10 || newZoom < 1) {
         return;
       }
-      // const cursor = this.getCursorLocation(event);
-      // const oldCenter = this.state.center;
+      const cursor = this.getCursorLocation(event);
+      const oldCenter = this.state.center;
 
-      // const newCenter = [
-      //   oldCenter[0] +
-      //     ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
-      //   oldCenter[1] +
-      //     ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
-      // ];
-      // this.setState({zoom: newZoom, center: newCenter})
+      const newCenter = [
+        oldCenter[0] +
+          ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
+        oldCenter[1] +
+          ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
+      ];
+      this.setState({zoom: newZoom, center: newCenter})
     }
     
     shuffle = (a) => {
@@ -318,8 +319,11 @@ class Find extends Component {
               node.removeAttribute("style")
             })
             if(this.state.questions && this.state.questions.length > 10){
-                alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
+                console.log('opening modal')
+                this.props.handleOpen();
+                // alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
                 this.setState({questions: [], answers: [], guesses: null})
+                console.log('ending game')
                 this.props.endGame();
                 
             }
@@ -380,57 +384,60 @@ class Find extends Component {
         this.setState({correct, incorrect, guesses}, () => {this.props.handlePoints(this.state.questions)})
     }
   render() {
+    const { isStarted, mapView,mapVisible } = this.props;
+    const { guesses, currentCountry, zoom, center} = this.state;
+    const { takeTurn, handleZoomIn, handleZoomOut, handleWheel, handleText, handleMoveEnd, handleMoveStart, checkAnswer, proj} = this;
     let directions = 
     <div className="directions">
         <h5>Directions</h5>
         <p>A statement will be shown with four choices. Select the correct answer for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
-        <button className="btn btn-lg btn-success" onClick={() => this.takeTurn()}>Start Game</button>
+        <button className="btn btn-lg btn-success" onClick={() => takeTurn()}>Start Game</button>
     </div>;
     return(
         
         <BreakpointProvider>
         <div className="card mr-3 mb-3">
-            {!this.props.isStarted && directions}
-            {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
-            {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}
+            {!isStarted && directions}
+            {isStarted && guesses && <div>{guesses} {(guesses === 1)     ? 'guess' : 'guesses' }</div>}
+            {isStarted && guesses && <div>For {3-guesses} {(guesses === 2 || guesses ===4) ? 'point' : 'points' }</div>}
           <Breakpoint small up>
           <div className="d-flex justify-content-between">
           <div className="btn-group d-inline">
-            <button className="btn btn-info" onClick={() => this.handleZoomOut(this.state.zoom) }><FontAwesomeIcon icon={faMinus}/></button>
-            <button className="btn btn-info" onClick={() => this.handleZoomIn(this.state.zoom) }><FontAwesomeIcon icon={faPlus}/></button>
+            <button className="btn btn-info" onClick={() => handleZoomOut(zoom) }><FontAwesomeIcon icon={faMinus}/></button>
+            <button className="btn btn-info" onClick={() => handleZoomIn(zoom) }><FontAwesomeIcon icon={faPlus}/></button>
           </div>
           <button 
             className="btn btn-info" 
-            onClick={() => this.props.mapView() }
+            onClick={() => mapView() }
           >
-            <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
+            <FontAwesomeIcon icon={faGlobeAfrica}/>{ (mapVisible === "Show") ? "Hide" : "Show"} Map
           </button>
 
           </div>
           </Breakpoint>
         <hr />
-        {this.state.currentCountry && <div>Find {this.state.currentCountry.name}</div>}
-        {this.props.mapVisible === "Show" ?
+        {currentCountry && <div>Find {currentCountry.name}</div>}
+        {mapVisible === "Show" ?
         <BlockPageScroll>
           <div 
             ref={wrapper => (this._wrapper = wrapper)}
-            onWheel={this.handleWheel}
+            onWheel={handleWheel}
 
           >
         <ComposableMap
           width={800}
           height={400} 
-          projection={this.proj}
+          projection={proj}
           style={{
             width: "100%",
             height: "auto",
           }}  
           >
           <ZoomableGroup 
-            zoom={this.state.zoom} 
-            center={this.state.center}
-            onMoveStart={this.handleMoveStart}
-            onMoveEnd={this.handleMoveEnd}
+            zoom={zoom} 
+            center={center}
+            onMoveStart={handleMoveStart}
+            onMoveEnd={handleMoveEnd}
           >
             <Graticule />
           <Geographies  geography={data}>
@@ -438,13 +445,13 @@ class Find extends Component {
               geos.map((geo, i) =>
               <Geography
                 data-idkey={i}
-                data-longname={this.handleText(geo.properties.NAME_LONG)}
+                data-longname={handleText(geo.properties.NAME_LONG)}
                 data-shortname={geo.properties.NAME}
                 data-continent ={geo.properties.CONTINENT}
                 data-subregion = {geo.properties.SUBREGION}
-                // onMouseEnter={(() => this.onRegionHover(geo))}
-                // onMouseLeave={(() => this.onRegionLeave(geo))}
-                onClick={((e) => this.checkAnswer(e, geo.properties.NAME_LONG))}
+                // onMouseEnter={(() => onRegionHover(geo))}
+                // onMouseLeave={(() => onRegionLeave(geo))}
+                onClick={((e) => checkAnswer(e, geo.properties.NAME_LONG))}
                 key={i}
                 geography={geo}
                 projection={proj}

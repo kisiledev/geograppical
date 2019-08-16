@@ -57,6 +57,7 @@ class ResultView extends Component {
             flagCode = {country.government.country_name.isoCode}
             imgalt = {country.name + "'s flag"}        
             key={index}
+            country={country}
             code={country.alpha3Code}
             />
           )}

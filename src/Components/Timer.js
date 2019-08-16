@@ -1,14 +1,29 @@
-import React, { Component } from "react";
+import React from "react";
 
-export default class Timer extends Component {
+const Timer = (props) => {
+
   // decrement timer method
   
 
   // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
-  render() {
-    return <div>
-      {this.props.time.isRunning ? <h5 className="text-danger"><strong>{this.props.time.currentCount}</strong></h5> : <h5 className="text-success"><strong>{this.props.time.currentCount}</strong></h5>}
-      <div></div>
-    </div>;
+  let time;
+  if(props.time){
+    time = 
+    <div className="col text-center">Time
+      <div className="col">
+        <div>
+        <h5 className={props.time && props.time.isRunning ? "text-danger" : "text-success"}>
+          <strong>{props.time !== null && props.time.timeMode === "et" ? props.time.clock : props.time.currentCount}</strong>
+        </h5>
+        <div></div>
+        </div>
+      </div>
+      </div>
   }
+
+  let noTime = <div></div>
+  return (
+    <div>{props.time && props.time !==null ? time : noTime}</div>
+  )
 }
+export default Timer;

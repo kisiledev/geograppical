@@ -7,10 +7,14 @@ import NavBar from './Components/NavBar';
 import { BreakpointProvider } from 'react-socks';
 import './App.css';
 import axios from 'axios';
+import { auth } from './Components/Firebase/firebase'
 import i18n from 'i18n-iso-countries';
 import Game from './Components/Game';
+import Account from './Components/Account';
+import SignIn from './Components/SignIn';
+import withAuthProtection from './Components/AuthProtection'
 
- 
+const ProtectedProfile = withAuthProtection('/register')(Account)
 class App extends Component {
 
   state = {
@@ -26,12 +30,14 @@ class App extends Component {
     worldData: [],
     countryDetail: [],
     countries: [],
-    mode: ""
+    mode: "",
+    user: null
   }
 
   componentDidMount() {
     this.loadWorldData();
     this.loadCodes();
+    this.authListener();
   }
   removeNull(array){
     if(array !==undefined)
@@ -39,7 +45,11 @@ class App extends Component {
       .filter(item => item.government.capital !== undefined && item.government.country_name !==undefined && item.name)
       .map(item => Array.isArray(item) ? this.removeNull(item) : item);
   }
-
+  authListener = () => {
+    auth.onAuthStateChanged((user) => {
+      user ?  this.setState({user},console.log(user) ) : this.setState({user: null})
+    })
+  }
   async loadCodes() {
     await axios.get("../iso.json")
      .then(res => {
@@ -300,6 +310,7 @@ class App extends Component {
           changeView = {this.handleViews}
           filterNations = {this.state.filterNations}
           changeMode = {this.changeMode}
+          user= {this.state.user}
         />
         <div className="main container-fluid">
           <Switch>
@@ -312,9 +323,12 @@ class App extends Component {
                       flagCodes = {this.state.flagCodes}
                       data = {this.state.worldData}
                       getCountryInfo = {this.getCountryInfo}
+                      user = {this.state.user}
                 /> 
                 } 
           />
+          <Route exact path={`${process.env.PUBLIC_URL}/account`} render={props => <ProtectedProfile {...props} user={this.state.user} />}/>
+          <Route exact path={`${process.env.PUBLIC_URL}/register`} render={props => <SignIn />}/>
           <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView
             mapView = {this.mapView}
             flagCodes = {this.state.flagCodes}
@@ -357,6 +371,7 @@ class App extends Component {
             handleLeave = {this.handleLeave}
             hovered = {this.state.hovered}
             highlighted = {this.state.highlighted}
+            user = {this.state.user}
           />}/>
           </Switch>
         </div>

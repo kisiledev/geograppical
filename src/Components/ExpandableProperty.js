@@ -15,11 +15,9 @@ const ExpandableProperty = (props) => {
 
     useEffect(() => {
       setTrue(); 
-      console.log(isOpen);
     }, []);
 
     const setTrue = () => {
-      console.log(isOpen)
       if(props.country.name){
       setIsOpen(true);
     } else {

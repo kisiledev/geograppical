@@ -4,11 +4,35 @@ import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
 import { Link } from 'react-router-dom';
 import '../App.css';
+import Alert from 'react-bootstrap/Alert'
 import Sidebar from './Sidebar';
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { db, auth } from './Firebase/firebase'
+import { faArrowLeft, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class DetailView extends Component {
+  state = {
+    loggedIn: true,
+    favorite: false
+}
+
+// users/${currentUser}/favorites
+  makeFavorite = (e, country) => {
+    e.persist();
+    if(!this.state.favorite){
+        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
+              country
+        }).then(() => {
+          console.log(`Added ${country.name} to favorites`)
+          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, favorite: true})
+        }).catch((err) => {
+          console.error(err)
+          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+        })
+    } else {
+        this.setState({favorite: false})
+    }
+}
     render() {
     const totalRegions = this.props.data.map(a => a.geography.map_references)
     function getOccurrence(array, value) {
@@ -16,15 +40,15 @@ class DetailView extends Component {
     }
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean)
-    console.log(uniqueRegions);
-    console.log(this.props.countryDetail.government.country_name.isoCode)
       return(
         <div className="row">
+          {this.state.messasge && <Alert variant={this.state.message.style}>{this.state.message}</Alert>}
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
                 <div className="row justify-content-between">
                 <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
                 <AudioPlayer nation={this.props.countryDetail} />
+                {auth.currentUser && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                 <Flag
                   className="detailFlag align-self-end text-right img-thumbnail"
                   name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}

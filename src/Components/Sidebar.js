@@ -13,12 +13,14 @@ class Sidebar extends Component {
     state = {};
     componentDidMount(prevState){
         if(prevState !== this.state){
+            console.log('mounted component')
             this.setDynamicRegions(this.props.uniqueRegions)
         };
     }
     componentDidUpdate(prevProps) {
         // only update chart if the data has changed
         if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
+            console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
         }
     };
@@ -35,7 +37,6 @@ class Sidebar extends Component {
         let searchDB = Object.values(this.props.data);
         this.removeNull(searchDB);
         let match = searchDB.filter(place => place.geography.map_references === region);
-        
         return match;
     }
     
@@ -44,9 +45,7 @@ class Sidebar extends Component {
             console.log('no regions')
           return;
         }
-        // console.log(regions);
         const regionsState = {};
-      
         regions.forEach((region) => {
             if(this.state[region] && this.state[region].countries[0]){
                 regionsState[region] = { visible: 5, start: 0, countries: this.state[region].countries, open: false};
@@ -59,21 +58,14 @@ class Sidebar extends Component {
          this.setState({...regionsState})
     };
     updateOpen = (region) => {
-            const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
-            this.setState(({ [region]: open}));
+        const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
+        this.setState(({ [region]: open}));
     };
 
     sidebarDataHandling = (event, region, change, start) => {
         event.stopPropagation();
         const more = {visible: this.state[region].visible + change, start: this.state[region].start + start, open: true, countries: this.state[region].countries}
         this.setState(({[region]: more}));
-    }
-    highlightSidebarCountry = (e, region, country) => {
-        // e.preventDefault();
-        // alert(this.state[region].open + " " + country);
-        // const more = {visible: this.state[region].visible, start: this.state[region].start, open: true, countries: this.state[region].countries}
-        // this.setState(({[region]: more}))
-        this.props.hoverOnCountry(e, region,country);
     }
       
     handleRegion =(e, region) =>{
@@ -120,18 +112,9 @@ class Sidebar extends Component {
                                     <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
                                         <button 
                                             onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}
-                                            className="btn nav-link countryname btn-sm bg-info mb-1"><strong>{country.name}</strong></button>
-                                    </Link>
-                                    <div className="btn-group w-100">
-                                        <button className="btn load-more nav-link btn-sm bg-info mb-1"
-                                            onClick={(e) => this.highlightSidebarCountry(e, this.state[region], country.name)}
                                             onMouseOver={(e) => this.props.hoverOnCountry(e, this.state[region], country.name)} 
-                                            onMouseLeave={(e) => this.props.hoverOffCountry(e, this.state[region], country.name)} >Locate
-                                            <FontAwesomeIcon size="2x" color="white" icon={faMapMarkerAlt} /></button>
-                                    </div>
-                                    <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
-                                        <button className="btn load-more nav-link btn-sm bg-info mb-1"
-                                            onClick={() => this.props.getCountryInfo(country.name, country.government.capital.name)}>More Info<FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></button>
+                                            onMouseLeave={(e) => this.props.hoverOffCountry(e, this.state[region], country.name)} 
+                                            className="btn nav-link countryname btn-sm bg-info mb-1"><strong>{country.name}</strong><FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} /></button>
                                     </Link>
                                     </div>
                                 </li>
