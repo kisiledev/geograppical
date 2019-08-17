@@ -24,11 +24,11 @@ class Game extends React.Component {
             currentCount: 60,
             isRunning: false,
             timeMode: 'cd',
-            clock: '0:00',
+            clock: 0,
             elapsed: ''
         },
         show: false
-    };
+    }; 
     
     handleClose = () => {
     this.setState({show: false})
@@ -42,21 +42,38 @@ class Game extends React.Component {
         this.setState({show: true})
     }
     timer = () => {
-        this.setState(prevState =>({
-            time: {
-                currentCount: this.state.time.currentCount - 1,
-                isRunning: true
-            }
-        }));
+        console.log('starting timer')
+        if(this.state.time.timeMode === "cd"){
+            this.setState(prevState =>({
+                time: {
+                    currentCount: this.state.time.currentCount - 1,
+                    isRunning: true,
+                    timeMode: 'cd'
+                }
+            }));
+        } else {
+            console.log(this.state.time.clock)
+            this.setState(prevState =>({
+                time: {
+                    clock: this.state.time.clock + 1,
+                    isRunning: true,
+                    timeMode: 'et',
+                    elapsed: ''
+                },
+            }));
+        }
         //clear interval
-        if (this.state.time.currentCount === 0) {
+        if (this.state.time.currentCount === 0 || !this.state.time.isRunning) {
           this.handleOpen()
-          clearInterval(this.state.intervalId);
+          clearInterval(this.intervalId);
+          console.log('timer stopped')
+          this.setState({time: { isRunning: false}})
         }
       }
     
     startTimer = () => {
-        this.intervalId = setInterval(this.timer.bind(this), 1000);
+        this.intervalId = setInterval(() => this.timer(), 1000);
+        console.log('starting time')
         this.setState(prevState =>({time: {isRunning: true}, intervalId: this.intervalId, ...prevState}))
         
       }
@@ -67,15 +84,20 @@ class Game extends React.Component {
               currentCount: this.state.time.currentCount
           }
         })
-        clearInterval(this.state.intervalId)
+        clearInterval(this.intervalId)
       }
 
       resetTimer = () => {
+          console.log('resetting time')
+          clearInterval(this.intervalId);
           this.setState({
               time: {
-                  isRunning: false,
-                  currentCount: 60
-              }
+                isRunning: false,
+                currentCount: 60,
+                timeMode: 'cd',
+                clock: 0,
+                elapsed: ''
+            }
           })
       }
     
@@ -91,23 +113,11 @@ class Game extends React.Component {
     
       // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
       componentWillUnmount = () => {
-        clearInterval(this.state.intervalId);
+        clearInterval(this.intervalId);
       }
       
     
-       SecondsToHHMMSS = (totalSeconds) => {
-        let hours = Math.floor(totalSeconds / 3600);
-        let minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
-        let seconds = totalSeconds - (hours * 3600) - (minutes * 60);
-      
-        // round seconds
-        seconds = Math.round(seconds * 100) / 100
-      
-        let result = (hours < 10 ? "0" + hours : hours);
-        result += ":" + (minutes < 10 ? "0" + minutes : minutes);
-        result += ":" + (seconds < 10 ? "0" + seconds : seconds);
-        return result;
-      }
+       
       // Increment the timer
       update = () => {
         let clock = this.state.clock;
@@ -121,7 +131,7 @@ class Game extends React.Component {
       calculateOffset = () => {
         let now = Date.now();
         let offset = now - this.offset;
-        this.offset = now;
+        this.offset = now; 
         return offset;
       }
     
@@ -143,7 +153,7 @@ class Game extends React.Component {
             incorrect: 0
 
         });
-        clearInterval(this.state.intervalId)
+        clearInterval(this.intervalId)
         this.resetTimer();
     }
     handlePointsQuestions = (q) => {
@@ -175,25 +185,27 @@ class Game extends React.Component {
             })
     }
     resetMode = () => {
+        console.log('resetting mode')
         this.resetTimer();  
         this.setState({
             questionsRemaining: null,
-        questions: null,
-        score: 0,
-        correct: 0,
-        incorrect: 0,
-        gameMode: null,
-        isStarted: false,
-        scoreChecked: true,
-        timeChecked: true,
-        time: {
-            currentCount: 60,
-            isRunning: false,
-            timeMode: 'cd',
-            clock: 0,
-            elapsed: ''
-        }
-        })
+            questions: null,
+            score: 0,
+            correct: 0,
+            incorrect: 0,
+            gameMode: null,
+            isStarted: false,
+            scoreChecked: true,
+            timeChecked: true,
+            time: {
+                currentCount: 60,
+                isRunning: false,
+                timeMode: 'cd',
+                clock: 0,
+                elapsed: ''
+            }
+        }, console.log('resetting state'))
+        clearInterval(this.intervalId);
     }
     timeMode = (e) => {
         console.log(e.target.value)
@@ -259,6 +271,7 @@ class Game extends React.Component {
                 data = {this.props.data}
                 getCountryInfo = {this.props.getCountryInfo}
                 startGame = {this.startGame}
+                stopTimer = {this.stopTimer}
                 endGame = {this.endGame}
                 updateScore = {this.updateScore}
                 handlePoints = {this.handlePointsQuestions}

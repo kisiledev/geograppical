@@ -76,6 +76,7 @@ class Choice extends React.Component {
             let country = this.getRandomCountry();
             this.setState(prevState => ({guesses: prevState.guesses +1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
             if(this.state.questions && this.state.questions.length > 10){
+                this.props.stopTimer();
                 console.log('showing scores')
                 this.props.handleOpen();
                 // this.setState({questions: [], answers: [], guesses: null})   
