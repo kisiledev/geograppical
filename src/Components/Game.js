@@ -243,7 +243,19 @@ class Game extends React.Component {
         console.log(e.target.checked)
     }
     saveScore = () => {
-        console.log(this.state)
+        if(!this.props.user){
+            let modal = {
+              title: 'Not Logged In',
+              body: 'You need to sign in to favorite countries',
+              primaryButton: 
+              <Button variant="primary" onClick={this.props.login}>
+              Sign In/ Sign Up
+              </Button>
+            }
+            this.props.setModal(modal)
+            this.props.handleOpen();
+        } else {
+            console.log(this.state)
         db.collection('users').doc(this.props.user.uid).collection('scores').add({
             userId: this.props.user.uid && this.props.user.uid,
             dateCreated: firestore.Timestamp.fromDate(new Date()),
@@ -253,7 +265,8 @@ class Game extends React.Component {
             time: 60 - this.state.time.currentCount,
             questions: this.state.questionsSet  
         }).then(() => console.log('Data written successfully'))
-        .catch( error => console.error(error))
+        .catch( error => console.error(error))  
+        }
     }
 
     render(){

@@ -4,22 +4,34 @@ import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
 import { Link } from 'react-router-dom';
 import '../App.css';
-import Alert from 'react-bootstrap/Alert'
+import {Modal, Alert, Button} from 'react-bootstrap'
 import Sidebar from './Sidebar';
-import { db, auth } from './Firebase/firebase'
+import { db, auth, provider } from './Firebase/firebase'
 import { faArrowLeft, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class DetailView extends Component {
   state = {
     loggedIn: true,
-    favorite: false
+    favorite: false,
+    show: false
 }
 
-// users/${currentUser}/favorites
   makeFavorite = (e, country) => {
     e.persist();
-    if(!this.state.favorite){
+    if(!this.props.user){
+      let modal = {
+        title: 'Not Logged In',
+        body: 'You need to sign in to favorite countries',
+        primaryButton: 
+        <Button variant="primary" onClick={this.props.login}>
+        Sign In/ Sign Up
+        </Button>
+      }
+      this.props.setModal(modal)
+      this.props.handleOpen();
+    } else {
+      if(!this.state.favorite){
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
               country
         }).then(() => {
@@ -29,8 +41,9 @@ class DetailView extends Component {
           console.error(err)
           this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
         })
-    } else {
+      } else {
         this.setState({favorite: false})
+      }
     }
 }
     render() {
@@ -42,13 +55,26 @@ class DetailView extends Component {
     uniqueRegions = uniqueRegions.filter(Boolean)
       return(
         <div className="row">
+          <Modal show={this.state.show} onHide={() => this.handleClose()}>
+            <Modal.Header closeButton>
+            </Modal.Header>
+            <Modal.Body>{this.state.modalText}</Modal.Body>
+            <Modal.Footer>
+            <button className="btn btn-info" onClick={() => this.handleClose()}>
+                Close
+            </button>
+            <button className="btn btn-success" onClick={() => this.saveScore()}>
+                Save Score
+            </button>
+            </Modal.Footer>
+        </Modal>
           {this.state.messasge && <Alert variant={this.state.message.style}>{this.state.message}</Alert>}
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
                 <div className="row justify-content-between">
                 <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
                 <AudioPlayer nation={this.props.countryDetail} />
-                {auth.currentUser && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
+                {<div className="stars"><FontAwesomeIcon onHover={() => this.color = "goldenrod" } onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                 <Flag
                   className="detailFlag align-self-end text-right img-thumbnail"
                   name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}

@@ -65,6 +65,9 @@ input, input[placeholder] {
 .stars {
   align-self: end;
 }
+.fa-star:hover {
+  color: gold;
+}
 .avatar {
   border-radius: 50%;
   width: 100px;

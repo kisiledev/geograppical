@@ -23,4 +23,6 @@ import firebase from 'firebase';
     auth,
     provider,
     firestore
-  };
+  }
+
+  export default firebase;

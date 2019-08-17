@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom'
-import { faInfoCircle, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 

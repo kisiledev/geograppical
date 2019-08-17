@@ -59,6 +59,11 @@ class ResultView extends Component {
             key={index}
             country={country}
             code={country.alpha3Code}
+            handleOpen = {this.props.handleOpen}
+            handleClose = {this.props.handleClose}
+            user = {this.props.user}
+            setModal = {this.props.setModal}
+            login = {this.props.login}
             />
           )}
         </main>

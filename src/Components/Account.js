@@ -15,15 +15,12 @@ class Account extends React.Component {
         countriesRef.get().then(querySnapshot => {
             let data = [];
             querySnapshot.forEach( doc => {
-                console.log(doc.data())
-                console.log(doc.data)
                 let info = {
                     id: doc.id,
                     data: doc.data().country
                 }
                 data.push(info);
             })
-            console.log(data)
             this.setState({favorites: data})
         })
     }
@@ -32,15 +29,12 @@ class Account extends React.Component {
         scoresRef.get().then(querySnapshot => {
             let data = [];
             querySnapshot.forEach( doc => {
-                console.log(doc.data())
-                console.log(doc.data)
                 let info = {
                     id: doc.data().dateCreated,
                     data: doc.data()
                 }
                 data.push(info);
             })
-            console.log(data)
             this.setState({scores: data})
         })
     }
@@ -72,9 +66,7 @@ class Account extends React.Component {
                         {this.state.scores && this.state.scores.map(score => {
                             let milliseconds = score.data.dateCreated.seconds * 1000;
                             let currentDate = new Date(milliseconds);
-                            console.log(currentDate);
                             let dateTime = currentDate.toGMTString();
-                            console.log(dateTime);
                             return <div className="card mb-3" key={score.id}>
                                 <h2>{dateTime}</h2>
                                 <h4>Score - {score.data.score}</h4>

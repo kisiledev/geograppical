@@ -5,16 +5,16 @@ import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
 import NavBar from './Components/NavBar';
 import { BreakpointProvider } from 'react-socks';
+import {Modal, Button} from 'react-bootstrap'
 import './App.css';
 import axios from 'axios';
-import { auth } from './Components/Firebase/firebase'
+import { auth, provider } from './Components/Firebase/firebase'
 import i18n from 'i18n-iso-countries';
 import Game from './Components/Game';
 import Account from './Components/Account';
-import SignIn from './Components/SignIn';
-import withAuthProtection from './Components/AuthProtection'
+import Register from './Components/Register';
+import PrivateRoute from './Components/PrivateRoutes';
 
-const ProtectedProfile = withAuthProtection('/register')(Account)
 class App extends Component {
 
   state = {
@@ -31,7 +31,10 @@ class App extends Component {
     countryDetail: [],
     countries: [],
     mode: "",
-    user: null
+    user: null,
+    showModal: false,
+    modal: {}
+
   }
 
   componentDidMount() {
@@ -47,7 +50,7 @@ class App extends Component {
   }
   authListener = () => {
     auth.onAuthStateChanged((user) => {
-      user ?  this.setState({user},console.log(user) ) : this.setState({user: null})
+      user ?  this.setState({user: user, authenticated: true},console.log(user) ) : this.setState({user: null, authenticated: false})
     })
   }
   async loadCodes() {
@@ -118,6 +121,27 @@ class App extends Component {
   }
   simplifyString(string){
     return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toLowerCase()
+  }
+
+  handleClose = () => {
+    this.setState({showModal: false})
+    }
+  handleOpen = () => {
+    this.setState({showModal: true})
+  }
+  setModal = (modal) => {
+    console.log('setting modal');
+    this.setState({modal});
+  }
+  login = () => {
+    auth.signInWithPopup(provider)
+    .then((result) => {
+        const user = result.user;
+        console.log(user)
+    }).catch((error) => {
+        console.log(error)
+        console.log(error.message)
+    })
   }
   
   hoverOnCountry = (e, region, country) => {
@@ -311,6 +335,10 @@ class App extends Component {
           filterNations = {this.state.filterNations}
           changeMode = {this.changeMode}
           user= {this.state.user}
+          handleOpen = {this.handleOpen}
+          handleClose = {this.handleClose}
+          setModal = {this.setModal}
+          login = {this.login}
         />
         <div className="main container-fluid">
           <Switch>
@@ -324,11 +352,23 @@ class App extends Component {
                       data = {this.state.worldData}
                       getCountryInfo = {this.getCountryInfo}
                       user = {this.state.user}
+                      handleOpen = {this.handleOpen}
+                      handleClose = {this.handleClose}
+                      setModal = {this.setModal}
+                      login = {this.login}
                 /> 
                 } 
           />
-          <Route exact path={`${process.env.PUBLIC_URL}/account`} render={props => <ProtectedProfile {...props} user={this.state.user} />}/>
-          <Route exact path={`${process.env.PUBLIC_URL}/register`} render={props => <SignIn />}/>
+          <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account`} 
+            user={this.state.user} 
+            component={Account} 
+            authenticated={this.state.authenticated} />
+          <Route exact path={`${process.env.PUBLIC_URL}/register`} render={props => <Register 
+            user={this.state.user}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            setModal = {this.setModal}
+            login = {this.login} />}/>
           <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView
             mapView = {this.mapView}
             flagCodes = {this.state.flagCodes}
@@ -350,6 +390,11 @@ class App extends Component {
             handleLeave = {this.handleLeave}
             hovered = {this.state.hovered}
             highlighted = {this.state.highlighted}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            user = {this.state.user}
+            setModal = {this.setModal}
+            login = {this.login}
           /> }/>
           <Route path={`${process.env.PUBLIC_URL}/:country`} render={props => <DetailView 
             flagCodes = {this.state.flagCodes}
@@ -372,8 +417,24 @@ class App extends Component {
             hovered = {this.state.hovered}
             highlighted = {this.state.highlighted}
             user = {this.state.user}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            setModal = {this.setModal}
+            login = {this.login}
           />}/>
           </Switch>
+          <Modal show={this.state.showModal} onHide={() => this.handleClose()}>
+            <Modal.Header closeButton>
+            <Modal.Title>{this.state.modal.title}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{this.state.modal.body}</Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={() => this.handleClose()}>
+                Close
+            </Button>
+            {this.state.modal.primaryButton}
+            </Modal.Footer>
+        </Modal>
         </div>
       </div>
       </BreakpointProvider>
