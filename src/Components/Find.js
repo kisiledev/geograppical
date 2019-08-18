@@ -322,9 +322,7 @@ class Find extends Component {
                 console.log('opening modal')
                 this.props.handleOpen();
                 // alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
-                this.setState({questions: [], answers: [], guesses: null})
                 console.log('ending game')
-                this.props.endGame();
                 
             }
     }

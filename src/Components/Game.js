@@ -258,13 +258,14 @@ class Game extends React.Component {
             console.log(this.state)
         db.collection('users').doc(this.props.user.uid).collection('scores').add({
             userId: this.props.user.uid && this.props.user.uid,
+            gameMode: this.state.gameMode,
             dateCreated: firestore.Timestamp.fromDate(new Date()),
             score: this.state.score,
             correct: this.state.correct,
             incorrect: this.state.incorrect,
             time: 60 - this.state.time.currentCount,
             questions: this.state.questionsSet  
-        }).then(() => console.log('Data written successfully'))
+        }).then((data) => console.log('Data written successfully', data))
         .catch( error => console.error(error))  
         }
     }

@@ -323,14 +323,13 @@ class Highlight extends Component {
               node.removeAttribute("style")
             })
             if(this.state.questions && this.state.questions.length > 10){
+                this.props.handleOpen();
                 alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
-                this.setState({questions: [], answers: [], guesses: null})
                 let nodes = [...(document.getElementsByClassName("gameCountry"))];
             // console.log(this.state.filterNations)
             nodes.forEach( node => {
               node.removeAttribute("style")
             })
-                this.props.endGame();
                 
             }
     }
