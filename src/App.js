@@ -12,7 +12,8 @@ import { auth, provider } from './Components/Firebase/firebase'
 import i18n from 'i18n-iso-countries';
 import Game from './Components/Game';
 import Account from './Components/Account';
-import Register from './Components/Register';
+import SignIn from './Components/SignIn';
+import SignUp from './Components/SignUp';
 import PrivateRoute from './Components/PrivateRoutes';
 
 class App extends Component {
@@ -363,7 +364,13 @@ class App extends Component {
             user={this.state.user} 
             component={Account} 
             authenticated={this.state.authenticated} />
-          <Route exact path={`${process.env.PUBLIC_URL}/register`} render={props => <Register 
+          <Route exact path={`${process.env.PUBLIC_URL}/login`} render={props => <SignIn 
+            user={this.state.user}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            setModal = {this.setModal}
+            login = {this.login} />}/>
+          <Route exact path={`${process.env.PUBLIC_URL}/signup`} render={props => <SignUp
             user={this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}

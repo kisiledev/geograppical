@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom'
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 
@@ -14,7 +14,8 @@ class Sidebar extends Component {
     componentDidMount(prevState){
         if(prevState !== this.state){
             console.log('mounted component')
-            this.setDynamicRegions(this.props.uniqueRegions)
+            this.setState({loading: true}, this.setDynamicRegions(this.props.uniqueRegions))
+            
         };
     }
     componentDidUpdate(prevProps) {
@@ -55,7 +56,7 @@ class Sidebar extends Component {
             }
         });
         // set state here outside the foreach function
-         this.setState({...regionsState})
+         this.setState({...regionsState, loading: false}, console.log('loading is false', this.state.loading))
     };
     updateOpen = (region) => {
         const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
@@ -76,7 +77,6 @@ class Sidebar extends Component {
 
     render(){
         if(this.props === null){
-            return <h2>Loading</h2>
         } else {
         return (
             <BreakpointProvider>
@@ -89,6 +89,7 @@ class Sidebar extends Component {
                     { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
                     </button>
                 </Breakpoint>
+                {this.state.loading && <div><FontAwesomeIcon icon={faSpinner} spin size="3x"/>Loading</div>}
                 <div className="sidebar-sticky">
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 

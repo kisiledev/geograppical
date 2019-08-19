@@ -39,7 +39,7 @@ class NavBar extends React.Component {
                     <li className="nav-item nav-item-avatar">
                         
                     <Link to="/account" className="nav-link d-flex align-items-center">
-                    <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar"/>{this.props.user ? this.props.user.displayName : "Register Here" }</Link>
+                    <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar"/>{this.props.user ? this.props.user.displayName : null }</Link>
                     </li>
                 </ul>
                 {this.props.user ? 

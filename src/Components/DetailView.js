@@ -4,9 +4,9 @@ import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
 import { Link } from 'react-router-dom';
 import '../App.css';
-import {Modal, Alert, Button} from 'react-bootstrap'
+import { Alert, Button} from 'react-bootstrap'
 import Sidebar from './Sidebar';
-import { db, auth, provider } from './Firebase/firebase'
+import { db } from './Firebase/firebase'
 import { faArrowLeft, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -14,11 +14,14 @@ class DetailView extends Component {
   state = {
     loggedIn: true,
     favorite: false,
-    show: false
+    show: false,
+    loading: false,
+    message: '',
 }
 
   makeFavorite = (e, country) => {
     e.persist();
+    this.setState({show: true})
     if(!this.props.user){
       let modal = {
         title: 'Not Logged In',
@@ -36,13 +39,20 @@ class DetailView extends Component {
               country
         }).then(() => {
           console.log(`Added ${country.name} to favorites`)
-          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, favorite: true})
+          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
         }).catch((err) => {
           console.error(err)
           this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
         })
       } else {
-        this.setState({favorite: false})
+        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
+        .then(() => {
+          console.log(`Removed ${country.name} from favorites`)
+          this.setState({message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+        }).catch((err) => {
+          console.error(err)
+          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+        })
       }
     }
 }
@@ -55,26 +65,13 @@ class DetailView extends Component {
     uniqueRegions = uniqueRegions.filter(Boolean)
       return(
         <div className="row">
-          <Modal show={this.state.show} onHide={() => this.handleClose()}>
-            <Modal.Header closeButton>
-            </Modal.Header>
-            <Modal.Body>{this.state.modalText}</Modal.Body>
-            <Modal.Footer>
-            <button className="btn btn-info" onClick={() => this.handleClose()}>
-                Close
-            </button>
-            <button className="btn btn-success" onClick={() => this.saveScore()}>
-                Save Score
-            </button>
-            </Modal.Footer>
-        </Modal>
-          {this.state.messasge && <Alert variant={this.state.message.style}>{this.state.message}</Alert>}
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
+                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="row justify-content-between">
                 <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
                 <AudioPlayer nation={this.props.countryDetail} />
-                {<div className="stars"><FontAwesomeIcon onHover={() => this.color = "goldenrod" } onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
+                {<div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                 <Flag
                   className="detailFlag align-self-end text-right img-thumbnail"
                   name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}

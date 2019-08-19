@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import Result from './Result';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 import Sidebar from './Sidebar';
 import Maps from './Maps';
 
 
 class ResultView extends Component {
-
+  state = {
+    loading: false
+  }
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
     const totalRegions = this.props.data.map(a => a.geography.map_references.replace(/;/g, ""))
@@ -67,7 +71,7 @@ class ResultView extends Component {
             />
           )}
         </main>
-        {this.props.sidebar === "Show" ?  
+        {this.props.sidebar === "Show" ?
         <Sidebar
             hoverOnRegion = {this.props.hoverOnRegion}
             hoverOffRegion = {this.props.hoverOffRegion}

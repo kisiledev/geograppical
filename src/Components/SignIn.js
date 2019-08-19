@@ -1,64 +1,125 @@
-import React, { Component } from 'react';
-import 'firebaseui';
-import { auth, provider } from './Firebase/firebase';
-import Alert from 'react-bootstrap/Alert'
+import React from "react";
+import firebase from './Firebase/firebase'
+import { auth, provider } from "./Firebase/firebase";
+import { Alert } from 'react-bootstrap'
+// import {StyledFirebaseAuth} from 'react-firebaseui';
+import {Link, Redirect } from 'react-router-dom';
 
-class SignIn extends Component {
-    state = {
-        email: '',
-        password: ''
-    }
+class SignIn extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    message: ''
+  }
 
-    handleChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
-      }
-    
-      login(e) {
-        console.log(this.state)
-        console.log('reunning login')
-        e.preventDefault();
-        auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-            console.log(u)
-            this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
-        }).catch((error) => {
-            console.log(error);
-            console.log(error.message)
-            this.setState({message: {style: "danger", content: `${error.message}`}})
-          });
-      }
-    
-      signup(e){
-        console.log(this.state)
-        console.log('reunning signup')
-        e.preventDefault();
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-            this.setState({message: {style: "success", content: `Created user ${u.user.email}`}})
-        }).catch((error) => {
-            this.setState({message: {style: "danger", content: `${error.messasge}`}}, console.log(error.message))
-          })
-      }
-      render() {
-        return (
-            <div>
-            {this.state.messasge && console.log(this.state.message) && <Alert variant={this.state.message.style}>{this.state.message}</Alert>}
-           <div className="col-md-4 mx-auto">
-           <form>
-          <div className="form-group">
-           <label htmlFor="exampleInputEmail1">Email address</label>
-           <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-           <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-          </div>
-           <div className="form-group">
-          <label htmlFor="exampleInputPassword1">Password</label>
-          <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-          </div>
-          <button type="submit" onClick={(e) => this.login(e)} className="btn btn-primary">Login</button>
-          <button onClick={(e) => this.signup(e)} style={{marginLeft: '25px'}} className="btn btn-success">Signup</button>
-     </form>
-     
-     </div>
-     </div>
-        );
+  uiConfig = {
+    signInFlow: 'popup',
+    signInSuccessUrl: '/',
+    signInOptions: [
+      firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID
+    ],
+    callbacks: {
+      signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+        console.log('signInSuccessWithAuthResult', authResult, redirectUrl)
+        this.props.history.push('/')
+        return false
       }
     }
-    export default SignIn;
+  }
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  login(e) {
+    console.log(this.state)
+    console.log('reunning login')
+    e.preventDefault();
+    auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+        console.log(u)
+        this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
+    }).catch((error) => {
+        console.log(error);
+        console.log(error.message)
+        this.setState({message: {style: "danger", content: `${error.message}`}})
+      });
+  }
+
+  signup(e){
+    console.log(this.state)
+    console.log('reunning signup')
+    e.preventDefault();
+    auth.createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+        this.setState({message: {style: "success", content: `Created user ${u.user.email}`}})
+    }).catch((error) => {
+        this.setState({message: {style: "danger", content: `${error.message}`}})
+      })
+  }
+
+  googleSignUp = () => {
+    auth.signInWithPopup(provider).then((result) =>{
+      console.log(result)
+    }).catch((error) => {
+      console.error(error);
+      const credential = error.credential;
+      console.log(credential);
+    })
+  };
+  
+
+  render() {
+    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    
+    const { user } = this.props;
+    if(user && user.uid){
+      return <Redirect to="/account" />
+    } 
+    return (
+      
+      <div className="mx-auto col-lg-4">
+        {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
+        <div className="row mb-5">
+          <div className="col-lg-12 text-center">
+            <h1 className="mt-5">Sign In</h1>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-lg-12">
+          {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
+            <form>
+            <div className="form-group col-6 mx-auto">
+              <label htmlFor="exampleInputEmail1">Email address</label>
+              <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+              </div>
+              <div className="form-group col-6 mx-auto">
+              <label htmlFor="exampleInputPassword1">Password</label>
+              <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
+              </div>
+              <div className="col-12 d-flex justify-content-center mb-3">
+              <button onClick={(e) => this.login(e)} type="button" className="btn-primary email-button">
+                  <span className="email-button__icon">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
+                  </span>
+                  <span className="email-button__text">Sign in with Email</span>
+                </button>
+              </div>
+              <div className="col-12 d-flex justify-content-center mb-3">
+                <button onClick={(e) => this.googleSignUp(e)} type="button" className="google-button">
+                  <span className="google-button__icon">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />
+                  </span>
+                  <span className="google-button__text">Sign in with Google</span>
+                </button>
+              </div>
+              <div class="col-12 d-flex justify-content-center">
+                <p>Don't have an account? <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link></p>
+              </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default SignIn;
