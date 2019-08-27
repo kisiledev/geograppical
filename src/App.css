@@ -60,13 +60,16 @@ svg {
 } */
 input, input[placeholder] {
     text-align: center;
-    border-radius: 1rem;
 }
 .stars {
   align-self: end;
 }
 .fa-star:hover {
   color: gold;
+}
+.alert {
+  white-space: pre-wrap;
+  text-align: center;
 }
 .google-button {
   height: 40px;

@@ -1,15 +1,18 @@
 import React from "react";
-import firebase from './Firebase/firebase'
-import { auth, provider } from "./Firebase/firebase";
+import firebase, { auth, provider } from "./Firebase/firebase";
 import { Alert } from 'react-bootstrap'
 // import {StyledFirebaseAuth} from 'react-firebaseui';
 import {Link, Redirect } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 class SignIn extends React.Component {
   state = {
     email: '',
     password: '',
-    message: ''
+    message: '',
+    methods: [],
+    loading: true
   }
 
   uiConfig = {
@@ -27,6 +30,11 @@ class SignIn extends React.Component {
       }
     }
   }
+  componentDidMount = () => {
+    setTimeout(() => {
+      this.setState({loading: false})
+    }, 2000)
+  }
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -35,10 +43,29 @@ class SignIn extends React.Component {
     console.log(this.state)
     console.log('reunning login')
     e.preventDefault();
-    auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-        console.log(u)
-        this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
-    }).catch((error) => {
+    auth.fetchSignInMethodsForEmail(this.state.email).then((u) => {
+      console.log(u)
+      this.setState({methods: u})
+      if(u.length === 0){
+        console.log('no methods')
+        auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+          console.log(u)
+          this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
+      }).catch((error) => {
+          console.log(error);
+          console.log(error.message)
+          this.setState({message: {style: "danger", content: `${error.message} Sign up using the link below`}})
+        });
+      } else {
+        console.log('methods found')
+        const content = 
+        `You already have an account at ${u[0]} 
+        Please login using this authentication method`
+        console.log(content)
+        this.setState({message: {style: 'warning', content: content}})
+      }
+    })
+    .catch((error) => {
         console.log(error);
         console.log(error.message)
         this.setState({message: {style: "danger", content: `${error.message}`}})
@@ -75,7 +102,11 @@ class SignIn extends React.Component {
       return <Redirect to="/account" />
     } 
     return (
-      
+      this.state.loading ? 
+      <div className="mx-auto col-lg-4 text-center">
+        <FontAwesomeIcon icon={faSpinner} spin size="3x"/>
+      </div>
+       : 
       <div className="mx-auto col-lg-4">
         {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
         <div className="row mb-5">

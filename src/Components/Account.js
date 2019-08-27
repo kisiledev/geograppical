@@ -1,5 +1,5 @@
 import React from 'react';
-import {db} from './Firebase/firebase';
+import { db } from './Firebase/firebase';
 import Flag from 'react-flags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -84,44 +84,47 @@ class Account extends React.Component {
                 <div className="row">
                     <div className="col">
                         <h2>Favorites</h2>
-                    <ul className="list-group list-group-flush">
-                    {this.state.loading && <FontAwesomeIcon icon={faSpinner} spin />}
-                        {this.state.favorites && this.state.favorites.length > 0 ? 
-                            this.state.favorites.map(favorite =>
-                            <li className="list-group-item" key={favorite.id}>
-                                <h3>{favorite.id}</h3>
-                                <h4>{favorite.data.government.capital.name}</h4>
-                                <Flag
-                                    className="detailFlag align-self-end text-right img-thumbnail"
-                                    name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : "_unknown") ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
-                                    format="svg"
-                                    pngSize={64}
-                                    shiny={false}
-                                    alt={`${favorite.data.name}'s Flag`}
-                                    basePath="/img/flags"
-                                    />
-                                <FontAwesomeIcon onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="red" />
-                            </li>
-                        ) : <h5>You have no favorites saved</h5> }
-                        </ul>
+                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
+                            (<ul className="list-group list-group-flush">
+                                {this.state.favorites && this.state.favorites.length > 0 ? 
+                                    this.state.favorites.map(favorite =>
+                                    <li className="list-group-item" key={favorite.id}>
+                                        <h3>{favorite.id}</h3>
+                                        <h4>{favorite.data.government.capital.name}</h4>
+                                        <Flag
+                                            className="detailFlag align-self-end text-right img-thumbnail"
+                                            name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : "_unknown") ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
+                                            format="svg"
+                                            pngSize={64}
+                                            shiny={false}
+                                            alt={`${favorite.data.name}'s Flag`}
+                                            basePath="/img/flags"
+                                            />
+                                        <FontAwesomeIcon onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="red" />
+                                    </li>
+                                ) : <h5>You have no favorites saved</h5> }
+                            </ul>)
+                        }
                     </div>
                     <div className="col">
                         <h2>Scores</h2>
-                    <ul className="list-group list-group-flush">
-                    {this.state.loading && <FontAwesomeIcon icon={faSpinner} spin />}
-                        {this.state.scores && this.state.scores.map(score => {
-                            let milliseconds = score.data.dateCreated.seconds * 1000;
-                            let currentDate = new Date(milliseconds);
-                            let dateTime = currentDate.toGMTString();
-                            return <li className="list-group-item" key={score.id}>
-                                <h4>{dateTime}</h4>
-                                <h5>Mode - {score.data.gameMode}</h5>
-                                <h5>Score - {score.data.score}</h5>
-                                <h5>Correct - {score.data.correct}</h5>
-                                <h5>Incorrect - {score.data.incorrect}</h5>
-                            </li>
-                        })}
-                        </ul>
+                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
+                        (
+                            <ul className="list-group list-group-flush">
+                                {this.state.scores && this.state.scores.map(score => {
+                                    let milliseconds = score.data.dateCreated.seconds * 1000;
+                                    let currentDate = new Date(milliseconds);
+                                    let dateTime = currentDate.toGMTString();
+                                    return <li className="list-group-item" key={score.id}>
+                                        <h4>{dateTime}</h4>
+                                        <h5>Mode - {score.data.gameMode}</h5>
+                                        <h5>Score - {score.data.score}</h5>
+                                        <h5>Correct - {score.data.correct}</h5>
+                                        <h5>Incorrect - {score.data.incorrect}</h5>
+                                    </li>
+                                })}
+                            </ul>)
+                        }
                     </div>
                 </div>
             </div>

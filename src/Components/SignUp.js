@@ -1,74 +1,121 @@
 import React, { Component } from 'react';
 import 'firebaseui';
-import { auth } from './Firebase/firebase';
+import { auth, provider } from './Firebase/firebase'
 import { Link, Redirect } from 'react-router-dom'
 import Alert from 'react-bootstrap/Alert'
 
+
 class SignUp extends Component {
     state = {
-        email: '',
-        password: '',
-        message: ''
+      username: '',
+      email: '',
+      password: '',
+      message: '',
+      passwordOne: '',
+      passwordTwo: ''
     }
-
     handleChange(e) {
         this.setState({ [e.target.name]: e.target.value });
       }
     
       login(e) {
-        console.log(this.state)
-        console.log('reunning login')
         e.preventDefault();
         auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-            console.log(u)
             this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
         }).catch((error) => {
-            console.log(error);
-            console.log(error.message)
             this.setState({message: {style: "danger", content: `${error.message}`}})
-          });
+        });
       }
+      googleSignUp = () => {
+        auth.signInWithPopup(provider).then((result) =>{
+          console.log(result)
+        }).catch((error) => {
+          console.error(error);
+          const credential = error.credential;
+          console.log(credential);
+        })
+      };
     
       signup(e){
-        console.log(this.state)
-        console.log('reunning signup')
-        e.preventDefault();
-        auth.createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+
+        auth.signInWithEmailAndPassword(this.state.email, this.state.passwordOne)
+          .then((u)=>{
             this.setState({message: {style: "success", content: `Created user ${u.user.email}`}})
         }).catch((error) => {
             this.setState({message: {style: "danger", content: `${error.message}`}})
           })
+        e.preventDefault();
       }
       render() {
-        // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        
         const { user } = this.props;
         if(user && user.uid){
           return <Redirect to="/account" />
         } 
+        const {
+          username,
+          message,
+          email,
+          passwordOne,
+          passwordTwo
+        } = this.state;
+        
+        const isInvalid = 
+        passwordOne !== passwordTwo ||
+        passwordOne === '' || 
+        email === '' ||
+        username === '';
+
+        
         return (
           
-          <div className="mx-auto col-lg-4">
-            {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
-            <div className="row mb-5">
-              <div className="col-lg-12 text-center">
-                <h1 className="mt-5">Sign Up</h1>
-              </div>
-            </div>
+          <div className="mx-auto col-lg-4 card">
+            {<Alert variant={message.style}>{message.content}</Alert>}
             <div className="row">
               <div className="col-lg-12">
-              {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
-                <form>
-                <div className="form-group col-6 mx-auto">
-                  <label htmlFor="exampleInputEmail1">Email address</label>
-                  <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                  </div>
-                  <div className="form-group col-6 mx-auto">
-                  <label htmlFor="exampleInputPassword1">Password</label>
-                  <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-                  </div>
+                <h1>Sign Up</h1>
+                <form onSubmit={() => this.signup()}>
+                <div className="form-group col-9 mb-5 mx-auto">
+                  <input 
+                    value={username} 
+                    onChange={(e) =>this.handleChange(e)} 
+                    type="text" 
+                    name="username" 
+                    className="form-control" 
+                    placeholder="Full Name" 
+                  />
+                </div>
+                <div className="form-group col-9 mb-5 mx-auto">
+                  <input 
+                    value={email} 
+                    onChange={(e) =>this.handleChange(e)} 
+                    type="email" 
+                    name="email" 
+                    className="form-control" 
+                    placeholder="Enter email" 
+                  />
+                </div>
+                <div className="form-group col-9 mb-5 mx-auto">
+                  <input 
+                    value={passwordOne} 
+                    onChange={(e) => this.handleChange(e)} 
+                    type="password" 
+                    name="passwordOne" 
+                    className="form-control" 
+                    placeholder="Password" 
+                  />
+                </div>
+                <div className="form-group col-9 mb-5 mx-auto">
+                  <input 
+                    value={passwordTwo} 
+                    onChange={(e) => this.handleChange(e)} 
+                    type="password" 
+                    name="passwordTwo" 
+                    className="form-control" 
+                    placeholder="Confirm Password" 
+                  />
+                </div>
                   <div className="col-12 d-flex justify-content-center mb-3">
-                  <button onClick={(e) => this.signup(e)} type="button" className="btn-primary email-button">
+                  <button disabled={isInvalid} type="submit" className="btn-primary email-button">
                       <span className="email-button__icon">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
                       </span>
@@ -83,14 +130,18 @@ class SignUp extends Component {
                       <span className="google-button__text">Sign Up with Google</span>
                     </button>
                   </div>
-                  <div class="col-12 d-flex justify-content-center">
-                    <p>Already have an account? <Link to={`${process.env.PUBLIC_URL}/login`}>Sign In</Link></p>
-                  </div>
                   </form>
               </div>
             </div>
           </div>
         );
       }
-    }
-    export default SignUp;
+}
+
+const SignUpLink = () => (
+  <div class="col-12 d-flex justify-content-center">
+    <p>Already have an account? <Link to={`${process.env.PUBLIC_URL}/login`}>Sign In</Link></p>
+  </div>
+)
+export default SignUp;
+export { SignUpLink }

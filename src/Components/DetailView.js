@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import '../App.css';
 import { Alert, Button} from 'react-bootstrap'
 import Sidebar from './Sidebar';
@@ -18,21 +18,18 @@ class DetailView extends Component {
     loading: false,
     message: '',
 }
+componentWillMount = () => {
+  console.log(this.props)
+}
 
+  mapStateToProps = (state, props) => {
+    console.log(props.match.params)
+  }
   makeFavorite = (e, country) => {
     e.persist();
     this.setState({show: true})
     if(!this.props.user){
-      let modal = {
-        title: 'Not Logged In',
-        body: 'You need to sign in to favorite countries',
-        primaryButton: 
-        <Button variant="primary" onClick={this.props.login}>
-        Sign In/ Sign Up
-        </Button>
-      }
-      this.props.setModal(modal)
-      this.props.handleOpen();
+      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`}})
     } else {
       if(!this.state.favorite){
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
@@ -67,7 +64,7 @@ class DetailView extends Component {
         <div className="row">
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
-                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
+                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content} <Alert.Link href={`${process.env.PUBLIC_URL}/login`}>here</Alert.Link></Alert>}
                 <div className="row justify-content-between">
                 <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
                 <AudioPlayer nation={this.props.countryDetail} />
@@ -113,4 +110,4 @@ class DetailView extends Component {
     }
   }
   
-  export default DetailView;
+  export default withRouter(DetailView);

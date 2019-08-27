@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { auth, provider } from './Firebase/firebase'
 import { Redirect } from 'react-router-dom'
+import * as ROUTES from '../Constants/Routes'
 
 class NavBar extends React.Component {
 
@@ -35,11 +36,20 @@ class NavBar extends React.Component {
                         <input className="form-control form-control-lg search mr-sm-2" type="search" placeholder="Type to search" aria-label="Search" value={this.props.searchText} onChange={(e) => this.props.handleInput(e)} />
                         {/* <span className="badge badge-primary count">{props.filterNations.length}</span> */}
                 </form>
+                {this.props.user ? null :
                 <ul className="navbar-nav">
-                    <li className="nav-item nav-item-avatar">
-                        
-                    <Link to="/account" className="nav-link d-flex align-items-center">
-                    <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar"/>{this.props.user ? this.props.user.displayName : null }</Link>
+                    <li className="nav-item">
+                        <Link to={ROUTES.SIGN_UP} className="nav-link">Sign Up</Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to={ROUTES.SIGN_IN} className="nav-link">Sign In</Link>
+                    </li>
+                </ul>
+                }
+                <ul className="navbar-nav">
+                <li className="nav-item nav-item-avatar">                        
+                        <Link to="/account" className="nav-link d-flex align-items-center">
+                        <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar"/>{this.props.user ? this.props.user.displayName : null }</Link>
                     </li>
                 </ul>
                 {this.props.user ? 

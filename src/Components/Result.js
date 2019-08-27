@@ -5,7 +5,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
-import {db} from './Firebase/firebase'
+import { db } from './Firebase/firebase'
 
 
 class Result extends Component {
