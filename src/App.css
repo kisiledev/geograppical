@@ -61,6 +61,7 @@ svg {
 input, input[placeholder] {
     text-align: center;
 }
+
 .stars {
   align-self: end;
 }
@@ -202,6 +203,10 @@ input, input[placeholder] {
 .svg-inline--fa {
   margin-left: 10px;
   vertical-align: inherit;
+}
+.acctedit {
+  margin-left: 0px;
+  margin-right: 5px;
 }
 a:hover {
   text-decoration: none;

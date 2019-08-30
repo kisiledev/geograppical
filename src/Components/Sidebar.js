@@ -20,9 +20,13 @@ class Sidebar extends Component {
     }
     componentDidUpdate(prevProps) {
         // only update chart if the data has changed
+        
         if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
             console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
+        }
+        if(this.state.loading){
+            this.setState({loading: false}, console.log('loading is now false'))
         }
     };
     removeNull(array){
@@ -89,7 +93,7 @@ class Sidebar extends Component {
                     { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
                     </button>
                 </Breakpoint>
-                {this.state.loading && <div><FontAwesomeIcon icon={faSpinner} spin size="3x"/>Loading</div>}
+                {(this.state.loading || this.state.loading === "undefined") ? <div><FontAwesomeIcon icon={faSpinner} spin size="3x"/>Loading</div> : null}
                 <div className="sidebar-sticky">
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 

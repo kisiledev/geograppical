@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-class Account extends React.Component {
+class AccountEdit extends React.Component {
     state = {
         message: ''
     }
@@ -56,6 +56,7 @@ class Account extends React.Component {
         return(
 
             <div className="col-8 mx-auto">
+                <h1>Edit Account</h1>
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
                     <div className="row">
@@ -137,4 +138,4 @@ class Account extends React.Component {
     }
 }
 
-export default Account;
+export default AccountEdit;

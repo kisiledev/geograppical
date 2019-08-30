@@ -37,14 +37,13 @@ class SignUp extends Component {
       };
     
       signup(e){
-
-        auth.signInWithEmailAndPassword(this.state.email, this.state.passwordOne)
+        e.preventDefault();
+        auth.createUserWithEmailAndPassword(this.state.email, this.state.passwordOne)
           .then((u)=>{
             this.setState({message: {style: "success", content: `Created user ${u.user.email}`}})
         }).catch((error) => {
             this.setState({message: {style: "danger", content: `${error.message}`}})
           })
-        e.preventDefault();
       }
       render() {
         const { user } = this.props;
@@ -73,7 +72,7 @@ class SignUp extends Component {
             <div className="row">
               <div className="col-lg-12">
                 <h1>Sign Up</h1>
-                <form onSubmit={() => this.signup()}>
+                <form onSubmit={(e) => this.signup(e)}>
                 <div className="form-group col-9 mb-5 mx-auto">
                   <input 
                     value={username} 
@@ -131,6 +130,7 @@ class SignUp extends Component {
                     </button>
                   </div>
                   </form>
+                  <SignUpLink />
               </div>
             </div>
           </div>

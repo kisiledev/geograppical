@@ -6,7 +6,7 @@ import {Link, Redirect } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-class SignIn extends React.Component {
+class PasswordReset extends React.Component {
   state = {
     email: '',
     password: '',
@@ -46,7 +46,7 @@ class SignIn extends React.Component {
     auth.fetchSignInMethodsForEmail(this.state.email).then((u) => {
       console.log(u)
       this.setState({methods: u})
-      if(u.length === 0 || u.includes('password')){
+      if(u.length === 0){
         console.log('no methods')
         auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
           console.log(u)
@@ -82,6 +82,15 @@ class SignIn extends React.Component {
         this.setState({message: {style: "danger", content: `${error.message}`}})
       })
   }
+  reset = (e, email ) => {
+      auth.sendPasswordResetEmail(email)
+      .then((u) => {
+        this.setState({message: {style: "success", content: `Password Reset Link sent to: ${email}`}})
+    }).catch((error) => {
+        console.log(error)
+        this.setState({message: {style: "danger", content: `${error.message}`}})
+      })
+  }
 
   googleSignUp = () => {
     auth.signInWithPopup(provider).then((result) =>{
@@ -111,7 +120,7 @@ class SignIn extends React.Component {
         {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
         <div className="row mb-5">
           <div className="col-lg-12 text-center">
-            <h1 className="mt-5">Sign In</h1>
+            <h1 className="mt-5">Reset Password</h1>
           </div>
         </div>
         <div className="row">
@@ -122,31 +131,19 @@ class SignIn extends React.Component {
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
               </div>
-              <div className="form-group col-6 mx-auto">
-              <label htmlFor="exampleInputPassword1">Password</label>
-              <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
-              </div>
               <div className="col-12 d-flex justify-content-center mb-3">
-              <button onClick={(e) => this.login(e)} type="button" className="btn-primary email-button">
+              <button onClick={(e) => this.reset(e, this.state.email)} type="button" className="btn-primary email-button">
                   <span className="email-button__icon">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
                   </span>
-                  <span className="email-button__text">Sign in with Email</span>
-                </button>
-              </div>
-              <div className="col-12 d-flex justify-content-center mb-3">
-                <button onClick={(e) => this.googleSignUp(e)} type="button" className="google-button">
-                  <span className="google-button__icon">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />
-                  </span>
-                  <span className="google-button__text">Sign in with Google</span>
+                  <span className="email-button__text">Reset Password</span>
                 </button>
               </div>
               <div class="col-12 d-flex justify-content-center">
                 <p>Don't have an account? <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link></p>
               </div>
               <div class="col-12 d-flex justify-content-center">
-                <p>Forgot Your Password? <Link to={`${process.env.PUBLIC_URL}/passwordreset`}>Reset It</Link></p>
+                <p>Already have an account? <Link to={`${process.env.PUBLIC_URL}/login`}>Sign In</Link></p>
               </div>
               </form>
           </div>
@@ -156,4 +153,4 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+export default PasswordReset;

@@ -15,6 +15,8 @@ import Account from './Components/Account';
 import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import PrivateRoute from './Components/PrivateRoutes';
+import PasswordReset from './Components/PasswordReset';
+import AccountEdit from './Components/AccountEdit'
 
 class App extends Component {
 
@@ -364,7 +366,17 @@ class App extends Component {
             user={this.state.user} 
             component={Account} 
             authenticated={this.state.authenticated} />
+          <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account/edit`} 
+            user={this.state.user} 
+            component={AccountEdit} 
+            authenticated={this.state.authenticated} />
           <Route exact path={`${process.env.PUBLIC_URL}/login`} render={props => <SignIn 
+            user={this.state.user}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            setModal = {this.setModal}
+            login = {this.login} />}/>
+          <Route exact path={`${process.env.PUBLIC_URL}/passwordreset`} render={props => <PasswordReset 
             user={this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
