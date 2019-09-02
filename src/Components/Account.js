@@ -55,12 +55,12 @@ class Account extends React.Component {
     render(){
         return(
 
-            <div className="col-8 mx-auto">
+            <div className="col-12 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
                     <div className="row">
-                        <div className="col-2 text-center">
-                            <img className="avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
+                        <div className="col-12 text-center">
+                            <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
                             <Link 
                                 className="btn btn-success" 
                                 to={`${process.env.PUBLIC_URL}/account/edit`}>
@@ -68,7 +68,7 @@ class Account extends React.Component {
                             </Link>
                         </div>
                         <div className="col-6">
-                            <h3>{this.props.user.displayName} </h3>
+                            <h5>{this.props.user.displayName} </h5>
                             <h5>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</h5>
                             <h5>{this.props.user.email}</h5>
                             <h6>{this.props.user.phoneNumber ? this.props.user.phoneNumber : "No phone number added"}</h6>
@@ -77,7 +77,7 @@ class Account extends React.Component {
                             {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> :
                             (
                             <>
-                            <h2>Stats</h2>
+                            <h5>Stats</h5>
                             <h5>{this.state.favorites && this.state.favorites.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</h5>
                             <h5>{this.state.scores && this.state.scores.length} Scores</h5>
                             </>

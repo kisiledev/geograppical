@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import {Route, Switch} from 'react-router-dom';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
-import NavBar from './Components/NavBar';
+import NaviBar from './Components/NaviBar';
 import { BreakpointProvider } from 'react-socks';
 import {Modal, Button} from 'react-bootstrap'
 import './App.css';
@@ -330,7 +330,7 @@ class App extends Component {
     return (
       <BreakpointProvider>
       <div>
-        <NavBar 
+        <NaviBar 
           view={this.state.view}
           searchText = {this.state.searchText}
           handleInput = {this.handleInput}

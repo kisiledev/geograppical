@@ -17,6 +17,7 @@
     "firebase": "^6.3.5",
     "firebaseui": "^4.1.0",
     "i18n-iso-countries": "^4.1.0",
+    "jquery": "^3.4.1",
     "pretty-ms": "^5.0.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.8",
