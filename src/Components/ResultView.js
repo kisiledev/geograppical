@@ -28,24 +28,6 @@ class ResultView extends Component {
           {this.props.countries[0] === undefined ? 
               null
            : null }
-          
-          <Maps
-            mapVisible = {this.props.mapVisible}
-            mapView={this.props.mapView} 
-            worldData = {this.props.data}
-            countries = {this.props.countries}
-            changeView = {this.props.changeView}
-            getCountryInfo = {this.props.getCountryInfo}
-            hoverOnRegion = {this.props.hoverOnRegion}
-            hoverOffRegion = {this.props.hoverOffRegion}
-            handleMove = {this.props.handleMove}
-            handleLeave = {this.props.handleLeave}
-            hovered = {this.props.hovered}
-            highlighted = {this.props.highlighted}
-            totalRegions = {totalRegions}
-            uniqueRegions = {uniqueRegions}
-            getOccurrence = {getOccurrence}
-          />
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
             worldData = {this.props.data}

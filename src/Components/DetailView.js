@@ -19,12 +19,20 @@ class DetailView extends Component {
     message: '',
 }
 componentDidMount = () => {
+  console.log(this.state.loading, this.props.loading)
   if(this.props.countryDetail.length !== 0){
     this.setState({loading: false})
   }
+  if(!this.props.loading){
+    this.props.getCountryInfo(this.props.match.params.country)
+  }
 }
-componentDidUpdate = (prevProps) => {
-  if(this.props.loading !== prevProps.loading){
+componentDidUpdate = (prevProps, prevState) => {
+  console.log(this.props.loading)
+  console.log(this.state.loading)
+  console.log(prevProps.loading)
+  console.log(prevState.loading)
+  if(this.props.loading !== prevProps.loading || this.props.loading !==prevState.loading){
     this.props.getCountryInfo(this.props.match.params.country)
     this.setState({loading: false})
   }
@@ -68,23 +76,29 @@ componentDidUpdate = (prevProps) => {
         this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> :
         (
         <div className="row">
-            <div className="col-sm-12 col-md-9">
+            <div className="col-md-12 col-md-9">
                 <div className="card mb-3">
-                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content} <Alert.Link href={`${process.env.PUBLIC_URL}/login`}>here</Alert.Link></Alert>}
+                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="row justify-content-between">
-                <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary align-self-start" onClick={() => this.props.changeView('default')}><FontAwesomeIcon icon={faArrowLeft}/> Back to Results</Link>
-                <AudioPlayer nation={this.props.countryDetail} />
-                {<div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
-                <Flag
-                  className="detailFlag align-self-end text-right img-thumbnail"
-                  name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}
-                  format="svg"
-                  pngSize={64}
-                  shiny={false}
-                  alt={`${this.props.countryDetail.name}'s Flag`}
-                  basePath="/img/flags"
-                />
+                  <div className="col-12 flex-nowrap d-flex justify-content-between align-items-center">
+                    <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => this.props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>
+                    <FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} />
+                    <Flag
+                      className="detailFlag col-3 align-self-end text-right img-thumbnail"
+                      name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}
+                      format="svg"
+                      pngSize={64}
+                      shiny={false}
+                      alt={`${this.props.countryDetail.name}'s Flag`}
+                      basePath="/img/flags"
+                    />
+                  </div>
+                  
+                  
                 </div>
+                  <div className="col-12">
+                    <AudioPlayer nation={this.props.countryDetail} />
+                  </div>
                 <RecursiveProperty
                   property={this.props.countryDetail} 
                   expanded={Boolean}

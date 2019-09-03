@@ -96,6 +96,7 @@ class Account extends React.Component {
                                     <li className="list-group-item" key={favorite.id}>
                                         <h3>{favorite.id}</h3>
                                         <h4>{favorite.data.government.capital.name}</h4>
+                                        <Link to={`${process.env.PUBLIC_URL}/${this.props.simplifyString(favorite.id)}`} >
                                         <Flag
                                             className="detailFlag align-self-end text-right img-thumbnail"
                                             name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : "_unknown") ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
@@ -104,7 +105,8 @@ class Account extends React.Component {
                                             shiny={false}
                                             alt={`${favorite.data.name}'s Flag`}
                                             basePath="/img/flags"
-                                            />
+                                        />
+                                        </Link>
                                         <FontAwesomeIcon onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="red" />
                                     </li>
                                 ) : <h5>You have no favorites saved</h5> }

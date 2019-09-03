@@ -48,14 +48,15 @@ class Result extends Component {
                 <div className="result media">
                     <div className="media-body">
                     <h4 className="title">
-                        {this.props.name} ({this.props.flagCode})<br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
+                        {this.props.name} ({this.props.flagCode})
+                        <br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
                     </h4>
                     <p className="subregion">
                     <strong>Location: </strong>{this.props.subregion}
                     </p>
                     <Link to={`${process.env.PUBLIC_URL}/${this.props.name}`} className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name, this.props.capital)}>Read More</Link>
-                    {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.country)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                     </div>
+                    {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.country)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                     <Flag 
                         name={(this.props.flagCode)? this.props.flagCode : "_unknown"}
                         format="svg"

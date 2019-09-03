@@ -288,6 +288,12 @@ class App extends Component {
     alert('handling sidebar');
     this.setState({filterNations: this.filterCountryByName(string)})
   };
+  handleSubmit = (e) => {
+    alert('clicked')
+    e.preventDefault();
+    console.log('handling submit')
+    this.props.history.push(e.target.value)
+  };
   handleInput = (e) => {
     e.persist();
     // console.log('changing')
@@ -341,6 +347,7 @@ class App extends Component {
           user= {this.state.user}
           handleOpen = {this.handleOpen}
           handleClose = {this.handleClose}
+          handleSubmit = {this.handleSubmit}
           setModal = {this.setModal}
           login = {this.login}
         />
@@ -358,13 +365,15 @@ class App extends Component {
                       user = {this.state.user}
                       handleOpen = {this.handleOpen}
                       handleClose = {this.handleClose}
+                      handleSubmit = {this.handleSubmit}
                       setModal = {this.setModal}
                       login = {this.login}
                 /> 
                 } 
           />
           <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account`} 
-            user={this.state.user} 
+            user={this.state.user}
+            simplifyString = {this.simplifyString}
             component={Account} 
             authenticated={this.state.authenticated} />
           <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account/edit`} 
@@ -375,18 +384,21 @@ class App extends Component {
             user={this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
             setModal = {this.setModal}
             login = {this.login} />}/>
           <Route exact path={`${process.env.PUBLIC_URL}/passwordreset`} render={props => <PasswordReset 
             user={this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
             setModal = {this.setModal}
             login = {this.login} />}/>
           <Route exact path={`${process.env.PUBLIC_URL}/signup`} render={props => <SignUp
             user={this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
             setModal = {this.setModal}
             login = {this.login} />}/>
           <Route exact path={`${process.env.PUBLIC_URL}/`} render={props => <ResultView
@@ -412,6 +424,7 @@ class App extends Component {
             highlighted = {this.state.highlighted}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
             user = {this.state.user}
             setModal = {this.setModal}
             login = {this.login}
@@ -439,6 +452,7 @@ class App extends Component {
             user = {this.state.user}
             handleOpen = {this.handleOpen}
             handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
             setModal = {this.setModal}
             login = {this.login}
             loadWorldData = {this.loadWorldData}

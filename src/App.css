@@ -64,6 +64,7 @@ input, input[placeholder] {
 
 .stars {
   align-self: end;
+  margin-right: 10px;
 }
 .fa-star:hover {
   color: gold;
@@ -200,7 +201,7 @@ input, input[placeholder] {
   width: 32px;
   height: 32px;
 }
-.svg-inline--fa {
+.fa-angle-down, .fa-angle-up {
   margin-left: 10px;
   vertical-align: inherit;
 }
@@ -381,6 +382,7 @@ svg, g, path {
 .media img, .detailFlag {
   width: 25%;
   object-fit: contain;
+  padding: .25rem;
 }
 audio {
   width: 100%;
@@ -389,17 +391,14 @@ audio {
   position: relative;
 }
 @media (max-width: 768px){
-  .navbar-nav {
+  /* .navbar-nav {
     flex-direction: row;
   }
   .nav-item {
     padding: 10px;
-  }
+  } */
   .choice {
     padding-inline-start: 0;
-  }
-  .card {
-    padding: 5px;
   }
 }
 @media (min-width: 576px){
@@ -420,14 +419,14 @@ audio {
     width: 15%;
   }
 }
-.nav {
+/* .nav {
   flex-wrap: nowrap;
 }
 .navbar {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
+} */
 .navbar.transparent.navbar-inverse .navbar-inner {
   border-width: 0px;
   -webkit-box-shadow: 0px 0px;
