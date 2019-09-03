@@ -21,6 +21,7 @@ import AccountEdit from './Components/AccountEdit'
 class App extends Component {
 
   state = {
+    loading: true,
     highlighted: "",
     hovered: false, 
     nations: [],
@@ -56,8 +57,8 @@ class App extends Component {
       user ?  this.setState({user: user, authenticated: true},console.log(user) ) : this.setState({user: null, authenticated: false})
     })
   }
-  async loadCodes() {
-    await axios.get("../iso.json")
+  loadCodes = () => {
+    axios.get("../iso.json")
      .then(res => {
        let codes = res.data
        const isoCodes = codes.map(code => {
@@ -69,11 +70,11 @@ class App extends Component {
 
          return container;
        })
-       this.setState({isoCodes: isoCodes})
+      this.setState({isoCodes: isoCodes}, console.log(this.state.isoCodes))
      });
   }
-  async loadWorldData() {
-   await axios.get("../factbook.json")
+  loadWorldData = () => {
+    axios.get("../factbook.json")
     .then(res => {
       let Data = res && res.data.countries;
       Data = Object.values(Data).map(country => country.data) || [];
@@ -119,7 +120,7 @@ class App extends Component {
           lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
         }
       }
-      this.setState({ worldData: lookup.list || []})
+      this.setState({ worldData: lookup.list || [], loading: false})
     });
   }
   simplifyString(string){
@@ -440,6 +441,9 @@ class App extends Component {
             handleClose = {this.handleClose}
             setModal = {this.setModal}
             login = {this.login}
+            loadWorldData = {this.loadWorldData}
+            loadCodes = {this.loadCodes}
+            loading = {this.state.loading}
           />}/>
           </Switch>
           <Modal show={this.state.showModal} onHide={() => this.handleClose()}>

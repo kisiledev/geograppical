@@ -7,7 +7,7 @@ import '../App.css';
 import { Alert, Button} from 'react-bootstrap'
 import Sidebar from './Sidebar';
 import { db } from './Firebase/firebase'
-import { faArrowLeft, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class DetailView extends Component {
@@ -15,16 +15,20 @@ class DetailView extends Component {
     loggedIn: true,
     favorite: false,
     show: false,
-    loading: false,
+    loading: true,
     message: '',
 }
-componentWillMount = () => {
-  console.log(this.props)
-}
-
-  mapStateToProps = (state, props) => {
-    console.log(props.match.params)
+componentDidMount = () => {
+  if(this.props.countryDetail.length !== 0){
+    this.setState({loading: false})
   }
+}
+componentDidUpdate = (prevProps) => {
+  if(this.props.loading !== prevProps.loading){
+    this.props.getCountryInfo(this.props.match.params.country)
+    this.setState({loading: false})
+  }
+}
   makeFavorite = (e, country) => {
     e.persist();
     this.setState({show: true})
@@ -61,6 +65,8 @@ componentWillMount = () => {
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean)
       return(
+        this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> :
+        (
         <div className="row">
             <div className="col-sm-12 col-md-9">
                 <div className="card mb-3">
@@ -106,6 +112,7 @@ componentWillMount = () => {
                 hoverOffCountry = {this.props.hoverOffCountry}
             /> : null }
         </div>
+        )
       )
     }
   }
