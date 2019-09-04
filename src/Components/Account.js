@@ -33,6 +33,7 @@ class Account extends React.Component {
                     data: doc.data().country
                 }
                 data.push(info);
+                console.log(info)
             })
             this.setState({favorites: data, loading: false})
         })
@@ -87,8 +88,8 @@ class Account extends React.Component {
 
                 <div className="row">
                     <div className="col-12">
-                        <h5>Favorites - ({this.state.favorites && this.state.favorites.length>0 && this.state.favorites.length})</h5>
-                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
+                        <h5>Favorites - {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.length>0 && this.state.favorites.length}</h5>
+                        {this.state.loading ? null : 
                             (<ul className="list-group list-group-flush">
                                 {this.state.favorites && this.state.favorites.length > 0 ? 
                                     this.state.favorites.map(favorite =>
@@ -115,8 +116,8 @@ class Account extends React.Component {
                     </div>
                     <br/>
                     <div className="col-12">
-                        <h5>Scores - ({this.state.scores && this.state.scores.length>0 && this.state.scores.length})</h5>
-                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
+                        <h5>Scores - {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.length>0 && this.state.scores.length}</h5>
+                        {this.state.loading ? null : 
                         (
                             <ul className="list-group list-group-flush">
                                 {this.state.scores && this.state.scores.map(score => {

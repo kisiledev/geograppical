@@ -10,6 +10,7 @@ class AccountEdit extends React.Component {
         message: ''
     }
     componentDidMount = () => {
+        console.log(this.props.user.providerData)
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
@@ -54,85 +55,46 @@ class AccountEdit extends React.Component {
 
     render(){
         return(
-
-            <div className="col-8 mx-auto">
-                <h1>Edit Account</h1>
+            <div className="col-12 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
                     <div className="row">
-                        <div className="col-2 text-center">
-                            <img className="avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
-                            <Link 
-                                className="btn btn-success" 
-                                to={`${process.env.PUBLIC_URL}/account/edit`}>
-                                <FontAwesomeIcon className="acctedit" icon={faPencilAlt}/>Edit Account
-                            </Link>
+                        <div className="col-12 text-center">
+                            <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
+
+                            <span class="btn btn-link btn-file"> Edit avatar 
+                            <input type="file" id="upload-img" />
+                            </span>
                         </div>
-                        <div className="col-6">
-                            <h3>{this.props.user.displayName} </h3>
-                            <h5>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</h5>
-                            <h5>{this.props.user.email}</h5>
-                            <h6>{this.props.user.phoneNumber ? this.props.user.phoneNumber : "No phone number added"}</h6>
-                        </div>
-                        <div className="col-4">
-                            {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> :
+                        <div className="col-12 text-center">
+                            <h5 className="mt-3">{this.props.user.displayName} </h5>
+                            <p>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</p>
+                            <p>{this.props.user.email}</p>
+                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : "No phone number added"}</p>
+                            {this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x"/> :
                             (
                             <>
-                            <h2>Stats</h2>
-                            <h5>{this.state.favorites && this.state.favorites.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</h5>
-                            <h5>{this.state.scores && this.state.scores.length} Scores</h5>
+                            <h6>Stats</h6>
+                            <p>{this.state.favorites && this.state.favorites.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</p>
+                            <p>{this.state.scores && this.state.scores.length} Scores</p>
                             </>
                             )}
                         </div>
+                        <Link 
+                                className="btn btn-block btn-success" 
+                                to={`${process.env.PUBLIC_URL}/account/edit`}>
+                                <FontAwesomeIcon className="acctedit" icon={faPencilAlt}/>Edit Account
+                            </Link>
                     </div>
                 </div>
-
-                <div className="row">
-                    <div className="col">
-                        <h2>Favorites</h2>
-                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
-                            (<ul className="list-group list-group-flush">
-                                {this.state.favorites && this.state.favorites.length > 0 ? 
-                                    this.state.favorites.map(favorite =>
-                                    <li className="list-group-item" key={favorite.id}>
-                                        <h3>{favorite.id}</h3>
-                                        <h4>{favorite.data.government.capital.name}</h4>
-                                        <Flag
-                                            className="detailFlag align-self-end text-right img-thumbnail"
-                                            name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : "_unknown") ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
-                                            format="svg"
-                                            pngSize={64}
-                                            shiny={false}
-                                            alt={`${favorite.data.name}'s Flag`}
-                                            basePath="/img/flags"
-                                            />
-                                        <FontAwesomeIcon onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="red" />
-                                    </li>
-                                ) : <h5>You have no favorites saved</h5> }
-                            </ul>)
-                        }
+                    <h3>User Details</h3>   
+                    {this.props.user.providerData.map((data) => {
+                        return <div className="card mb-3"><p><strong>Name </strong>{data.displayName}</p>
+                        <p><strong>Email </strong>{data.email}</p>
+                    <p><strong>Provider </strong>{data.providerId === "google.com" && <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />} {data.providerId} </p>
                     </div>
-                    <div className="col">
-                        <h2>Scores</h2>
-                        {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : 
-                        (
-                            <ul className="list-group list-group-flush">
-                                {this.state.scores && this.state.scores.map(score => {
-                                    let milliseconds = score.data.dateCreated.seconds * 1000;
-                                    let currentDate = new Date(milliseconds);
-                                    let dateTime = currentDate.toGMTString();
-                                    return <li className="list-group-item" key={score.id}>
-                                        <h4>{dateTime}</h4>
-                                        <h5>Mode - {score.data.gameMode}</h5>
-                                        <h5>Score - {score.data.score}</h5>
-                                        <h5>Correct - {score.data.correct}</h5>
-                                        <h5>Incorrect - {score.data.incorrect}</h5>
-                                    </li>
-                                })}
-                            </ul>)
-                        }
-                    </div>
-                </div>
+                    })}
+                    <p>{this.props.user.uid}</p>
             </div>
         )
     }
