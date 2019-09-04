@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Result from './Result';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
+import { Alert, Button} from 'react-bootstrap'
+import { db, firestore } from './Firebase/firebase'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
@@ -10,8 +12,38 @@ import Maps from './Maps';
 
 class ResultView extends Component {
   state = {
-    loading: false
+    loading: false,
+    message: '',
   }
+
+  makeFavorite = (e, country) => {
+    e.persist();
+    this.setState({show: true})
+    if(!this.props.user){
+      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`}})
+    } else {
+      if(!this.state.favorite){
+        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
+              country
+        }).then(() => {
+          console.log(`Added ${country.name} to favorites`)
+          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
+        }).catch((err) => {
+          console.error(err)
+          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+        })
+      } else {
+        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
+        .then(() => {
+          console.log(`Removed ${country.name} from favorites`)
+          this.setState({message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+        }).catch((err) => {
+          console.error(err)
+          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+        })
+      }
+    }
+}
   render() {
     // (regionCountries[0].name !== undefined) ? console.log(regionCountries): console.log('nothing');
     const totalRegions = this.props.data.map(a => a.geography.map_references.replace(/;/g, ""))
@@ -28,6 +60,7 @@ class ResultView extends Component {
           {this.props.countries[0] === undefined ? 
               null
            : null }
+          {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
             worldData = {this.props.data}

@@ -4,7 +4,7 @@ import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
 import { withRouter, Link } from 'react-router-dom';
 import '../App.css';
-import { Alert, Button} from 'react-bootstrap'
+import { Alert } from 'react-bootstrap'
 import Sidebar from './Sidebar';
 import { db } from './Firebase/firebase'
 import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
@@ -25,6 +25,7 @@ componentDidMount = () => {
   }
   if(!this.props.loading){
     this.props.getCountryInfo(this.props.match.params.country)
+    
   }
 }
 componentDidUpdate = (prevProps, prevState) => {
@@ -32,11 +33,32 @@ componentDidUpdate = (prevProps, prevState) => {
   console.log(this.state.loading)
   console.log(prevProps.loading)
   console.log(prevState.loading)
+  this.props.user && this.props.countryDetail && this.checkFavorite(this.props.countryDetail.name)
   if(this.props.loading !== prevProps.loading || this.props.loading !==prevState.loading){
     this.props.getCountryInfo(this.props.match.params.country)
     this.setState({loading: false})
   }
+  if(this.state.favorite !== prevState.favorite){
+    this.checkFavorite(this.props.countryDetail.name)
+  }
 }
+  checkFavorite = (country) => {
+    console.log(country)
+    const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country}`);
+    docRef.get()
+    .then(doc => {
+      if(doc.exists){
+        const data = doc.data()
+        this.setState({favorite: true})
+        console.log(data)
+      } else {
+        this.setState({favorite: false})
+        console.log("No such document!");
+      }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
+  }
   makeFavorite = (e, country) => {
     e.persist();
     this.setState({show: true})

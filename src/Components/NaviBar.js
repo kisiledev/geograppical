@@ -27,7 +27,7 @@ class NaviBar extends React.Component {
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Form 
-                    className="flex-grow-1 ml-auto" 
+                    className="ml-auto searchForm" 
                     inline
                     onSubmit={(e) => this.props.handleSubmit(e)}
                     >
@@ -46,8 +46,8 @@ class NaviBar extends React.Component {
                 </Nav>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                    <Nav.Link href="/" onClick={(e) => this.props.changeMode(e)} >Learn</Nav.Link>
-                    <Nav.Link href="/play" onClick={(e) => this.props.changeMode(e)} >Play</Nav.Link>
+                    <Nav.Link className="navbarlink" href="/" onClick={(e) => this.props.changeMode(e)} >Learn</Nav.Link>
+                    <Nav.Link className="navbarlink" href="/play" onClick={(e) => this.props.changeMode(e)} >Play</Nav.Link>
                     </Nav>
                     {this.props.user ? null : 
                     <Nav>

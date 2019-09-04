@@ -13,35 +13,63 @@ class Result extends Component {
         loggedIn: true,
         favorite: false
     }
-    makeFavorite = (e, country) => {
-        e.persist();
-        if(!this.props.user){
-          let modal = {
-            title: 'Not Logged In',
-            body: 'You need to sign in to favorite countries',
-            primaryButton: 
-            <Button variant="primary" onClick={this.props.login}>
-            Sign In/ Sign Up
-            </Button>
-          }
-          this.props.setModal(modal)
-          this.props.handleOpen();
-        } else {
-          if(!this.state.favorite){
-            db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
-                  country
-            }).then(() => {
-              console.log(`Added ${country.name} to favorites`)
-              this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, favorite: true})
-            }).catch((err) => {
-              console.error(err)
-              this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
-            })
-          } else {
-            this.setState({favorite: false})
-          }
-        }
+    componentDidMount = () => {
+      console.log(this.props)
+      this.checkFavorite(this.props.country)
     }
+    componentDidUpdate = (prevProps, prevState) => {
+      if(prevProps !== this.props){
+        console.log(this.props)
+      }
+      if(this.state.favorite !== prevState.favorite){
+        this.checkFavorite(this.props.country)
+      }
+    }
+    checkFavorite = (country) => {
+      console.log(country)  
+      const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`);
+      docRef.get()
+      .then(doc => {
+        if(doc.exists){
+          const data = doc.data()
+          this.setState({favorite: true})
+          console.log(data)
+        } else {
+          this.setState({favorite: false})
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+          console.log("Error getting document:", error);
+      });
+    }
+    makeFavorite = (e, country) => {
+      e.persist();
+      this.setState({show: true})
+      if(!this.props.user){
+        this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`}})
+      } else {
+        if(!this.state.favorite){
+          db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
+                country
+          }).then(() => {
+            console.log(`Added ${country.name} to favorites`)
+            this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
+          }).catch((err) => {
+            console.error(err)
+            this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          })
+        } else {
+          db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
+          .then(() => {
+            console.log(`Removed ${country.name} from favorites`)
+            this.setState({message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+          }).catch((err) => {
+            console.error(err)
+            this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          })
+        }
+      }
+  }
     render() {
         return(
             <div className="mr-md-3 card mb-3">
@@ -49,7 +77,7 @@ class Result extends Component {
                     <div className="media-body">
                     <h4 className="title">
                         {this.props.name} ({this.props.flagCode})
-                        <br/><small>Capital: {this.props.capital} | Pop: {this.props.population}</small> 
+                        <br/><small>Capital: {this.props.capital.split(';')[0]} | Pop: {this.props.population}</small> 
                     </h4>
                     <p className="subregion">
                     <strong>Location: </strong>{this.props.subregion}
