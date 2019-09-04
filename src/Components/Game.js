@@ -341,7 +341,7 @@ class Game extends React.Component {
             gameMode = <div></div>
         }
         let timeButtons = this.state.time && 
-            <div>
+            <>
                 <label>
                 <Radio 
                     value="et"
@@ -358,10 +358,11 @@ class Game extends React.Component {
                 />
                 <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
                 </label>
-            </div>
+            </>
 
         let ModalText = "Congrats! You've reached the end of the game. You answered " + this.state.correct + " questions correctly and " + this.state.incorrect + " incorrectly.\n Thanks for playing";
         let timeExpired = "Sorry, time expired! Try again"
+        let ModalBody = this.state.time && this.state.time.currentCount <= 0 ? timeExpired : ModalText;
         return(
         <>
         {/* <button onClick={}>Save Score</button> */}
@@ -369,7 +370,7 @@ class Game extends React.Component {
             <Modal.Header closeButton>
             <Modal.Title>Game Over</Modal.Title>
             </Modal.Header>
-            <Modal.Body>{this.state.time.currentCount <= 0 ? timeExpired : ModalText}</Modal.Body>
+            <Modal.Body>{ModalBody}</Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={() => this.handleClose()}>
                 Close
@@ -402,8 +403,8 @@ class Game extends React.Component {
                     </div>
                 </div>
             </div>}
-            <div className="text-center col-md-8 col-lg-12 mx-auto">{gameMode}</div>
-            {!this.state.isStarted && <div className="col-12">
+            <div className="text-center col-md-8 col-lg-12 px-0 mx-auto">{gameMode}</div>
+            {!this.state.isStarted && <div className="col-12 d-flex justify-content-center flex-wrap">
                 <label>
                     <Checkbox
                         checked={this.state.timeChecked}

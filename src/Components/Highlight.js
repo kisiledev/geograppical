@@ -324,7 +324,7 @@ class Highlight extends Component {
             })
             if(this.state.questions && this.state.questions.length > 10){
                 this.props.handleOpen();
-                alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
+                // alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
                 let nodes = [...(document.getElementsByClassName("gameCountry"))];
             // console.log(this.state.filterNations)
             nodes.forEach( node => {
@@ -418,7 +418,7 @@ class Highlight extends Component {
     return(
         
         <BreakpointProvider>
-        <div className="card mr-3 mb-3">
+        <div className="mr-3 mb-3">
             {!this.props.isStarted && directions}
             {this.props.isStarted && this.state.guesses && <div>{this.state.guesses} {(this.state.guesses === 1)     ? 'guess' : 'guesses' }</div>}
             {this.props.isStarted && this.state.guesses && <div>For {3-this.state.guesses} {(this.state.guesses === 2 || this.state.guesses ===4) ? 'point' : 'points' }</div>}

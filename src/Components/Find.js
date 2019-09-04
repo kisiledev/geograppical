@@ -394,7 +394,7 @@ class Find extends Component {
     return(
         
         <BreakpointProvider>
-        <div className="card mr-3 mb-3">
+        <div className="mr-3 mb-3">
             {!isStarted && directions}
             {isStarted && guesses && <div>{guesses} {(guesses === 1)     ? 'guess' : 'guesses' }</div>}
             {isStarted && guesses && <div>For {3-guesses} {(guesses === 2 || guesses ===4) ? 'point' : 'points' }</div>}

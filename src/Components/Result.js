@@ -58,6 +58,7 @@ class Result extends Component {
                     </div>
                     {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.country)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                     <Flag 
+                        className="img-thumbnail"
                         name={(this.props.flagCode)? this.props.flagCode : "_unknown"}
                         format="svg"
                         pngSize={64}

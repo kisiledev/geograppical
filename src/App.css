@@ -351,7 +351,9 @@ a:hover {
 .possible {
   list-style: none;
   padding: 10px;
-  flex-basis: calc(50% - 2.4%);
+  flex-basis: 45%;
+  display: flex;
+  align-items: center;
 }
 .guesses {
   min-height: 48px;
@@ -380,7 +382,11 @@ svg, g, path {
   margin-left: -40px;
 }
 .media img, .detailFlag {
-  width: 25%;
+  object-fit: contain;
+  padding: .25rem;
+}
+.favFlag {
+  max-width: 70px;
   object-fit: contain;
   padding: .25rem;
 }

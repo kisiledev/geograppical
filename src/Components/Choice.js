@@ -138,7 +138,7 @@ class Choice extends React.Component {
                     {isStarted && guesses && <div>{guesses} {(guesses === 1)     ? 'guess' : 'guesses' }</div>}
                     {isStarted && guesses && <div>For {3-guesses} {(guesses === 2 || guesses ===4) ? 'point' : 'points' }</div>}
                 </div>
-                {answers && answers.length > 0 && <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>}
+                {answers && answers.length > 0 && <ul className="px-0 d-flex justify-content-center flex-wrap">{answerChoices}</ul>}
             </div>
 
         )
