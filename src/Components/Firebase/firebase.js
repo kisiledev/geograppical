@@ -16,6 +16,7 @@ import firebase from 'firebase';
   const googleProvider = new firebase.auth.GoogleAuthProvider();
   const facebookProvider = new firebase.auth.FacebookAuthProvider();
   const emailProvider = new firebase.auth.EmailAuthProvider();
+  const twitterProvider = new firebase.auth.TwitterAuthProvider();
   const firestore = firebase.firestore;
 
 
@@ -26,6 +27,7 @@ import firebase from 'firebase';
     googleProvider,
     facebookProvider,
     emailProvider,
+    twitterProvider,
     firestore
   }
 

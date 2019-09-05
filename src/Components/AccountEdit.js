@@ -1,5 +1,5 @@
 import React from 'react';
-import { db, auth, googleProvider, facebookProvider, emailProvider } from './Firebase/firebase';
+import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPencilAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
@@ -83,6 +83,12 @@ class AccountEdit extends React.Component {
                 name: "Email", 
                 source: emailProvider,
                 icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg'
+            },
+            {
+                id: 4, 
+                name: 'Twitter',
+                source: twitterProvider,
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_twitter.svg'
             }
         ]
         return(
@@ -113,7 +119,7 @@ class AccountEdit extends React.Component {
                         </div>
                         <Link 
                                 className="btn btn-block btn-primary" 
-                                to={`${process.env.PUBLIC_URL}/account/edit`}>
+                                to={`${process.env.PUBLIC_URL}/account`}>
                                 <FontAwesomeIcon className="acctedit" icon={faArrowLeft}/>Back to Account
                             </Link>
                     </div>
@@ -127,7 +133,7 @@ class AccountEdit extends React.Component {
                     })}
                     {providers.map(provider => {
                         return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
-                        <button onClick={() => this.providerSignUp(provider.source)} type="button" className="google-button">
+                        <button onClick={() => this.providerSignUp(provider.source)} type="button" className="provider-button">
                         <span className="google-button__icon">
                             <img src={provider.icon} className="emailicon" alt="google icon" />
                         </span>
