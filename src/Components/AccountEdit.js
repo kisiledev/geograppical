@@ -1,7 +1,7 @@
 import React from 'react';
-import { db } from './Firebase/firebase';
+import { db, auth, googleProvider, facebookProvider, emailProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencilAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 class AccountEdit extends React.Component {
@@ -10,10 +10,20 @@ class AccountEdit extends React.Component {
     }
     componentDidMount = () => {
         console.log('reloading edit page')
+        console.log(googleProvider, facebookProvider)
         console.log(this.props.user.providerData)
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
+    providerSignUp = (provider) => {
+        auth.signInWithPopup(provider).then((result) =>{
+          console.log(result)
+        }).catch((error) => {
+          console.error(error);
+          const credential = error.credential;
+          console.log(credential);
+        })
+      };
     deleteFavorite = (id) => {
         db.collection(`users/${this.props.user.uid}/favorites`).doc(id).delete()
         .then(() => {
@@ -54,6 +64,27 @@ class AccountEdit extends React.Component {
     }
 
     render(){
+        let providers = [
+            {
+                id: 1,
+                name: "Google", 
+                source: googleProvider,
+                icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
+                
+            }, 
+            {
+                id: 2,
+                name: "Facebook", 
+                source: facebookProvider,
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_facebook.svg'
+            }, 
+            {
+                id: 3,
+                name: "Email", 
+                source: emailProvider,
+                icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg'
+            }
+        ]
         return(
             <div className="col-12 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
@@ -62,7 +93,7 @@ class AccountEdit extends React.Component {
                         <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
                             <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
 
-                            <div class="btn btn-link btn-file"> Edit avatar 
+                            <div className="btn btn-link btn-file"> Edit avatar 
                             <input type="file" id="upload-img" />
                             </div>
                         </div>
@@ -81,19 +112,30 @@ class AccountEdit extends React.Component {
                             )}
                         </div>
                         <Link 
-                                className="btn btn-block btn-success" 
+                                className="btn btn-block btn-primary" 
                                 to={`${process.env.PUBLIC_URL}/account/edit`}>
-                                <FontAwesomeIcon className="acctedit" icon={faPencilAlt}/>Edit Account
+                                <FontAwesomeIcon className="acctedit" icon={faArrowLeft}/>Back to Account
                             </Link>
                     </div>
                 </div>
                     <h3>User Details</h3>   
-                    {this.props.user.providerData.map((data) => {
-                        return <div className="card mb-3"><p><strong>Name </strong>{data.displayName}</p>
+                    {this.props.user.providerData && this.props.user.providerData.map((data) => {
+                        return <div key={data.email}className="card mb-3"><p><strong>Name </strong>{data.displayName}</p>
                         <p><strong>Email </strong>{data.email}</p>
                     <p><strong>Provider </strong>{data.providerId === "google.com" && <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />} {data.providerId} </p>
                     </div>
                     })}
+                    {providers.map(provider => {
+                        return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
+                        <button onClick={() => this.providerSignUp(provider.source)} type="button" className="google-button">
+                        <span className="google-button__icon">
+                            <img src={provider.icon} className="emailicon" alt="google icon" />
+                        </span>
+                        <span className="google-button__text">Sign in with {provider.name}</span>
+                        </button>
+                    </div>
+                    })}
+                    
                     <p>{this.props.user.uid}</p>
             </div>
         )

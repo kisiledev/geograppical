@@ -10,7 +10,9 @@ const PrivateRoute = ({
     ...rest
 }) => {
     if(loading){
-        return <FontAwesomeIcon className="my-5 mx-auto" icon={faSpinner} spin size="2x"/>
+        return <div className="mt-5 mx-auto text-center">
+            <FontAwesomeIcon icon={faSpinner} spin size="2x"/>
+        </div>
     }
     return (
         <Route 

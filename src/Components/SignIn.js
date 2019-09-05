@@ -1,5 +1,5 @@
 import React from "react";
-import firebase, { auth, provider } from "./Firebase/firebase";
+import firebase, { auth, googleProvider } from "./Firebase/firebase";
 import { Alert } from 'react-bootstrap'
 // import {StyledFirebaseAuth} from 'react-firebaseui';
 import {Link, Redirect } from 'react-router-dom';
@@ -87,7 +87,7 @@ class SignIn extends React.Component {
   }
 
   googleSignUp = () => {
-    auth.signInWithPopup(provider).then((result) =>{
+    auth.signInWithPopup(googleProvider).then((result) =>{
       console.log(result)
     }).catch((error) => {
       console.error(error);
@@ -98,7 +98,7 @@ class SignIn extends React.Component {
   
 
   render() {
-    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    // googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     
     const { user } = this.props;
     if(user && user.uid){

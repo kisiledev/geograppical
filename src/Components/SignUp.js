@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'firebaseui';
-import { auth, provider } from './Firebase/firebase'
+import { auth, googleProvider } from './Firebase/firebase'
 import { Link, Redirect } from 'react-router-dom'
 import Alert from 'react-bootstrap/Alert'
 
@@ -27,7 +27,7 @@ class SignUp extends Component {
         });
       }
       googleSignUp = () => {
-        auth.signInWithPopup(provider).then((result) =>{
+        auth.signInWithPopup(googleProvider).then((result) =>{
           console.log(result)
         }).catch((error) => {
           console.error(error);

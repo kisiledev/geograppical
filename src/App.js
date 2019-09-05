@@ -8,7 +8,7 @@ import { BreakpointProvider } from 'react-socks';
 import {Modal, Button} from 'react-bootstrap'
 import './App.css';
 import axios from 'axios';
-import { auth, provider } from './Components/Firebase/firebase'
+import { auth, googleProvider } from './Components/Firebase/firebase'
 import i18n from 'i18n-iso-countries';
 import Game from './Components/Game';
 import Account from './Components/Account';
@@ -151,7 +151,7 @@ class App extends Component {
     this.setState({modal});
   }
   login = () => {
-    auth.signInWithPopup(provider)
+    auth.signInWithPopup(googleProvider)
     .then((result) => {
         const user = result.user;
         console.log(user)

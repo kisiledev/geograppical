@@ -13,7 +13,9 @@ import firebase from 'firebase';
 
   const db = firebase.firestore();
   const auth = firebase.auth();
-  const provider = new firebase.auth.GoogleAuthProvider();
+  const googleProvider = new firebase.auth.GoogleAuthProvider();
+  const facebookProvider = new firebase.auth.FacebookAuthProvider();
+  const emailProvider = new firebase.auth.EmailAuthProvider();
   const firestore = firebase.firestore;
 
 
@@ -21,7 +23,9 @@ import firebase from 'firebase';
   export { 
     db, 
     auth,
-    provider,
+    googleProvider,
+    facebookProvider,
+    emailProvider,
     firestore
   }
 

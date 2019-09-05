@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
-import { auth, provider } from './Firebase/firebase'
+import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
+import { auth, googleProvider } from './Firebase/firebase'
 import { Redirect } from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
 
@@ -9,7 +8,7 @@ import * as ROUTES from '../Constants/Routes'
 class NaviBar extends React.Component {
 
     login = () => {
-        auth.signInWithPopup(provider)
+        auth.signInWithPopup(googleProvider)
         .then((result) => {
             const user = result.user;
             console.log(user)
