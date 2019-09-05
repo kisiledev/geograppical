@@ -21,6 +21,7 @@ import AccountEdit from './Components/AccountEdit'
 class App extends Component {
 
   state = {
+    authenticated: false,
     loading: true,
     highlighted: "",
     hovered: false, 
@@ -44,7 +45,21 @@ class App extends Component {
   componentDidMount() {
     this.loadWorldData();
     this.loadCodes();
-    this.authListener();
+    auth.onAuthStateChanged(user => {
+      if(user){
+        this.setState({
+          user: user, 
+          authenticated: true,
+          loading: false
+        })
+      } else {
+        this.setState({
+          user: null, 
+          authenticated: false, 
+          loading: false
+        })
+      }
+    })
   }
   removeNull(array){
     if(array !==undefined)
@@ -53,9 +68,7 @@ class App extends Component {
       .map(item => Array.isArray(item) ? this.removeNull(item) : item);
   }
   authListener = () => {
-    auth.onAuthStateChanged((user) => {
-      user ?  this.setState({user: user, authenticated: true},console.log(user) ) : this.setState({user: null, authenticated: false})
-    })
+    
   }
   loadCodes = () => {
     axios.get("../iso.json")
@@ -70,7 +83,7 @@ class App extends Component {
 
          return container;
        })
-      this.setState({isoCodes: isoCodes}, console.log(this.state.isoCodes))
+      this.setState({isoCodes: isoCodes})
      });
   }
   loadWorldData = () => {
@@ -374,11 +387,13 @@ class App extends Component {
           <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account`} 
             user={this.state.user}
             simplifyString = {this.simplifyString}
-            component={Account} 
+            component={Account}
+            loading={this.state.loading} 
             authenticated={this.state.authenticated} />
           <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account/edit`} 
             user={this.state.user} 
-            component={AccountEdit} 
+            component={AccountEdit}
+            loading={this.state.loading} 
             authenticated={this.state.authenticated} />
           <Route exact path={`${process.env.PUBLIC_URL}/login`} render={props => <SignIn 
             user={this.state.user}

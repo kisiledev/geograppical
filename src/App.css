@@ -165,7 +165,8 @@ input, input[placeholder] {
   max-height: 50px;
 }
 .nav-item-avatar {
-  display: inherit
+  display: inherit;
+  padding: 0 1rem;
 }
 .btn-file {
   position: relative;

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import Result from './Result';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
-import { Alert, Button} from 'react-bootstrap'
-import { db, firestore } from './Firebase/firebase'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Alert} from 'react-bootstrap'
+import { db } from './Firebase/firebase'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 import Sidebar from './Sidebar';
-import Maps from './Maps';
+// import Maps from './Maps';
 
 
 class ResultView extends Component {

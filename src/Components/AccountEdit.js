@@ -1,8 +1,7 @@
 import React from 'react';
 import { db } from './Firebase/firebase';
-import Flag from 'react-flags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 class AccountEdit extends React.Component {
@@ -10,6 +9,7 @@ class AccountEdit extends React.Component {
         message: ''
     }
     componentDidMount = () => {
+        console.log('reloading edit page')
         console.log(this.props.user.providerData)
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
@@ -59,12 +59,12 @@ class AccountEdit extends React.Component {
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
                     <div className="row">
-                        <div className="col-12 text-center">
+                        <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
                             <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
 
-                            <span class="btn btn-link btn-file"> Edit avatar 
+                            <div class="btn btn-link btn-file"> Edit avatar 
                             <input type="file" id="upload-img" />
-                            </span>
+                            </div>
                         </div>
                         <div className="col-12 text-center">
                             <h5 className="mt-3">{this.props.user.displayName} </h5>

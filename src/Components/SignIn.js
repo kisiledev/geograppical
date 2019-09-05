@@ -31,9 +31,12 @@ class SignIn extends React.Component {
     }
   }
   componentDidMount = () => {
-    setTimeout(() => {
+    this.timeOut = setTimeout(() => {
       this.setState({loading: false})
     }, 1000)
+  }
+  componentWillUnmount = () => {
+    clearTimeout(this.timeOut)
   }
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });

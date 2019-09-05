@@ -23,6 +23,16 @@ class Account extends React.Component {
           this.setState({message: {style: "danger", content: `Error adding ${id} to favorites, ${err}`}})
         })
     }
+    deleteScore = (id) => {
+        db.collection(`users/${this.props.user.uid}/scores`).doc(id).delete()
+        .then(() => {
+          console.log(`Removed ${id} from scores`)
+          this.setState({message: {style: "warning", content: `Removed ${id} from scores`}, show: true})
+        }).catch((err) => {
+          console.error(err)
+          this.setState({message: {style: "danger", content: `Error removing ${id} from scores, ${err}`}})
+        })
+    }
     getFavoritesData = () => {
         let countriesRef = db.collection(`/users/${this.props.user.uid}/favorites`);
         countriesRef.onSnapshot((querySnapshot) => {
@@ -44,10 +54,11 @@ class Account extends React.Component {
             let data = [];
             querySnapshot.forEach( doc => {
                 let info = {
-                    id: doc.data().dateCreated,
+                    id: doc.id,
                     data: doc.data()
                 }
                 data.push(info);
+                console.log(info);
             })
             this.setState({scores: data, loading: false})
         })
@@ -107,7 +118,7 @@ class Account extends React.Component {
                                                 basePath="/img/flags"
                                             />
                                         </Link>
-                                            <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="3x" color="red" />
+                                            <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="darkred" />
                                         </div>
                                     </li>
                                 ) : <h5>You have no favorites saved</h5> }
@@ -130,6 +141,7 @@ class Account extends React.Component {
                                         <h5>Score - {score.data.score}</h5>
                                         <h5>Correct - {score.data.correct}</h5>
                                         <h5>Incorrect - {score.data.incorrect}</h5>
+                                        <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
                                     </li>
                                 })}
                             </ul>)

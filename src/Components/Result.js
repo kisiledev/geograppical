@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Flag from 'react-flags';
 import { Link } from 'react-router-dom';
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
 import { db } from './Firebase/firebase'
@@ -14,19 +13,15 @@ class Result extends Component {
         favorite: false
     }
     componentDidMount = () => {
-      console.log(this.props)
       this.checkFavorite(this.props.country)
     }
     componentDidUpdate = (prevProps, prevState) => {
-      if(prevProps !== this.props){
-        console.log(this.props)
-      }
-      if(this.state.favorite !== prevState.favorite){
-        this.checkFavorite(this.props.country)
-      }
+      this.checkFavorite(this.props.country)
+    }
+    componentWillUnmount = () => {
+      
     }
     checkFavorite = (country) => {
-      console.log(country)  
       const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`);
       docRef.get()
       .then(doc => {
@@ -77,7 +72,7 @@ class Result extends Component {
                     <div className="media-body">
                     <h4 className="title">
                         {this.props.name} ({this.props.flagCode})
-                        <br/><small>Capital: {this.props.capital.split(';')[0]} | Pop: {this.props.population}</small> 
+                        <br/><small>Capital: {this.props.capital && this.props.capital.split(';')[0]} | Pop: {this.props.population}</small> 
                     </h4>
                     <p className="subregion">
                     <strong>Location: </strong>{this.props.subregion}
