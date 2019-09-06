@@ -10,23 +10,29 @@ import '../App.css';
 
 class Sidebar extends Component {
 
-    state = {};
-    componentDidMount(prevState){
+    state = {
+        loading: true,
+    };
+    componentDidMount(prevState, prevProps){
         if(prevState !== this.state){
-            console.log('mounted component')
+            console.log('mounted component', this.props.sidebar)
             this.setState({loading: true}, this.setDynamicRegions(this.props.uniqueRegions))
-            
         };
+        if(prevProps && prevProps.sidebar && this.props.sidebar && prevProps.sidebar !== this.props.sidebar){
+            this.setDynamicRegions(this.props.uniqueRegions)
+        }
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         // only update chart if the data has changed
-        
+        if(this.props.sidebar !==prevProps.sidebar){
+            this.setState({loading: false})
+        }
         if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
             console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
         }
-        if(this.state.loading){
-            this.setState({loading: false}, console.log('loading is now false'))
+        if(this.state.loading !== prevState.loading){
+            this.setState({loading: false}, console.log('loading is now false', this.state.loading), this.state.loading && alert('loading'))
         }
     };
     removeNull(array){
@@ -93,8 +99,8 @@ class Sidebar extends Component {
                     { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
                     </button>
                 </Breakpoint>
-                {(this.state.loading || this.state.loading === "undefined") ? <div><FontAwesomeIcon icon={faSpinner} spin size="3x"/>Loading</div> : null}
-                <div className="sidebar-sticky">
+                {this.state.loading ? <div className="mx-auto text-center"><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> : 
+                (<div className="sidebar-sticky">
                     <ul className="nav nav-pills flex-column">
                     {this.props.uniqueRegions.map( (region, index ) => 
                         <li 
@@ -148,7 +154,7 @@ class Sidebar extends Component {
                         )}
                     </ul>
                     {/* </div> */}
-                </div>
+                </div> )}
             </nav>
             </BreakpointProvider>
         )

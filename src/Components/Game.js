@@ -27,7 +27,8 @@ class Game extends React.Component {
             clock: 0,
             elapsed: ''
         },
-        show: false
+        show: false,
+        saved: false
     }; 
     
     handleClose = () => {
@@ -266,7 +267,10 @@ class Game extends React.Component {
                     incorrect: this.state.incorrect,
                     time: 60 - this.state.time.currentCount,
                     questions: this.state.questionsSet 
-                }).then((data) => console.log('Data written successfully', data, data.id    ))
+                }).then((data) => {
+                    console.log('Data written successfully', data, data.id)
+                    this.setState({saved: true})
+                })
                 .catch( error => console.error(error))
             } else if(this.state.time && !this.state.score){
                 db.collection('users').doc(this.props.user.uid).collection('scores').add({
@@ -277,7 +281,10 @@ class Game extends React.Component {
                     incorrect: this.state.incorrect,
                     time: 60 - this.state.time.currentCount,
                     questions: this.state.questionsSet 
-                }).then((data) => console.log('Data written successfully', data, data.id    ))
+                }).then((data) => {
+                    console.log('Data written successfully', data, data.id)
+                    this.setState({saved: true})
+                })
                 .catch( error => console.error(error))
             } else {
                 db.collection('users').doc(this.props.user.uid).collection('scores').add({
@@ -287,7 +294,10 @@ class Game extends React.Component {
                     correct: this.state.correct,
                     incorrect: this.state.incorrect,
                     questions: this.state.questionsSet 
-                }).then((data) => console.log('Data written successfully', data, data.id    ))
+                }).then((data) => {
+                    console.log('Data written successfully', data, data.id)
+                    this.setState({saved: true})
+                })
                 .catch( error => console.error(error))
             }
         }
@@ -399,7 +409,7 @@ class Game extends React.Component {
                 Close
             </Button>
             <Button variant="primary" onClick={() => this.saveScore()}>
-                Save Score
+                {this.state.saved ? "Save Score" : "Score Saved"}
             </Button>
             </Modal.Footer>
         </Modal>

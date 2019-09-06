@@ -67,13 +67,17 @@ class SignUp extends Component {
         
         return (
           
-          <div className="mx-auto col-lg-4 card">
+          <div className="mx-auto col-lg-4">
             {<Alert variant={message.style}>{message.content}</Alert>}
+            <div className="row mb-3">
+              <div className="col-lg-12 text-center">
+                <h1 className="mt-3">Sign Up</h1>
+              </div>
+            </div>
             <div className="row">
               <div className="col-lg-12">
-                <h1>Sign Up</h1>
                 <form onSubmit={(e) => this.signup(e)}>
-                <div className="form-group col-9 mb-5 mx-auto">
+                <div className="form-group col-12 mb-4 mx-auto">
                   <input 
                     value={username} 
                     onChange={(e) =>this.handleChange(e)} 
@@ -83,7 +87,7 @@ class SignUp extends Component {
                     placeholder="Full Name" 
                   />
                 </div>
-                <div className="form-group col-9 mb-5 mx-auto">
+                <div className="form-group col-12 mb-4 mx-auto">
                   <input 
                     value={email} 
                     onChange={(e) =>this.handleChange(e)} 
@@ -93,7 +97,7 @@ class SignUp extends Component {
                     placeholder="Enter email" 
                   />
                 </div>
-                <div className="form-group col-9 mb-5 mx-auto">
+                <div className="form-group col-12 mb-4 mx-auto">
                   <input 
                     value={passwordOne} 
                     onChange={(e) => this.handleChange(e)} 
@@ -103,7 +107,7 @@ class SignUp extends Component {
                     placeholder="Password" 
                   />
                 </div>
-                <div className="form-group col-9 mb-5 mx-auto">
+                <div className="form-group col-12 mb-4 mx-auto">
                   <input 
                     value={passwordTwo} 
                     onChange={(e) => this.handleChange(e)} 

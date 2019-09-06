@@ -118,16 +118,16 @@ class PasswordReset extends React.Component {
        : 
       <div className="mx-auto col-lg-4">
         {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
-        <div className="row mb-5">
+        <div className="row mb-3">
           <div className="col-lg-12 text-center">
-            <h1 className="mt-5">Reset Password</h1>
+            <h1 className="mt-3">Reset Password</h1>
           </div>
         </div>
         <div className="row">
           <div className="col-lg-12">
           {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
             <form>
-            <div className="form-group col-6 mx-auto">
+            <div className="form-group col-12 mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
               </div>
