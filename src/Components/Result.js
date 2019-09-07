@@ -13,10 +13,10 @@ class Result extends Component {
         favorite: false
     }
     componentDidMount = () => {
-      this.checkFavorite(this.props.country)
+      this.props.user && this.checkFavorite(this.props.country)
     }
     componentDidUpdate = (prevProps, prevState) => {
-      this.checkFavorite(this.props.country)
+      this.props.user && this.checkFavorite(this.props.country)
     }
     componentWillUnmount = () => {
       
@@ -79,7 +79,7 @@ class Result extends Component {
                     </p>
                     <Link to={`${process.env.PUBLIC_URL}/${this.props.name}`} className="btn btn-success btn-sm" onClick={() => this.props.getCountryInfo(this.props.name, this.props.capital)}>Read More</Link>
                     </div>
-                    {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.country)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
+                    {this.state.loggedIn && <div className="stars"><FontAwesomeIcon onClick={(e) => this.props.makeFavorite(e, this.props.country)} size="2x" value={this.props.country} color={this.state.favorite ? "gold" : "gray"} icon={faStar} /></div>}
                     <Flag 
                         className="img-thumbnail"
                         name={(this.props.flagCode)? this.props.flagCode : "_unknown"}

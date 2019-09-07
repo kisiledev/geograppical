@@ -1,45 +1,47 @@
 import React, {Component} from 'react';
 import Result from './Result';
-import Breakpoint, { BreakpointProvider } from 'react-socks';
+import { Breakpoint, BreakpointProvider } from 'react-socks';
 import { Alert} from 'react-bootstrap'
 import { db } from './Firebase/firebase'
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
-import Sidebar from './Sidebar';
-// import Maps from './Maps';
+import SidebarView from './SidebarView';
+import Maps from './Maps';
+import * as ROUTES from '../Constants/Routes'
 
 
 class ResultView extends Component {
   state = {
     loading: false,
     message: '',
+    alert: false
   }
 
   makeFavorite = (e, country) => {
     e.persist();
     this.setState({show: true})
     if(!this.props.user){
-      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`}})
+      this.setState({alert: true, message: {style: "warning", content: `You need to sign in to favorite countries. Login`, link: ROUTES.SIGN_IN, linkContent: ' here'}})
     } else {
       if(!this.state.favorite){
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
               country
         }).then(() => {
           console.log(`Added ${country.name} to favorites`)
-          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
+          this.setState({alert: true, message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          this.setState({alert: true, message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
         })
       } else {
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
         .then(() => {
           console.log(`Removed ${country.name} from favorites`)
-          this.setState({message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+          this.setState({alert: true, message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          this.setState({alert: true, message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
         })
       }
     }
@@ -60,10 +62,35 @@ class ResultView extends Component {
           {this.props.countries[0] === undefined ? 
               null
            : null }
-          {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
+          {this.state.alert && 
+          <Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
+            <Alert.Link href={this.state.message.link}>
+              {this.state.message.linkContent}
+            </Alert.Link>
+          </Alert>}
+          <Breakpoint medium up>
+          <Maps
+            mapVisible = {this.props.mapVisible}
+            mapView={this.props.mapView} 
+            worldData = {this.props.data}
+            countries = {this.props.countries}
+            changeView = {this.props.changeView}
+            getCountryInfo = {this.props.getCountryInfo}
+            hoverOnRegion = {this.props.hoverOnRegion}
+            hoverOffRegion = {this.props.hoverOffRegion}
+            handleMove = {this.props.handleMove}
+            handleLeave = {this.props.handleLeave}
+            hovered = {this.props.hovered}
+            highlighted = {this.props.highlighted}
+            totalRegions = {totalRegions}
+            uniqueRegions = {uniqueRegions}
+            getOccurrence = {getOccurrence}
+          />
+          </Breakpoint>
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
             worldData = {this.props.data}
+            makeFavorite = {this.makeFavorite}
             changeView = {this.props.changeView}
             getCountryInfo = {this.props.getCountryInfo}
             name={country.name}
@@ -86,8 +113,7 @@ class ResultView extends Component {
             />
           )}
         </main>
-        {this.props.sidebar === "Show" ?
-        <Sidebar
+        <SidebarView
             hoverOnRegion = {this.props.hoverOnRegion}
             hoverOffRegion = {this.props.hoverOffRegion}
             changeView = {this.props.changeView}
@@ -106,18 +132,7 @@ class ResultView extends Component {
             handleLeave = {this.props.handleLeave}
             hovered = {this.props.hovered}
             highlighted = {this.props.highlighted}
-        /> :     
-        <Breakpoint small down>
-            <div className="col-12 text-center px-0">
-            <button 
-            className="btn btn-sm btn-block btn-outline-secondary" 
-            onClick={()=> this.props.viewSidebar()}
-            >
-            { (this.props.sidebar === "Hide") ? "Show" : "Hide"} Countries List
-            </button>
-            </div>
-        </Breakpoint> 
-      }
+        />
       </div>
       </BreakpointProvider>
     )

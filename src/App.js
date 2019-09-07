@@ -27,7 +27,6 @@ class App extends Component {
     hovered: false, 
     nations: [],
     mapView: "Show",
-    sidebar: "Show",
     view: "default",
     filteredData: [],
     filterNations: [],
@@ -261,13 +260,6 @@ class App extends Component {
     // console.log(view);
       this.setState(({view}))
   };
-  viewSidebar = () => {
-    if(this.state.sidebar === "Show"){
-      this.setState(({sidebar: "Hide"}))
-    } else {
-      this.setState(({sidebar: "Show"}))
-    }
-  }
   mapView = () => {
     if(this.state.mapView === "Show"){
       this.setState(({mapView: "Hide"}))

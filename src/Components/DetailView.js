@@ -5,7 +5,7 @@ import Flag from 'react-flags';
 import { withRouter, Link } from 'react-router-dom';
 import '../App.css';
 import { Alert } from 'react-bootstrap'
-import Sidebar from './Sidebar';
+import SidebarView from './SidebarView';
 import { db } from './Firebase/firebase'
 import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -131,8 +131,7 @@ componentDidUpdate = (prevProps, prevState) => {
                 />
                 </div>
             </div>
-            {this.props.sidebar === "Show" ?
-            <Sidebar 
+            <SidebarView 
                 data={this.props.data}
                 changeView = {this.props.changeView}
                 viewSidebar={this.props.viewSidebar}
@@ -147,7 +146,7 @@ componentDidUpdate = (prevProps, prevState) => {
                 filterCountryByName = {this.props.filterCountryByName}
                 hoverOnCountry = {this.props.hoverOnCountry}
                 hoverOffCountry = {this.props.hoverOffCountry}
-            /> : null }
+            />
         </div>
         )
       )
