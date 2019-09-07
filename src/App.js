@@ -42,8 +42,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.loadWorldData();
     this.loadCodes();
+    this.loadWorldData();
     auth.onAuthStateChanged(user => {
       if(user){
         this.setState({

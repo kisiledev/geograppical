@@ -50,7 +50,7 @@ class Account extends React.Component {
     }
     getScoresData = () => {
         let scoresRef = db.collection(`/users/${this.props.user.uid}/scores`);
-        scoresRef.get().then(querySnapshot => {
+        scoresRef.onSnapshot((querySnapshot) => {
             let data = [];
             querySnapshot.forEach( doc => {
                 let info = {
