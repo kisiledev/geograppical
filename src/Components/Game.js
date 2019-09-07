@@ -1,5 +1,6 @@
 import React from 'react';
 import Highlight from './Highlight';
+import { Link } from 'react-router-dom';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
@@ -8,6 +9,10 @@ import Radio from './Elements/Radio';
 import {Modal, Button} from 'react-bootstrap'
 import { db } from './Firebase/firebase'
 import { firestore } from 'firebase';
+import * as ROUTES from '../Constants/Routes'
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 class Game extends React.Component {
     state = {
@@ -256,6 +261,7 @@ class Game extends React.Component {
             this.props.setModal(modal)
             this.props.handleOpen();
         } else {
+            this.setState({loading: true});
             console.log(this.state)
             if(this.state.time && this.state.score){
                 db.collection('users').doc(this.props.user.uid).collection('scores').add({
@@ -269,7 +275,7 @@ class Game extends React.Component {
                     questions: this.state.questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true})
+                    this.setState({saved: true, loading: false, gameId: data.id})
                 })
                 .catch( error => console.error(error))
             } else if(this.state.time && !this.state.score){
@@ -283,7 +289,7 @@ class Game extends React.Component {
                     questions: this.state.questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true})
+                    this.setState({saved: true, loading: false, gameId: data.id})
                 })
                 .catch( error => console.error(error))
             } else {
@@ -296,7 +302,7 @@ class Game extends React.Component {
                     questions: this.state.questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true})
+                    this.setState({saved: true, loading: false, gameId: data.id})
                 })
                 .catch( error => console.error(error))
             }
@@ -408,9 +414,15 @@ class Game extends React.Component {
             <Button variant="secondary" onClick={() => this.handleClose()}>
                 Close
             </Button>
-            <Button variant="primary" onClick={() => this.saveScore()}>
-                {this.state.saved ? "Save Score" : "Score Saved"}
-            </Button>
+            {this.state.saved ? 
+                <Button variant="success">
+                    <Link to={ROUTES.ACCOUNT}>{this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> : "View Score"}</Link>
+                </Button> 
+            :
+                <Button variant="primary" onClick={() => this.saveScore()}>
+                    Save Score
+                </Button>
+            }
             </Modal.Footer>
         </Modal>
         <Scoreboard 

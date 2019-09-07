@@ -441,7 +441,9 @@ audio {
 .navbarlink {
   padding: 1rem;
 }
-
+.btn a {
+  color: white;
+}
 @media (max-width: 768px){
   /* .navbar-nav {
     flex-direction: row;
