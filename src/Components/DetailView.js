@@ -29,10 +29,6 @@ componentDidMount = () => {
   }
 }
 componentDidUpdate = (prevProps, prevState) => {
-  console.log(this.props.loading)
-  console.log(this.state.loading)
-  console.log(prevProps.loading)
-  console.log(prevState.loading)
   this.props.user && this.props.countryDetail && this.checkFavorite(this.props.countryDetail.name)
   if(this.props.loading !== prevProps.loading || this.props.loading !==prevState.loading){
     this.props.getCountryInfo(this.props.match.params.country)

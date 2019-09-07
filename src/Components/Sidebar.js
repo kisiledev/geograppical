@@ -10,6 +10,7 @@ import '../App.css';
 
 class Sidebar extends Component {
 
+<<<<<<< Updated upstream
     state = {};
     componentDidMount(prevState){
         if(prevState !== this.state){
@@ -21,13 +22,32 @@ class Sidebar extends Component {
     componentDidUpdate(prevProps) {
         // only update chart if the data has changed
         
+=======
+    state = {
+        loading: false,
+    };
+    componentDidMount(prevState, prevProps){
+        console.log(prevState)
+        if(prevState !== this.state){
+            console.log('mounted component', this.props.sidebar)
+            this.setState({loading: true}, console.log('setting dynamics'), this.setDynamicRegions(this.props.uniqueRegions))
+        };
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.sidebar !==prevProps.sidebar){
+            this.setState({loading: false})
+        }
+>>>>>>> Stashed changes
         if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
             console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
         }
+<<<<<<< Updated upstream
         if(this.state.loading){
             this.setState({loading: false}, console.log('loading is now false'))
         }
+=======
+>>>>>>> Stashed changes
     };
     removeNull(array){
         return array
@@ -59,8 +79,7 @@ class Sidebar extends Component {
                 regionsState[region] = { visible: 5, start: 0, countries: this.getRegion(region), open: false};
             }
         });
-        // set state here outside the foreach function
-         this.setState({...regionsState, loading: false}, console.log('loading is false', this.state.loading))
+            this.setState({...regionsState, loading: false}, console.log('loading is false', this.state.loading))
     };
     updateOpen = (region) => {
         const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}
