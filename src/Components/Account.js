@@ -98,8 +98,8 @@ class Account extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-12">
-                        <h5>Favorites - {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.length>0 && this.state.favorites.length}</h5>
+                    <div className="col-12 my-3">
+                        <h5>Favorites ({this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.length>0 && this.state.favorites.length})</h5>
                         {this.state.loading ? null : 
                             (<ul className="list-group list-group-flush">
                                 {this.state.favorites && this.state.favorites.length > 0 ? 
@@ -126,8 +126,8 @@ class Account extends React.Component {
                         }
                     </div>
                     <br/>
-                    <div className="col-12">
-                        <h5>Scores - {this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.length>0 && this.state.scores.length}</h5>
+                    <div className="col-12 my-3">
+                        <h5>Scores ({this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.length>0 && this.state.scores.length})</h5>
                         {this.state.loading ? null : 
                         (
                             <ul className="list-group list-group-flush">
@@ -136,12 +136,17 @@ class Account extends React.Component {
                                     let currentDate = new Date(milliseconds);
                                     let dateTime = currentDate.toGMTString();
                                     return <li className="list-group-item" key={score.id}>
-                                        <h4>{dateTime}</h4>
-                                        {score.data.gameMode && <h5>Mode - {score.data.gameMode}</h5>}
-                                        <h5>Score - {score.data.score}</h5>
-                                        <h5>Correct - {score.data.correct}</h5>
-                                        <h5>Incorrect - {score.data.incorrect}</h5>
-                                        <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
+                                        <div className="d-flex justify-content-between">
+                                            <div className="d-flex flex-column">
+                                                <h6><strong>{dateTime}</strong></h6>
+                                                {score.data.gameMode && <h6>Mode - {score.data.gameMode}</h6>}
+                                                <h6>Score - {score.data.score}</h6>
+                                                <h6>Correct - {score.data.correct}</h6>
+                                                <h6>Incorrect - {score.data.incorrect}</h6>
+                                            </div>
+                                            <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
+                                        </div>
+                                        
                                     </li>
                                 })}
                             </ul>)
