@@ -1,7 +1,7 @@
 import React from 'react';
-import { db, auth, googleProvider, facebookProvider, emailProvider } from './Firebase/firebase';
+import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faPencilAlt, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 class AccountEdit extends React.Component {
@@ -15,9 +15,22 @@ class AccountEdit extends React.Component {
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
-    providerSignUp = (provider) => {
-        auth.signInWithPopup(provider).then((result) =>{
-          console.log(result)
+    providerLink = (provider) => {
+        auth.currentUser.linkWithPopup(provider).then((result) =>{
+          const credential = result.credential;
+          const user = result.user
+          console.log(credential, user)
+        }).catch((error) => {
+          console.error(error);
+          const credential = error.credential;
+          console.log(credential);
+        })
+        auth.getRedirectResult().then((result) => {
+            if(result.credential){
+                const credential = result.credential;
+                const user = result.user
+                console.log(credential, user)
+            }
         }).catch((error) => {
           console.error(error);
           const credential = error.credential;
@@ -69,6 +82,7 @@ class AccountEdit extends React.Component {
                 id: 1,
                 name: "Google", 
                 source: googleProvider,
+                provName: 'google.com',
                 icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
                 
             }, 
@@ -76,16 +90,39 @@ class AccountEdit extends React.Component {
                 id: 2,
                 name: "Facebook", 
                 source: facebookProvider,
+                provName: 'facebook.com',
                 icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_facebook.svg'
             }, 
             {
                 id: 3,
                 name: "Email", 
                 source: emailProvider,
-                icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg'
+                provName: 'password',
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_email.svg'
+            },
+            {
+                id: 4, 
+                name: 'Twitter',
+                source: twitterProvider,
+                provName: 'twitter.com',
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_twitter.svg'
             }
         ]
+        let userProvs =[];
+        if(this.props.user.providerData){
+            this.props.user.providerData.map(data =>{
+                return userProvs.push(data.providerId)
+            });
+        }
+        let provIcons = [];
+        providers.map(prov => {
+            let provider = {};
+            provider["name"] = prov.provName;
+            provider["icon"] = prov.icon;
+            return provIcons.push(provider)
+        })
         return(
+            
             <div className="col-12 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
@@ -113,30 +150,35 @@ class AccountEdit extends React.Component {
                         </div>
                         <Link 
                                 className="btn btn-block btn-primary" 
-                                to={`${process.env.PUBLIC_URL}/account/edit`}>
+                                to={`${process.env.PUBLIC_URL}/account`}>
                                 <FontAwesomeIcon className="acctedit" icon={faArrowLeft}/>Back to Account
                             </Link>
                     </div>
                 </div>
-                    <h3>User Details</h3>   
+                    <h3>Account Credentials</h3>   
                     {this.props.user.providerData && this.props.user.providerData.map((data) => {
-                        return <div key={data.email}className="card mb-3"><p><strong>Name </strong>{data.displayName}</p>
-                        <p><strong>Email </strong>{data.email}</p>
-                    <p><strong>Provider </strong>{data.providerId === "google.com" && <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />} {data.providerId} </p>
+                        return <div key={data.email}className="card mb-3">
+                            <p><strong>Name </strong>{data.displayName}</p>
+                            <p><strong>Email </strong>{data.email}</p>
+                            {providers.map(prov => {
+                                if(data.providerId === prov.provName){
+                                    return <p><strong>Provider </strong><img src={prov.icon} className="emailicon" alt="google icon" />{prov.name}</p>
+                                }
+                            })}
                     </div>
                     })}
                     {providers.map(provider => {
-                        return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
-                        <button onClick={() => this.providerSignUp(provider.source)} type="button" className="google-button">
+                        if(!userProvs.includes(provider.provName)){
+                            return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
+                        <button onClick={() => this.providerLink(provider.source)} type="button" className="provider-button">
                         <span className="google-button__icon">
                             <img src={provider.icon} className="emailicon" alt="google icon" />
                         </span>
-                        <span className="google-button__text">Sign in with {provider.name}</span>
+                        <span className="google-button__text">Link with {provider.name}</span>
                         </button>
                     </div>
+                        }
                     })}
-                    
-                    <p>{this.props.user.uid}</p>
             </div>
         )
     }

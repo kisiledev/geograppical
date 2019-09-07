@@ -9,6 +9,7 @@ import Sidebar from './Sidebar';
 import { db } from './Firebase/firebase'
 import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as ROUTES from '../Constants/Routes'
 
 class DetailView extends Component {
   state = {
@@ -59,7 +60,7 @@ componentDidUpdate = (prevProps, prevState) => {
     e.persist();
     this.setState({show: true})
     if(!this.props.user){
-      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`}})
+      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`, link: ROUTES.SIGN_IN}, linkContent: 'here'})
     } else {
       if(!this.state.favorite){
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
@@ -96,7 +97,11 @@ componentDidUpdate = (prevProps, prevState) => {
         <div className="row">
             <div className="col-md-12 col-md-9">
                 <div className="card mb-3">
-                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
+                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
+                  <Alert.Link href={this.state.message.link}>
+                    {this.state.message.linkContent}
+                  </Alert.Link>
+                </Alert>}
                 <div className="row justify-content-between">
                   <div className="col-12 flex-nowrap d-flex justify-content-between align-items-center">
                     <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => this.props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>

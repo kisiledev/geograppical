@@ -11,8 +11,7 @@ class SignIn extends React.Component {
     email: '',
     password: '',
     message: '',
-    methods: [],
-    loading: true
+    methods: []
   }
 
   uiConfig = {
@@ -31,9 +30,9 @@ class SignIn extends React.Component {
     }
   }
   componentDidMount = () => {
-    this.timeOut = setTimeout(() => {
-      this.setState({loading: false})
-    }, 1000)
+    // this.timeOut = setTimeout(() => {
+    //   this.setState({loading: false})
+    // }, 1000)
   }
   componentWillUnmount = () => {
     clearTimeout(this.timeOut)
@@ -112,24 +111,24 @@ class SignIn extends React.Component {
        : 
       <div className="mx-auto col-lg-4">
         {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
-        <div className="row mb-5">
+        <div className="row mb-3">
           <div className="col-lg-12 text-center">
-            <h1 className="mt-5">Sign In</h1>
+            <h1 className="mt-3">Sign In</h1>
           </div>
         </div>
         <div className="row">
           <div className="col-lg-12">
           {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
             <form>
-            <div className="form-group col-6 mx-auto">
+            <div className="form-group mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
               </div>
-              <div className="form-group col-6 mx-auto">
+              <div className="form-group mx-auto mb-3">
               <label htmlFor="exampleInputPassword1">Password</label>
               <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
               </div>
-              <div className="col-12 d-flex justify-content-center mb-3">
+              <div className="col-12 d-flex justify-content-center mt-5 mb-3">
               <button onClick={(e) => this.login(e)} type="button" className="btn-primary email-button">
                   <span className="email-button__icon">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
