@@ -14,13 +14,13 @@ class Sidebar extends Component {
         loading: true,
     };
     componentDidMount(prevState, prevProps){
-        if(prevState !== this.state){
-            console.log('mounted component', this.props.sidebar)
-            this.setState({loading: true}, this.setDynamicRegions(this.props.uniqueRegions))
-        };
+            this.setDynamicRegions(this.props.uniqueRegions)
         if(prevProps && prevProps.sidebar && this.props.sidebar && prevProps.sidebar !== this.props.sidebar){
             this.setDynamicRegions(this.props.uniqueRegions)
         }
+    }
+    componentWillUnmount() {
+
     }
     componentDidUpdate(prevProps, prevState) {
         // only update chart if the data has changed
@@ -31,8 +31,9 @@ class Sidebar extends Component {
             console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
         }
+        this.state.loading && console.log('loading')
         if(this.state.loading !== prevState.loading){
-            this.setState({loading: false}, console.log('loading is now false', this.state.loading), this.state.loading && alert('loading'))
+            this.setState({loading: false}, console.log('loading is now false', this.state.loading))
         }
     };
     removeNull(array){
