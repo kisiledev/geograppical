@@ -115,6 +115,9 @@ class App extends Component {
         lookup[lookup.list[i].name] = lookup.list[i]
       }
       let otherLookup = {};
+      if(otherLookup === undefined){
+        return console.log('unable to load')
+      }
       otherLookup.list = iso;
       for (let i = 0, len = otherLookup.list.length; i < len; i++){
         // console.log(otherLookup.list[i])
