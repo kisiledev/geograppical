@@ -21,6 +21,7 @@ import AccountEdit from './Components/AccountEdit'
 class App extends Component {
 
   state = {
+    error: null,
     authenticated: false,
     loading: true,
     highlighted: "",
@@ -86,57 +87,61 @@ class App extends Component {
      });
   }
   loadWorldData = () => {
-    axios.get("../factbook.json")
-    .then(res => {
-      let Data = res && res.data.countries;
-      Data = Object.values(Data).map(country => country.data) || [];
-      let newData = this.removeNull(Object.values(Data));
-      newData.forEach(function(element, index, newData) {
-        newData[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, "")
-        if(newData[index].geography.map_references === "AsiaEurope")
-        newData[index].geography.map_references = "Europe"
-        if(newData[index].geography.map_references === "Middle East")
-        newData[index].geography.map_references = "Southwest Asia"
-      });
-      i18n.registerLocale(require("i18n-iso-countries/langs/en.json"));
-      let codes = i18n.getNames('en');
-      let newCodes = {};
-      const keys = Object.keys(codes);
-      keys.forEach(key => {
-        let val = codes[key];
-        newCodes[val]=key;
-      })
-      const iso = this.state.isoCodes;
+    try {
+      axios.get("../factbook.json")
+      .then(res => {
+        let Data = res && res.data.countries;
+        Data = Object.values(Data).map(country => country.data) || [];
+        let newData = this.removeNull(Object.values(Data));
+        newData.forEach(function(element, index, newData) {
+          newData[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, "")
+          if(newData[index].geography.map_references === "AsiaEurope")
+          newData[index].geography.map_references = "Europe"
+          if(newData[index].geography.map_references === "Middle East")
+          newData[index].geography.map_references = "Southwest Asia"
+        });
+        i18n.registerLocale(require("i18n-iso-countries/langs/en.json"));
+        let codes = i18n.getNames('en');
+        let newCodes = {};
+        const keys = Object.keys(codes);
+        keys.forEach(key => {
+          let val = codes[key];
+          newCodes[val]=key;
+        })
+        const iso = this.state.isoCodes;
 
-      let lookup = {};
-      lookup.list = newData;
-      for (let i = 0, len = lookup.list.length; i < len; i++){
-        lookup[lookup.list[i].name] = lookup.list[i]
-      }
-      let otherLookup = {};
-      if(otherLookup === undefined){
-        return console.log('unable to load')
-      }
-      otherLookup.list = iso;
-      for (let i = 0, len = otherLookup.list.length; i < len; i++){
-        // console.log(otherLookup.list[i])
-        otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
-      }
-
-
-      let i = 0;
-      let len = otherLookup.list.length
-      for (i; i < len; i++){
-        // console.log(otherLookup.list[i]);
-        if(lookup[otherLookup.list[i].name]){
-          // console.log(lookup[otherLookup.list[i].name])
-          lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
-        } else if (lookup[otherLookup.list[i].shortName]){
-          lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
+        let lookup = {};
+        lookup.list = newData;
+        for (let i = 0, len = lookup.list.length; i < len; i++){
+          lookup[lookup.list[i].name] = lookup.list[i]
         }
-      }
-      this.setState({ worldData: lookup.list || [], loading: false})
-    });
+        let otherLookup = {};
+        if(otherLookup === undefined){
+          return console.log('unable to load')
+        }
+        otherLookup.list = iso;
+        for (let i = 0, len = otherLookup.list.length; i < len; i++){
+          // console.log(otherLookup.list[i])
+          otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
+        }
+
+
+        let i = 0;
+        let len = otherLookup.list.length
+        for (i; i < len; i++){
+          // console.log(otherLookup.list[i]);
+          if(lookup[otherLookup.list[i].name]){
+            // console.log(lookup[otherLookup.list[i].name])
+            lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
+          } else if (lookup[otherLookup.list[i].shortName]){
+            lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
+          }
+        }
+        this.setState({ worldData: lookup.list || [], loading: false})
+      });
+    } catch (error){
+      this.setState({error})
+    };
   }
   simplifyString(string){
     return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toLowerCase()
@@ -342,6 +347,9 @@ class App extends Component {
     }
   };
   render(){
+    if(this.state.error){
+      return <h1>{this.state.error}</h1>
+    }
     return (
       <BreakpointProvider>
       <div>
