@@ -2,9 +2,12 @@ import React from 'react';
 import { db } from './Firebase/firebase';
 import Flag from 'react-flags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faAngleUp, faAngleDown, faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
+import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom'
+
+
 class Account extends React.Component {
     state = {
         message: ''
@@ -43,9 +46,10 @@ class Account extends React.Component {
                     data: doc.data().country
                 }
                 data.push(info);
-                console.log(info)
+                data["isOpen"] = true;
             })
-            this.setState({favorites: data, loading: false})
+            console.log(data);
+            this.setState({favorites: {isOpen: true, data}, loading: false})
         })
     }
     getScoresData = () => {
@@ -58,11 +62,19 @@ class Account extends React.Component {
                     data: doc.data()
                 }
                 data.push(info);
+                data["isOpen"] = true;
+                console.log(data);
                 console.log(info);
             })
-            this.setState({scores: data, loading: false})
+            this.setState({scores: {isOpen: true, data}, loading: false})
         })
     }
+
+    toggleValue = (source) => {
+        let priorState = {...this.state[source]};
+        priorState.isOpen = !this.state[source].isOpen;
+        this.setState({[source]: priorState})
+      }
 
     render(){
         return(
@@ -84,7 +96,7 @@ class Account extends React.Component {
                             (
                             <>
                             <h6>Stats</h6>
-                            <p>{this.state.favorites && this.state.favorites.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</p>
+                            <p>{this.state.favorites && this.state.favorites.data.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</p>
                             <p>{this.state.scores && this.state.scores.length} Scores</p>
                             </>
                             )}
@@ -99,11 +111,17 @@ class Account extends React.Component {
 
                 <div className="row">
                     <div className="col-12 my-3">
-                        <h5>Favorites ({this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.length>0 && this.state.favorites.length})</h5>
+                        <h5 onClick={() => this.toggleValue("favorites")}>Favorites ({this.state.loading ? 
+                        <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.data.length>0 && this.state.favorites.data.length})
+                        {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.state.favorites.isOpen ? faAngleDown : faAngleUp} />}
+                        </h5>
                         {this.state.loading ? null : 
-                            (<ul className="list-group list-group-flush">
-                                {this.state.favorites && this.state.favorites.length > 0 ? 
-                                    this.state.favorites.map(favorite =>
+                            (
+                            this.state.favorites &&
+                            <Collapse in={this.state.favorites.isOpen}>
+                            <ul className="list-group list-group-flush">
+                                {this.state.favorites && this.state.favorites.data.length > 0 ? 
+                                    this.state.favorites.data.map(favorite =>
                                     <li className="list-group-item" key={favorite.id}>
                                         <h5>{favorite.id} - <small>{favorite.data.government.capital.name.split(';')[0]}</small></h5>
                                         <div className="d-flex justify-content-between">
@@ -122,16 +140,21 @@ class Account extends React.Component {
                                         </div>
                                     </li>
                                 ) : <h5>You have no favorites saved</h5> }
-                            </ul>)
+                            </ul>
+                            </Collapse>)
                         }
                     </div>
-                    <br/>
+                    {this.state.favorites && !this.state.favorites.isOpen ? <hr/> : null}
                     <div className="col-12 my-3">
-                        <h5>Scores ({this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.length>0 && this.state.scores.length})</h5>
+                    <h5 onClick={() => this.toggleValue("scores")}>Scores ({this.state.loading ? 
+                        <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.data.length>0 && this.state.scores.data.length})
+                        {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.state.scores.isOpen ? faAngleDown : faAngleUp} />}
+                        </h5>
                         {this.state.loading ? null : 
-                        (
+                            (this.state.scores && 
+                            <Collapse in={this.state.scores.isOpen}>
                             <ul className="list-group list-group-flush">
-                                {this.state.scores && this.state.scores.map(score => {
+                                {this.state.scores && this.state.scores.data.length>0 ?this.state.scores.data.map(score => {
                                     let milliseconds = score.data.dateCreated.seconds * 1000;
                                     let currentDate = new Date(milliseconds);
                                     let dateTime = currentDate.toGMTString();
@@ -148,8 +171,9 @@ class Account extends React.Component {
                                         </div>
                                         
                                     </li>
-                                })}
-                            </ul>)
+                                }): <h5>You have no scores saved</h5>}
+                            </ul>
+                            </Collapse>)
                         }
                     </div>
                 </div>
