@@ -130,16 +130,16 @@ class App extends Component {
             // console.log(otherLookup.list[i])
             otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
           }
-        }
-        let i = 0;
-        let len = otherLookup.list.length
-        for (i; i < len; i++){
-          // console.log(otherLookup.list[i]);
-          if(lookup[otherLookup.list[i].name]){
-            // console.log(lookup[otherLookup.list[i].name])
-            lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
-          } else if (lookup[otherLookup.list[i].shortName]){
-            lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
+          let i = 0;
+          let len = otherLookup.list.length
+          for (i; i < len; i++){
+            // console.log(otherLookup.list[i]);
+            if(lookup[otherLookup.list[i].name]){
+              // console.log(lookup[otherLookup.list[i].name])
+              lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
+            } else if (lookup[otherLookup.list[i].shortName]){
+              lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
+            }
           }
         }
         this.setState({ worldData: lookup.list || [], loading: false})
