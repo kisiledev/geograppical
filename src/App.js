@@ -124,12 +124,13 @@ class App extends Component {
         }
         otherLookup.list = iso;
         console.log(otherLookup.list);
-        if(otherLookup.list){
-        for (let i = 0, len = otherLookup.list.length; i < len; i++){
-          // console.log(otherLookup.list[i])
-          otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
+        if(otherLookup.list && otherLookup.list.length>0){
+          alert('lookup shouldnt give error')
+          for (let i = 0, len = otherLookup.list.length; i < len; i++){
+            // console.log(otherLookup.list[i])
+            otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
+          }
         }
-      }
         let i = 0;
         let len = otherLookup.list.length
         for (i; i < len; i++){
