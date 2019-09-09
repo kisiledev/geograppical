@@ -1,7 +1,7 @@
 import React from 'react';
 import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faArrowLeft, faTrashAlt  } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 class AccountEdit extends React.Component {
@@ -14,6 +14,14 @@ class AccountEdit extends React.Component {
         console.log(this.props.user.providerData)
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
+    }
+    unlink = (provider) => {
+        auth.currentUser.unlink(provider).then(() => {
+            console.log('provider unlinked')
+            this.setState({message: {style: "danger", content: `Unlinked provider ${provider} to favorites`}});
+        }).catch((error) => {
+            console.log(error)
+        })
     }
     providerLink = (provider) => {
         auth.currentUser.linkWithPopup(provider).then((result) =>{
@@ -155,7 +163,7 @@ class AccountEdit extends React.Component {
                             </Link>
                     </div>
                 </div>
-                    <h3>Account Credentials</h3>   
+                    <h3 className="mt-5">Account Credentials</h3>   
                     {this.props.user.providerData && this.props.user.providerData.map((data) => {
                         return <div key={data.email}className="card mb-3">
                             <p><strong>Name </strong>{data.displayName}</p>
@@ -164,7 +172,13 @@ class AccountEdit extends React.Component {
                                 if(data.providerId === prov.provName){
                                     return <p><strong>Provider </strong><img src={prov.icon} className="emailicon" alt="google icon" />{prov.name}</p>
                                 }
+
                             })}
+                            <button className="align-self-end btn btn-sm btn-danger">
+                                Unlink Provider
+                                <FontAwesomeIcon className="align-self-center ml-1" onClick={() => this.unlink(data.providerId)} icon={faTrashAlt}
+                                 color="darkred" />
+                            </button>
                     </div>
                     })}
                     {providers.map(provider => {
