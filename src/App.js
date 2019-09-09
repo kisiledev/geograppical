@@ -108,7 +108,10 @@ class App extends Component {
           let val = codes[key];
           newCodes[val]=key;
         })
-        const iso = this.state.isoCodes;
+        let iso; 
+        if(this.state.isoCodes) {
+          iso = this.state.isoCodes;
+        }
 
         let lookup = {};
         lookup.list = newData;
@@ -120,12 +123,13 @@ class App extends Component {
           return console.log('unable to load')
         }
         otherLookup.list = iso;
+        console.log(otherLookup.list);
+        if(otherLookup.list){
         for (let i = 0, len = otherLookup.list.length; i < len; i++){
           // console.log(otherLookup.list[i])
           otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
         }
-
-
+      }
         let i = 0;
         let len = otherLookup.list.length
         for (i; i < len; i++){
