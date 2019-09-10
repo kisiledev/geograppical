@@ -97,15 +97,17 @@ class Account extends React.Component {
                             <>
                             <h6>Stats</h6>
                             <p>{this.state.favorites && this.state.favorites.data.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</p>
-                            <p>{this.state.scores && this.state.scores.length} Scores</p>
+                            <p>{this.state.scores && this.state.scores.data.length} Scores</p>
                             </>
                             )}
                         </div>
-                        <Link 
-                                className="btn btn-block btn-success" 
+                        <div className="col-12 text-center">
+                            <Link 
+                                className="btn btn-success" 
                                 to={`${process.env.PUBLIC_URL}/account/edit`}>
                                 <FontAwesomeIcon className="acctedit" icon={faPencilAlt}/>Edit Account
                             </Link>
+                        </div>
                     </div>
                 </div>
 

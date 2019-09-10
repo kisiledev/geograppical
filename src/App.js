@@ -61,6 +61,25 @@ class App extends Component {
       }
     })
   }
+  // componentDidUpdate(prevState) {
+  //   if(this.state.user !==prevState.user){
+  //     auth.onAuthStateChanged(user => {
+  //       if(user){
+  //         this.setState({
+  //           user: user, 
+  //           authenticated: true,
+  //           loading: false
+  //         })
+  //       } else {
+  //         this.setState({
+  //           user: null, 
+  //           authenticated: false, 
+  //           loading: false
+  //         })
+  //       }
+  //     })
+  //   }
+  // }
   removeNull(array){
     if(array !==undefined)
     return array

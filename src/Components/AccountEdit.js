@@ -1,26 +1,55 @@
 import React from 'react';
+import * as Firebase from 'firebase/app';
 import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faArrowLeft, faTrashAlt  } from '@fortawesome/free-solid-svg-icons';
-import { Alert } from 'react-bootstrap'
+import { Alert, Modal, ModalBody, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+import * as ROUTES from '../Constants/Routes'
+import LinkEmailModal from './LinkEmailModal';
+
 class AccountEdit extends React.Component {
     state = {
-        message: ''
+        providers: this.props.user.providerData,
+        message: '',
+        modalMessage: '',
+        show: false
     }
-    componentDidMount = () => {
-        console.log('reloading edit page')
-        console.log(googleProvider, facebookProvider)
+      
+    componentDidUpdate(prevProps) {
         console.log(this.props.user.providerData)
+        console.log(prevProps.user.providerData)
+        if(prevProps.user !== this.props.user) {
+          this.setState({user: this.props.user});
+        }
+      }
+    componentDidMount = () => {
+        console.log(this.state.providers)
+        this.setState({user: auth.currentUser})
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
     unlink = (provider) => {
         auth.currentUser.unlink(provider).then(() => {
-            console.log('provider unlinked')
-            this.setState({message: {style: "danger", content: `Unlinked provider ${provider} to favorites`}});
+            this.setState({message: {style: "danger", content: `Unlinked provider ${provider}`}});
         }).catch((error) => {
             console.log(error)
+        })
+    }
+    close = () => {
+        this.setState({show: false})
+    }
+    linkEmail = (e, email, password) => {
+        e.preventDefault();
+        const credential = Firebase.auth.EmailAuthProvider.credential(email, password);
+        auth.currentUser.linkWithCredential(credential)
+        .then((usercred) => {
+            let user = usercred.user
+            this.setState({modalMessage: {style: "success", content: "Linked email credentials to account"}})
+            console.log('success', user);
+        }).catch((error) => {
+            console.log(error)
+            this.setState({modalMessage: {style: "danger", content: error.message}})
         })
     }
     providerLink = (provider) => {
@@ -44,6 +73,8 @@ class AccountEdit extends React.Component {
           const credential = error.credential;
           console.log(credential);
         })
+                auth.currentUser.reload();
+        console.log(auth.currentUser)
       };
     deleteFavorite = (id) => {
         db.collection(`users/${this.props.user.uid}/favorites`).doc(id).delete()
@@ -91,7 +122,8 @@ class AccountEdit extends React.Component {
                 name: "Google", 
                 source: googleProvider,
                 provName: 'google.com',
-                icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg'
+                icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                onClick: () => this.providerLink(googleProvider)
                 
             }, 
             {
@@ -99,29 +131,30 @@ class AccountEdit extends React.Component {
                 name: "Facebook", 
                 source: facebookProvider,
                 provName: 'facebook.com',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_facebook.svg'
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_facebook.svg',
+                onClick: () => this.providerLink(facebookProvider)
             }, 
             {
                 id: 3,
                 name: "Email", 
                 source: emailProvider,
                 provName: 'password',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_email.svg'
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_email.svg',
+                
             },
             {
                 id: 4, 
                 name: 'Twitter',
                 source: twitterProvider,
                 provName: 'twitter.com',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_twitter.svg'
+                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_twitter.svg',
+                onClick: () => this.providerLink(twitterProvider)
             }
         ]
         let userProvs =[];
-        if(this.props.user.providerData){
-            this.props.user.providerData.map(data =>{
+            this.state.providers && this.state.providers.map(data =>{
                 return userProvs.push(data.providerId)
             });
-        }
         let provIcons = [];
         providers.map(prov => {
             let provider = {};
@@ -129,8 +162,13 @@ class AccountEdit extends React.Component {
             provider["icon"] = prov.icon;
             return provIcons.push(provider)
         })
+        console.log(provIcons)
         return(
-            
+            <>
+            <Modal show={this.state.show} onHide={() => this.handleClose()}>
+                <LinkEmailModal linkEmail={this.linkEmail} close={this.close} message={this.state.modalMessage}/>
+                
+            </Modal>
             <div className="col-12 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
                 <div className="card mb-3">
@@ -156,35 +194,39 @@ class AccountEdit extends React.Component {
                             </>
                             )}
                         </div>
-                        <Link 
-                                className="btn btn-block btn-primary" 
+                        <div className="col-12 text-center">
+                            <Link 
+                                className="btn btn-primary" 
                                 to={`${process.env.PUBLIC_URL}/account`}>
                                 <FontAwesomeIcon className="acctedit" icon={faArrowLeft}/>Back to Account
                             </Link>
+                        </div>
                     </div>
                 </div>
                     <h3 className="mt-5">Account Credentials</h3>   
-                    {this.props.user.providerData && this.props.user.providerData.map((data) => {
-                        return <div key={data.email}className="card mb-3">
+                    {this.state.providers && this.state.providers.map((data) => {
+                        console.log(data.providerId)
+                        return <div key={data.uid}className="card mb-3">
                             <p><strong>Name </strong>{data.displayName}</p>
                             <p><strong>Email </strong>{data.email}</p>
                             {providers.map(prov => {
                                 if(data.providerId === prov.provName){
-                                    return <p><strong>Provider </strong><img src={prov.icon} className="emailicon" alt="google icon" />{prov.name}</p>
+                                    return <p key={prov.id}><strong>Provider </strong><img src={prov.icon} className="emailicon" alt="google icon" />{prov.name}</p>
                                 }
 
                             })}
-                            <button className="align-self-end btn btn-sm btn-danger">
-                                Unlink Provider
-                                <FontAwesomeIcon className="align-self-center ml-1" onClick={() => this.unlink(data.providerId)} icon={faTrashAlt}
-                                 color="darkred" />
+                            <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
+                                Unlink
+                                <FontAwesomeIcon className="align-self-center ml-1" icon={faTrashAlt}
+                                 color="white" />
                             </button>
                     </div>
                     })}
                     {providers.map(provider => {
+                        console.log(userProvs)
                         if(!userProvs.includes(provider.provName)){
                             return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
-                        <button onClick={() => this.providerLink(provider.source)} type="button" className="provider-button">
+                        <button onClick={provider.onClick} type="button" className="provider-button">
                         <span className="google-button__icon">
                             <img src={provider.icon} className="emailicon" alt="google icon" />
                         </span>
@@ -194,6 +236,7 @@ class AccountEdit extends React.Component {
                         }
                     })}
             </div>
+            </>
         )
     }
 }
