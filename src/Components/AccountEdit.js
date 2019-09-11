@@ -28,7 +28,7 @@ class AccountEdit extends React.Component {
         })
     }
     close = () => {
-        this.setState({show: false})
+        this.setState({show: false, providers: this.props.user.providerData})
     }
     linkEmail = (e, email, password) => {
         e.preventDefault();
