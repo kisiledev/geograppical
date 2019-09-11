@@ -78,9 +78,9 @@ class LinkEmailModal extends Component {
                                 />
                             </div>
                             <div className="mx-auto form-group">
-                                <button type="submit" className="provider-button">
-                                    <span className="google-button__icon">
-                                        <img src="https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_email.svg" className="emailicon" alt="email icon" />
+                                <button type="submit" className="provider-button email-button">
+                                    <span className="email-button__icon">
+                                        <img src={require('../img/auth_service_email.svg')} className="emailicon" alt="email icon" />
                                     </span>
                                     <span className="google-button__text">Link with Email</span>
                                 </button>
