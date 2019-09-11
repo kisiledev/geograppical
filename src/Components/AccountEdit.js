@@ -3,9 +3,8 @@ import * as Firebase from 'firebase/app';
 import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faArrowLeft, faTrashAlt  } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Modal, ModalBody, Button } from 'react-bootstrap'
+import { Alert, Modal } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import * as ROUTES from '../Constants/Routes'
 import LinkEmailModal from './LinkEmailModal';
 
 class AccountEdit extends React.Component {
@@ -15,23 +14,15 @@ class AccountEdit extends React.Component {
         modalMessage: '',
         show: false
     }
-      
-    componentDidUpdate(prevProps) {
-        console.log(this.props.user.providerData)
-        console.log(prevProps.user.providerData)
-        if(prevProps.user !== this.props.user) {
-          this.setState({user: this.props.user});
-        }
-      }
     componentDidMount = () => {
-        console.log(this.state.providers)
         this.setState({user: auth.currentUser})
         this.setState({loading: true }, this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
     unlink = (provider) => {
+        console.log(this.props.user.providerData)
         auth.currentUser.unlink(provider).then(() => {
-            this.setState({message: {style: "danger", content: `Unlinked provider ${provider}`}});
+            this.setState({message: {style: "danger", content: `Unlinked provider ${provider}`}, providers: this.props.user.providerData}, console.log(this.props.user.providerData));
         }).catch((error) => {
             console.log(error)
         })
@@ -56,7 +47,7 @@ class AccountEdit extends React.Component {
         auth.currentUser.linkWithPopup(provider).then((result) =>{
           const credential = result.credential;
           const user = result.user
-          console.log(credential, user)
+          this.setState({providers: this.props.user.providerData}, console.log(credential, user))
         }).catch((error) => {
           console.error(error);
           const credential = error.credential;
@@ -67,14 +58,13 @@ class AccountEdit extends React.Component {
                 const credential = result.credential;
                 const user = result.user
                 console.log(credential, user)
+                console.log(this.state.providers)
             }
         }).catch((error) => {
           console.error(error);
           const credential = error.credential;
           console.log(credential);
         })
-                auth.currentUser.reload();
-        console.log(auth.currentUser)
       };
     deleteFavorite = (id) => {
         db.collection(`users/${this.props.user.uid}/favorites`).doc(id).delete()
@@ -131,24 +121,25 @@ class AccountEdit extends React.Component {
                 name: "Facebook", 
                 source: facebookProvider,
                 provName: 'facebook.com',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_facebook.svg',
+                icon: require('../img/facebook-icon-white.svg'),
                 onClick: () => this.providerLink(facebookProvider)
             }, 
             {
-                id: 3,
-                name: "Email", 
-                source: emailProvider,
-                provName: 'password',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_email.svg',
-                
-            },
-            {
-                id: 4, 
+                id: 3, 
                 name: 'Twitter',
                 source: twitterProvider,
                 provName: 'twitter.com',
-                icon: 'https://www.gstatic.com/mobilesdk/160409_mobilesdk/images/auth_service_twitter.svg',
+                icon: require('../img/Twitter_Logo_WhiteOnBlue.svg'),
                 onClick: () => this.providerLink(twitterProvider)
+            },
+            {
+                id: 4,
+                name: "Email", 
+                source: emailProvider,
+                provName: 'password',
+                icon: require('../img/auth_service_email.svg'),
+                onClick: () => this.setState({show: true})
+                
             }
         ]
         let userProvs =[];
@@ -162,7 +153,6 @@ class AccountEdit extends React.Component {
             provider["icon"] = prov.icon;
             return provIcons.push(provider)
         })
-        console.log(provIcons)
         return(
             <>
             <Modal show={this.state.show} onHide={() => this.handleClose()}>
@@ -184,7 +174,7 @@ class AccountEdit extends React.Component {
                             <h5 className="mt-3">{this.props.user.displayName} </h5>
                             <p>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</p>
                             <p>{this.props.user.email}</p>
-                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : "No phone number added"}</p>
+                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : <Link>Add Phone</Link>}</p>
                             {this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x"/> :
                             (
                             <>
@@ -205,13 +195,19 @@ class AccountEdit extends React.Component {
                 </div>
                     <h3 className="mt-5">Account Credentials</h3>   
                     {this.state.providers && this.state.providers.map((data) => {
-                        console.log(data.providerId)
                         return <div key={data.uid}className="card mb-3">
-                            <p><strong>Name </strong>{data.displayName}</p>
-                            <p><strong>Email </strong>{data.email}</p>
                             {providers.map(prov => {
                                 if(data.providerId === prov.provName){
-                                    return <p key={prov.id}><strong>Provider </strong><img src={prov.icon} className="emailicon" alt="google icon" />{prov.name}</p>
+                                    return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />
+                                }
+
+                            })}
+                            <p><strong>Name </strong> - {data.displayName}</p>
+                            {data.email && <p><strong>Email </strong> - {data.email}</p>}
+                            {providers.map(prov => {
+                                if(data.providerId === prov.provName){
+                                    return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
+                                
                                 }
 
                             })}
@@ -223,12 +219,11 @@ class AccountEdit extends React.Component {
                     </div>
                     })}
                     {providers.map(provider => {
-                        console.log(userProvs)
                         if(!userProvs.includes(provider.provName)){
                             return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
-                        <button onClick={provider.onClick} type="button" className="provider-button">
-                        <span className="google-button__icon">
-                            <img src={provider.icon} className="emailicon" alt="google icon" />
+                        <button onClick={provider.onClick} type="button" className={`provider-button ${provider.name.toLowerCase()}-button`}>
+                        <span className={`${provider.name.toLowerCase()}-button__icon`}>
+                            <img src={provider.icon} className={`${provider.name.toLowerCase()}icon`} alt="google icon" />
                         </span>
                         <span className="google-button__text">Link with {provider.name}</span>
                         </button>

@@ -3,7 +3,7 @@ import { db } from './Firebase/firebase';
 import Flag from 'react-flags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faAngleUp, faAngleDown, faTrashAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Alert } from 'react-bootstrap'
+import { Alert, Badge } from 'react-bootstrap'
 import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom'
 
@@ -49,7 +49,7 @@ class Account extends React.Component {
                 data["isOpen"] = true;
             })
             console.log(data);
-            this.setState({favorites: {isOpen: true, data}, loading: false})
+            this.setState({favorites: {isOpen: false, data}, loading: false})
         })
     }
     getScoresData = () => {
@@ -66,7 +66,7 @@ class Account extends React.Component {
                 console.log(data);
                 console.log(info);
             })
-            this.setState({scores: {isOpen: true, data}, loading: false})
+            this.setState({scores: {isOpen: false, data}, loading: false})
         })
     }
 
@@ -113,9 +113,13 @@ class Account extends React.Component {
 
                 <div className="row">
                     <div className="col-12 my-3">
-                        <h5 onClick={() => this.toggleValue("favorites")}>Favorites ({this.state.loading ? 
-                        <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.data.length>0 && this.state.favorites.data.length})
-                        {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.state.favorites.isOpen ? faAngleDown : faAngleUp} />}
+                        <h5 className="d-flex align-items-center" onClick={() => this.toggleValue("favorites")}>
+                            Favorites
+                            <Badge variant="primary">
+                                {this.state.loading ? 
+                                <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.data.length>0 && this.state.favorites.data.length}
+                            </Badge>
+                                {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.state.favorites.isOpen ? faAngleDown : faAngleUp} />}
                         </h5>
                         {this.state.loading ? null : 
                             (
@@ -146,11 +150,15 @@ class Account extends React.Component {
                             </Collapse>)
                         }
                     </div>
-                    {this.state.favorites && !this.state.favorites.isOpen ? <hr/> : null}
                     <div className="col-12 my-3">
-                    <h5 onClick={() => this.toggleValue("scores")}>Scores ({this.state.loading ? 
-                        <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.data.length>0 && this.state.scores.data.length})
-                        {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.state.scores.isOpen ? faAngleDown : faAngleUp} />}
+                    <h5 className="d-flex align-items-center" onClick={() => this.toggleValue("scores")}>
+                        Scores 
+                        <Badge variant="primary">
+                            {this.state.loading ? 
+                            <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.data.length>0 && this.state.scores.data.length}
+                        </Badge>
+                            {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.state.scores.isOpen ? faAngleDown : faAngleUp} />}
+                        
                         </h5>
                         {this.state.loading ? null : 
                             (this.state.scores && 
@@ -165,7 +173,7 @@ class Account extends React.Component {
                                             <div className="d-flex flex-column">
                                                 <h6><strong>{dateTime}</strong></h6>
                                                 {score.data.gameMode && <h6>Mode - {score.data.gameMode}</h6>}
-                                                <h6>Score - {score.data.score}</h6>
+                                                {score.data.score && <h6>Score - {score.data.score}</h6>}
                                                 <h6>Correct - {score.data.correct}</h6>
                                                 <h6>Incorrect - {score.data.incorrect}</h6>
                                             </div>

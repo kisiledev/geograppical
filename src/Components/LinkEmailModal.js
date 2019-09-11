@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'firebaseui';
-import { auth, googleProvider } from './Firebase/firebase'
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import Alert from 'react-bootstrap/Alert'
 
 

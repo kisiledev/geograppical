@@ -44,7 +44,16 @@ svg {
 [type=radio] + img {
   cursor: pointer;
 }
-
+hr {
+  border: 1px solid rgba(0,0,0,.125); 
+  display:block;
+  width: 96%;               
+  margin-top: -1px;
+  margin-bottom: -1px;
+}
+.datahead {
+  
+}
 /* CHECKED STYLES */
 [type=radio]:checked + img {
   box-shadow: 0 0 0  red;
@@ -72,9 +81,15 @@ input, input[placeholder] {
 .fa-star:hover {
   color: gold;
 }
+.badge {
+  margin-left: 10px;
+}
 .alert {
   white-space: pre-wrap;
   text-align: center;
+}
+.providericon {
+  width: 8%;
 }
 .google-button {
   height: 40px;
@@ -92,7 +107,7 @@ input, input[placeholder] {
 .provider-button {
   height: 40px;
   border-width: 0;
-  width: 220px;
+  width: 225px;
   background: white;
   color: #737373;
   border-radius: 5px;
@@ -121,7 +136,6 @@ input, input[placeholder] {
   height: 40px;
   border-width: 0;
   background: #007bff;
-  width: 195.375px;
   color: white;
   border-radius: 5px;
   white-space: nowrap;
@@ -157,11 +171,22 @@ input, input[placeholder] {
 .google-button__icon--plus, .email-button__icon--plus {
   width: 27px;
 }
-.emailicon {
+.emailicon, .googleicon{
   height: 18px;
   width: 18px
 }
+.facebookicon, .twittericon {
+  height: 30px;
+  width: 30px;
+}
+.facebook-button__icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
 
+}
 .google-button__text, .email-button__text {
   display: inline-block;
   vertical-align: middle;
@@ -442,6 +467,14 @@ audio {
   padding: 1rem;
 }
 .btn a {
+  color: white;
+}
+.facebook-button {
+  background: #475a96;
+  color: white;
+}
+.twitter-button {
+  background: #1da1f2;
   color: white;
 }
 @media (max-width: 768px){

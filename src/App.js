@@ -142,7 +142,6 @@ class App extends Component {
           return console.log('unable to load')
         }
         otherLookup.list = iso;
-        console.log(otherLookup.list);
         if(otherLookup.list && otherLookup.list.length>0){
           for (let i = 0, len = otherLookup.list.length; i < len; i++){
             // console.log(otherLookup.list[i])
