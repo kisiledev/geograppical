@@ -16,16 +16,20 @@ class LinkEmailModal extends Component {
     handleChange(e) {
         e.persist();
         this.setState({ [e.target.name]: e.target.value}, () => {
-            this.checkValue(this.state.passwordOne);
-            console.log(this.state.isInvalid)
+            this.checkPWValue(this.state.passwordOne);
+            this.checkEmail(this.state.email)
+            console.log(this.state.isValid)
         });
     }
-    checkValue(value){
+    checkEmail = (value) => {
+        const regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        const isEmailValid = regex.test(value)
+        this.setState({isEmailValid})
+    }
+    checkPWValue(value){
         const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
-        const isInvalid = re2.test(value)
-        let status = 'failure';
-        isInvalid ? status = 'fails' : status = 'passes'
-        this.setState({isInvalid})
+        const isPWValid = re2.test(value)
+        this.setState({isPWValid})
     }
     render() {
         const { user } = this.props;
@@ -65,7 +69,7 @@ class LinkEmailModal extends Component {
                                 onChange={(e) =>this.handleChange(e)} 
                                 type="email" 
                                 name="email" 
-                                className={"form-control "  + (this.state.email === "" ? 'prefinput' : (this.state.isInvalid ? 'form-error' : 'form-success'))}
+                                className={"form-control "  + (this.state.email === "" ? 'prefinput' : (this.state.isEmailValid ? 'form-success' : 'form-error'))} 
                                 placeholder="Enter email" 
                                 />
                             </div>
@@ -75,7 +79,7 @@ class LinkEmailModal extends Component {
                                 onChange={(e) => this.handleChange(e)} 
                                 type="password" 
                                 name="passwordOne" 
-                                className={"form-control " + (this.state.passwordOne === "" ? 'prefinput' : (this.state.isInvalid ? 'form-error' : 'form-success'))}
+                                className={"form-control " + (this.state.passwordOne === "" ? 'prefinput' : (this.state.isPWValid ? 'form-success' : 'form-error'))}
                                 placeholder="Password" 
                                 />
                             </div>
@@ -85,7 +89,7 @@ class LinkEmailModal extends Component {
                                 onChange={(e) => this.handleChange(e)} 
                                 type="password" 
                                 name="passwordTwo" 
-                                className={"form-control " + (this.state.passwordOne === "" ? 'prefinput' : (this.state.isInvalid ? 'form-error' : 'form-success'))}
+                                className={"form-control " + (this.state.passwordTwo === "" ? 'prefinput' : (this.state.isValid ? 'form-success' : 'form-error'))}
                                 placeholder="Confirm Password" 
                                 />
                             </div>
