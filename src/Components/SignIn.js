@@ -38,8 +38,22 @@ class SignIn extends React.Component {
     clearTimeout(this.timeOut)
   }
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
+    e.persist();
+    this.setState({ [e.target.name]: e.target.value}, () => {
+        this.checkPWValue(this.state.password);
+        this.checkEmail(this.state.email)
+    });
+}
+checkEmail = (value) => {
+    const regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const isEmailValid = regex.test(value)
+    this.setState({isEmailValid})
+}
+checkPWValue(value){
+    const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
+    const isPWInvalid = re2.test(value)
+    this.setState({isPWInvalid})
+}
 
   login(e) {
     console.log(this.state)
@@ -122,11 +136,26 @@ class SignIn extends React.Component {
             <form>
             <div className="form-group mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
-              <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                <input 
+                  value={this.state.email} 
+                  onChange={(e) =>this.handleChange(e)} 
+                  type="email" 
+                  name="email" 
+                  className={"form-control " + (this.state.email === "" ? 'prefinput' : (this.state.isInvalid ? 'form-error' : 'form-success'))}
+                  id="exampleInputEmail1" 
+                  aria-describedby="emailHelp" 
+                  placeholder="Enter email" />
               </div>
               <div className="form-group mx-auto mb-3">
-              <label htmlFor="exampleInputPassword1">Password</label>
-              <input value={this.state.password} onChange={(e) => this.handleChange(e)} type="password" name="password" className="form-control" id="exampleInputPassword1" placeholder="Password" />
+                <label htmlFor="exampleInputPassword1">Password</label>
+                  <input 
+                    value={this.state.password} 
+                    onChange={(e) => this.handleChange(e)} 
+                    type="password" 
+                    name="password" 
+                    className={"form-control " + (this.state.password === "" ? 'prefinput' : (this.state.isPWInvalid ? 'form-error' : 'form-success'))}
+                    id="exampleInputPassword1" 
+                    placeholder="Password" />
               </div>
               <div className="col-12 d-flex justify-content-center mt-5 mb-3">
               <button onClick={(e) => this.login(e)} type="button" className="btn-primary email-button">
@@ -144,10 +173,10 @@ class SignIn extends React.Component {
                   <span className="google-button__text">Sign in with Google</span>
                 </button>
               </div>
-              <div class="col-12 d-flex justify-content-center">
+              <div className="col-12 d-flex justify-content-center">
                 <p>Don't have an account? <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link></p>
               </div>
-              <div class="col-12 d-flex justify-content-center">
+              <div className="col-12 d-flex justify-content-center">
                 <p>Forgot Your Password? <Link to={`${process.env.PUBLIC_URL}/passwordreset`}>Reset It</Link></p>
               </div>
               </form>

@@ -78,7 +78,7 @@ hr {
 .form-success {
   display: inline-block;
   border: none;
-  border-bottom: 1px solid #228b22;
+  border-bottom: 2px solid #228b22;
   box-shadow: none;
   width: 100%;
   height: 2.5em;
@@ -112,7 +112,7 @@ hr {
 .form-error {
   display: inline-block;
   border:none;
-  border-bottom: 1px solid #8b0000;
+  border-bottom: 2px solid #8b0000;
   box-shadow: none;
   width: 100%;
   height: 2.5em;
@@ -137,11 +137,14 @@ hr {
   box-shadow: none;
   -webkit-box-shadow: none;
 }
+.form-control:focus {
+  box-shadow: none;
+}
 
 .prefinput {
   border-radius: 0px;
   border: none;
-  border-bottom: 1px solid gray;
+  border-bottom: 2px solid gray;
 }
 .prefinput:focus {
   border-radius: 0px;

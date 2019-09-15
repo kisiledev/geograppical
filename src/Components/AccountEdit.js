@@ -202,20 +202,23 @@ class AccountEdit extends React.Component {
                                 }
 
                             })}
-                            <p><strong>Name </strong> - {data.displayName}</p>
-                            {data.email && <p><strong>Email </strong> - {data.email}</p>}
-                            {providers.map(prov => {
-                                if(data.providerId === prov.provName){
-                                    return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
-                                
-                                }
-
-                            })}
-                            <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
-                                Unlink
-                                <FontAwesomeIcon className="align-self-center ml-1" icon={faTrashAlt}
-                                 color="white" />
-                            </button>
+                            
+                            <div className="d-flex justify-content-between">
+                                <div className="align-items-start">
+                                    <p><strong>Name </strong> - {data.displayName}</p>
+                                    {data.email && <p><strong>Email </strong> - {data.email}</p>}
+                                    {providers.map(prov => {
+                                        if(data.providerId === prov.provName){
+                                            return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
+                                        }
+                                })}
+                                </div>
+                                <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
+                                    Unlink
+                                    <FontAwesomeIcon className="align-self-center ml-1" icon={faTrashAlt}
+                                     color="white" />
+                                </button>
+                            </div>
                     </div>
                     })}
                     {providers.map(provider => {
