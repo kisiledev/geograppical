@@ -28,7 +28,7 @@ class NaviBar extends React.Component {
                 <Form 
                     className="ml-auto searchForm" 
                     inline
-                    onSubmit={(e) => this.props.handleSubmit(e)}
+                    onSubmit={(e) => this.props.getResults(e)}
                     >
                     <FormControl 
                         type="text" 

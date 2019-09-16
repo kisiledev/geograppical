@@ -264,6 +264,12 @@ class App extends Component {
       this.setState(({countryDetail: match[0]}))
       this.handleViews('detail');
   }
+  getResults = (e) => {
+    e.preventDefault();
+    console.log(this.state.searchText)
+    alert('getting results')
+    this.setState({search: this.state.searchText})
+  }
     
   filterCountryByName = (string) =>{
     let searchDB = Object.values(this.state.worldData);
@@ -380,6 +386,8 @@ class App extends Component {
           searchText = {this.state.searchText}
           handleInput = {this.handleInput}
           changeView = {this.handleViews}
+          getCountryInfo = {this.getCountryInfo}
+          getResults = {this.getResults}
           filterNations = {this.state.filterNations}
           changeMode = {this.changeMode}
           user= {this.state.user}
@@ -391,6 +399,36 @@ class App extends Component {
         />
         <div className="main container-fluid">
           <Switch>
+          {this.state.search && console.log('rendering searches') && 
+          <Route path={`${process.env.PUBLIC_URL}/search`} render={props => <ResultView
+            mapView = {this.mapView}
+            flagCodes = {this.state.flagCodes}
+            countries = {this.state.filterNations}
+            filterRegion = {this.filterRegion}
+            handleSideBar = {this.handleSideBar}
+            data = {this.state.worldData}
+            getCountryInfo = {this.getCountryInfo}
+            changeView = {this.handleViews}
+            viewSidebar={this.viewSidebar}
+            sidebar={this.state.sidebar}
+            mapVisible={this.state.mapView}
+            hoverOnRegion = {this.hoverOnRegion}
+            hoverOffRegion = {this.hoverOffRegion}
+            filterCountryByName = {this.filterCountryByName}
+            hoverOnCountry = {this.hoverOnCountry}
+            hoverOffCountry = {this.hoverOffCountry}
+            handleMove = {this.handleMove}
+            handleLeave = {this.handleLeave}
+            hovered = {this.state.hovered}
+            highlighted = {this.state.highlighted}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
+            user = {this.state.user}
+            setModal = {this.setModal}
+            login = {this.login}
+          /> } />
+          }
           <Route exact path={`${process.env.PUBLIC_URL}/play`} 
                 render={props => 
                 <Game 
