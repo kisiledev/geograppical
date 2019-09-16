@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
 import NaviBar from './Components/NaviBar';
@@ -17,6 +17,7 @@ import SignUp from './Components/SignUp';
 import PrivateRoute from './Components/PrivateRoutes';
 import PasswordReset from './Components/PasswordReset';
 import AccountEdit from './Components/AccountEdit'
+import SearchResults from './Components/SearchResults';
 
 class App extends Component {
 
@@ -43,6 +44,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props)
     this.loadCodes();
     this.loadWorldData();
     auth.onAuthStateChanged(user => {
@@ -264,15 +266,23 @@ class App extends Component {
       this.setState(({countryDetail: match[0]}))
       this.handleViews('detail');
   }
-  getResults = (e) => {
-    e.preventDefault();
-    console.log(this.state.searchText)
-    alert('getting results')
-    this.setState({search: this.state.searchText})
+  getResults = (results, e) => {
+    if(!this.state.searchText){
+      this.setState({search: results})
+      this.props.history.goBack();
+    } else {
+      e.preventDefault();
+      console.log(this.state.searchText)
+      this.setState({search: this.state.searchText}, this.handleViews('default'))
+      this.props.history.push('/search/' + this.state.searchText)
+    }
   }
     
   filterCountryByName = (string) =>{
+    console.log(string)
+    console.log()
     let searchDB = Object.values(this.state.worldData);
+    console.log(searchDB)
     let match = searchDB.filter(country => country.name.toLowerCase() === string.toLowerCase()
       || country.name.toLowerCase().includes(string.toLowerCase())
       || country.government.country_name.conventional_long_form.toLowerCase() === string.toLowerCase()
@@ -293,7 +303,7 @@ class App extends Component {
         Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
   };
   handleViews = (view) => {
-    // console.log(view);
+    console.log(view);
       this.setState(({view}))
   };
   mapView = () => {
@@ -374,6 +384,41 @@ class App extends Component {
       })
     }
   };
+  handleRefresh = (value) => {
+    if(this.state.worldData){
+      if(value != null && value.trim() !== ''){
+        this.setState({searchText: value}, () => this.filterCountryByName(value));
+        // let nodes = [...(document.getElementsByClassName("country"))];  
+        // nodes.forEach( node => {
+        //   node.style.fill =  "#ECEFF1";
+        //   node.style.stroke =  "#111";
+        //   node.style.strokeWidth =  .75;
+        //   node.style.outline =  "none";
+        //   node.style.transition = "all 250ms"
+        // })
+        // nodes = nodes.filter(e => this.filterCountryByName(value).map((country, i) => country.name).includes(e.dataset.tip));
+        // // console.log(nodes);
+        // nodes.forEach( node => {
+        //   node.style.fill =  "#024e1b";
+        //   node.style.stroke =  "#111";
+        //   node.style.strokeWidth =  1;
+        //   node.style.outline =  "none";
+        //   node.style.transition = "all 250ms"
+        // })
+  
+      } else {
+        this.setState(({ 
+          searchText: value, 
+          filterNations: []
+        }));
+        // let nodes = [...(document.getElementsByClassName("country"))];
+        // // console.log(this.state.filterNations)
+        // nodes.forEach( node => {
+        //   node.removeAttribute("style")
+        // })
+      }
+    }
+  };
   render(){
     if(this.state.error){
       return <h1>{this.state.error}</h1>
@@ -399,9 +444,9 @@ class App extends Component {
         />
         <div className="main container-fluid">
           <Switch>
-          {this.state.search && console.log('rendering searches') && 
-          <Route path={`${process.env.PUBLIC_URL}/search`} render={props => <ResultView
+          <Route exact path={`${process.env.PUBLIC_URL}/search/:input`} render={props => <SearchResults
             mapView = {this.mapView}
+            searchText = {this.state.searchText}
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}
@@ -427,8 +472,10 @@ class App extends Component {
             user = {this.state.user}
             setModal = {this.setModal}
             login = {this.login}
+            results = {this.state.search}
+            getResults = {this.getResults}
+            handleRefresh = {this.handleRefresh}
           /> } />
-          }
           <Route exact path={`${process.env.PUBLIC_URL}/play`} 
                 render={props => 
                 <Game 
@@ -557,4 +604,4 @@ class App extends Component {
   }
 };
 
-export default App;
+export default withRouter(App);

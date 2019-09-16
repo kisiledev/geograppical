@@ -140,6 +140,10 @@ hr {
 .form-control:focus {
   box-shadow: none;
 }
+.searchForm >.form-control:focus {
+  color: white;
+  background-color: rgba(0, 0, 0, 0);
+}
 
 .prefinput {
   border-radius: 0px;

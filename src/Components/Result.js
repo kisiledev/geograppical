@@ -16,7 +16,11 @@ class Result extends Component {
       this.props.user && this.checkFavorite(this.props.country)
     }
     componentDidUpdate = (prevProps, prevState) => {
-      this.props.user && this.checkFavorite(this.props.country)
+      if(this.props.user){
+        if(this.props.filtered !== prevProps.filtered){
+          this.checkFavorite(this.props.country)
+        }
+      }
     }
     componentWillUnmount = () => {
       

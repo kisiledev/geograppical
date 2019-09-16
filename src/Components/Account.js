@@ -13,7 +13,8 @@ class Account extends React.Component {
         message: ''
     }
     componentDidMount = () => {
-        this.setState({loading: true }, this.getFavoritesData());
+        this.setState({loading: true }, 
+            this.getFavoritesData());
         this.setState({loading: true }, this.getScoresData());
     }
     deleteFavorite = (id) => {
