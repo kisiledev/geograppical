@@ -113,8 +113,8 @@ class Account extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-12 my-3">
-                        <h5 className="d-flex align-items-center" onClick={() => this.toggleValue("favorites")}>
+                    <div className="col-12 my-1 px-0">
+                        <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("favorites")}>
                             Favorites
                             <Badge variant="primary">
                                 {this.state.loading ? 
@@ -151,8 +151,8 @@ class Account extends React.Component {
                             </Collapse>)
                         }
                     </div>
-                    <div className="col-12 my-3">
-                    <h5 className="d-flex align-items-center" onClick={() => this.toggleValue("scores")}>
+                    <div className="col-12 my-1 px-0">
+                    <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("scores")}>
                         Scores 
                         <Badge variant="primary">
                             {this.state.loading ? 
