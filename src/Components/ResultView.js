@@ -89,6 +89,7 @@ class ResultView extends Component {
           </Breakpoint>
           {this.props.countries[0] && this.props.countries.map( (country, index) => 
             <Result
+            filtered = {this.props.countries[0]}
             worldData = {this.props.data}
             makeFavorite = {this.makeFavorite}
             changeView = {this.props.changeView}

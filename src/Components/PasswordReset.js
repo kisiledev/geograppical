@@ -129,7 +129,7 @@ class PasswordReset extends React.Component {
             <form>
             <div className="form-group col-12 mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
-              <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+              <input value={this.state.email} onChange={(e) =>this.handleChange(e)} type="email" name="email" className="form-control prefinput" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
               </div>
               <div className="col-12 d-flex justify-content-center mb-3">
               <button onClick={(e) => this.reset(e, this.state.email)} type="button" className="btn-primary email-button">

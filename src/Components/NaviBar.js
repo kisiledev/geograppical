@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 import { auth, googleProvider } from './Firebase/firebase'
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
 
 
 class NaviBar extends React.Component {
-
+    componentDidMount = ()=> {
+        console.log(this.props)
+    }
     login = () => {
         auth.signInWithPopup(googleProvider)
         .then((result) => {
@@ -28,7 +30,7 @@ class NaviBar extends React.Component {
                 <Form 
                     className="ml-auto searchForm" 
                     inline
-                    onSubmit={(e) => this.props.handleSubmit(e)}
+                    onSubmit={(e) => this.props.getResults(this.props.searchText, e)}
                     >
                     <FormControl 
                         type="text" 
@@ -66,4 +68,4 @@ class NaviBar extends React.Component {
     }
 }
 
-export default NaviBar;
+export default withRouter(NaviBar);

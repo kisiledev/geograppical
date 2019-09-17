@@ -174,7 +174,7 @@ class AccountEdit extends React.Component {
                             <h5 className="mt-3">{this.props.user.displayName} </h5>
                             <p>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</p>
                             <p>{this.props.user.email}</p>
-                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : <Link>Add Phone</Link>}</p>
+                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : <Link to={'#'}>Add Phone</Link>}</p>
                             {this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x"/> :
                             (
                             <>
@@ -202,8 +202,7 @@ class AccountEdit extends React.Component {
                                 }
                                 return null
 
-                            })
-                            }
+                            })}
                             
                             <div className="d-flex justify-content-between">
                                 <div className="align-items-start">
@@ -213,7 +212,6 @@ class AccountEdit extends React.Component {
                                         if(data.providerId === prov.provName){
                                             return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
                                         }
-                                        return null
                                 })}
                                 </div>
                                 <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
