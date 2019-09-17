@@ -196,39 +196,47 @@ class AccountEdit extends React.Component {
                     <h3 className="mt-5">Account Credentials</h3>   
                     {this.state.providers && this.state.providers.map((data) => {
                         return <div key={data.uid}className="card mb-3">
-                            {providers.map(prov => {
+                            {providers.map((prov) => {
                                 if(data.providerId === prov.provName){
                                     return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />
                                 }
+                                return null
 
-                            })}
-                            <p><strong>Name </strong> - {data.displayName}</p>
-                            {data.email && <p><strong>Email </strong> - {data.email}</p>}
-                            {providers.map(prov => {
-                                if(data.providerId === prov.provName){
-                                    return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
-                                
-                                }
-
-                            })}
-                            <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
-                                Unlink
-                                <FontAwesomeIcon className="align-self-center ml-1" icon={faTrashAlt}
-                                 color="white" />
-                            </button>
+                            })
+                            }
+                            
+                            <div className="d-flex justify-content-between">
+                                <div className="align-items-start">
+                                    <p><strong>Name </strong> - {data.displayName}</p>
+                                    {data.email && <p><strong>Email </strong> - {data.email}</p>}
+                                    {providers.map(prov => {
+                                        if(data.providerId === prov.provName){
+                                            return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
+                                        }
+                                        return null
+                                })}
+                                </div>
+                                <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
+                                    Unlink
+                                    <FontAwesomeIcon className="align-self-center ml-1" icon={faTrashAlt}
+                                     color="white" />
+                                </button>
+                            </div>
                     </div>
                     })}
                     {providers.map(provider => {
                         if(!userProvs.includes(provider.provName)){
-                            return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
-                        <button onClick={provider.onClick} type="button" className={`provider-button ${provider.name.toLowerCase()}-button`}>
-                        <span className={`${provider.name.toLowerCase()}-button__icon`}>
-                            <img src={provider.icon} className={`${provider.name.toLowerCase()}icon`} alt="google icon" />
-                        </span>
-                        <span className="google-button__text">Link with {provider.name}</span>
-                        </button>
-                    </div>
+                            return (
+                            <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">
+                                <button onClick={provider.onClick} type="button" className={`provider-button ${provider.name.toLowerCase()}-button`}>
+                                <span className={`${provider.name.toLowerCase()}-button__icon`}>
+                                    <img src={provider.icon} className={`${provider.name.toLowerCase()}icon`} alt="google icon" />
+                                </span>
+                                <span className="google-button__text">Link with {provider.name}</span>
+                                </button>
+                            </div>)
                         }
+                        return null
                     })}
             </div>
             </>

@@ -434,8 +434,8 @@ class Find extends Component {
           <ZoomableGroup 
             zoom={zoom} 
             center={center}
-            onMoveStart={handleMoveStart}
-            onMoveEnd={handleMoveEnd}
+            // onMoveStart={handleMoveStart}
+            // onMoveEnd={handleMoveEnd}
           >
             <Graticule />
           <Geographies  geography={data}>
