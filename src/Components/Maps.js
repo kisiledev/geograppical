@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useRef, useEffect} from 'react';
 import {
     ComposableMap,
     ZoomableGroup,
@@ -20,6 +20,7 @@ class Maps extends Component {
     countries: [],
     regions: []
   }
+  
   handleZoomIn = () => {
     this.setState(prevState => ({zoom: prevState.zoom * 2}))
   }
@@ -107,6 +108,22 @@ class Maps extends Component {
     // set state here outside the foreach function
      this.setState({...regionsState})
   };
+
+  handleWheel(event) {
+    console.log("scroll detected");
+    console.log(event.deltaY);
+
+    if (event.deltaY > 0) {
+      this.setState({
+        zoom: this.state.zoom / 1.1
+      });
+    }
+    if (event.deltaY < 0) {
+      this.setState({
+        zoom: this.state.zoom * 1.1
+      });
+    }
+  }
   handleClick = (e) => {
           // access to e.target here
     this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
@@ -134,6 +151,12 @@ class Maps extends Component {
           </Breakpoint>
         <hr />
         {this.props.mapVisible === "Show" ?
+        <BlockPageScroll>
+        <div 
+          ref={wrapper => (this._wrapper = wrapper)}
+          onWheel={(e) => this.handleWheel(e)}
+
+        >
         <ComposableMap 
           projection="robinson"
           width={980}
@@ -144,12 +167,12 @@ class Maps extends Component {
           }}  
           >
           <ZoomableGroup zoom={this.state.zoom}>
-            <Graticule />
           <Geographies  geography={data}>
             {(geos, proj) =>
               geos.map((geo, i) =>
             <Link key={i} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME.toLowerCase()}`}>
               <Geography
+                onWheel={(e) => this.handleWheel(e)}
                 data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
                 data-tip={JSON.stringify(geo.properties)}
                 data-shortname={geo.properties.NAME}
@@ -167,6 +190,8 @@ class Maps extends Component {
           </ Geographies>
           </ZoomableGroup>
         </ComposableMap>
+        </div>
+        </BlockPageScroll>
         : null }
         <ReactTooltip 
           place="top" 
@@ -181,3 +206,13 @@ class Maps extends Component {
   }
 
     export default Maps;
+    const BlockPageScroll = ({ children }) => {
+      const scrollRef = useRef(null);
+      useEffect(() => {
+        const scrollEl = scrollRef.current;
+        scrollEl.addEventListener("wheel", stopScroll);
+        return () => scrollEl.removeEventListener("wheel", stopScroll);
+      }, []);
+      const stopScroll = e => e.preventDefault();
+      return <div ref={scrollRef}>{children}</div>;
+    };

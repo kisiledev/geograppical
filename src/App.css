@@ -463,14 +463,14 @@ a:hover {
 .gameCountry {
   fill: #ffffff;
   stroke: #000;
-  stroke-width: 0.5;
+  stroke-width: 0.1;
   outline: none;
   stroke-linecap: round;
 }
 .gameCountry:hover {
   fill: #13d45a;
   stroke: #000;
-  stroke-width: 0.5;
+  stroke-width: 0.1;
   outline: none;
   stroke-linecap: round;
   cursor: pointer;

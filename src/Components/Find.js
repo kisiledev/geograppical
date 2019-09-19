@@ -35,69 +35,20 @@ class Find extends Component {
       .translate([800 / 2, 400 / 2])
       .scale(150);
     }
-    getCursorLocation = (event) => {
-      const zoom = this.state.zoom;
-  
-      console.log("Zoom: " + zoom);
-  
-      const { width, height } = this.props;
-      const projection = this.proj();
-      const box = this._wrapper.querySelector("svg").getBoundingClientRect();
-      const { top, left } = box;
-  
-      const resizeFactorX = box.width / width;
-      const resizeFactorY = box.height / height;
-  
-      // position cursor as position within width and height of composableMap
-      const clientX = (event.clientX - left) / resizeFactorX;
-      const clientY = (event.clientY - top) / resizeFactorY;
-  
-      const originalCenter = [width / 2, height / 2];
-  
-      // position in Composable map that current center has when map is centered
-      const currentCenter = projection(this.state.center);
-      console.log(currentCenter);
-  
-      // compensation in "Composable map units" needed due to being off-center(panned)
-      const offsetX = currentCenter[0] - originalCenter[0];
-      const offsetY = currentCenter[1] - originalCenter[1];
-  
-      console.log("offsetX: " + offsetX + " - offsetY: " + offsetY);
-  
-      // position in Composable map that cursor would have been if the map was centered at this zoom level???
-      let x = clientX + offsetX;
-      let y = clientY + offsetY;
-  
-      console.log("Corrected x: " + x + " - Corrected y: " + y);
-      // let xTodo,
-      //   yTodo = 0;
-      // if (x > 400) {
-      //   xTodo = 400 - x;
-      //   x = 400;
-      // }
-      // if (x < 0) {
-      //   xTodo = 0 + x;
-      //   x = 0;
-      // }
-      // if (y > 250) {
-      //   yTodo = 250 - y;
-      //   y = 250;
-      // }
-      // if (y < 0) {
-      //   yTodo = 0 + y;
-      //   y = 0;
-      // }
-  
-      const uncompensatedCursor = projection.invert([x, y]);
-  
-      const cursor = [
-        this.state.center[0] +
-          (uncompensatedCursor[0] - this.state.center[0]) / zoom,
-        this.state.center[1] +
-          (uncompensatedCursor[1] - this.state.center[1]) / zoom
-      ];
-  
-      return cursor;
+
+    handleWheel = (event) => {
+      console.log("scroll detected");
+      console.log(event.deltaY);
+      if (event.deltaY > 0) {
+        this.setState({
+          zoom: this.state.zoom / 1.1
+        });
+      }
+      if (event.deltaY < 0) {
+        this.setState({
+          zoom: this.state.zoom * 1.1
+        });
+      }
     }
     componentDidMount(){
       this.getMapNations();
@@ -228,29 +179,7 @@ class Find extends Component {
         console.log(this.state.currentCountry.name);
         alert(this.handleText(e.properties.NAME_LONG) === this.state.currentCountry.name)
     }
-    handleWheel = event => {
-      const oldZoom = this.state.zoom;
-      const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
-      console.log(zoomDirectionFactor)
-  
-      // Set new zoom level
-      const newZoom = oldZoom + zoomDirectionFactor;
-      console.log(newZoom)
-      // Ignore nonsens
-      if (newZoom > 10 || newZoom < 1) {
-        return;
-      }
-      const cursor = this.getCursorLocation(event);
-      const oldCenter = this.state.center;
 
-      const newCenter = [
-        oldCenter[0] +
-          ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
-        oldCenter[1] +
-          ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
-      ];
-      this.setState({zoom: newZoom, center: newCenter})
-    }
     
     shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
@@ -437,7 +366,6 @@ class Find extends Component {
             onMoveStart={handleMoveStart}
             onMoveEnd={handleMoveEnd}
           >
-            <Graticule />
           <Geographies  geography={data}>
             {(geos, proj) =>
               geos.map((geo, i) =>
