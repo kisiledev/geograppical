@@ -26,6 +26,7 @@ class NaviBar extends React.Component {
     render(){
         return(
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+                <Navbar.Brand>Geograppical</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Form 
                     className="ml-auto searchForm" 
