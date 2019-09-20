@@ -159,9 +159,9 @@ class AccountEdit extends React.Component {
                 <LinkEmailModal linkEmail={this.linkEmail} close={this.close} message={this.state.modalMessage}/>
                 
             </Modal>
-            <div className="col-12 mx-auto">
+            <div className="col-sm-12 col-md-6 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
-                <div className="card mb-3">
+                <div className="card col-lg-8 col-xl-8 mx-auto ">
                     <div className="row">
                         <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
                             <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
@@ -193,9 +193,11 @@ class AccountEdit extends React.Component {
                         </div>
                     </div>
                 </div>
-                    <h3 className="mt-5">Account Credentials</h3>   
+                    <h3 className="mt-5">Account Credentials</h3>
+                    <div className="d-flex">
                     {this.state.providers && this.state.providers.map((data) => {
-                        return <div key={data.uid}className="card mb-3">
+                        return (
+                        <div key={data.uid}className="card mb-3">
                             {providers.map(prov => {
                                 if(data.providerId === prov.provName){
                                     return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />
@@ -219,8 +221,10 @@ class AccountEdit extends React.Component {
                                      color="white" />
                                 </button>
                             </div>
-                    </div>
+                        </div>
+                        )
                     })}
+                    </div>
                     {providers.map(provider => {
                         if(!userProvs.includes(provider.provName)){
                             return <div key={provider.id} className="col-12 d-flex w-100 justify-content-center mb-3">

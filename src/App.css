@@ -581,17 +581,7 @@ audio {
     vertical-align: middle;
   }
 }
-@media (min-width: 768px){
-  .col-md-9 {
-    padding: 0 15px; 
-  }
-  .main {
-    padding: 20px;
-  }
-  .detailFlag  {
-    width: 15%;
-  }
-}
+
 /* .nav {
   flex-wrap: nowrap;
 }
@@ -631,5 +621,26 @@ ul .collapse, ul .show, ul .collapsing {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 768px){
+  .col-md-9 {
+    padding: 0 15px; 
+  }
+  .main {
+    padding: 20px;
+  }
+  .detailFlag  {
+    width: 15%;
+  }
+  .card {
+    height: fit-content
+  }
+  .datacard {
+    padding: 5px;
+  }
+  h5.list-group-item{
+    border: none;
   }
 }

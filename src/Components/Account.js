@@ -80,9 +80,9 @@ class Account extends React.Component {
     render(){
         return(
 
-            <div className="col-12 mx-auto">
+            <div className="col-sm-12 col-md-8 mx-auto">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
-                <div className="card mb-3">
+                <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
                     <div className="row">
                         <div className="col-12 text-center">
                             <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
@@ -113,7 +113,7 @@ class Account extends React.Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-12 my-1 px-0">
+                    <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
                         <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("favorites")}>
                             Favorites
                             <Badge variant="primary">
@@ -151,7 +151,7 @@ class Account extends React.Component {
                             </Collapse>)
                         }
                     </div>
-                    <div className="col-12 my-1 px-0">
+                    <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
                     <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("scores")}>
                         Scores 
                         <Badge variant="primary">
