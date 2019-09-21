@@ -1,0 +1,14 @@
+stages:
+  - deploy
+
+deploy:
+  image: node:8
+  stage: deploy
+  environment: production
+  script:
+    - npm install -g firebase-tools
+    - firebase -V
+    - cd ./dist
+    - firebase deploy --token "$FIREBASE_TOKEN" -P <my-firebase-project>
+  only:
+    - master
