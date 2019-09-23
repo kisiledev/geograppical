@@ -111,8 +111,15 @@ class Maps extends Component {
   handleWheel(event) {
     console.log("scroll detected");
     console.log(event.deltaY);
-
-    if (event.deltaY > 0) {
+    if(this.state.zoom < 1){
+      if (event.deltaY < 0) {
+        this.setState({
+          zoom: this.state.zoom * 1.1
+        });
+      }
+    }
+    if(this.state.zoom >= 1){
+      if (event.deltaY > 0) {
       this.setState({
         zoom: this.state.zoom / 1.1
       });
@@ -122,6 +129,7 @@ class Maps extends Component {
         zoom: this.state.zoom * 1.1
       });
     }
+    }
   }
   handleClick = (e) => {
           // access to e.target here
@@ -130,76 +138,78 @@ class Maps extends Component {
 
   render(){
       return(
-        <BreakpointProvider>
-        <div className="card mr-3 mb-3">
-          <Breakpoint small up>
-          <div className="d-flex justify-content-between">
-          <div className="btn-group d-inline">
-            <button className="btn btn-info" onClick={() => this.handleZoomOut(this.state.zoom) }><FontAwesomeIcon icon={faMinus}/></button>
-            <button className="btn btn-info" onClick={() => this.handleZoomIn(this.state.zoom) }><FontAwesomeIcon icon={faPlus}/></button>
-          </div>
-          <h2 className="text-center"><strong>Capstone Geography</strong></h2>
-          <button 
-            className="btn btn-info" 
-            onClick={() => this.props.mapView() }
-          >
-            <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
-          </button>
 
-          </div>
-          </Breakpoint>
-        <hr />
-        {this.props.mapVisible === "Show" ?
-        <BlockPageScroll>
-        <div 
-          ref={wrapper => (this._wrapper = wrapper)}
-          onWheel={(e) => this.handleWheel(e)}
-
-        >
-        <ComposableMap 
-          projection="robinson"
-          width={980}
-          height={551}
-          style={{
-            width: "100%",
-            height: "auto",
-          }}  
+        <div className="pt-3 container-fluid">
+          <BreakpointProvider>
+          <div className="card mr-3 mb-3">
+            <Breakpoint small up>
+            <div className="d-flex justify-content-between pb-3">
+            <div className="btn-group">
+              <button className="btn btn-info" onClick={() => this.handleZoomOut(this.state.zoom) }><FontAwesomeIcon icon={faMinus}/></button>
+              <button className="btn btn-info" onClick={() => this.handleZoomIn(this.state.zoom) }><FontAwesomeIcon icon={faPlus}/></button>
+            </div>
+            <h2 className="text-center"><strong>Capstone Geography</strong></h2>
+            <button 
+              className="btn btn-info" 
+              onClick={() => this.props.mapView() }
+            >
+              <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
+            </button>
+  
+            </div>
+            </Breakpoint>
+          {this.props.mapVisible === "Show" ?
+          <BlockPageScroll>
+          <div 
+            ref={wrapper => (this._wrapper = wrapper)}
+            onWheel={(e) => this.handleWheel(e)}
+  
           >
-          <ZoomableGroup zoom={this.state.zoom}>
-          <Geographies  geography={data}>
-            {(geos, proj) =>
-              geos.map((geo, i) =>
-            <Link key={i} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME.toLowerCase()}`}>
-              <Geography
-                onWheel={(e) => this.handleWheel(e)}
-                data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
-                data-tip={JSON.stringify(geo.properties)}
-                data-shortname={geo.properties.NAME}
-                data-continent ={geo.properties.CONTINENT}
-                data-subregion = {geo.properties.SUBREGION}
-                onClick={((e) => this.handleClick(e))}
-                key={geo.id + i}
-                geography={geo}
-                projection={proj}
-                className="country"   
-              />
-              </Link>
-            )
-            }
-          </ Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
+          <ComposableMap 
+            projection="robinson"
+            width={980}
+            height={551}
+            style={{
+              width: "100%",
+              height: "auto",
+            }}  
+            >
+            <ZoomableGroup zoom={this.state.zoom}>
+            <Geographies  geography={data}>
+              {(geos, proj) =>
+                geos.map((geo, i) =>
+              <Link key={i} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME.toLowerCase()}`}>
+                <Geography
+                  onWheel={(e) => this.handleWheel(e)}
+                  data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
+                  data-tip={JSON.stringify(geo.properties)}
+                  data-shortname={geo.properties.NAME}
+                  data-continent ={geo.properties.CONTINENT}
+                  data-subregion = {geo.properties.SUBREGION}
+                  onClick={((e) => this.handleClick(e))}
+                  key={geo.id + i}
+                  geography={geo}
+                  projection={proj}
+                  className="country"   
+                />
+                </Link>
+              )
+              }
+            </ Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+          </div>
+          </BlockPageScroll>
+          : null }
+          <ReactTooltip 
+            place="top" 
+            type="dark" 
+            effect="float"
+            getContent={(dataTip) => this.handleContent(dataTip)}>
+          </ReactTooltip>
+          </div>
+          </BreakpointProvider>
         </div>
-        </BlockPageScroll>
-        : null }
-        <ReactTooltip 
-          place="top" 
-          type="dark" 
-          effect="float"
-          getContent={(dataTip) => this.handleContent(dataTip)}>
-        </ReactTooltip>
-        </div>
-        </BreakpointProvider>
       )
     }
   }

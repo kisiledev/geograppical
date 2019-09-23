@@ -4,7 +4,7 @@ import {Route, Switch, withRouter} from 'react-router-dom';
 import ResultView from './Components/ResultView';
 import DetailView from './Components/DetailView';
 import NaviBar from './Components/NaviBar';
-import { BreakpointProvider } from 'react-socks';
+import { BreakpointProvider, Breakpoint } from 'react-socks';
 import {Modal, Button} from 'react-bootstrap'
 import './App.css';
 import axios from 'axios';
@@ -18,6 +18,7 @@ import PrivateRoute from './Components/PrivateRoutes';
 import PasswordReset from './Components/PasswordReset';
 import AccountEdit from './Components/AccountEdit'
 import SearchResults from './Components/SearchResults';
+import SideNaviBar from './Components/SideNaviBar'
 
 class App extends Component {
 
@@ -425,7 +426,43 @@ class App extends Component {
     }
     return (
       <BreakpointProvider>
-      <div>
+        <Breakpoint large up>
+          <SideNaviBar 
+            view={this.state.view}
+            searchText = {this.state.searchText}
+            handleInput = {this.handleInput}
+            changeView = {this.handleViews}
+            getCountryInfo = {this.getCountryInfo}
+            getResults = {this.getResults}
+            filterNations = {this.state.filterNations}
+            changeMode = {this.changeMode}
+            user= {this.state.user}
+            handleOpen = {this.handleOpen}
+            handleClose = {this.handleClose}
+            handleSubmit = {this.handleSubmit}
+            setModal = {this.setModal}
+            login = {this.login}
+            mapView = {this.mapView}
+            flagCodes = {this.state.flagCodes}
+            countries = {this.state.filterNations}
+            filterRegion = {this.filterRegion}
+            handleSideBar = {this.handleSideBar}
+            data = {this.state.worldData}
+            viewSidebar={this.viewSidebar}
+            sidebar={this.state.sidebar}
+            mapVisible={this.state.mapView}
+            hoverOnRegion = {this.hoverOnRegion}
+            hoverOffRegion = {this.hoverOffRegion}
+            filterCountryByName = {this.filterCountryByName}
+            hoverOnCountry = {this.hoverOnCountry}
+            hoverOffCountry = {this.hoverOffCountry}
+            handleMove = {this.handleMove}
+            handleLeave = {this.handleLeave}
+            hovered = {this.state.hovered}
+            highlighted = {this.state.highlighted}
+          />
+        </Breakpoint>
+        <div className="main container-fluid">
         <NaviBar 
           view={this.state.view}
           searchText = {this.state.searchText}
@@ -442,7 +479,6 @@ class App extends Component {
           setModal = {this.setModal}
           login = {this.login}
         />
-        <div className="main container-fluid">
           <Switch>
           <Route exact path={`${process.env.PUBLIC_URL}/search/:input`} render={props => <SearchResults
             mapView = {this.mapView}
@@ -598,7 +634,6 @@ class App extends Component {
             </Modal.Footer>
         </Modal>
         </div>
-      </div>
       </BreakpointProvider>
     )
   }
