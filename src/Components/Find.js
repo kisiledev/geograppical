@@ -3,8 +3,7 @@ import {
     ComposableMap,
     ZoomableGroup,
     Geographies,
-    Geography,
-    Graticule
+    Geography
   } from 'react-simple-maps';
 import data from '../Data/world-50m.json';
 import { geoEqualEarth } from 'd3-geo'

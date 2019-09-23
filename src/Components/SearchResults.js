@@ -6,7 +6,6 @@ import { db } from './Firebase/firebase'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
-import SidebarView from './SidebarView';
 import Maps from './Maps';
 import {withRouter} from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'

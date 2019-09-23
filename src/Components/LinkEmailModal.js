@@ -36,20 +36,11 @@ class LinkEmailModal extends Component {
             return <Redirect to="/account" />
         } 
         const {
-            username,
-            message,
             email,
             passwordOne,
             passwordTwo
         } = this.state;
         
-        
-        const isFormInvalid = 
-        passwordOne !== passwordTwo ||
-        passwordOne === '' || 
-        email === '' ||
-        username === '';
-
         
         return (
             <div className="mx-auto text-center col-lg-4">

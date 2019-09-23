@@ -3,7 +3,6 @@ import {
     ComposableMap,
     ZoomableGroup,
     Geographies,
-    Graticule,
     Geography,
   } from 'react-simple-maps';
 import { Link } from 'react-router-dom';

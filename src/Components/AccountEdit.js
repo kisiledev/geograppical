@@ -202,6 +202,7 @@ class AccountEdit extends React.Component {
                                 if(data.providerId === prov.provName){
                                     return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />
                                 }
+                                return null;
 
                             })}
                             
@@ -213,6 +214,7 @@ class AccountEdit extends React.Component {
                                         if(data.providerId === prov.provName){
                                             return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
                                         }
+                                        return null;
                                 })}
                                 </div>
                                 <button onClick={() => this.unlink(data.providerId)} className="align-self-end btn btn-sm btn-danger">
@@ -236,6 +238,7 @@ class AccountEdit extends React.Component {
                         </button>
                     </div>
                         }
+                        return null;
                     })}
             </div>
             </>
