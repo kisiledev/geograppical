@@ -55,6 +55,9 @@ hr {
 [type=radio]:checked + img {
   box-shadow: 0 0 0  red;
 }
+.searchForm input::placeholder {
+  color: white;
+}
 .search {
   background: url('../src/img/logo.png') no-repeat left center/40px;
   display: inline-block;
@@ -624,12 +627,17 @@ ul .collapse, ul .show, ul .collapsing {
   }
 }
 
-@media (min-width: 768px){
+@media (min-width: 1024px){
   .col-md-9 {
     padding: 0 15px; 
   }
   .main {
-    padding: 20px;
+    margin-left: 250px;
+    padding: 0px;
+    overflow: hidden;
+    margin-right: auto;
+    width: auto;
+
   }
   .detailFlag  {
     width: 15%;
@@ -642,5 +650,24 @@ ul .collapse, ul .show, ul .collapsing {
   }
   h5.list-group-item{
     border: none;
+  }
+  .sidenav {
+    width: 250px;
+    bottom: 0;
+    position: fixed;
+    z-index: 10;
+    height: 100%;
+    padding: 0px;
+  }
+  .navbar-brand {
+    line-height: 62px;
+    margin: 0;
+  }
+  .navbar-expand .navbar-nav {
+    flex-direction: column;
+    text-align: center;
+  }
+  .countriesnav {
+    padding: 10px;
   }
 }

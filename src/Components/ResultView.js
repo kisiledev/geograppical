@@ -58,7 +58,7 @@ class ResultView extends Component {
     return(
       <BreakpointProvider>
       <div className="row">
-        <main className="col-md-9 px-0">
+        <main className="col-md-9 col-lg-12 px-0">
           {this.props.countries[0] === undefined ? 
               null
            : null }
@@ -114,26 +114,28 @@ class ResultView extends Component {
             />
           )}
         </main>
-        <SidebarView
-            hoverOnRegion = {this.props.hoverOnRegion}
-            hoverOffRegion = {this.props.hoverOffRegion}
-            changeView = {this.props.changeView}
-            handleSideBar = {this.props.handleSideBar}
-            viewSidebar={this.props.viewSidebar}
-            data={this.props.data}
-            totalRegions = {totalRegions}
-            uniqueRegions = {uniqueRegions}
-            getOccurrence = {getOccurrence}
-            sidebar={this.props.sidebar}
-            getCountryInfo = {this.props.getCountryInfo}
-            filterCountryByName = {this.props.filterCountryByName}
-            hoverOnCountry = {this.props.hoverOnCountry}
-            hoverOffCountry = {this.props.hoverOffCountry}
-            handleMove = {this.props.handleMove}
-            handleLeave = {this.props.handleLeave}
-            hovered = {this.props.hovered}
-            highlighted = {this.props.highlighted}
-        />
+        <Breakpoint medium down>
+          <SidebarView
+              hoverOnRegion = {this.props.hoverOnRegion}
+              hoverOffRegion = {this.props.hoverOffRegion}
+              changeView = {this.props.changeView}
+              handleSideBar = {this.props.handleSideBar}
+              viewSidebar={this.props.viewSidebar}
+              data={this.props.data}
+              totalRegions = {totalRegions}
+              uniqueRegions = {uniqueRegions}
+              getOccurrence = {getOccurrence}
+              sidebar={this.props.sidebar}
+              getCountryInfo = {this.props.getCountryInfo}
+              filterCountryByName = {this.props.filterCountryByName}
+              hoverOnCountry = {this.props.hoverOnCountry}
+              hoverOffCountry = {this.props.hoverOffCountry}
+              handleMove = {this.props.handleMove}
+              handleLeave = {this.props.handleLeave}
+              hovered = {this.props.hovered}
+              highlighted = {this.props.highlighted}
+          />
+        </Breakpoint>
       </div>
       </BreakpointProvider>
     )

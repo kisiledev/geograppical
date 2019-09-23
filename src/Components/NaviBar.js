@@ -25,8 +25,7 @@ class NaviBar extends React.Component {
     }
     render(){
         return(
-            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                <Navbar.Brand href="/">Geograppical</Navbar.Brand>
+            <Navbar collapseOnSelect expand="lg" bg="info" variant="dark">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Form 
                     className="ml-auto searchForm" 
@@ -41,16 +40,10 @@ class NaviBar extends React.Component {
                         onChange={(e) => this.props.handleInput(e)} 
                     />
                 </Form>
-                <Nav>
+                <Navbar.Collapse className="justify-content-end text-center" id="responsive-navbar-nav">
                     <Nav.Link href={ROUTES.ACCOUNT} className="nav-item-avatar">
                     <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar" />
                     </Nav.Link>
-                </Nav>
-                <Navbar.Collapse className="text-center" id="responsive-navbar-nav">
-                    <Nav className="mr-auto">
-                    <Nav.Link className="navbarlink" href="/" onClick={(e) => this.props.changeMode(e)} >Learn</Nav.Link>
-                    <Nav.Link className="navbarlink" href="/play" onClick={(e) => this.props.changeMode(e)} >Play</Nav.Link>
-                    </Nav>
                     {this.props.user ? null : 
                     <Nav>
                         <Nav.Link className="navbarlink" href={ROUTES.SIGN_UP}>Sign Up</Nav.Link>
