@@ -9,18 +9,17 @@ class Sidebar extends React.Component {
     state = {
     }
     componentDidMount = () => {
-        this.setState({loading: true}, console.log('setting dynamics'), this.setDynamicRegions(this.props.uniqueRegions))
+        this.setState({loading: true}, this.setDynamicRegions(this.props.uniqueRegions))
 }
 componentDidUpdate = (prevProps, prevState)  => {
     if(this.props.sidebar !==prevProps.sidebar){
         this.setState({loading: false})
     }
     if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
-        console.log('updated component')
       this.setDynamicRegions(this.props.uniqueRegions)
     }
     if(this.state.loading !== prevState.loading){
-        this.setState({loading: false}, console.log('loading is now false', this.state.loading))
+        this.setState({loading: false})
     }
 };
 removeNull(array){
@@ -53,7 +52,7 @@ setDynamicRegions = regions => {
             regionsState[region] = { visible: 5, start: 0, countries: this.getRegion(region), open: false};
         }
     });
-        this.setState({...regionsState, loading: false}, console.log('loading is false', this.state.loading))
+        this.setState({...regionsState, loading: false})
 };
 updateOpen = (region) => {
     const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}

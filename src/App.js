@@ -1,24 +1,24 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
 import {Route, Switch, withRouter} from 'react-router-dom';
-import ResultView from './Components/ResultView';
-import DetailView from './Components/DetailView';
-import NaviBar from './Components/NaviBar';
+import ResultView from './Components/ResultView.jsx';
+import DetailView from './Components/DetailView.jsx';
+import NaviBar from './Components/NaviBar.jsx';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import {Modal, Button} from 'react-bootstrap'
 import './App.css';
 import axios from 'axios';
 import { auth, googleProvider } from './Components/Firebase/firebase'
 import i18n from 'i18n-iso-countries';
-import Game from './Components/Game';
-import Account from './Components/Account';
-import SignIn from './Components/SignIn';
-import SignUp from './Components/SignUp';
-import PrivateRoute from './Components/PrivateRoutes';
-import PasswordReset from './Components/PasswordReset';
-import AccountEdit from './Components/AccountEdit'
-import SearchResults from './Components/SearchResults';
-import SideNaviBar from './Components/SideNaviBar'
+import Game from './Components/Game.jsx';
+import Account from './Components/Account.jsx';
+import SignIn from './Components/SignIn.jsx';
+import SignUp from './Components/SignUp.jsx';
+import PrivateRoute from './Components/PrivateRoutes.jsx';
+import PasswordReset from './Components/PasswordReset.jsx';
+import AccountEdit from './Components/AccountEdit.jsx'
+import SearchResults from './Components/SearchResults.jsx';
+import SideNaviBar from './Components/SideNaviBar.jsx'
 
 class App extends Component {
 
@@ -45,7 +45,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
     this.loadCodes();
     this.loadWorldData();
     auth.onAuthStateChanged(user => {
@@ -257,13 +256,10 @@ class App extends Component {
   }
   getCountryInfo = (name, capital) =>{
     let searchDB = Object.values(this.state.worldData);
-    console.log(searchDB);
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')
-    console.log(name);
     let match = searchDB.filter(country => 
       this.simplifyString(country.name) === this.simplifyString(name)
       || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase())
-      console.log(match);
       this.setState(({countryDetail: match[0]}))
       this.handleViews('detail');
   }

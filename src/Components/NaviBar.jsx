@@ -7,7 +7,6 @@ import * as ROUTES from '../Constants/Routes'
 
 class NaviBar extends React.Component {
     componentDidMount = ()=> {
-        console.log(this.props)
     }
     login = () => {
         auth.signInWithPopup(googleProvider)

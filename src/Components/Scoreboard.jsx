@@ -5,7 +5,7 @@ import Score from './Score';
 class Scoreboard extends React.Component {
     render(){
         return(
-            <div className="card flex-row row col-sm-4 mx-auto">
+            <div className="card flex-row row col-sm-4 mt-3 mx-auto">
                 <Timer 
                     time={this.props.time}
                 />

@@ -49,7 +49,6 @@ class Account extends React.Component {
                 data.push(info);
                 data["isOpen"] = true;
             })
-            console.log(data);
             this.setState({favorites: {isOpen: false, data}, loading: false})
         })
     }
@@ -64,8 +63,6 @@ class Account extends React.Component {
                 }
                 data.push(info);
                 data["isOpen"] = true;
-                console.log(data);
-                console.log(info);
             })
             this.setState({scores: {isOpen: false, data}, loading: false})
         })

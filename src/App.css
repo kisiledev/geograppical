@@ -670,4 +670,7 @@ ul .collapse, ul .show, ul .collapsing {
   .countriesnav {
     padding: 10px;
   }
+  .navbar-dark .navbar-nav .nav-link .sublinks  {
+    color: white
+  }
 }

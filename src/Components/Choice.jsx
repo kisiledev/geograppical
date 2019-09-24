@@ -13,6 +13,10 @@ class Choice extends React.Component {
     componentDidMount(){
         this.props.handlePoints(this.state.questions);
     }
+    componentDidUpdate =(prevProps) => {
+        if(this.props.saved && this.props.saved !==prevProps.saved)
+        this.props.saved && this.setState({questions: [], answers: [], guesses: null});
+    }
     shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));

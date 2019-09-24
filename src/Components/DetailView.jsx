@@ -4,6 +4,7 @@ import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
 import { withRouter, Link } from 'react-router-dom';
 import '../App.css';
+import { BreakpointProvider, Breakpoint } from 'react-socks';
 import { Alert } from 'react-bootstrap'
 import SidebarView from './SidebarView';
 import { db } from './Firebase/firebase'
@@ -30,17 +31,15 @@ componentDidMount = () => {
   }
 }
 componentDidUpdate = (prevProps, prevState) => {
-  this.props.user && this.props.countryDetail && this.checkFavorite(this.props.countryDetail.name)
-  if(this.props.loading !== prevProps.loading || this.props.loading !==prevState.loading){
+  this.props.user && this.props.countryDetail && !this.state.favorite && this.checkFavorite(this.props.countryDetail.name)
+  if(this.props.data !==prevProps.data){
+    console.log('reloading')
+    console.log(this.props.match.params.country)
     this.props.getCountryInfo(this.props.match.params.country)
     this.setState({loading: false})
   }
-  if(this.state.favorite !== prevState.favorite){
-    this.checkFavorite(this.props.countryDetail.name)
-  }
 }
   checkFavorite = (country) => {
-    console.log(country)
     const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country}`);
     docRef.get()
     .then(doc => {
@@ -50,7 +49,6 @@ componentDidUpdate = (prevProps, prevState) => {
         console.log(data)
       } else {
         this.setState({favorite: false})
-        console.log("No such document!");
       }
     }).catch(function(error) {
         console.log("Error getting document:", error);
@@ -60,7 +58,7 @@ componentDidUpdate = (prevProps, prevState) => {
     e.persist();
     this.setState({show: true})
     if(!this.props.user){
-      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login`, link: ROUTES.SIGN_IN}, linkContent: 'here'})
+      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login `, link: ROUTES.SIGN_IN, linkContent: 'here'}})
     } else {
       if(!this.state.favorite){
         db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
@@ -92,18 +90,20 @@ componentDidUpdate = (prevProps, prevState) => {
     let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
     uniqueRegions = uniqueRegions.filter(Boolean)
       return(
-        this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> :
+        this.state.loading ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
         (
+        <BreakpointProvider>
         <div className="row">
             <div className="col-md-12 col-md-9">
-                <div className="card mb-3">
+                <div className="card my-3">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
-                  <Alert.Link href={this.state.message.link}>
+                  {this.state.message && this.state.message.length>0 && this.state.message.link && <Alert.Link href={this.state.message.link && this.state.message.link}>
                     {this.state.message.linkContent}
                   </Alert.Link>
+                  }
                 </Alert>}
                 <div className="row justify-content-between">
-                  <div className="col-12 flex-nowrap d-flex justify-content-between align-items-center">
+                  <div className="col-md-12 col-lg-6 flex-md-nowrap d-flex justify-content-between align-items-center">
                     <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => this.props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>
                     <FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} />
                     <Flag
@@ -117,11 +117,12 @@ componentDidUpdate = (prevProps, prevState) => {
                     />
                   </div>
                   
-                  
-                </div>
-                  <div className="col-12">
+                  <div className="col-md-12 col-lg-6">
                     <AudioPlayer nation={this.props.countryDetail} />
                   </div>
+                  
+                  
+                </div>
                 <RecursiveProperty
                   property={this.props.countryDetail} 
                   expanded={Boolean}
@@ -131,6 +132,7 @@ componentDidUpdate = (prevProps, prevState) => {
                 />
                 </div>
             </div>
+            <Breakpoint medium down>
             <SidebarView 
                 data={this.props.data}
                 changeView = {this.props.changeView}
@@ -147,7 +149,9 @@ componentDidUpdate = (prevProps, prevState) => {
                 hoverOnCountry = {this.props.hoverOnCountry}
                 hoverOffCountry = {this.props.hoverOffCountry}
             />
+            </Breakpoint>
         </div>
+        </BreakpointProvider>
         )
       )
     }

@@ -1,37 +1,23 @@
 import React, {Component} from 'react';
-import Result from './Result';
+import Result from './Result.jsx';
 import { Breakpoint, BreakpointProvider } from 'react-socks';
 import { Alert} from 'react-bootstrap'
 import { db } from './Firebase/firebase'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
-import Maps from './Maps';
-import {withRouter} from 'react-router-dom'
+import SidebarView from './SidebarView.jsx';
+import Maps from './Maps.jsx';
 import * as ROUTES from '../Constants/Routes'
 
 
-class SearchResults extends Component {
+class ResultView extends Component {
   state = {
     loading: false,
     message: '',
     alert: false
   }
-  componentDidMount = () => {
-  }
-  componentDidUpdate = (prevProps, prevState) => {
-    console.log('loading view')
-    if(this.props.countries){
-        console.log(this.props.countries, prevProps.countries)
-    }
-    if(this.props.countries.length !==prevProps.countries.length){
-        this.setState({loading: false})
-    }
-    if(this.props.data !== prevProps.data){
-        this.props.handleRefresh(this.props.match.params.input)
-        this.setState({loading: false}, console.log('false'))
-    }
-  }
+
   makeFavorite = (e, country) => {
     e.persist();
     this.setState({show: true})
@@ -72,7 +58,7 @@ class SearchResults extends Component {
     return(
       <BreakpointProvider>
       <div className="row">
-        <main className="col-md-9 px-0">
+        <main className="col-md-9 col-lg-12 px-0">
           {this.props.countries[0] === undefined ? 
               null
            : null }
@@ -82,12 +68,6 @@ class SearchResults extends Component {
               {this.state.message.linkContent}
             </Alert.Link>
           </Alert>}
-          <div className="col-12 text-center">
-              { this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" /> :
-                (this.props.searchText === "" ? <h4 className="my-3">No search terms are entered</h4> : <h4 className="my-3">Search Results for {this.props.data ? this.props.searchText : this.props.match.params.input}</h4>)
-              }
-              
-          </div>
           <Breakpoint medium up>
           <Maps
             mapVisible = {this.props.mapVisible}
@@ -134,29 +114,31 @@ class SearchResults extends Component {
             />
           )}
         </main>
-        {/* <SidebarView
-            hoverOnRegion = {this.props.hoverOnRegion}
-            hoverOffRegion = {this.props.hoverOffRegion}
-            changeView = {this.props.changeView}
-            handleSideBar = {this.props.handleSideBar}
-            viewSidebar={this.props.viewSidebar}
-            data={this.props.data}
-            totalRegions = {totalRegions}
-            uniqueRegions = {uniqueRegions}
-            getOccurrence = {getOccurrence}
-            sidebar={this.props.sidebar}
-            getCountryInfo = {this.props.getCountryInfo}
-            filterCountryByName = {this.props.filterCountryByName}
-            hoverOnCountry = {this.props.hoverOnCountry}
-            hoverOffCountry = {this.props.hoverOffCountry}
-            handleMove = {this.props.handleMove}
-            handleLeave = {this.props.handleLeave}
-            hovered = {this.props.hovered}
-            highlighted = {this.props.highlighted}
-        /> */}
+        <Breakpoint medium down>
+          <SidebarView
+              hoverOnRegion = {this.props.hoverOnRegion}
+              hoverOffRegion = {this.props.hoverOffRegion}
+              changeView = {this.props.changeView}
+              handleSideBar = {this.props.handleSideBar}
+              viewSidebar={this.props.viewSidebar}
+              data={this.props.data}
+              totalRegions = {totalRegions}
+              uniqueRegions = {uniqueRegions}
+              getOccurrence = {getOccurrence}
+              sidebar={this.props.sidebar}
+              getCountryInfo = {this.props.getCountryInfo}
+              filterCountryByName = {this.props.filterCountryByName}
+              hoverOnCountry = {this.props.hoverOnCountry}
+              hoverOffCountry = {this.props.hoverOffCountry}
+              handleMove = {this.props.handleMove}
+              handleLeave = {this.props.handleLeave}
+              hovered = {this.props.hovered}
+              highlighted = {this.props.highlighted}
+          />
+        </Breakpoint>
       </div>
       </BreakpointProvider>
     )
   }
 }
-export default withRouter(SearchResults);
+export default ResultView;

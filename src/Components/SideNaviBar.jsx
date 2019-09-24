@@ -3,12 +3,11 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { auth, googleProvider } from './Firebase/firebase'
 import { Redirect, withRouter } from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
-import SideCountry from './SideCountry'
+import SideCountry from './SideCountry.jsx'
 
 
 class SideNaviBar extends React.Component {
     componentDidMount = ()=> {
-        console.log(this.props)
     }
     login = () => {
         auth.signInWithPopup(googleProvider)
@@ -38,7 +37,9 @@ class SideNaviBar extends React.Component {
                 <Nav>
                     <Nav.Link className="navbarlink" href="/" onClick={(e) => this.props.changeMode(e)} >Learn</Nav.Link>
                     <Nav.Link className="navbarlink" href="/play" onClick={(e) => this.props.changeMode(e)} >Play</Nav.Link>
-                    <Nav.Link href={ROUTES.ACCOUNT} className="navbarlink">Account</Nav.Link>
+                    <Nav.Link href={ROUTES.ACCOUNT} title="Account" className="navbarlink">Account</Nav.Link>
+                    {/* <Nav.Link className="sublinks">Favorites</Nav.Link>
+                    <Nav.Link className="sublinks">Scores</Nav.Link> */}
                 </Nav>
                 <SideCountry 
                 data={this.props.data}

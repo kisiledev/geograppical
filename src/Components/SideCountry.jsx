@@ -4,7 +4,7 @@ import { BreakpointProvider } from 'react-socks';
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import '../App.css';
-import Sidebar from './Sidebar';
+import Sidebar from './Sidebar.jsx';
 
 
 class SideCountry extends Component {
@@ -13,7 +13,6 @@ class SideCountry extends Component {
         loading: true,
     };
     componentDidMount(){
-            console.log('mounted component', this.props.sidebar)
             this.setState({loading: true}, this.setDynamicRegions(this.props.uniqueRegions))
     }
     componentDidUpdate(prevProps, prevState) {
@@ -21,7 +20,6 @@ class SideCountry extends Component {
             this.setState({loading: false})
         }
         if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
-            console.log('updated component')
           this.setDynamicRegions(this.props.uniqueRegions)
         }
         if(this.state.loading !== prevState.loading){
@@ -58,7 +56,7 @@ class SideCountry extends Component {
                 regionsState[region] = { visible: 5, start: 0, countries: this.getRegion(region), open: false};
             }
         });
-            this.setState({...regionsState, loading: false}, console.log('loading is false', this.state.loading))
+            this.setState({...regionsState, loading: false})
     };
     updateOpen = (region) => {
         const open = {start: 0, visible: 5, open: !this.state[region].open, countries: this.state[region].countries}

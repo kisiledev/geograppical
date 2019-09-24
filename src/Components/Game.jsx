@@ -94,7 +94,6 @@ class Game extends React.Component {
       }
 
       resetTimer = () => {
-          console.log('resetting time')
           clearInterval(this.intervalId);
           this.setState({
               time: {
@@ -107,15 +106,6 @@ class Game extends React.Component {
           })
       }
     
-      // decrement every second i.e 1000
-      componentDidMount =() => {
-          console.log(this.props.user)
-      }
-    //   componentDidUpdate = (prevProps, prevState) => {
-    //       if(prevState.time !== this.state.time){
-    //           this.resetTimer()
-    //       }
-    //   }
     
       // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
       componentWillUnmount = () => {
@@ -163,19 +153,16 @@ class Game extends React.Component {
         this.resetTimer();
     }
     handlePointsQuestions = (q) => {
-        console.log(q)
 
         let correctCount = q.filter(question => question.correct === true);
         let incorrectCount = q.filter(question => question.correct === false);
-        console.log(correctCount);
-        console.log(incorrectCount);
         let c = correctCount.length;
         let i = incorrectCount.length;
         this.setState({
             correct: c, 
             incorrect: i,
             questionsSet: q,
-            questions: q.length}, () => console.log(this.state.correct, this.state.incorrect));
+            questions: q.length});
     }
     updateScore = (int) => {
         this.setState(prevState =>({score: prevState.score + int}))
@@ -191,7 +178,6 @@ class Game extends React.Component {
             })
     }
     resetMode = () => {
-        console.log('resetting mode')
         this.resetTimer();  
         this.setState({
             questionsRemaining: null,
@@ -210,16 +196,13 @@ class Game extends React.Component {
                 clock: 0,
                 elapsed: ''
             }
-        }, console.log('resetting state'))
+        })
         clearInterval(this.intervalId);
     }
     timeMode = (e) => {
-        console.log(e.target.value)
-        console.log(e.target.checked)
         this.state.time && this.setState({...this.state, time: {...this.state.time, timeMode: e.target.value}})
     }
     handleTimeCheck = (e) => {
-        console.log(this.state.time)
         if(this.state.time === null) {
             let time = {
                 currentCount: 60,
@@ -234,10 +217,8 @@ class Game extends React.Component {
             this.setState ({time})
         }
         this.setState({timeChecked: e.target.checked})
-        console.log(e.target.checked)
     }
     handleScoreCheck = (e) => {
-        console.log(this.state.score)
         if(this.state.score === null) {
             this.setState({score: 0,
                 correct: 0,
@@ -246,7 +227,6 @@ class Game extends React.Component {
             this.setState ({score: null})
         }
         this.setState({scoreChecked: e.target.checked})
-        console.log(e.target.checked)
     }
     saveScore = () => {
         if(!this.props.user){
@@ -262,7 +242,6 @@ class Game extends React.Component {
             this.props.handleOpen();
         } else {
             this.setState({loading: true});
-            console.log(this.state)
             if(this.state.time && this.state.score){
                 db.collection('users').doc(this.props.user.uid).collection('scores').add({
                     userId: this.props.user.uid && this.props.user.uid,
@@ -328,7 +307,8 @@ class Game extends React.Component {
                 endGame = {this.endGame}
                 updateScore = {this.updateScore}
                 handlePoints = {this.handlePointsQuestions}
-                handleOpen = {this.handleOpen}/>
+                handleOpen = {this.handleOpen}
+                saved={this.state.saved}/>
             
             </div>
         } else if (this.state.gameMode==="find"){
@@ -352,7 +332,8 @@ class Game extends React.Component {
                     endGame = {this.endGame}
                     updateScore = {this.updateScore}
                     handlePoints = {this.handlePointsQuestions}
-                    handleOpen = {this.handleOpen}/>
+                    handleOpen = {this.handleOpen}
+                    saved={this.state.saved}/>
             </div>
         } else if (this.state.gameMode==="highlight"){
             gameMode = <div>
@@ -374,7 +355,8 @@ class Game extends React.Component {
                     endGame = {this.endGame}
                     updateScore = {this.updateScore}
                     handlePoints = {this.handlePointsQuestions}
-                    handleOpen = {this.handleOpen}/>
+                    handleOpen = {this.handleOpen}
+                    saved={this.state.saved}/>
             </div>
         } else {
             gameMode = <div></div>
