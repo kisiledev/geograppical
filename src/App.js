@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 import React, { Component } from 'react';
-import {Route, Switch, withRouter} from 'react-router-dom';
+import {Route, Switch, withRouter } from 'react-router-dom';
 import ResultView from './Components/ResultView.jsx';
 import DetailView from './Components/DetailView.jsx';
 import NaviBar from './Components/NaviBar.jsx';
@@ -23,6 +23,8 @@ import SideNaviBar from './Components/SideNaviBar.jsx'
 class App extends Component {
 
   state = {
+    favorites: false,
+    scores: false,
     error: null,
     authenticated: false,
     loading: true,
@@ -48,6 +50,7 @@ class App extends Component {
     this.loadCodes();
     this.loadWorldData();
     auth.onAuthStateChanged(user => {
+      console.log(user)
       if(user){
         this.setState({
           user: user, 
@@ -82,10 +85,21 @@ class App extends Component {
   //     })
   //   }
   // }
+  removeIsoNull(array){
+    return array
+      .filter(item => 
+        item.government.capital !== undefined && 
+        item.government.country_name !==undefined && 
+        item.government.country_name.isoCode !==undefined &&
+        item.name)
+      // .map(item => console.log(item) && item.government.country_name.isoCode && Array.isArray(item) ? this.removeIsoNull(item) : item);
+  }
   removeNull(array){
     if(array !==undefined)
     return array
-      .filter(item => item.government.capital !== undefined && item.government.country_name !==undefined && item.name)
+      .filter(item => item.government.capital !== undefined && 
+        item.government.country_name !== undefined && 
+        item.name)
       .map(item => Array.isArray(item) ? this.removeNull(item) : item);
   }
   authListener = () => {
@@ -161,7 +175,8 @@ class App extends Component {
             }
           }
         }
-        this.setState({ worldData: lookup.list || [], loading: false})
+        let x = this.removeIsoNull(lookup.list);
+        this.setState({ worldData: x || [], loading: false})
       });
     } catch (error){
       this.setState({error})
@@ -201,11 +216,13 @@ class App extends Component {
     nodes = [...nodes]
     nodes = nodes.filter(e => this.simplifyString(country) === this.simplifyString(e.dataset.longname) || this.simplifyString(country) === this.simplifyString(e.dataset.shortname))
     console.log(nodes);
+    console.log(country)
     nodes.forEach( node => {
       node.style.fill =  "#ee0a43";
       node.style.stroke =  "#111";
-      node.style.strokeWidth =  1;
+      node.style.strokeWidth =  .1;
       node.style.outline =  "none"
+      node.style.willChange = "all"
     })
 
   }
@@ -233,8 +250,9 @@ class App extends Component {
     nodes.forEach( node => {
       node.style.fill =  "#024e1b";
       node.style.stroke =  "#111";
-      node.style.strokeWidth =  1;
+      node.style.strokeWidth =  .1;
       node.style.outline =  "none"
+      node.style.willChange = "all"
     })
     // console.log(this.state[regionName])
     // console.log(this.state[regionName].open)
@@ -254,12 +272,16 @@ class App extends Component {
     })
     this.setState({SVG: []})
   }
-  getCountryInfo = (name, capital) =>{
+  getCountryInfo = (name, code) =>{
     let searchDB = Object.values(this.state.worldData);
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')
     let match = searchDB.filter(country => 
-      this.simplifyString(country.name) === this.simplifyString(name)
-      || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase())
+      (this.simplifyString(country.name) === this.simplifyString(name)
+      || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase())) 
+      console.log(match[0]);
+      if(match === [] || !match){
+        this.setState({countryDetail: "error"})
+      }
       this.setState(({countryDetail: match[0]}))
       this.handleViews('detail');
   }
@@ -276,10 +298,7 @@ class App extends Component {
   }
     
   filterCountryByName = (string) =>{
-    console.log(string)
-    console.log()
     let searchDB = Object.values(this.state.worldData);
-    console.log(searchDB)
     let match = searchDB.filter(country => country.name.toLowerCase() === string.toLowerCase()
       || country.name.toLowerCase().includes(string.toLowerCase())
       || country.government.country_name.conventional_long_form.toLowerCase() === string.toLowerCase()
@@ -287,12 +306,11 @@ class App extends Component {
     );
     // console.log(match)
     this.setState({filterNations: match})
-    if(string.length === 0 || string === " ")
-      { console.log(string);
+    if(string.length === 0 || string === " "){
         return match = []
+      } else{
+        return match;
       }
-      console.log(match)
-    return match;
   }
 
   filterByValue(array, string) {
@@ -342,6 +360,13 @@ class App extends Component {
     console.log('handling submit')
     this.props.history.push(e.target.value)
   };
+  handleData = (type) => {
+    if(this.props.location.pathname !== "/account"){
+      console.log('not on account page')
+      this.props.history.push('/account')
+    }
+    this.setState({[type]: !this.state[type]})
+  }
   handleInput = (e) => {
     e.persist();
     // console.log('changing')
@@ -350,23 +375,23 @@ class App extends Component {
       this.setState({searchText: value}, () => this.filterCountryByName(value));
       let nodes = [...(document.getElementsByClassName("country"))];  
       nodes.forEach( node => {
-        node.style.fill =  "#ECEFF1";
+        node.style.fill =  "#60c080 ";
         node.style.stroke =  "#111";
-        node.style.strokeWidth =  .75;
+        node.style.strokeWidth =  .1;
         node.style.outline =  "none";
-        node.style.transition = "all 250ms"
+        node.style.willChange = "all"
       })
-      console.log(e);
-      console.log(e.target)
-      console.log(value)
-      nodes = nodes.filter(e => this.filterCountryByName(value).map((country, i) => country.name).includes(e.dataset.tip));
-      // console.log(nodes);
+      console.log(this.filterCountryByName(value))
+      let filtered = this.filterCountryByName(value).map((country, i) => country.name)
+      console.log(nodes.map(e => e.dataset.shortname))
+      nodes = nodes.filter(e => filtered.includes(e.dataset.shortname));
+      console.log(nodes);
       nodes.forEach( node => {
         node.style.fill =  "#024e1b";
         node.style.stroke =  "#111";
-        node.style.strokeWidth =  1;
+        node.style.strokeWidth =  .1;
         node.style.outline =  "none";
-        node.style.transition = "all 250ms"
+        node.style.willChange = "all"
       })
 
     } else {
@@ -456,6 +481,9 @@ class App extends Component {
             handleLeave = {this.handleLeave}
             hovered = {this.state.hovered}
             highlighted = {this.state.highlighted}
+            favorites = {this.state.favorites}
+            scores = {this.state.scores}
+            handleData = {this.handleData}
           />
         </Breakpoint>
         <div className="main container-fluid">
@@ -531,6 +559,10 @@ class App extends Component {
             simplifyString = {this.simplifyString}
             component={Account}
             loading={this.state.loading} 
+            favorites = {this.state.favorites}
+            scores = {this.state.scores}
+            handleData = {this.handleData}
+
             authenticated={this.state.authenticated} />
           <PrivateRoute exact path={`${process.env.PUBLIC_URL}/account/edit`} 
             user={this.state.user} 

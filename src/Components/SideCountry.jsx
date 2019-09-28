@@ -31,6 +31,7 @@ class SideCountry extends Component {
           .filter(item => 
             item.government.capital !== undefined && 
             item.government.country_name !==undefined && 
+            item.government.country_name.isoCode !==undefined &&
             item.name)
           .map(item => Array.isArray(item) ? this.removeNull(item) : item);
       }

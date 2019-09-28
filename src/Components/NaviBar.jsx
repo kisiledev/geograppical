@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Form, FormControl } from 'react-bootstrap';
 import { auth, googleProvider } from './Firebase/firebase'
-import { Redirect, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
 
 
@@ -20,7 +20,7 @@ class NaviBar extends React.Component {
     }
     logout = () => {
         auth.signOut()
-        return <Redirect to="/" />    
+        this.props.history.push('/')
     }
     render(){
         return(

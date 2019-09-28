@@ -30,12 +30,9 @@ class Result extends Component {
       docRef.get()
       .then(doc => {
         if(doc.exists){
-          const data = doc.data()
           this.setState({favorite: true})
-          console.log(data)
         } else {
           this.setState({favorite: false})
-          console.log("No such document!");
         }
       }).catch(function(error) {
           console.log("Error getting document:", error);

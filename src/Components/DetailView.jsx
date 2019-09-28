@@ -83,6 +83,7 @@ componentDidUpdate = (prevProps, prevState) => {
     }
 }
     render() {
+    const {countryDetail } = this.props
     const totalRegions = this.props.data.map(a => a.geography.map_references)
     function getOccurrence(array, value) {
       return array.filter((v) => (v === value)).length;
@@ -93,40 +94,47 @@ componentDidUpdate = (prevProps, prevState) => {
         this.state.loading ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
         (
         <BreakpointProvider>
+        {countryDetail === "error" ? (
+          <div className="h3">There has been an error</div>
+        ) : (
         <div className="row">
             <div className="col-md-12 col-md-9">
                 <div className="card my-3">
                 {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
-                  {this.state.message && this.state.message.length>0 && this.state.message.link && <Alert.Link href={this.state.message.link && this.state.message.link}>
+                  {this.state.message && this.state.message.length>0 && this.state.message.link && 
+                  <Alert.Link href={this.state.message.link && this.state.message.link}>
                     {this.state.message.linkContent}
                   </Alert.Link>
                   }
                 </Alert>}
                 <div className="row justify-content-between">
-                  <div className="col-md-12 col-lg-6 flex-md-nowrap d-flex justify-content-between align-items-center">
+                  <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
                     <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => this.props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>
-                    <FontAwesomeIcon onClick={(e) => this.makeFavorite(e, this.props.countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} />
+                    <Breakpoint medium up>
+                      <div className="col-lg-12">
+                        <h3>{countryDetail.name} - <small>{countryDetail.government.capital.name.split(';')[0]}</small></h3>
+                        <h5>Pop: {countryDetail.people.population.total} - Ranked ({countryDetail.people.population.global_rank})</h5>
+                      </div>
+                    </Breakpoint>
+                    <FontAwesomeIcon onClick={(e) => this.makeFavorite(e, countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} />
                     <Flag
-                      className="detailFlag col-3 align-self-end text-right img-thumbnail"
-                      name={(this.props.countryDetail.government.country_name.isoCode ? this.props.countryDetail.government.country_name.isoCode : "_unknown") ? this.props.countryDetail.government.country_name.isoCode : `_${this.props.countryDetail.name}`}
+                      className="detailFlag order-lg-12 align-self-end text-right img-thumbnail"
+                      name={(countryDetail.government.country_name.isoCode ? countryDetail.government.country_name.isoCode : "_unknown") ? countryDetail.government.country_name.isoCode : `_${countryDetail.name}`}
                       format="svg"
                       pngSize={64}
                       shiny={false}
-                      alt={`${this.props.countryDetail.name}'s Flag`}
+                      alt={`${countryDetail.name}'s Flag`}
                       basePath="/img/flags"
                     />
-                  </div>
-                  
-                  <div className="col-md-12 col-lg-6">
-                    <AudioPlayer nation={this.props.countryDetail} />
+                    <AudioPlayer nation={countryDetail} />
                   </div>
                   
                   
                 </div>
                 <RecursiveProperty
-                  property={this.props.countryDetail} 
+                  property={countryDetail} 
                   expanded={Boolean}
-                  propertyName={this.props.countryDetail.name} 
+                  propertyName={countryDetail.name} 
                   excludeBottomBorder={false} 
                   rootProperty={true}
                 />
@@ -151,6 +159,7 @@ componentDidUpdate = (prevProps, prevState) => {
             />
             </Breakpoint>
         </div>
+        )}
         </BreakpointProvider>
         )
       )

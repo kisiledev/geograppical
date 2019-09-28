@@ -111,18 +111,18 @@ class Account extends React.Component {
 
                 <div className="row">
                     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-                        <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("favorites")}>
+                        <h5 className="list-group-item d-flex align-items-center" onClick={() => this.props.handleData("favorites")}>
                             Favorites
                             <Badge variant="primary">
                                 {this.state.loading ? 
                                 <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.data.length>0 && this.state.favorites.data.length}
                             </Badge>
-                                {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.state.favorites.isOpen ? faAngleDown : faAngleUp} />}
+                                {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.props.favorites ? faAngleDown : faAngleUp} />}
                         </h5>
                         {this.state.loading ? null : 
                             (
                             this.state.favorites &&
-                            <Collapse in={this.state.favorites.isOpen}>
+                            <Collapse in={this.props.favorites}>
                             <ul className="list-group list-group-flush">
                                 {this.state.favorites && this.state.favorites.data.length > 0 ? 
                                     this.state.favorites.data.map(favorite =>
@@ -149,18 +149,18 @@ class Account extends React.Component {
                         }
                     </div>
                     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-                    <h5 className="list-group-item d-flex align-items-center" onClick={() => this.toggleValue("scores")}>
+                    <h5 className="list-group-item d-flex align-items-center" onClick={() => this.props.handleData("scores")}>
                         Scores 
                         <Badge variant="primary">
                             {this.state.loading ? 
                             <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.data.length>0 && this.state.scores.data.length}
                         </Badge>
-                            {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.state.scores.isOpen ? faAngleDown : faAngleUp} />}
+                            {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.props.scores ? faAngleDown : faAngleUp} />}
                         
                         </h5>
                         {this.state.loading ? null : 
                             (this.state.scores && 
-                            <Collapse in={this.state.scores.isOpen}>
+                            <Collapse in={this.props.scores}>
                             <ul className="list-group list-group-flush">
                                 {this.state.scores && this.state.scores.data.length>0 ?this.state.scores.data.map(score => {
                                     let milliseconds = score.data.dateCreated.seconds * 1000;

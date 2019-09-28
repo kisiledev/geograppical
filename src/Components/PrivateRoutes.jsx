@@ -9,7 +9,8 @@ const PrivateRoute = ({
     loading,
     ...rest
 }) => {
-    if(loading){
+    if(loading || authenticated === undefined){
+        console.log('LOOOADING')
         return <div className="mt-5 mx-auto text-center">
             <FontAwesomeIcon icon={faSpinner} spin size="2x"/>
         </div>

@@ -74,7 +74,7 @@ class Maps extends Component {
     return array
       .filter(item => 
         item.government.capital !== undefined && 
-        item.government.country_name !==undefined && 
+        item.government.country_name !==undefined &&  item.government.country_name.isoCode !==undefined &&
         item.name)
       .map(item => Array.isArray(item) ? this.removeNull(item) : item);
   }
@@ -133,7 +133,7 @@ class Maps extends Component {
   }
   handleClick = (e) => {
           // access to e.target here
-    this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''))
+    this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''),e.properties.ISO_A3 )
     }
 
   render(){
@@ -186,6 +186,7 @@ class Maps extends Component {
                   data-shortname={geo.properties.NAME}
                   data-continent ={geo.properties.CONTINENT}
                   data-subregion = {geo.properties.SUBREGION}
+                  data-iso = {geo.properties.ISO_A3}
                   onClick={((e) => this.handleClick(e))}
                   key={geo.id + i}
                   geography={geo}
