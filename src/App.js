@@ -86,6 +86,7 @@ class App extends Component {
   //   }
   // }
   removeIsoNull(array){
+    console.log(array.map(c => c.government.country_name))
     return array
       .filter(item => 
         item.government.capital !== undefined && 
@@ -135,23 +136,21 @@ class App extends Component {
           if(newData[index].geography.map_references === "Middle East")
           newData[index].geography.map_references = "Southwest Asia"
         });
-        i18n.registerLocale(require("i18n-iso-countries/langs/en.json"));
-        let codes = i18n.getNames('en');
-        let newCodes = {};
-        const keys = Object.keys(codes);
-        keys.forEach(key => {
-          let val = codes[key];
-          newCodes[val]=key;
-        })
         let iso; 
         if(this.state.isoCodes) {
           iso = this.state.isoCodes;
         }
+        console.log(iso);
+        console.log(iso.filter(country => country.name && country.name.includes("Congo")));
+    
 
         let lookup = {};
         lookup.list = newData;
         for (let i = 0, len = lookup.list.length; i < len; i++){
           lookup[lookup.list[i].name] = lookup.list[i]
+          if(lookup[lookup.list[i].name].name.includes("Congo")){
+            console.log(lookup[lookup.list[i].name])
+          }
         }
         let otherLookup = {};
         if(otherLookup === undefined){
@@ -160,21 +159,25 @@ class App extends Component {
         otherLookup.list = iso;
         if(otherLookup.list && otherLookup.list.length>0){
           for (let i = 0, len = otherLookup.list.length; i < len; i++){
-            // console.log(otherLookup.list[i])
-            otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
+            if([otherLookup.list[i]]){
+              otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
+              if(otherLookup.list[i].name && otherLookup.list[i].name.includes("Congo")){
+                console.log(otherLookup.list[i].name)
+              }
+            }
           }
           let i = 0;
           let len = otherLookup.list.length
           for (i; i < len; i++){
-            // console.log(otherLookup.list[i]);
             if(lookup[otherLookup.list[i].name]){
-              // console.log(lookup[otherLookup.list[i].name])
+              console.log(lookup[otherLookup.list[i].name])
               lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
             } else if (lookup[otherLookup.list[i].shortName]){
               lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
             }
           }
         }
+        console.log(lookup.list)
         let x = this.removeIsoNull(lookup.list);
         this.setState({ worldData: x || [], loading: false})
       });
@@ -234,6 +237,11 @@ class App extends Component {
     console.log(nodes);
     nodes.forEach( node => {
       node.removeAttribute('style');
+      node.style.fill =  "#024e1b";
+      node.style.stroke =  "#111";
+      node.style.strokeWidth =  .1;
+      node.style.outline =  "none"
+      node.style.willChange = "all"
     })
 
   }
@@ -241,12 +249,16 @@ class App extends Component {
     let svgs = [];
     e.stopPropagation();
     const countries = Object.values(region)[2];
+    console.log(countries)
     if(typeof countries === "object"){
       svgs = countries.map((country, i) => this.simplifyString(country.name))
     }
     let nodes = (document.getElementsByClassName("country"));
     nodes = [...nodes]
+    console.log(nodes)
+    console.log(svgs)
     nodes = nodes.filter(e => svgs.includes(this.simplifyString(e.dataset.longname)) || svgs.includes(this.simplifyString(e.dataset.shortname)));
+    console.log(nodes)
     nodes.forEach( node => {
       node.style.fill =  "#024e1b";
       node.style.stroke =  "#111";

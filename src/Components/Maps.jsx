@@ -109,8 +109,6 @@ class Maps extends Component {
   };
 
   handleWheel(event) {
-    console.log("scroll detected");
-    console.log(event.deltaY);
     if(this.state.zoom < 1){
       if (event.deltaY < 0) {
         this.setState({
