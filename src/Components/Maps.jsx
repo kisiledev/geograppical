@@ -176,7 +176,7 @@ class Maps extends Component {
             <Geographies  geography={data}>
               {(geos, proj) =>
                 geos.map((geo, i) =>
-              <Link key={i} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME.toLowerCase()}`}>
+              <Link key={i} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME_LONG.toLowerCase()}`}>
                 <Geography
                   onWheel={(e) => this.handleWheel(e)}
                   data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}

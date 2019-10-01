@@ -140,45 +140,46 @@ class App extends Component {
         if(this.state.isoCodes) {
           iso = this.state.isoCodes;
         }
-        console.log(iso);
-        console.log(iso.filter(country => country.name && country.name.includes("Congo")));
+
     
 
-        let lookup = {};
-        lookup.list = newData;
-        for (let i = 0, len = lookup.list.length; i < len; i++){
-          lookup[lookup.list[i].name] = lookup.list[i]
-          if(lookup[lookup.list[i].name].name.includes("Congo")){
-            console.log(lookup[lookup.list[i].name])
+        let countries = {};
+        countries.list = newData;
+        for (let i = 0, len = countries.list.length; i < len; i++){
+          console.log(countries.list[i])
+          countries[countries.list[i].name] = countries.list[i]
+          console.log(countries[countries.list[i].name])
+          if(countries[countries.list[i].name].name.includes("Congo")){
+            console.log(countries[countries.list[i].name])
           }
         }
-        let otherLookup = {};
-        if(otherLookup === undefined){
+        let codes = {};
+        if(codes === undefined){
           return console.log('unable to load')
         }
-        otherLookup.list = iso;
-        if(otherLookup.list && otherLookup.list.length>0){
-          for (let i = 0, len = otherLookup.list.length; i < len; i++){
-            if([otherLookup.list[i]]){
-              otherLookup[otherLookup.list[i].name] = otherLookup.list[i]
-              if(otherLookup.list[i].name && otherLookup.list[i].name.includes("Congo")){
-                console.log(otherLookup.list[i].name)
+        codes.list = iso;
+        if(codes.list && codes.list.length>0){
+          for (let i = 0, len = codes.list.length; i < len; i++){
+            if([codes.list[i]]){
+              codes[codes.list[i].name] = codes.list[i]
+              if(codes.list[i].name && codes.list[i].name.includes("Congo")){
+                console.log(codes.list[i].name)
               }
             }
           }
           let i = 0;
-          let len = otherLookup.list.length
+          let len = codes.list.length
           for (i; i < len; i++){
-            if(lookup[otherLookup.list[i].name]){
-              console.log(lookup[otherLookup.list[i].name])
-              lookup[otherLookup.list[i].name].government.country_name.isoCode = otherLookup.list[i].isoCode
-            } else if (lookup[otherLookup.list[i].shortName]){
-              lookup[otherLookup.list[i].shortName].government.country_name.isoCode = otherLookup.list[i].isoCode
+            console.log(countries[codes.list[i].name])
+            if(countries[codes.list[i].name]){
+              countries[codes.list[i].name].government.country_name.isoCode = codes.list[i].isoCode
+            } else if (countries[codes.list[i].shortName]){
+              countries[codes.list[i].shortName].government.country_name.isoCode = codes.list[i].isoCode
             }
           }
         }
-        console.log(lookup.list)
-        let x = this.removeIsoNull(lookup.list);
+        console.log(countries.list)
+        let x = this.removeIsoNull(countries.list);
         this.setState({ worldData: x || [], loading: false})
       });
     } catch (error){
@@ -186,7 +187,7 @@ class App extends Component {
     };
   }
   simplifyString(string){
-    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toLowerCase()
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '').toUpperCase()
   }
 
   handleClose = () => {
@@ -289,7 +290,7 @@ class App extends Component {
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')
     let match = searchDB.filter(country => 
       (this.simplifyString(country.name) === this.simplifyString(name)
-      || country.government.country_name.conventional_long_form.toLowerCase() === name.toLowerCase())) 
+      || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase())) 
       console.log(match[0]);
       if(match === [] || !match){
         this.setState({countryDetail: "error"})
@@ -311,10 +312,10 @@ class App extends Component {
     
   filterCountryByName = (string) =>{
     let searchDB = Object.values(this.state.worldData);
-    let match = searchDB.filter(country => country.name.toLowerCase() === string.toLowerCase()
-      || country.name.toLowerCase().includes(string.toLowerCase())
-      || country.government.country_name.conventional_long_form.toLowerCase() === string.toLowerCase()
-      || country.government.country_name.conventional_long_form.toLowerCase().includes(string.toLowerCase())
+    let match = searchDB.filter(country => country.name.toUpperCase() === string.toUpperCase()
+      || country.name.toUpperCase().includes(string.toUpperCase())
+      || country.government.country_name.conventional_long_form.toUpperCase() === string.toUpperCase()
+      || country.government.country_name.conventional_long_form.toUpperCase().includes(string.toUpperCase())
     );
     // console.log(match)
     this.setState({filterNations: match})
@@ -327,7 +328,7 @@ class App extends Component {
 
   filterByValue(array, string) {
     return array.filter(o =>
-        Object.keys(o).some(value => o[value].toString().toLowerCase().includes(string.toLowerCase())));
+        Object.keys(o).some(value => o[value].toString().toUpperCase().includes(string.toUpperCase())));
   };
   handleViews = (view) => {
     console.log(view);

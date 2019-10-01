@@ -362,7 +362,7 @@ class Game extends React.Component {
             gameMode = <div></div>
         }
         let timeButtons = this.state.time && 
-            <>
+            <div className="col-12 d-flex justify-content-center flex-wrap">
                 <label>
                 <Radio 
                     value="et"
@@ -379,7 +379,7 @@ class Game extends React.Component {
                 />
                 <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
                 </label>
-            </>
+            </div>
 
         let ModalText = "Congrats! You've reached the end of the game. You answered " + this.state.correct + " questions correctly and " + this.state.incorrect + " incorrectly.\n Thanks for playing";
         let timeExpired = "Sorry, time expired! Try again"

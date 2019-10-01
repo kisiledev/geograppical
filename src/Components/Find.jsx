@@ -284,6 +284,9 @@ class Find extends Component {
         console.log(e)
         console.log(country)
         console.log(this.state.currentCountry)
+        if(!this.props.isStarted){
+          return
+        }
         if((country === this.state.currentCountry.name || country === this.state.currentCountry.name) || this.state.guesses === 4){
             //give score of 2
             this.props.updateScore(3-this.state.guesses);
