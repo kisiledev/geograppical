@@ -86,7 +86,6 @@ class App extends Component {
   //   }
   // }
   removeIsoNull(array){
-    console.log(array.map(c => c.government.country_name))
     return array
       .filter(item => 
         item.government.capital !== undefined && 
@@ -146,12 +145,7 @@ class App extends Component {
         let countries = {};
         countries.list = newData;
         for (let i = 0, len = countries.list.length; i < len; i++){
-          console.log(countries.list[i])
           countries[countries.list[i].name] = countries.list[i]
-          console.log(countries[countries.list[i].name])
-          if(countries[countries.list[i].name].name.includes("Congo")){
-            console.log(countries[countries.list[i].name])
-          }
         }
         let codes = {};
         if(codes === undefined){
@@ -162,15 +156,11 @@ class App extends Component {
           for (let i = 0, len = codes.list.length; i < len; i++){
             if([codes.list[i]]){
               codes[codes.list[i].name] = codes.list[i]
-              if(codes.list[i].name && codes.list[i].name.includes("Congo")){
-                console.log(codes.list[i].name)
-              }
             }
           }
           let i = 0;
           let len = codes.list.length
           for (i; i < len; i++){
-            console.log(countries[codes.list[i].name])
             if(countries[codes.list[i].name]){
               countries[codes.list[i].name].government.country_name.isoCode = codes.list[i].isoCode
             } else if (countries[codes.list[i].shortName]){
@@ -178,7 +168,6 @@ class App extends Component {
             }
           }
         }
-        console.log(countries.list)
         let x = this.removeIsoNull(countries.list);
         this.setState({ worldData: x || [], loading: false})
       });

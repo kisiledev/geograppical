@@ -237,6 +237,21 @@ class Find extends Component {
         questions.push(question);
         this.setState({questions});
     }
+    endGame = () => {
+        
+      this.setState({
+          answers: null,
+          questions: null,
+          guesses: null,
+          currentCountry: null,
+          score: 0,
+          correct: 0,
+          incorrect: 0
+
+      });
+      clearInterval(this.intervalId)
+      this.resetTimer();
+  }
     takeTurn = () => {
             !this.props.isStarted && this.props.startGame();
             let country = this.getRandomCountry();
@@ -251,6 +266,7 @@ class Find extends Component {
                 this.props.handleOpen();
                 // alert("Congrats! You've reached the end of the game. You answered " + this.props.correct + " questions correctly and " + this.props.incorrect + " incorrectly.\n Thanks for playing");
                 console.log('ending game')
+                this.props.gameOver && this.endGame();
                 
             }
     }

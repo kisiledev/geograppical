@@ -107,6 +107,9 @@ class Highlight extends Component {
     if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
       this.setDynamicRegions(this.state.regions)
     }
+    if(this.props.gameOver && this.props.gameOver !== prevProps.gameOver){
+      this.endGame();
+    }
   };
 
   getMapNations = () => {
@@ -229,11 +232,9 @@ class Highlight extends Component {
     handleWheel = event => {
       const oldZoom = this.state.zoom;
       const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
-      console.log(zoomDirectionFactor)
   
       // Set new zoom level
       const newZoom = oldZoom + zoomDirectionFactor;
-      console.log(newZoom)
       // Ignore nonsens
       if (newZoom > 10 || newZoom < 1) {
         return;
@@ -330,16 +331,34 @@ class Highlight extends Component {
             nodes.forEach( node => {
               node.removeAttribute("style")
             })
-                
             }
     }
+
+    endGame = () => {
+        
+      this.setState({
+          answers: null,
+          questions: null,
+          guesses: null,
+          currentCountry: null,
+          score: 0,
+          correct: 0,
+          incorrect: 0
+
+      });
+    }
+
     getCountryInfo = (country, e) => {
         console.log(country)
         console.log(this.state.currentCountry)
       let nodes = (document.getElementsByClassName("gameCountry"));
       nodes = [...nodes]
+      console.log(nodes.map(node => node.dataset.longname))
       console.log('getting country data in Find')
-      nodes = nodes.filter(node => this.handleText(country.name) === this.handleText(node.dataset.longname) || this.handleText(country.name) === this.handleText(node.dataset.shortname))
+      nodes = nodes.filter(
+        node => this.handleText(country.name) === this.handleText(node.dataset.longname) 
+        || this.handleText(country.name) === this.handleText(node.dataset.shortname))
+        console.log(nodes)
       this.highVisibility = (nodes) => {
           let highViz = country.name;
           console.log(highViz + " - " + this.state.currentCountry.name)
@@ -365,6 +384,9 @@ class Highlight extends Component {
 
     checkAnswer = (country) => {
         //if answer is correct answer (all correct answers have ID of 0)
+        if(!this.props.isStarted){
+          return
+        }
         let correct, incorrect;
         let questions = this.state.questions;
         let question = questions.find(question => question.country === this.state.currentCountry);

@@ -23,6 +23,7 @@ class Game extends React.Component {
         incorrect: 0,
         gameMode: null,
         isStarted: false,
+        gameOver: false,
         scoreChecked: true,
         timeChecked: true,
         time: {
@@ -142,6 +143,7 @@ class Game extends React.Component {
         
         this.setState({
             isStarted: false,
+            gameOver: true,
             questionsRemaining: null,
             questions: null,
             score: 0,
@@ -297,6 +299,7 @@ class Game extends React.Component {
             {back}
             <Choice 
                 isStarted={this.state.isStarted}
+                gameOver = {this.state.gameOver}
                 correct = {this.state.correct}
                 incorrect = {this.state.incorrect}
                 flagCodes = {this.props.flagCodes}
@@ -318,6 +321,7 @@ class Game extends React.Component {
                 <Find
                     simplifyString={this.props.simplifyString}
                     isStarted={this.state.isStarted}
+                    gameOver = {this.state.gameOver}
                     correct = {this.state.correct}
                     incorrect = {this.state.incorrect}
                     mapVisible = {this.props.mapVisible}
@@ -341,6 +345,7 @@ class Game extends React.Component {
                 <Highlight
                     simplifyString={this.props.simplifyString}
                     isStarted={this.state.isStarted}
+                    gameOver = {this.state.gameOver}
                     correct = {this.state.correct}
                     incorrect = {this.state.incorrect}
                     mapVisible = {this.props.mapVisible}

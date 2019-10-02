@@ -48,8 +48,8 @@ const SideNaviBar = props => {
                 <Navbar.Brand href="/">Geograppical</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Nav>
-                    <Nav.Link className="navbarlink" href="/" onClick={(e) => props.changeMode(e)} >Learn</Nav.Link>
-                    <Nav.Link className="navbarlink" href="/play" onClick={(e) => props.changeMode(e)} >Play</Nav.Link>
+                    <Nav.Link className="navbarlink" href="/" onClick={(e) => props.changeMode(e)} >Home</Nav.Link>
+                    <Nav.Link className="navbarlink" href="/play" onClick={(e) => props.changeMode(e)} >Games</Nav.Link>
                         <Nav>
                         <Nav.Link title="Account" onClick={() => expandLinks()} className="navbarlink">Account {props.user && <FontAwesomeIcon className="ml-1 align-middle" icon={!expanded ? faAngleDown : faAngleUp} />}</Nav.Link>
                         </Nav>
