@@ -9,7 +9,6 @@ import {Modal, Button} from 'react-bootstrap'
 import './App.css';
 import axios from 'axios';
 import { auth, googleProvider } from './Components/Firebase/firebase'
-import i18n from 'i18n-iso-countries';
 import Game from './Components/Game.jsx';
 import Account from './Components/Account.jsx';
 import SignIn from './Components/SignIn.jsx';
@@ -19,6 +18,8 @@ import PasswordReset from './Components/PasswordReset.jsx';
 import AccountEdit from './Components/AccountEdit.jsx'
 import SearchResults from './Components/SearchResults.jsx';
 import SideNaviBar from './Components/SideNaviBar.jsx'
+// import LogRocket from 'logrocket';
+// LogRocket.init('w5ty2q/geograppical');
 
 class App extends Component {
 

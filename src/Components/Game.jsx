@@ -392,7 +392,7 @@ class Game extends React.Component {
         return(
         <>
         {/* <button onClick={}>Save Score</button> */}
-        <Modal show={this.state.show} onHide={() => this.handleClose()}>
+        <Modal show={this.state.show} onExit = {() => this.setState({gameOver: true})} onHide={() => this.handleClose()}>
             <Modal.Header closeButton>
             <Modal.Title>Game Over</Modal.Title>
             </Modal.Header>

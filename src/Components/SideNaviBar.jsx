@@ -25,7 +25,7 @@ const SideNaviBar = props => {
             props.history.push('/login');
         }
         setExpanded(!expanded);
-        props.handleData(type) 
+        type && props.handleData(type) 
         console.log('closed')
     }
     const closeNav = () => {
@@ -51,7 +51,7 @@ const SideNaviBar = props => {
                     <Nav.Link className="navbarlink" href="/" onClick={(e) => props.changeMode(e)} >Home</Nav.Link>
                     <Nav.Link className="navbarlink" href="/play" onClick={(e) => props.changeMode(e)} >Games</Nav.Link>
                         <Nav>
-                        <Nav.Link title="Account" onClick={() => expandLinks()} className="navbarlink">Account {props.user && <FontAwesomeIcon className="ml-1 align-middle" icon={!expanded ? faAngleDown : faAngleUp} />}</Nav.Link>
+                        <Nav.Link href={ROUTES.ACCOUNT} title="Account" onMouseEnter={() => expandLinks()} onMouseLeave={() => expandLinks()} className="navbarlink">Account {props.user && <FontAwesomeIcon className="ml-1 align-middle" icon={!expanded ? faAngleDown : faAngleUp} />}</Nav.Link>
                         </Nav>
                     {props.user && 
                     <Collapse in ={expanded}>  

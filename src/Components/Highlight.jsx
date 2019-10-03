@@ -33,70 +33,6 @@ class Highlight extends Component {
       .translate([800 / 2, 400 / 2])
       .scale(150);
     }
-    // getCursorLocation = (event) => {
-    //   const zoom = this.state.zoom;
-  
-    //   console.log("Zoom: " + zoom);
-  
-    //   const { width, height } = this.props;
-    //   const projection = this.projection();
-    //   const box = this._wrapper.querySelector("svg").getBoundingClientRect();
-    //   const { top, left } = box;
-  
-    //   const resizeFactorX = box.width / width;
-    //   const resizeFactorY = box.height / height;
-  
-    //   // position cursor as position within width and height of composableMap
-    //   const clientX = (event.clientX - left) / resizeFactorX;
-    //   const clientY = (event.clientY - top) / resizeFactorY;
-  
-    //   const originalCenter = [width / 2, height / 2];
-  
-    //   // position in Composable map that current center has when map is centered
-    //   const currentCenter = projection(this.state.center);
-    //   console.log(currentCenter);
-  
-    //   // compensation in "Composable map units" needed due to being off-center(panned)
-    //   const offsetX = currentCenter[0] - originalCenter[0];
-    //   const offsetY = currentCenter[1] - originalCenter[1];
-  
-    //   console.log("offsetX: " + offsetX + " - offsetY: " + offsetY);
-  
-    //   // position in Composable map that cursor would have been if the map was centered at this zoom level???
-    //   let x = clientX + offsetX;
-    //   let y = clientY + offsetY;
-  
-    //   console.log("Corrected x: " + x + " - Corrected y: " + y);
-    //   // let xTodo,
-    //   //   yTodo = 0;
-    //   // if (x > 400) {
-    //   //   xTodo = 400 - x;
-    //   //   x = 400;
-    //   // }
-    //   // if (x < 0) {
-    //   //   xTodo = 0 + x;
-    //   //   x = 0;
-    //   // }
-    //   // if (y > 250) {
-    //   //   yTodo = 250 - y;
-    //   //   y = 250;
-    //   // }
-    //   // if (y < 0) {
-    //   //   yTodo = 0 + y;
-    //   //   y = 0;
-    //   // }
-  
-    //   const uncompensatedCursor = projection.invert([x, y]);
-  
-    //   const cursor = [
-    //     this.state.center[0] +
-    //       (uncompensatedCursor[0] - this.state.center[0]) / zoom,
-    //     this.state.center[1] +
-    //       (uncompensatedCursor[1] - this.state.center[1]) / zoom
-    //   ];
-  
-    //   return cursor;
-    // }
     componentDidMount(){
       this.getMapNations();
       this.props.handlePoints(this.state.questions);
@@ -153,8 +89,7 @@ class Highlight extends Component {
               regionsState[region] = {id: region, countries: this.getRegion(region)};
           }
       });
-      // set state here outside the foreach function
-       this.setState({regions: {...regionsState}})
+      this.setState({regions: {...regionsState}})
     };
 
     setDynamicContinents = continents => {
@@ -171,35 +106,12 @@ class Highlight extends Component {
               continentsState[continent] = {id: continent, countries: this.getContinent(continent)};
           }
       });
-      // set state here outside the foreach function
        this.setState({continents: {...continentsState}})
     };
     setLocations = (regions, continents) => {
       this.setDynamicContinents(continents);
       this.setDynamicRegions(regions);
     }
-
-    
-    // onRegionHover = (geo) => {
-    //   let regions = Object.values(this.state.regions);
-    //   let match = regions.filter(region => region.id === geo.properties.SUBREGION)[0];
-    //   match = match.countries;
-    //   match.forEach( node => {
-    //     node.style.fill =  "#ee0a43";
-    //     node.style.stroke =  "#111";
-    //     node.style.strokeWidth =  1;
-    //     node.style.outline =  "solid black"
-    //     node.style.outlineOffset = "1px"
-    //   })
-    // }
-    // onRegionLeave = (geo) => {
-    //   let regions = Object.values(this.state.regions);
-    //   let match = regions.filter(region => region.id === geo.properties.SUBREGION)[0];
-    //   match = match.countries;
-    //   match.forEach( node => {
-    //     node.removeAttribute('style');
-    //   })
-    // }
     handleZoomIn = (zoom) => {
         this.setState(prevState => ({zoom: prevState.zoom * 2}))
     }
@@ -276,7 +188,10 @@ class Highlight extends Component {
     }
 
     getAnswers = (currentCountry) => {
-        let questions = [...this.state.questions]
+        let questions;
+        if(this.state.questions){
+          questions = [...this.state.questions]
+        }
         let question = {};
         question['country'] = currentCountry;
         question['correct'] = null;
@@ -338,7 +253,7 @@ class Highlight extends Component {
         
       this.setState({
           answers: null,
-          questions: null,
+          questions: [],
           guesses: null,
           currentCountry: null,
           score: 0,

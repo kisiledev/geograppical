@@ -59,6 +59,9 @@ class Find extends Component {
     if (prevProps.uniqueRegions !== this.props.uniqueRegions && this.props.uniqueRegions.length > 0) {
       this.setDynamicRegions(this.state.regions)
     }
+    if((this.props.saved && this.props.saved !==prevProps.saved) || (this.props.gameOver && this.props.gameOver !== prevProps.gameOver)){
+      this.endGame();
+  } 
   };
 
   getMapNations = () => {
@@ -205,7 +208,10 @@ class Find extends Component {
     }
 
     getAnswers = (currentCountry) => {
-        let questions = [...this.state.questions]
+        let questions;
+        if(this.state.questions){
+          questions = [...this.state.questions]
+        }
         let question = {};
         question['country'] = currentCountry;
         question['correct'] = null;
@@ -241,7 +247,7 @@ class Find extends Component {
         
       this.setState({
           answers: null,
-          questions: null,
+          questions: [],
           guesses: null,
           currentCountry: null,
           score: 0,
@@ -249,8 +255,6 @@ class Find extends Component {
           incorrect: 0
 
       });
-      clearInterval(this.intervalId)
-      this.resetTimer();
   }
     takeTurn = () => {
             !this.props.isStarted && this.props.startGame();

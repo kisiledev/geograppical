@@ -14,9 +14,23 @@ class Choice extends React.Component {
         this.props.handlePoints(this.state.questions);
     }
     componentDidUpdate =(prevProps) => {
-        if(this.props.saved && this.props.saved !==prevProps.saved)
-        this.props.saved && this.setState({questions: [], answers: [], guesses: null});
+        if((this.props.saved && this.props.saved !==prevProps.saved) || (this.props.gameOver && this.props.gameOver !== prevProps.gameOver)){
+            this.endGame();
+        } 
     }
+    endGame = () => {
+        
+        this.setState({
+            answers: null,
+            questions: [],
+            guesses: null,
+            currentCountry: null,
+            score: 0,
+            correct: 0,
+            incorrect: 0
+  
+        });
+      }
     shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -42,7 +56,10 @@ class Choice extends React.Component {
     }
 
     getAnswers = (currentCountry) => {
-        let questions = [...this.state.questions]
+        let questions;
+        if(this.state.questions){
+          questions = [...this.state.questions]
+        }
         let question = {};
         question['country'] = currentCountry;
         question['correct'] = null;
