@@ -138,6 +138,7 @@ class App extends Component {
         });
         let iso; 
         if(this.state.isoCodes) {
+          console.log(this.state.isoCodes)
           iso = this.state.isoCodes;
         }
 
@@ -281,8 +282,7 @@ class App extends Component {
     let match = searchDB.filter(country => 
       (this.simplifyString(country.name) === this.simplifyString(name)
       || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase())) 
-      console.log(match[0]);
-      if(match === [] || !match){
+      if(match === [] || !match || match.length === 0){
         this.setState({countryDetail: "error"})
       }
       this.setState(({countryDetail: match[0]}))
@@ -294,7 +294,6 @@ class App extends Component {
       this.props.history.goBack();
     } else {
       e.preventDefault();
-      console.log(this.state.searchText)
       this.setState({search: this.state.searchText}, this.handleViews('default'))
       this.props.history.push('/search/' + this.state.searchText)
     }
@@ -321,7 +320,6 @@ class App extends Component {
         Object.keys(o).some(value => o[value].toString().toUpperCase().includes(string.toUpperCase())));
   };
   handleViews = (view) => {
-    console.log(view);
       this.setState(({view}))
   };
   mapView = () => {

@@ -131,6 +131,7 @@ class Maps extends Component {
   }
   handleClick = (e) => {
           // access to e.target here
+    console.log('getting info')
     this.props.getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, ''),e.properties.ISO_A3 )
     }
 
@@ -181,6 +182,7 @@ class Maps extends Component {
                   onWheel={(e) => this.handleWheel(e)}
                   data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-z\s]/ig, '')}
                   data-tip={JSON.stringify(geo.properties)}
+                  onMouseEnter={() => console.log(geo.properties)}
                   data-shortname={geo.properties.NAME}
                   data-continent ={geo.properties.CONTINENT}
                   data-subregion = {geo.properties.SUBREGION}

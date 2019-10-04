@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as ROUTES from '../Constants/Routes'
 
 class DetailView extends Component {
+  _isMounted = false;
   state = {
     loggedIn: true,
     favorite: false,
@@ -21,14 +22,19 @@ class DetailView extends Component {
     message: '',
 }
 componentDidMount = () => {
+  this._isMounted = true;
   console.log(this.state.loading, this.props.loading)
-  if(this.props.countryDetail.length !== 0){
+  if(this.props.countryDetail && (this.props.countryDetail.length !== 0 || this.props.countryDetail === undefined)){
+    console.log(this.props.countryDetail)
     this.setState({loading: false})
   }
   if(!this.props.loading){
     this.props.getCountryInfo(this.props.match.params.country)
     
   }
+}
+componentWillUnmount = () => {
+  this._isMounted = false;
 }
 componentDidUpdate = (prevProps, prevState) => {
   this.props.user && this.props.countryDetail && !this.state.favorite && this.checkFavorite(this.props.countryDetail.name)
@@ -43,12 +49,14 @@ componentDidUpdate = (prevProps, prevState) => {
     const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country}`);
     docRef.get()
     .then(doc => {
-      if(doc.exists){
-        const data = doc.data()
-        this.setState({favorite: true})
-        console.log(data)
-      } else {
-        this.setState({favorite: false})
+      if(this._isMounted){
+        if(doc.exists){
+          const data = doc.data()
+          this.setState({favorite: true})
+          console.log(data)
+        } else {
+          this.setState({favorite: false})
+        }
       }
     }).catch(function(error) {
         console.log("Error getting document:", error);
@@ -94,8 +102,8 @@ componentDidUpdate = (prevProps, prevState) => {
         this.state.loading ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
         (
         <BreakpointProvider>
-        {countryDetail === "error" ? (
-          <div className="h3">There has been an error</div>
+        {countryDetail === "error" || countryDetail === undefined ? (
+          <div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>
         ) : (
         <div className="row">
             <div className="col-md-12 col-md-9">
