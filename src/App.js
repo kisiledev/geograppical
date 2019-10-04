@@ -619,7 +619,7 @@ class App extends Component {
             setModal = {this.setModal}
             login = {this.login}
           /> }/>
-          <Route path={`${process.env.PUBLIC_URL}/:country`} render={props => <DetailView 
+          <Route path={`${process.env.PUBLIC_URL}/:country`} render={ (props) => <DetailView { ...props}
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}

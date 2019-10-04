@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
 import Flag from 'react-flags';
@@ -10,96 +10,97 @@ import SidebarView from './SidebarView';
 import { db } from './Firebase/firebase'
 import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import * as ROUTES from '../Constants/Routes'
+import * as ROUTES from '../Constants/Routes';
 
-class DetailView extends Component {
-  _isMounted = false;
-  state = {
-    loggedIn: true,
-    favorite: false,
-    show: false,
-    loading: true,
-    message: '',
-}
-componentDidMount = () => {
-  this._isMounted = true;
-  console.log(this.state.loading, this.props.loading)
-  if(this.props.countryDetail && (this.props.countryDetail.length !== 0 || this.props.countryDetail === undefined)){
-    console.log(this.props.countryDetail)
-    this.setState({loading: false})
-  }
-  if(!this.props.loading){
-    this.props.getCountryInfo(this.props.match.params.country)
-    
-  }
-}
-componentWillUnmount = () => {
-  this._isMounted = false;
-}
-componentDidUpdate = (prevProps, prevState) => {
-  this.props.user && this.props.countryDetail && !this.state.favorite && this.checkFavorite(this.props.countryDetail.name)
-  if(this.props.data !==prevProps.data){
-    console.log('reloading')
-    console.log(this.props.match.params.country)
-    this.props.getCountryInfo(this.props.match.params.country)
-    this.setState({loading: false})
-  }
-}
-  checkFavorite = (country) => {
-    const docRef = db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country}`);
+const DetailView = props => {
+  const [show, setShow] = useState(false)
+  const [favorite, setFavorite] = useState(false)
+  const [loadingState, setLoadingState] = useState(false)
+  const [message, setMessage] = useState('')
+  const [alert, setAlert] = useState(false)
+
+  useEffect(() => {
+    // let _isMounted = true;
+    console.log(loadingState, props.loading)
+    if(props.countryDetail && (props.countryDetail.length !== 0 || props.countryDetail === undefined)){
+      setLoadingState(false)
+    }
+    !props.loading && props.getCountryInfo(props.match.params.country) 
+    })
+
+  useEffect(() => {
+    props.user && props.countryDetail && !favorite && checkFavorite(props.countryDetail.name)
+    console.log(props.match.params.country)
+    props.getCountryInfo(props.match.params.country)
+    setLoadingState(false)
+  }, [props.data])
+
+  useEffect(() => {
+    return () => {
+        this._isMounted = false
+    }
+  }, [])
+  const checkFavorite = (country) => {
+    const docRef = db.collection(`users/${props.user.uid}/favorites`).doc(`${country}`);
     docRef.get()
     .then(doc => {
-      if(this._isMounted){
+      if(doc){
         if(doc.exists){
           const data = doc.data()
-          this.setState({favorite: true})
+          setFavorite(true)
           console.log(data)
         } else {
-          this.setState({favorite: false})
+          setFavorite(false)
         }
       }
     }).catch(function(error) {
         console.log("Error getting document:", error);
     });
   }
-  makeFavorite = (e, country) => {
+  const makeFavorite = (e, country) => {
     e.persist();
-    this.setState({show: true})
-    if(!this.props.user){
-      this.setState({message: {style: "warning", content: `You need to sign in to favorite countries. Login `, link: ROUTES.SIGN_IN, linkContent: 'here'}})
+    setShow(true)
+    if(!props.user){
+      setMessage({style: "warning", content: `You need to sign in to favorite countries. Login `, link: ROUTES.SIGN_IN, linkContent: 'here'})
     } else {
-      if(!this.state.favorite){
-        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
+      if(!favorite){
+        db.collection(`users/${props.user.uid}/favorites`).doc(`${country.name}`).set({
               country
         }).then(() => {
           console.log(`Added ${country.name} to favorites`)
-          this.setState({message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
+          setAlert(true)
+          setMessage({style: "success", content: `Added ${country.name} to favorites`})
+          setFavorite(true)
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       } else {
-        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
+        db.collection(`users/${props.user.uid}/favorites`).doc(`${country.name}`).delete()
         .then(() => {
           console.log(`Removed ${country.name} from favorites`)
-          this.setState({message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+          setAlert(true)
+          setMessage({style: "warning", content: `Removed ${country.name} from favorites`})
+          setFavorite(false)
+          setShow(true)
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       }
     }
 }
-    render() {
-    const {countryDetail } = this.props
-    const totalRegions = this.props.data.map(a => a.geography.map_references)
-    function getOccurrence(array, value) {
-      return array.filter((v) => (v === value)).length;
-    }
-    let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
-    uniqueRegions = uniqueRegions.filter(Boolean)
+  const {countryDetail } = this.props
+  const totalRegions = props.data.map(a => a.geography.map_references)
+  function getOccurrence(array, value) {
+    return array.filter((v) => (v === value)).length;
+  }
+  let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
+  uniqueRegions = uniqueRegions.filter(Boolean)
       return(
-        this.state.loading ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
+        loadingState ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
         (
         <BreakpointProvider>
         {countryDetail === "error" || countryDetail === undefined ? (
@@ -108,23 +109,23 @@ componentDidUpdate = (prevProps, prevState) => {
         <div className="row">
             <div className="col-md-12 col-md-9">
                 <div className="card my-3">
-                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
-                  {this.state.message && this.state.message.length>0 && this.state.message.link && 
-                  <Alert.Link href={this.state.message.link && this.state.message.link}>
-                    {this.state.message.linkContent}
+                {<Alert show={show} variant={message.style}>{message.content}
+                  {message && message.length>0 && message.link && 
+                  <Alert.Link href={message.link && message.link}>
+                    {message.linkContent}
                   </Alert.Link>
                   }
                 </Alert>}
                 <div className="row justify-content-between">
                   <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
-                    <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => this.props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>
+                    <Link to={`${process.env.PUBLIC_URL}/`} className="btn btn-primary" onClick={() => props.history.goBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</Link>
                     <Breakpoint medium up>
                       <div className="col-lg-12">
                         <h3>{countryDetail.name} - <small>{countryDetail.government.capital.name.split(';')[0]}</small></h3>
                         <h5>Pop: {countryDetail.people.population.total} - Ranked ({countryDetail.people.population.global_rank})</h5>
                       </div>
                     </Breakpoint>
-                    <FontAwesomeIcon onClick={(e) => this.makeFavorite(e, countryDetail)} size="2x" color={this.state.favorite ? "gold" : "gray"} icon={faStar} />
+                    <FontAwesomeIcon onClick={(e) => makeFavorite(e, countryDetail)} size="2x" color={favorite ? "gold" : "gray"} icon={faStar} />
                     <Flag
                       className="detailFlag order-lg-12 align-self-end text-right img-thumbnail"
                       name={(countryDetail.government.country_name.isoCode ? countryDetail.government.country_name.isoCode : "_unknown") ? countryDetail.government.country_name.isoCode : `_${countryDetail.name}`}
@@ -150,20 +151,20 @@ componentDidUpdate = (prevProps, prevState) => {
             </div>
             <Breakpoint medium down>
             <SidebarView 
-                data={this.props.data}
-                changeView = {this.props.changeView}
-                viewSidebar={this.props.viewSidebar}
+                data={props.data}
+                changeView = {props.changeView}
+                viewSidebar={props.viewSidebar}
                 totalRegions = {totalRegions}
                 uniqueRegions = {uniqueRegions}
                 getOccurrence = {getOccurrence}
-                sidebar={this.props.sidebar}
-                getCountryInfo = {this.props.getCountryInfo}
-                handleSideBar = {this.props.handleSideBar}
-                hoverOffRegion = {this.props.hoverOffRegion}
-                hoverOnRegion = {this.props.hoverOnRegion}
-                filterCountryByName = {this.props.filterCountryByName}
-                hoverOnCountry = {this.props.hoverOnCountry}
-                hoverOffCountry = {this.props.hoverOffCountry}
+                sidebar={props.sidebar}
+                getCountryInfo = {props.getCountryInfo}
+                handleSideBar = {props.handleSideBar}
+                hoverOffRegion = {props.hoverOffRegion}
+                hoverOnRegion = {props.hoverOnRegion}
+                filterCountryByName = {props.filterCountryByName}
+                hoverOnCountry = {props.hoverOnCountry}
+                hoverOffCountry = {props.hoverOffCountry}
             />
             </Breakpoint>
         </div>
@@ -172,6 +173,5 @@ componentDidUpdate = (prevProps, prevState) => {
         )
       )
     }
-  }
   
-  export default withRouter(DetailView);
+  export default DetailView;
