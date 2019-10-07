@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from './Firebase/firebase';
 import Flag from 'react-flags'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,37 +8,47 @@ import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom'
 
 
-class Account extends React.Component {
-    state = {
-        message: ''
-    }
-    componentDidMount = () => {
-        this.setState({loading: true }, 
-            this.getFavoritesData());
-        this.setState({loading: true }, this.getScoresData());
-    }
-    deleteFavorite = (id) => {
-        db.collection(`users/${this.props.user.uid}/favorites`).doc(id).delete()
+const Account = props => {
+    const [loadingState, setLoadingState] = useState(false)
+    const [favorite, setFavorite] = useState(false)
+    const [favorites, setFavorites] = useState('')
+    const [scores, setScores] = useState('')
+    const [message, setMessage] = useState('')
+    const [alert, setAlert] = useState(false)
+    const [show, setShow] = useState(false)
+
+    useEffect(() => {
+        setLoadingState(true); 
+        getFavoritesData();
+        getScoresData();
+    }, [])
+    const deleteFavorite = (id) => {
+        db.collection(`users/${props.user.uid}/favorites`).doc(id).delete()
         .then(() => {
           console.log(`Removed ${id} from favorites`)
-          this.setState({message: {style: "warning", content: `Removed ${id} from favorites`}, favorite: false, show: true})
+          setShow(true)
+          setFavorite(false)
+          setMessage({style: "warning", content: `Removed ${id} from favorites`})
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error adding ${id} to favorites, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error removing ${id} from favorites, ${err}`})
         })
     }
-    deleteScore = (id) => {
-        db.collection(`users/${this.props.user.uid}/scores`).doc(id).delete()
+    const deleteScore = (id) => {
+        db.collection(`users/${props.user.uid}/scores`).doc(id).delete()
         .then(() => {
           console.log(`Removed ${id} from scores`)
-          this.setState({message: {style: "warning", content: `Removed ${id} from scores`}, show: true})
+          setShow(true)
+          setMessage({style: "warning", content: `Removed ${id} from scores`})
         }).catch((err) => {
           console.error(err)
-          this.setState({message: {style: "danger", content: `Error removing ${id} from scores, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error removing ${id} from scores, ${err}`})
         })
     }
-    getFavoritesData = () => {
-        let countriesRef = db.collection(`/users/${this.props.user.uid}/favorites`);
+    const getFavoritesData = () => {
+        let countriesRef = db.collection(`/users/${props.user.uid}/favorites`);
         countriesRef.onSnapshot((querySnapshot) => {
             let data = [];
             querySnapshot.forEach( doc => {
@@ -49,11 +59,12 @@ class Account extends React.Component {
                 data.push(info);
                 data["isOpen"] = true;
             })
-            this.setState({favorites: {isOpen: false, data}, loading: false})
+            setFavorites({isOpen: false, data})
+            setLoadingState(false)
         })
     }
-    getScoresData = () => {
-        let scoresRef = db.collection(`/users/${this.props.user.uid}/scores`);
+    const getScoresData = () => {
+        let scoresRef = db.collection(`/users/${props.user.uid}/scores`);
         scoresRef.onSnapshot((querySnapshot) => {
             let data = [];
             querySnapshot.forEach( doc => {
@@ -64,38 +75,30 @@ class Account extends React.Component {
                 data.push(info);
                 data["isOpen"] = true;
             })
-            this.setState({scores: {isOpen: false, data}, loading: false})
+            setScores({isOpen: false, data})
+            setLoadingState(false)
         })
     }
-
-    toggleValue = (source) => {
-        let priorState = {...this.state[source]};
-        priorState.isOpen = !this.state[source].isOpen;
-        this.setState({[source]: priorState})
-      }
-
-    render(){
-        return(
-
+    return(
             <div className="col-sm-12 col-md-8 mx-auto">
-                {<Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}</Alert>}
+                {<Alert show={show} variant={message.style}>{message.content}</Alert>}
                 <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
                     <div className="row">
                         <div className="col-12 text-center">
-                            <img className="avatar img-fluid" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
+                            <img className="avatar img-fluid" src={props.user ? (props.user.photoURL ? props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt=""/>
                             
                         </div>
                         <div className="col-12 text-center">
-                            <h5 className="mt-3">{this.props.user.displayName} </h5>
-                            <p>Account created {new Date(this.props.user.metadata.creationTime).toLocaleDateString()}</p>
-                            <p>{this.props.user.email}</p>
-                            <p>{this.props.user.phoneNumber ? this.props.user.phoneNumber : "No phone number added"}</p>
-                            {this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x"/> :
+                            <h5 className="mt-3">{props.user.displayName} </h5>
+                            <p>Account created {new Date(props.user.metadata.creationTime).toLocaleDateString()}</p>
+                            <p>{props.user.email}</p>
+                            <p>{props.user.phoneNumber ? props.user.phoneNumber : "No phone number added"}</p>
+                            {loadingState ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x"/> :
                             (
                             <>
                             <h6>Stats</h6>
-                            <p>{this.state.favorites && this.state.favorites.data.length} {this.state.favorites && this.state.favorites.length === 1 ? "Favorite" : "Favorites"}</p>
-                            <p>{this.state.scores && this.state.scores.data.length} Scores</p>
+                            <p>{favorites && favorites.data.length} {favorites && favorites.length === 1 ? "Favorite" : "Favorites"}</p>
+                            <p>{scores && scores.data.length} Scores</p>
                             </>
                             )}
                         </div>
@@ -111,25 +114,25 @@ class Account extends React.Component {
 
                 <div className="row">
                     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-                        <h5 className="list-group-item d-flex align-items-center" onClick={() => this.props.handleData("favorites")}>
+                        <h5 className="list-group-item d-flex align-items-center" onClick={() => props.handleData("favorites")}>
                             Favorites
                             <Badge variant="primary">
-                                {this.state.loading ? 
-                                <FontAwesomeIcon icon={faSpinner} spin /> : this.state.favorites && this.state.favorites.data.length>0 && this.state.favorites.data.length}
+                                {loadingState ? 
+                                <FontAwesomeIcon icon={faSpinner} spin /> : favorites && favorites.data.length>0 && favorites.data.length}
                             </Badge>
-                                {this.state.favorites && <FontAwesomeIcon className="align-text-top" icon={this.props.favorites ? faAngleDown : faAngleUp} />}
+                                {favorites && <FontAwesomeIcon className="align-text-top" icon={props.favorites ? faAngleDown : faAngleUp} />}
                         </h5>
-                        {this.state.loading ? null : 
+                        {loadingState ? null : 
                             (
-                            this.state.favorites &&
-                            <Collapse in={this.props.favorites}>
+                            favorites &&
+                            <Collapse in={props.favorites}>
                             <ul className="list-group list-group-flush">
-                                {this.state.favorites && this.state.favorites.data.length > 0 ? 
-                                    this.state.favorites.data.map(favorite =>
+                                {favorites && favorites.data.length > 0 ? 
+                                    favorites.data.map(favorite =>
                                     <li className="list-group-item" key={favorite.id}>
                                         <h5>{favorite.id} - <small>{favorite.data.government.capital.name.split(';')[0]}</small></h5>
                                         <div className="d-flex justify-content-between">
-                                        <Link to={`${process.env.PUBLIC_URL}/${this.props.simplifyString(favorite.id)}`} >
+                                        <Link to={`${process.env.PUBLIC_URL}/${props.simplifyString(favorite.id)}`} >
                                             <Flag
                                                 className="favFlag img-thumbnail"
                                                 name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : "_unknown") ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
@@ -140,7 +143,7 @@ class Account extends React.Component {
                                                 basePath="/img/flags"
                                             />
                                         </Link>
-                                            <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="darkred" />
+                                            <FontAwesomeIcon className="align-self-center" onClick={() => deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="darkred" />
                                         </div>
                                     </li>
                                 ) : <h5>You have no favorites saved</h5> }
@@ -149,20 +152,20 @@ class Account extends React.Component {
                         }
                     </div>
                     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-                    <h5 className="list-group-item d-flex align-items-center" onClick={() => this.props.handleData("scores")}>
+                    <h5 className="list-group-item d-flex align-items-center" onClick={() => props.handleData("scores")}>
                         Scores 
                         <Badge variant="primary">
-                            {this.state.loading ? 
-                            <FontAwesomeIcon icon={faSpinner} spin /> : this.state.scores && this.state.scores.data.length>0 && this.state.scores.data.length}
+                            {loadingState ? 
+                            <FontAwesomeIcon icon={faSpinner} spin /> : scores && scores.data.length>0 && scores.data.length}
                         </Badge>
-                            {this.state.scores && <FontAwesomeIcon className="align-text-top" icon={this.props.scores ? faAngleDown : faAngleUp} />}
+                            {scores && <FontAwesomeIcon className="align-text-top" icon={props.scores ? faAngleDown : faAngleUp} />}
                         
                         </h5>
-                        {this.state.loading ? null : 
-                            (this.state.scores && 
-                            <Collapse in={this.props.scores}>
+                        {loadingState ? null : 
+                            (scores && 
+                            <Collapse in={props.scores}>
                             <ul className="list-group list-group-flush">
-                                {this.state.scores && this.state.scores.data.length>0 ?this.state.scores.data.map(score => {
+                                {scores && scores.data.length>0 ?scores.data.map(score => {
                                     let milliseconds = score.data.dateCreated.seconds * 1000;
                                     let currentDate = new Date(milliseconds);
                                     let dateTime = currentDate.toGMTString();
@@ -175,7 +178,7 @@ class Account extends React.Component {
                                                 <h6>Correct - {score.data.correct}</h6>
                                                 <h6>Incorrect - {score.data.incorrect}</h6>
                                             </div>
-                                            <FontAwesomeIcon className="align-self-center" onClick={() => this.deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
+                                            <FontAwesomeIcon className="align-self-center" onClick={() => deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
                                         </div>
                                         
                                     </li>
@@ -187,7 +190,6 @@ class Account extends React.Component {
                 </div>
             </div>
         )
-    }
 }
 
 export default Account;
