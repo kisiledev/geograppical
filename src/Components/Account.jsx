@@ -10,11 +10,9 @@ import { Link } from 'react-router-dom'
 
 const Account = props => {
     const [loadingState, setLoadingState] = useState(false)
-    const [favorite, setFavorite] = useState(false)
     const [favorites, setFavorites] = useState('')
     const [scores, setScores] = useState('')
     const [message, setMessage] = useState('')
-    const [alert, setAlert] = useState(false)
     const [show, setShow] = useState(false)
 
     useEffect(() => {
@@ -27,11 +25,9 @@ const Account = props => {
         .then(() => {
           console.log(`Removed ${id} from favorites`)
           setShow(true)
-          setFavorite(false)
           setMessage({style: "warning", content: `Removed ${id} from favorites`})
         }).catch((err) => {
           console.error(err)
-          setAlert(true)
           setMessage({style: "danger", content: `Error removing ${id} from favorites, ${err}`})
         })
     }
@@ -43,7 +39,6 @@ const Account = props => {
           setMessage({style: "warning", content: `Removed ${id} from scores`})
         }).catch((err) => {
           console.error(err)
-          setAlert(true)
           setMessage({style: "danger", content: `Error removing ${id} from scores, ${err}`})
         })
     }

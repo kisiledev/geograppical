@@ -16,24 +16,15 @@ import * as ROUTES from '../Constants/Routes';
 const DetailView = props => {
   const [show, setShow] = useState(false)
   const [favorite, setFavorite] = useState(false)
-  const [loadingState, setLoadingState] = useState(true)
   const [message, setMessage] = useState('')
-  const [alert, setAlert] = useState(false)
 
   useEffect(() => {
-    let _isMounted
-    _isMounted = true;
-    setLoadingState(true)
     if(props.countryDetail && (props.countryDetail.length !== 0 || props.countryDetail === undefined)){
       console.log(props.countryDetail)
-      setLoadingState(false)
     }
     if(!props.loading){
       props.getCountryInfo(props.match.params.country)
       
-    }
-    return () => {
-      _isMounted = false
     }
   }, []);
 
@@ -42,7 +33,6 @@ const DetailView = props => {
       console.log('reloading')
       console.log(props.match.params.country)
       props.getCountryInfo(props.match.params.country)
-      setLoadingState(false)
 
   }, [props.data])
 
@@ -74,25 +64,21 @@ const DetailView = props => {
               country
         }).then(() => {
           console.log(`Added ${country.name} to favorites`)
-          setAlert(true)
           setMessage({style: "success", content: `Added ${country.name} to favorites`})
           setFavorite(true)
         }).catch((err) => {
           console.error(err)
-          setAlert(true)
           setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       } else {
         db.collection(`users/${props.user.uid}/favorites`).doc(`${country.name}`).delete()
         .then(() => {
           console.log(`Removed ${country.name} from favorites`)
-          setAlert(true)
           setMessage({style: "warning", content: `Removed ${country.name} from favorites`})
           setFavorite(false)
           setShow(true)
         }).catch((err) => {
           console.error(err)
-          setAlert(true)
           setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       }

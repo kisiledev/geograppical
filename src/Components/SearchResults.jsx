@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import Result from './Result';
 import { BreakpointProvider } from 'react-socks';
 import { Alert} from 'react-bootstrap'
@@ -10,83 +10,79 @@ import {withRouter} from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
 
 
-class SearchResults extends Component {
-  state = {
-    loading: false,
-    message: '',
-    alert: false
-  }
-  componentDidMount = () => {
-  }
-  componentDidUpdate = (prevProps, prevState) => {
-    console.log(this.state.message.link);
-    console.log('loading view')
-    if(this.props.countries){
-        console.log(this.props.countries, prevProps.countries)
-    }
-    if(this.props.countries.length !==prevProps.countries.length){
-        this.setState({loading: false})
-    }
-    if(this.props.data !== prevProps.data){
-        this.props.handleRefresh(this.props.match.params.input)
-        this.setState({loading: false}, console.log('false'))
-    }
-  }
-  makeFavorite = (e, country) => {
+const SearchResults = props => {
+  const [loadingState, setLoadingState] = useState(false)
+  const [favorite, setFavorite] = useState(false)
+  const [message, setMessage] = useState('')
+  const [alert, setAlert] = useState(false)
+  const [show, setShow] = useState(false)
+  
+  useEffect(()=> {
+    props.handleRefresh(props.match.params.input)
+    setLoadingState(false)
+  }, [props.data]);
+
+  const makeFavorite = (e, country) => {
     e.persist();
-    this.setState({show: true})
-    if(!this.props.user){
-      this.setState({alert: true, message: {style: "warning", content: `You need to sign in to favorite countries. Login`, link: ROUTES.SIGN_IN, linkContent: ' here'}})
+    setShow(true)
+    if(!props.user){
+      setMessage({style: "warning", content: `You need to sign in to favorite countries. Login `, link: ROUTES.SIGN_IN, linkContent: 'here'})
     } else {
-      if(!this.state.favorite){
-        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).set({
+      if(!favorite){
+        db.collection(`users/${props.user.uid}/favorites`).doc(`${country.name}`).set({
               country
         }).then(() => {
           console.log(`Added ${country.name} to favorites`)
-          this.setState({alert: true, message: {style: "success", content: `Added ${country.name} to favorites`}, show: true, favorite: true})
+          setAlert(true)
+          setMessage({style: "success", content: `Added ${country.name} to favorites`})
+          setFavorite(true)
         }).catch((err) => {
           console.error(err)
-          this.setState({alert: true, message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       } else {
-        db.collection(`users/${this.props.user.uid}/favorites`).doc(`${country.name}`).delete()
+        db.collection(`users/${props.user.uid}/favorites`).doc(`${country.name}`).delete()
         .then(() => {
           console.log(`Removed ${country.name} from favorites`)
-          this.setState({alert: true, message: {style: "warning", content: `Removed ${country.name} from favorites`}, favorite: false, show: true})
+          setAlert(true)
+          setMessage({style: "warning", content: `Removed ${country.name} from favorites`})
+          setFavorite(false)
+          setShow(true)
         }).catch((err) => {
           console.error(err)
-          this.setState({alert: true, message: {style: "danger", content: `Error adding ${country.name} to favorites, ${err}`}})
+          setAlert(true)
+          setMessage({style: "danger", content: `Error adding ${country.name} to favorites, ${err}`})
         })
       }
     }
 }
-  render() {
     return(
       <BreakpointProvider>
       <div className="row">
         <main className="col-md-9 px-5">
-          {this.props.countries[0] === undefined ? 
+          {props.countries[0] === undefined ? 
               null
            : null }
-          {this.state.alert && 
-          <Alert show={this.state.show} variant={this.state.message.style}>{this.state.message.content}
-            <Alert.Link href={this.state.message.link}>
-              {this.state.message.linkContent}
+          {alert && 
+          <Alert show={show} variant={message.style}>{message.content}
+            <Alert.Link href={message.link}>
+              {message.linkContent}
             </Alert.Link>
           </Alert>}
           <div className="col-12 text-center">
-              { this.state.loading ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" /> :
-                (this.props.searchText === "" ? <h4 className="my-3">No search terms are entered</h4> : <h4 className="my-3">Search Results for {this.props.data ? this.props.searchText : this.props.match.params.input}</h4>)
+              { loadingState ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" /> :
+                (props.searchText === "" ? <h4 className="my-3">No search terms are entered</h4> : <h4 className="my-3">Search Results for {props.data ? props.searchText : props.match.params.input}</h4>)
               }
               
           </div>
-          {this.props.countries[0] && this.props.countries.map( (country, index) => 
+          {props.countries[0] && props.countries.map( (country, index) => 
             <Result
-            filtered = {this.props.countries[0]}
-            worldData = {this.props.data}
-            makeFavorite = {this.makeFavorite}
-            changeView = {this.props.changeView}
-            getCountryInfo = {this.props.getCountryInfo}
+            filtered = {props.countries[0]}
+            worldData = {props.data}
+            makeFavorite = {makeFavorite}
+            changeView = {props.changeView}
+            getCountryInfo = {props.getCountryInfo}
             name={country.name}
             region = {country.geography.map_references}
             subregion = {country.geography.location}
@@ -99,37 +95,16 @@ class SearchResults extends Component {
             key={index}
             country={country}
             code={country.alpha3Code}
-            handleOpen = {this.props.handleOpen}
-            handleClose = {this.props.handleClose}
-            user = {this.props.user}
-            setModal = {this.props.setModal}
-            login = {this.props.login}
+            handleOpen = {props.handleOpen}
+            handleClose = {props.handleClose}
+            user = {props.user}
+            setModal = {props.setModal}
+            login = {props.login}
             />
           )}
         </main>
-        {/* <SidebarView
-            hoverOnRegion = {this.props.hoverOnRegion}
-            hoverOffRegion = {this.props.hoverOffRegion}
-            changeView = {this.props.changeView}
-            handleSideBar = {this.props.handleSideBar}
-            viewSidebar={this.props.viewSidebar}
-            data={this.props.data}
-            totalRegions = {totalRegions}
-            uniqueRegions = {uniqueRegions}
-            getOccurrence = {getOccurrence}
-            sidebar={this.props.sidebar}
-            getCountryInfo = {this.props.getCountryInfo}
-            filterCountryByName = {this.props.filterCountryByName}
-            hoverOnCountry = {this.props.hoverOnCountry}
-            hoverOffCountry = {this.props.hoverOffCountry}
-            handleMove = {this.props.handleMove}
-            handleLeave = {this.props.handleLeave}
-            hovered = {this.props.hovered}
-            highlighted = {this.props.highlighted}
-        /> */}
       </div>
       </BreakpointProvider>
     )
-  }
 }
 export default withRouter(SearchResults);

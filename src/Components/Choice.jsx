@@ -1,64 +1,55 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
-class Choice extends React.Component {
-    state = {
-        currentCountry: null,
-        currentCountryId: null,
-        capitals: [],
-        guesses: null,
-        answers: null,
-        questions:[],
-        ran: null
+const Choice = props => {
+
+    const [currentCountry, setCurrentCountry] = useState(null)
+    const [currentCountryId, setCurrentCountryId] = useState(null)
+    const [guesses, setGuesses] = useState(null)
+    const [answers, setAnswers] = useState(null)
+    const [questions, setQuestions] = useState([])
+    // const [ran, setRan] = useState(null)
+
+    useEffect(() => {
+        props.handlePoints(questions);
+    }, [])
+    useEffect(() => {
+        endGame(); 
+    }, [props.saved, props.gameOver]);
+
+    const endGame = () => {
+        setAnswers(null)
+        setQuestions([])
+        setGuesses(null)
+        setCurrentCountry(null)
     }
-    componentDidMount(){
-        this.props.handlePoints(this.state.questions);
-    }
-    componentDidUpdate =(prevProps) => {
-        if((this.props.saved && this.props.saved !==prevProps.saved) || (this.props.gameOver && this.props.gameOver !== prevProps.gameOver)){
-            this.endGame();
-        } 
-    }
-    endGame = () => {
-        
-        this.setState({
-            answers: null,
-            questions: [],
-            guesses: null,
-            currentCountry: null,
-            score: 0,
-            correct: 0,
-            incorrect: 0
-  
-        });
-      }
-    shuffle = (a) => {
+    const shuffle = (a) => {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [a[i], a[j]] = [a[j], a[i]];
         }
         return a;
     }
-    getRandomInt = (min, max) => {
+    const getRandomInt = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max-min)) + min;
     }
-    getRandomCountry = () => {
-        const int = this.getRandomInt(0, this.props.data.length);
-        this.setState({currentCountryId: int})
-        let country = this.props.data[int];
+    const getRandomCountry = () => {
+        const int = getRandomInt(0, props.data.length);
+        setCurrentCountryId(int)
+        let country = props.data[int];
         return country;
     }
-    randomExcluded = (min, max, excluded) => {
+    const randomExcluded = (min, max, excluded) => {
         let n = Math.floor(Math.random() * (max-min) + min);
         if (n >= excluded) n++;
         return n;
     }
 
-    getAnswers = (currentCountry) => {
-        let questions;
-        if(this.state.questions){
-          questions = [...this.state.questions]
+    const getAnswers = (currentCountry) => {
+        let answerQuestions;
+        if(questions){
+          answerQuestions = [...questions]
         }
         let question = {};
         question['country'] = currentCountry;
@@ -70,70 +61,66 @@ class Choice extends React.Component {
             correct: 2
         });
         for (let x = 0; x < 3; x++) {
-            let ran = this.randomExcluded(0, this.props.data.length -1, this.state.currentCountryId);
-            this.setState({ran: ran})
+            let ran = randomExcluded(0, props.data.length -1, currentCountryId);
             let newName;
-            if(this.props.data[ran].government.capital.name || ran < 0){
-                newName = this.props.data[ran].government.capital.name.split(';')[0]
+            if(props.data[ran].government.capital.name || ran < 0){
+                newName = props.data[ran].government.capital.name.split(';')[0]
             } else {
-                ran = this.randomExcluded(0, this.props.data.length-1, this.state.currentCountryId);
-                newName = this.props.data[ran].government.capital.name.split(';')[0]
+                ran = randomExcluded(0, props.data.length-1, currentCountryId);
+                newName = props.data[ran].government.capital.name.split(';')[0]
             }
             let capital = {
                 name: newName,
                 id: x + 1, 
                 correct: 2}
             answers.push(capital);
-            this.shuffle(answers);
-            this.setState({answers: answers})
+            shuffle(answers);
+            setAnswers(answers)
         }
         question['answers'] = answers;
         
-        questions.push(question);
-        this.setState({questions});
+        answerQuestions.push(question);
+        setQuestions(answerQuestions)
     }
-    takeTurn = () => {
-            !this.props.isStarted && this.props.startGame();
-            let country = this.getRandomCountry();
-            this.setState(prevState => ({guesses: prevState.guesses +1, currentCountry: country, currentIncorrect: 0}),this.getAnswers(country));
-            if(this.state.questions && this.state.questions.length > 10){
-                if(this.state.time){
-                    this.props.stopTimer();
-                }
+    const takeTurn = () => {
+            !props.isStarted && props.startGame();
+            let country = getRandomCountry();
+            setGuesses(prevGuess => prevGuess + 1)
+            setCurrentCountry(country)
+            getAnswers(country)
+            if(questions && questions.length > 10){
                 console.log('showing scores')
-                this.props.handleOpen();
-                // this.setState({questions: [], answers: [], guesses: null})   
+                props.handleOpen();
+                // setState({questions: [], answers: [], guesses: null})   
                 
             }
     }
     
-    checkAnswer = (answer) => {
+    const checkAnswer = (answer) => {
         //if answer is correct answer (all correct answers have ID of 0)
-        let questions = this.state.questions;
-        let question = questions.find(question => question.country === this.state.currentCountry);
-        let guesses = this.state.guesses;
+        let checkquestions = questions;
+        let question = checkquestions.find(question => question.country === currentCountry);
+        let checkguesses = guesses;
         if(answer.id === 0){
             //give score of 2
-            this.props.updateScore(3-this.state.guesses);
+            props.updateScore(3-guesses);
             //set answer style
             answer['correct'] = 0;
             //initialize correct counter for game
-            if(this.state.guesses === 1){
+            if(guesses === 1){
                 question['correct'] = true;
             }
-            guesses = null;
-            setTimeout(() => this.takeTurn(), 300);   
+            checkguesses = null;
+            setTimeout(() => takeTurn(), 300);   
         } else {
             answer['correct'] = 1;
             question['correct'] = false;
-            guesses ++
+            checkguesses ++
         }
-        this.setState({guesses}, () => {this.props.handlePoints(this.state.questions)})
+        setGuesses(checkguesses)
+        props.handlePoints(questions);
     }
-    render(){
-        const { isStarted } = this.props;
-        const { guesses, currentCountry, answers, questions} = this.state;
-        const { takeTurn, checkAnswer} = this;
+        const { isStarted } = props;
         let directions = 
         <div className="directions">
             <h5>Directions</h5>
@@ -165,7 +152,6 @@ class Choice extends React.Component {
             </div>
 
         )
-    }
 }
 
 export default Choice;

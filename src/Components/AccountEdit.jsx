@@ -15,10 +15,8 @@ const AccountEdit = props => {
     const [loadingState, setLoadingState] = useState(false)
     const [modalMessage, setModalMessage] = useState('')
     const [show, setShow] = useState(false)
-    const [user, setUser] = useState('')
 
     useEffect (() => {
-        setUser(auth.currentUser)
         setLoadingState(true)
         getFavoritesData();
         getScoresData();
