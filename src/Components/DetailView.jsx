@@ -12,34 +12,40 @@ import { faArrowLeft, faSpinner, faStar } from "@fortawesome/free-solid-svg-icon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as ROUTES from '../Constants/Routes';
 
+
 const DetailView = props => {
   const [show, setShow] = useState(false)
   const [favorite, setFavorite] = useState(false)
-  const [loadingState, setLoadingState] = useState(false)
+  const [loadingState, setLoadingState] = useState(true)
   const [message, setMessage] = useState('')
   const [alert, setAlert] = useState(false)
 
   useEffect(() => {
-    // let _isMounted = true;
-    console.log(loadingState, props.loading)
+    let _isMounted
+    _isMounted = true;
+    setLoadingState(true)
     if(props.countryDetail && (props.countryDetail.length !== 0 || props.countryDetail === undefined)){
+      console.log(props.countryDetail)
       setLoadingState(false)
     }
-    !props.loading && props.getCountryInfo(props.match.params.country) 
-    })
+    if(!props.loading){
+      props.getCountryInfo(props.match.params.country)
+      
+    }
+    return () => {
+      _isMounted = false
+    }
+  }, []);
 
   useEffect(() => {
     props.user && props.countryDetail && !favorite && checkFavorite(props.countryDetail.name)
-    console.log(props.match.params.country)
-    props.getCountryInfo(props.match.params.country)
-    setLoadingState(false)
+      console.log('reloading')
+      console.log(props.match.params.country)
+      props.getCountryInfo(props.match.params.country)
+      setLoadingState(false)
+
   }, [props.data])
 
-  useEffect(() => {
-    return () => {
-        this._isMounted = false
-    }
-  }, [])
   const checkFavorite = (country) => {
     const docRef = db.collection(`users/${props.user.uid}/favorites`).doc(`${country}`);
     docRef.get()
@@ -92,19 +98,20 @@ const DetailView = props => {
       }
     }
 }
-  const {countryDetail } = this.props
+  const countryDetail = props.countryDetail
   const totalRegions = props.data.map(a => a.geography.map_references)
   function getOccurrence(array, value) {
     return array.filter((v) => (v === value)).length;
   }
   let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
+  let errorMsg = <div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>
   uniqueRegions = uniqueRegions.filter(Boolean)
       return(
-        loadingState ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
+        props.loading || !countryDetail ? <div className="my-5 text-center mx-auto" ><FontAwesomeIcon icon={faSpinner} spin size="3x"/></div> :
         (
         <BreakpointProvider>
         {countryDetail === "error" || countryDetail === undefined ? (
-          <div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>
+          errorMsg
         ) : (
         <div className="row">
             <div className="col-md-12 col-md-9">
@@ -174,4 +181,4 @@ const DetailView = props => {
       )
     }
   
-  export default DetailView;
+  export default withRouter(DetailView);

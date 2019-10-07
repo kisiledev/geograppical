@@ -138,7 +138,6 @@ class App extends Component {
         });
         let iso; 
         if(this.state.isoCodes) {
-          console.log(this.state.isoCodes)
           iso = this.state.isoCodes;
         }
 
@@ -619,7 +618,7 @@ class App extends Component {
             setModal = {this.setModal}
             login = {this.login}
           /> }/>
-          <Route path={`${process.env.PUBLIC_URL}/:country`} render={ (props) => <DetailView { ...props}
+          <Route path={`${process.env.PUBLIC_URL}/:country`} render={ (props) => <DetailView 
             flagCodes = {this.state.flagCodes}
             countries = {this.state.filterNations}
             filterRegion = {this.filterRegion}
