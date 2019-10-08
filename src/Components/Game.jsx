@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 const Game = props => {
+    const [loadingState, setLoadingState] = useState(false)
     const [questionsRemaining, setQuestionsRemaining] = useState(null)
     const [questions, setQuestions] = useState(null)
     const [questionsSet, setQuestionsSet] = useState(null)
@@ -35,7 +36,19 @@ const Game = props => {
     })
     const [show, setShow] = useState(false)
     const [saved, setSaved] = useState(false)
+    const [intId, setIntId] = useState(null)
+    const [gameId, setGameId] = useState(null)
 
+    useEffect(() => {
+        let intervalId;
+        if(isStarted && time && time.isRunning && time.timeMode){
+            intervalId = setInterval(() => timer(), 1000);
+            setIntId(intervalId)
+        } 
+        return () => {
+            clearInterval(intervalId)
+        };
+    }, [isStarted, time.currentCount])
     
     const handleClose = () => {
         setShow(false)
@@ -50,78 +63,78 @@ const Game = props => {
     }
     const timer = () => {
         console.log('starting timer')
-        if(this.state.time.timeMode === "cd"){
-            this.setState(prevState =>({
-                time: {
-                    currentCount: this.state.time.currentCount - 1,
-                    isRunning: true,
-                    timeMode: 'cd'
-                }
-            }));
+        console.log(time)
+        console.log(time.currentCount)
+        if(time.timeMode === "cd"){
+            setTime(({
+                ...time,
+                currentCount: time.currentCount - 1,
+                isRunning: true,
+                timeMode: 'cd'
+            }))
         } else {
-            console.log(this.state.time.clock)
-            this.setState(prevState =>({
-                time: {
-                    clock: this.state.time.clock + 1,
-                    isRunning: true,
-                    timeMode: 'et',
-                    elapsed: ''
-                },
-            }));
-        }
+            console.log(time.clock)
+            setTime(({
+                ...time,
+                clock: time.clock + 1,
+                isRunning: true,
+                timeMode: 'et',
+                elapsed: ''
+            }))
         //clear interval
-        if (this.state.time.currentCount === 0 || !this.state.time.isRunning) {
-          this.handleOpen()
-          clearInterval(this.intervalId);
+        if (time.currentCount === 0 || !time.isRunning) {
+          handleOpen()
+          clearInterval(intId);
           console.log('timer stopped')
-          this.setState({time: { isRunning: false}})
+          setTime(({...time, isRunning: false}))
         }
       }
+    }
     
     const startTimer = () => {
-        this.intervalId = setInterval(() => this.timer(), 1000);
+        let intervalId = setInterval(() => timer(), 1000);
         console.log('starting time')
-        this.setState(prevState =>({time: {isRunning: true}, intervalId: this.intervalId, ...prevState}))
+        setTime(({
+            ...time, 
+            isRunning: true
+        }))
+        setIntId(intervalId) 
         
       }
     const stopTimer = () => {
-        this.setState({
-          time: {
-              isRunning: false,
-              currentCount: this.state.time.currentCount
-          }
-        })
-        clearInterval(this.intervalId)
+        setTime(({
+          ...time,
+            isRunning: false,
+            currentCount: time.currentCount
+          }))
+        clearInterval(intId)
       }
 
-      const resetTimer = () => {
-          clearInterval(this.intervalId);
-          this.setState({
-              time: {
-                isRunning: false,
-                currentCount: 60,
-                timeMode: 'cd',
-                clock: 0,
-                elapsed: ''
-            }
-          })
-      }
-    
-    
-      // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
-      componentWillUnmount = () => {
-        clearInterval(this.intervalId);
-      }
+    const resetTimer = () => {
+        console.log(intId)
+        clearInterval(intId);
+        setTime({
+            isRunning: false,
+            currentCount: 60,
+            timeMode: 'cd',
+            clock: 0,
+            elapsed: ''
+        })
+        setIsStarted(false)
+    }
       
     
        
-      // Increment the timer
+    //   Increment the timer
       const update = () => {
-        let clock = this.state.clock;
-        clock += this.calculateOffset();
-        this.setState({...this.state, time: {...this.state.time, clock: clock}})
-        let elapsed = this.SecondsTohhmmss(clock / 1000);
-        this.setState({...this.state, time: {...this.state.time, elapsed: elapsed}})
+        let updateClock = time.clock;
+        updateClock += calculateOffset();
+        let elapsed = this.SecondsTohhmmss(updateClock / 1000);
+        setTime(time => ({
+            ...time,
+            clock: updateClock,
+            elapsed: elapsed
+        }))
       }
     
       // Calculate the offset time
@@ -134,25 +147,19 @@ const Game = props => {
     
 
     const startGame = () => {
-        this.state.time && this.startTimer();
-        this.setState({
-            isStarted: true
-        })
+        time && startTimer();
+        setIsStarted(true)
     }
     const endGame = () => {
-        
-        this.setState({
-            isStarted: false,
-            gameOver: true,
-            questionsRemaining: null,
-            questions: null,
-            score: 0,
-            correct: 0,
-            incorrect: 0
-
-        });
-        clearInterval(this.intervalId)
-        this.resetTimer();
+        setIsStarted(false)
+        setGameOver(true)
+        setQuestionsRemaining(null)
+        setQuestions(null)
+        setScore(0)
+        setCorrect(0)
+        setIncorrect(0)
+        clearInterval(intId)
+        resetTimer();
     }
     const handlePointsQuestions = (q) => {
 
@@ -166,7 +173,7 @@ const Game = props => {
         setQuestions(q.length)
     }
     const updateScore = (int) => {
-        this.setState(prevState =>({score: prevState.score + int}))
+        setScore(score + int)
     }
     
     const titleCase = (oldString) => {
@@ -179,7 +186,7 @@ const Game = props => {
             })
     }
     const resetMode = () => {
-        this.resetTimer();  
+        resetTimer();  
         setQuestionsRemaining(null);
         setQuestions(null)
         setScore(0)
@@ -196,258 +203,265 @@ const Game = props => {
             clock: 0,
             elapsed: ''
         })
-        clearInterval(this.intervalId);
+        clearInterval(intId);
     }
     const timeMode = (e) => {
-        this.state.time && setTime({...this.state.time, timeMode: e.target.value})
+        e.persist();
+        time && setTime(time => ({...time, timeMode: e.target.value}))
     }
     const handleTimeCheck = (e) => {
-        if(this.state.time === null) {
-            let time = {
+        if(time === null) {
+            let newTime = {
                 currentCount: 60,
                 isRunning: false,
                 timeMode: 'cd',
                 clock: 0,
                 elapsed: ''
             }
-            this.setState({time})
+            setTime(newTime)
         } else {
-            let time = null;
-            this.setState ({time})
+            let newTime = null;
+            setTime(newTime)
         }
-        this.setState({timeChecked: e.target.checked})
+        setTimeChecked(e.target.checked)
     }
     const handleScoreCheck = (e) => {
-        if(this.state.score === null) {
-            this.setState({score: 0,
-                correct: 0,
-                incorrect: 0,})
+        if(score === null) {
+            setScore(0)
+            setCorrect(0)
+            setIncorrect(0)
         } else {
-            this.setState ({score: null})
+            setScore(null)
         }
-        this.setState({scoreChecked: e.target.checked})
+        setScoreChecked(e.target.checked)
     }
     const saveScore = () => {
-        if(!this.props.user){
+        if(!props.user){
             let modal = {
               title: 'Not Logged In',
               body: 'You need to sign in to favorite countries',
               primaryButton: 
-              <Button variant="primary" onClick={this.props.login}>
+              <Button variant="primary" onClick={props.login}>
               Sign In/ Sign Up
               </Button>
             }
-            this.props.setModal(modal)
-            this.props.handleOpen();
+            props.setModal(modal)
+            props.handleOpen();
         } else {
-            this.setState({loading: true});
-            if(this.state.time && this.state.score){
-                db.collection('users').doc(this.props.user.uid).collection('scores').add({
-                    userId: this.props.user.uid && this.props.user.uid,
-                    gameMode: this.state.gameMode,
+            setLoadingState(true)
+            if(time && score){
+                db.collection('users').doc(props.user.uid).collection('scores').add({
+                    userId: props.user.uid && props.user.uid,
+                    gameMode: gameMode,
                     dateCreated: firestore.Timestamp.fromDate(new Date()),
-                    score: this.state.score,
-                    correct: this.state.correct,
-                    incorrect: this.state.incorrect,
-                    time: 60 - this.state.time.currentCount,
-                    questions: this.state.questionsSet 
+                    score: score,
+                    correct: correct,
+                    incorrect: incorrect,
+                    time: 60 - time.currentCount,
+                    questions: questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true, loading: false, gameId: data.id})
+                    setSaved(true)
+                    setLoadingState(false)
+                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
-            } else if(this.state.time && !this.state.score){
-                db.collection('users').doc(this.props.user.uid).collection('scores').add({
-                    userId: this.props.user.uid && this.props.user.uid,
-                    gameMode: this.state.gameMode,
+            } else if(time && !score){
+                db.collection('users').doc(props.user.uid).collection('scores').add({
+                    userId: props.user.uid && props.user.uid,
+                    gameMode: gameMode,
                     dateCreated: firestore.Timestamp.fromDate(new Date()),
-                    correct: this.state.correct,
-                    incorrect: this.state.incorrect,
-                    time: 60 - this.state.time.currentCount,
-                    questions: this.state.questionsSet 
+                    correct: correct,
+                    incorrect: incorrect,
+                    time: 60 - time.currentCount,
+                    questions: questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true, loading: false, gameId: data.id})
+                    setSaved(true)
+                    setLoadingState(false)
+                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
             } else {
-                db.collection('users').doc(this.props.user.uid).collection('scores').add({
-                    userId: this.props.user.uid && this.props.user.uid,
-                    gameMode: this.state.gameMode,
+                db.collection('users').doc(props.user.uid).collection('scores').add({
+                    userId: props.user.uid && props.user.uid,
+                    gameMode: gameMode,
                     dateCreated: firestore.Timestamp.fromDate(new Date()),
-                    correct: this.state.correct,
-                    incorrect: this.state.incorrect,
-                    questions: this.state.questionsSet 
+                    correct: correct,
+                    incorrect: incorrect,
+                    questions: questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
-                    this.setState({saved: true, loading: false, gameId: data.id})
+                    setSaved(true)
+                    setLoadingState(false)
+                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
             }
         }
     }
 
-    let back = !this.props.isStarted && <button className="btn btn-info mb-3" onClick={() => this.resetMode()}>Go Back</button>
+    let back = !props.isStarted && <button className="btn btn-info mb-3" onClick={() => resetMode()}>Go Back</button>
     let returnGameMode;
-    if(this.state.gameMode==="choice"){
+    if(gameMode==="choice"){
         returnGameMode = 
         <div>
         {back}
         <Choice 
-            isStarted={this.state.isStarted}
-            gameOver = {this.state.gameOver}
-            correct = {this.state.correct}
-            incorrect = {this.state.incorrect}
-            flagCodes = {this.props.flagCodes}
-            data = {this.props.data}
-            getCountryInfo = {this.props.getCountryInfo}
-            startGame = {this.startGame}
-            stopTimer = {this.stopTimer}
-            endGame = {this.endGame}
-            updateScore = {this.updateScore}
-            handlePoints = {this.handlePointsQuestions}
-            handleOpen = {this.handleOpen}
-            saved={this.state.saved}/>
+            isStarted={isStarted}
+            gameOver = {gameOver}
+            correct = {correct}
+            incorrect = {incorrect}
+            flagCodes = {props.flagCodes}
+            data = {props.data}
+            getCountryInfo = {props.getCountryInfo}
+            startGame = {startGame}
+            stopTimer = {stopTimer}
+            endGame = {endGame}
+            updateScore = {updateScore}
+            handlePoints = {handlePointsQuestions}
+            handleOpen = {handleOpen}
+            saved={saved}/>
         
         </div>
-    } else if (this.state.gameMode==="find"){
+    } else if (gameMode==="find"){
         returnGameMode = 
         <div>
             {back}
             <Find
-                simplifyString={this.props.simplifyString}
-                isStarted={this.state.isStarted}
-                gameOver = {this.state.gameOver}
-                correct = {this.state.correct}
-                incorrect = {this.state.incorrect}
-                mapVisible = {this.props.mapVisible}
-                mapView={this.props.mapView} 
-                worldData = {this.props.data}
-                countries = {this.props.countries}
-                changeView = {this.props.changeView}
-                getCountryInfo = {this.props.getCountryInfo}
-                hoverOnRegion = {this.props.hoverOnRegion}
-                hoverOffRegion = {this.props.hoverOffRegion}
-                startGame = {this.startGame}
-                endGame = {this.endGame}
-                updateScore = {this.updateScore}
-                handlePoints = {this.handlePointsQuestions}
-                handleOpen = {this.handleOpen}
-                saved={this.state.saved}/>
+                simplifyString={props.simplifyString}
+                isStarted={isStarted}
+                gameOver = {gameOver}
+                correct = {correct}
+                incorrect = {incorrect}
+                mapVisible = {props.mapVisible}
+                mapView={props.mapView} 
+                worldData = {props.data}
+                countries = {props.countries}
+                changeView = {props.changeView}
+                getCountryInfo = {props.getCountryInfo}
+                hoverOnRegion = {props.hoverOnRegion}
+                hoverOffRegion = {props.hoverOffRegion}
+                startGame = {startGame}
+                endGame = {endGame}
+                updateScore = {updateScore}
+                handlePoints = {handlePointsQuestions}
+                handleOpen = {handleOpen}
+                saved={saved}/>
         </div>
-    } else if (this.state.gameMode==="highlight"){
+    } else if (gameMode==="highlight"){
         returnGameMode = <div>
             {back}
             <Highlight
-                simplifyString={this.props.simplifyString}
-                isStarted={this.state.isStarted}
-                gameOver = {this.state.gameOver}
-                correct = {this.state.correct}
-                incorrect = {this.state.incorrect}
-                mapVisible = {this.props.mapVisible}
-                mapView={this.props.mapView} 
-                worldData = {this.props.data}
-                countries = {this.props.countries}
-                changeView = {this.props.changeView}
-                getCountryInfo = {this.props.getCountryInfo}
-                hoverOnRegion = {this.props.hoverOnRegion}
-                hoverOffRegion = {this.props.hoverOffRegion}
-                startGame = {this.startGame}
-                endGame = {this.endGame}
-                updateScore = {this.updateScore}
-                handlePoints = {this.handlePointsQuestions}
-                handleOpen = {this.handleOpen}
-                saved={this.state.saved}/>
+                simplifyString={props.simplifyString}
+                isStarted={isStarted}
+                gameOver = {gameOver}
+                correct = {correct}
+                incorrect = {incorrect}
+                mapVisible = {props.mapVisible}
+                mapView={props.mapView} 
+                worldData = {props.data}
+                countries = {props.countries}
+                changeView = {props.changeView}
+                getCountryInfo = {props.getCountryInfo}
+                hoverOnRegion = {props.hoverOnRegion}
+                hoverOffRegion = {props.hoverOffRegion}
+                startGame = {startGame}
+                endGame = {endGame}
+                updateScore = {updateScore}
+                handlePoints = {handlePointsQuestions}
+                handleOpen = {handleOpen}
+                saved={saved}/>
         </div>
     } else {
         returnGameMode = <div></div>
     }
-    let timeButtons = this.state.time && 
+    let timeButtons = time && 
         <div className="col-12 d-flex justify-content-center flex-wrap">
             <label>
             <Radio 
                 value="et"
-                checked={this.state.time.timeMode === "et"}
-                onChange={(e) => this.timeMode(e)}
+                checked={time.timeMode === "et"}
+                onChange={(e) => timeMode(e)}
             />
-            <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time {this.state.timeMode}</span>
+            <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
             </label>
             <label>
             <Radio 
                 value="cd"
-                checked={this.state.time.timeMode === "cd"}
-                onChange={(e) => this.timeMode(e)}
+                checked={time.timeMode === "cd"}
+                onChange={(e) => timeMode(e)}
             />
             <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
             </label>
         </div>
 
-    let ModalText = "Congrats! You've reached the end of the game. You answered " + this.state.correct + " questions correctly and " + this.state.incorrect + " incorrectly.\n Thanks for playing";
+    let ModalText = "Congrats! You've reached the end of the game. You answered " + correct + " questions correctly and " + incorrect + " incorrectly.\n Thanks for playing";
     let timeExpired = "Sorry, time expired! Try again"
-    let ModalBody = this.state.time && this.state.time.currentCount <= 0 ? timeExpired : ModalText;
+    let ModalBody = time && time.currentCount <= 0 ? timeExpired : ModalText;
     return(
     <>
     {/* <button onClick={}>Save Score</button> */}
-    <Modal show={this.state.show} onExit = {() => this.setState({gameOver: true})} onHide={() => this.handleClose()}>
+    <Modal show={show} onExit = {() => setGameOver(true)} onHide={() => handleClose()}>
         <Modal.Header closeButton>
         <Modal.Title>Game Over</Modal.Title>
         </Modal.Header>
         <Modal.Body>{ModalBody}</Modal.Body>
         <Modal.Footer>
-        <Button variant="secondary" onClick={() => this.handleClose()}>
+        <Button variant="secondary" onClick={() => handleClose()}>
             Close
         </Button>
-        {this.state.saved ? 
+        {saved ? 
             <Button variant="success">
-                <Link to={ROUTES.ACCOUNT}>{this.state.loading ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> : "View Score"}</Link>
+                <Link to={ROUTES.ACCOUNT}>{loadingState ? <FontAwesomeIcon icon={faSpinner} spin size="3x"/> : "View Score"}</Link>
             </Button> 
         :
-            <Button variant="primary" onClick={() => this.saveScore()}>
+            <Button variant="primary" onClick={() => saveScore()}>
                 Save Score
             </Button>
         }
         </Modal.Footer>
     </Modal>
     <Scoreboard 
-        score={this.state.score}
-        time={this.state.time}
-        startTimer={this.startTimer}
-        stopTimer={this.stopTimer}
-        timer={this.timer}
-        correct={this.state.correct}
-        incorrect={this.state.incorrect}
-        questions={this.state.questions}
-        questionsRemaining={this.state.questionsRemaining}/> 
+        score={score}
+        time={time}
+        startTimer={startTimer}
+        stopTimer={stopTimer}
+        timer={timer}
+        correct={correct}
+        incorrect={incorrect}
+        questions={questions}
+        questionsRemaining={questionsRemaining}/> 
     <div className="card mt-5 col-md-8 mx-auto">
-        <h3 className="text-center">{this.state.gameMode ? ("Game Mode: " + this.titleCase(this.state.gameMode)) : "Choose a Game Mode"}</h3>
-        {!this.state.gameMode && <div>
+        <h3 className="text-center">{gameMode ? ("Game Mode: " + titleCase(gameMode)) : "Choose a Game Mode"}</h3>
+        {!gameMode && <div>
             <div className="row">
                 <div className="col-md-12 mx-auto">
                     <ul className="px-0 text-center">
-                        <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'choice'})}>Questions</li>
-                        <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'find'})}>Find Country on Map</li>
-                        <li className="choice list-group-item text-dark btn-info" onClick={() => this.setState({gameMode: 'highlight'})}>Select Highlighted Country</li>
+                        <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('choice')}>Questions</li>
+                        <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('find')}>Find Country on Map</li>
+                        <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('highlight')}>Select Highlighted Country</li>
                     </ul>
                 </div>
             </div>
         </div>}
         <div className="text-center col-md-8 col-lg-12 px-0 mx-auto">{returnGameMode}</div>
-        {!this.state.isStarted && <div className="col-12 d-flex justify-content-center flex-wrap">
+        {!isStarted && <div className="col-12 d-flex justify-content-center flex-wrap">
             <label>
                 <Checkbox
-                    checked={this.state.timeChecked}
-                    onChange={(e) => this.handleTimeCheck(e)}
+                    checked={timeChecked}
+                    onChange={(e) => handleTimeCheck(e)}
                 />
                 <span style={{ marginLeft: 8, marginRight: 8 }}>Keep Time</span>
             </label>
             <label>
                 <Checkbox
-                    checked={this.state.scoreChecked}
-                    onChange={(e) => this.handleScoreCheck(e)}
+                    checked={scoreChecked}
+                    onChange={(e) => handleScoreCheck(e)}
                 />
                 <span style={{ marginLeft: 8 }}>Keep Score</span>
             </label>
-            {this.state.time && timeButtons}
+            {time && timeButtons}
         </div>}
     </div>
     </>
