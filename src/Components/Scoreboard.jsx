@@ -7,6 +7,9 @@ const Scoreboard = props => {
         <div className="card flex-row row col-sm-4 mt-3 mx-auto">
             <Timer 
                 time={props.time}
+                testTime={props.testTime}
+                currentCount={props.currentCount}
+                timeMode={props.timeMode}
             />
             <Score 
                 score={props.score}

@@ -27,6 +27,9 @@ const Game = props => {
     const [gameOver, setGameOver] = useState(false)
     const [scoreChecked, setScoreChecked] = useState(true)
     const [timeChecked, setTimeChecked] = useState(true)
+    const [currentCount, setCurrentCount] = useState(60)
+    const [isRunning, setIsRunning] = useState(false)
+    const [timeMode, setTimeMode] = useState('cd')
     const [time, setTime] = useState({
         currentCount: 60,
         isRunning: false,
@@ -40,16 +43,21 @@ const Game = props => {
     const [gameId, setGameId] = useState(null)
 
     useEffect(() => {
-        let intervalId;
-        if(isStarted && time && time.isRunning && time.timeMode){
-            intervalId = setInterval(() => timer(), 1000);
-            setIntId(intervalId)
-        } 
-        return () => {
-            clearInterval(intervalId)
-        };
-    }, [isStarted, time.currentCount])
+        console.log(currentCount)
+        let interval;
+        if(isStarted){
+            interval = setInterval( ()=>setCurrentCount(currentCount => timeMode === "cd" ? currentCount - 1 : currentCount + 1), 1000)
+        }
+        return () => clearInterval(interval)
+    }, [isStarted])
     
+    useEffect(() => {
+        if(timeMode === "cd")
+        setCurrentCount(60)
+        else setCurrentCount(0)
+
+    }, [timeMode])
+
     const handleClose = () => {
         setShow(false)
         endGame();
@@ -61,58 +69,9 @@ const Game = props => {
         }
         setShow(true)
     }
-    const timer = () => {
-        console.log('starting timer')
-        console.log(time)
-        console.log(time.currentCount)
-        if(time.timeMode === "cd"){
-            setTime(({
-                ...time,
-                currentCount: time.currentCount - 1,
-                isRunning: true,
-                timeMode: 'cd'
-            }))
-        } else {
-            console.log(time.clock)
-            setTime(({
-                ...time,
-                clock: time.clock + 1,
-                isRunning: true,
-                timeMode: 'et',
-                elapsed: ''
-            }))
-        //clear interval
-        if (time.currentCount === 0 || !time.isRunning) {
-          handleOpen()
-          clearInterval(intId);
-          console.log('timer stopped')
-          setTime(({...time, isRunning: false}))
-        }
-      }
-    }
-    
-    const startTimer = () => {
-        let intervalId = setInterval(() => timer(), 1000);
-        console.log('starting time')
-        setTime(({
-            ...time, 
-            isRunning: true
-        }))
-        setIntId(intervalId) 
-        
-      }
-    const stopTimer = () => {
-        setTime(({
-          ...time,
-            isRunning: false,
-            currentCount: time.currentCount
-          }))
-        clearInterval(intId)
-      }
 
     const resetTimer = () => {
         console.log(intId)
-        clearInterval(intId);
         setTime({
             isRunning: false,
             currentCount: 60,
@@ -122,32 +81,8 @@ const Game = props => {
         })
         setIsStarted(false)
     }
-      
-    
-       
-    //   Increment the timer
-      const update = () => {
-        let updateClock = time.clock;
-        updateClock += calculateOffset();
-        let elapsed = this.SecondsTohhmmss(updateClock / 1000);
-        setTime(time => ({
-            ...time,
-            clock: updateClock,
-            elapsed: elapsed
-        }))
-      }
-    
-      // Calculate the offset time
-      const calculateOffset = () => {
-        let now = Date.now();
-        let offset = now - this.offset;
-        this.offset = now; 
-        return offset;
-      }
-    
 
     const startGame = () => {
-        time && startTimer();
         setIsStarted(true)
     }
     const endGame = () => {
@@ -196,6 +131,7 @@ const Game = props => {
         setIsStarted(false)
         setScoreChecked(true)
         setTimeChecked(true)
+        setCurrentCount(60)
         setTime({
             currentCount: 60,
             isRunning: false,
@@ -205,9 +141,10 @@ const Game = props => {
         })
         clearInterval(intId);
     }
-    const timeMode = (e) => {
+    const toggleMode = (e) => {
         e.persist();
-        time && setTime(time => ({...time, timeMode: e.target.value}))
+        console.log(timeMode)
+        time && setTimeMode(e.target.value)
     }
     const handleTimeCheck = (e) => {
         if(time === null) {
@@ -257,7 +194,7 @@ const Game = props => {
                     score: score,
                     correct: correct,
                     incorrect: incorrect,
-                    time: 60 - time.currentCount,
+                    time: 60 - currentCount,
                     questions: questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
@@ -273,7 +210,7 @@ const Game = props => {
                     dateCreated: firestore.Timestamp.fromDate(new Date()),
                     correct: correct,
                     incorrect: incorrect,
-                    time: 60 - time.currentCount,
+                    time: 60 - currentCount,
                     questions: questionsSet 
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
@@ -316,7 +253,6 @@ const Game = props => {
             data = {props.data}
             getCountryInfo = {props.getCountryInfo}
             startGame = {startGame}
-            stopTimer = {stopTimer}
             endGame = {endGame}
             updateScore = {updateScore}
             handlePoints = {handlePointsQuestions}
@@ -381,16 +317,16 @@ const Game = props => {
             <label>
             <Radio 
                 value="et"
-                checked={time.timeMode === "et"}
-                onChange={(e) => timeMode(e)}
+                checked={timeMode === "et"}
+                onChange={(e) => toggleMode(e)}
             />
             <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
             </label>
             <label>
             <Radio 
                 value="cd"
-                checked={time.timeMode === "cd"}
-                onChange={(e) => timeMode(e)}
+                checked={timeMode === "cd"}
+                onChange={(e) => toggleMode(e)}
             />
             <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
             </label>
@@ -398,7 +334,7 @@ const Game = props => {
 
     let ModalText = "Congrats! You've reached the end of the game. You answered " + correct + " questions correctly and " + incorrect + " incorrectly.\n Thanks for playing";
     let timeExpired = "Sorry, time expired! Try again"
-    let ModalBody = time && time.currentCount <= 0 ? timeExpired : ModalText;
+    let ModalBody = time && currentCount <= 0 ? timeExpired : ModalText;
     return(
     <>
     {/* <button onClick={}>Save Score</button> */}
@@ -422,12 +358,11 @@ const Game = props => {
         }
         </Modal.Footer>
     </Modal>
-    <Scoreboard 
+    <Scoreboard
+        timeMode={timeMode}
+        currentCount={currentCount}
         score={score}
         time={time}
-        startTimer={startTimer}
-        stopTimer={stopTimer}
-        timer={timer}
         correct={correct}
         incorrect={incorrect}
         questions={questions}

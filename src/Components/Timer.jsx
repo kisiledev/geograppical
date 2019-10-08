@@ -24,7 +24,8 @@ const Timer = (props) => {
       <div className="col">
         <div>
         <h5 className={props.time && props.time.isRunning ? "text-danger" : "text-success"}>
-          <strong>{props.time !== null && props.time.timeMode === "et" ? SecondsToHHMMSS(props.time.clock) : SecondsToHHMMSS(props.time.currentCount)}</strong>
+          <strong>{props.time !== null && SecondsToHHMMSS(props.currentCount)}</strong>
+          {props.testTime}
         </h5>
         <div></div>
         </div>
