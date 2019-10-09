@@ -28,19 +28,12 @@ const Game = props => {
     const [scoreChecked, setScoreChecked] = useState(true)
     const [timeChecked, setTimeChecked] = useState(true)
     const [currentCount, setCurrentCount] = useState(60)
-    const [isRunning, setIsRunning] = useState(false)
+    // const [isRunning, setIsRunning] = useState(false)
     const [timeMode, setTimeMode] = useState('cd')
-    const [time, setTime] = useState({
-        currentCount: 60,
-        isRunning: false,
-        timeMode: 'cd',
-        clock: 0,
-        elapsed: ''
-    })
     const [show, setShow] = useState(false)
     const [saved, setSaved] = useState(false)
-    const [intId, setIntId] = useState(null)
-    const [gameId, setGameId] = useState(null)
+    // const [intId, setIntId] = useState(null)
+    // const [gameId, setGameId] = useState(null)
 
     useEffect(() => {
         console.log(currentCount)
@@ -49,7 +42,7 @@ const Game = props => {
             interval = setInterval( ()=>setCurrentCount(currentCount => timeMode === "cd" ? currentCount - 1 : currentCount + 1), 1000)
         }
         return () => clearInterval(interval)
-    }, [isStarted])
+    }, [isStarted, gameOver])
     
     useEffect(() => {
         if(timeMode === "cd")
@@ -70,18 +63,6 @@ const Game = props => {
         setShow(true)
     }
 
-    const resetTimer = () => {
-        console.log(intId)
-        setTime({
-            isRunning: false,
-            currentCount: 60,
-            timeMode: 'cd',
-            clock: 0,
-            elapsed: ''
-        })
-        setIsStarted(false)
-    }
-
     const startGame = () => {
         setIsStarted(true)
     }
@@ -93,8 +74,8 @@ const Game = props => {
         setScore(0)
         setCorrect(0)
         setIncorrect(0)
-        clearInterval(intId)
-        resetTimer();
+        setSaved(false)
+        setCurrentCount(60)
     }
     const handlePointsQuestions = (q) => {
 
@@ -120,8 +101,7 @@ const Game = props => {
                 return (firstMatch ? " " : "") + secondMatch.toUpperCase();
             })
     }
-    const resetMode = () => {
-        resetTimer();  
+    const resetMode = () => {  
         setQuestionsRemaining(null);
         setQuestions(null)
         setScore(0)
@@ -132,33 +112,18 @@ const Game = props => {
         setScoreChecked(true)
         setTimeChecked(true)
         setCurrentCount(60)
-        setTime({
-            currentCount: 60,
-            isRunning: false,
-            timeMode: 'cd',
-            clock: 0,
-            elapsed: ''
-        })
-        clearInterval(intId);
+        setSaved(false)
     }
     const toggleMode = (e) => {
         e.persist();
         console.log(timeMode)
-        time && setTimeMode(e.target.value)
+        timeChecked && setTimeMode(e.target.value)
     }
     const handleTimeCheck = (e) => {
-        if(time === null) {
-            let newTime = {
-                currentCount: 60,
-                isRunning: false,
-                timeMode: 'cd',
-                clock: 0,
-                elapsed: ''
-            }
-            setTime(newTime)
+        if(!timeChecked) {
+            setCurrentCount(60)
         } else {
-            let newTime = null;
-            setTime(newTime)
+            setCurrentCount(null)
         }
         setTimeChecked(e.target.checked)
     }
@@ -186,7 +151,7 @@ const Game = props => {
             props.handleOpen();
         } else {
             setLoadingState(true)
-            if(time && score){
+            if(timeChecked && score){
                 db.collection('users').doc(props.user.uid).collection('scores').add({
                     userId: props.user.uid && props.user.uid,
                     gameMode: gameMode,
@@ -199,11 +164,11 @@ const Game = props => {
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
                     setSaved(true)
+                    setIsStarted(false)
                     setLoadingState(false)
-                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
-            } else if(time && !score){
+            } else if(timeChecked && !score){
                 db.collection('users').doc(props.user.uid).collection('scores').add({
                     userId: props.user.uid && props.user.uid,
                     gameMode: gameMode,
@@ -215,8 +180,8 @@ const Game = props => {
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
                     setSaved(true)
+                    setIsStarted(false)
                     setLoadingState(false)
-                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
             } else {
@@ -230,8 +195,8 @@ const Game = props => {
                 }).then((data) => {
                     console.log('Data written successfully', data, data.id)
                     setSaved(true)
+                    setIsStarted(false)
                     setLoadingState(false)
-                    setGameId(data.id)
                 })
                 .catch( error => console.error(error))
             }
@@ -312,7 +277,7 @@ const Game = props => {
     } else {
         returnGameMode = <div></div>
     }
-    let timeButtons = time && 
+    let timeButtons = timeChecked && 
         <div className="col-12 d-flex justify-content-center flex-wrap">
             <label>
             <Radio 
@@ -334,7 +299,7 @@ const Game = props => {
 
     let ModalText = "Congrats! You've reached the end of the game. You answered " + correct + " questions correctly and " + incorrect + " incorrectly.\n Thanks for playing";
     let timeExpired = "Sorry, time expired! Try again"
-    let ModalBody = time && currentCount <= 0 ? timeExpired : ModalText;
+    let ModalBody = timeChecked && currentCount <= 0 ? timeExpired : ModalText;
     return(
     <>
     {/* <button onClick={}>Save Score</button> */}
@@ -359,10 +324,11 @@ const Game = props => {
         </Modal.Footer>
     </Modal>
     <Scoreboard
+        timeChecked={timeChecked}
+        isStarted={isStarted}
         timeMode={timeMode}
         currentCount={currentCount}
         score={score}
-        time={time}
         correct={correct}
         incorrect={incorrect}
         questions={questions}
@@ -396,7 +362,7 @@ const Game = props => {
                 />
                 <span style={{ marginLeft: 8 }}>Keep Score</span>
             </label>
-            {time && timeButtons}
+            {timeChecked && timeButtons}
         </div>}
     </div>
     </>

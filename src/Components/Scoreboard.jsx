@@ -6,7 +6,8 @@ const Scoreboard = props => {
     return(
         <div className="card flex-row row col-sm-4 mt-3 mx-auto">
             <Timer 
-                time={props.time}
+                timeChecked={props.timeChecked}
+                isStarted={props.isStarted}
                 testTime={props.testTime}
                 currentCount={props.currentCount}
                 timeMode={props.timeMode}

@@ -13,6 +13,7 @@ const Choice = props => {
         props.handlePoints(questions);
     }, [])
     useEffect(() => {
+        console.log(`ending game`)
         endGame(); 
     }, [props.saved, props.gameOver]);
 
@@ -88,7 +89,8 @@ const Choice = props => {
             setGuesses(prevGuess => prevGuess + 1)
             setCurrentCountry(country)
             getAnswers(country)
-            if(questions && questions.length > 10){
+            if(questions && questions.length === 10){
+                console.log(`number of completed questions: ${questions.length}`)
                 console.log('showing scores')
                 props.handleOpen();
                 // setState({questions: [], answers: [], guesses: null})   

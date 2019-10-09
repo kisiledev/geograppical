@@ -18,14 +18,13 @@ const Timer = (props) => {
   }
   // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
   let time;
-  if(props.time){
+  if(props.timeChecked){
     time = 
     <div className="col text-center">Time
       <div className="col">
         <div>
-        <h5 className={props.time && props.time.isRunning ? "text-danger" : "text-success"}>
-          <strong>{props.time !== null && SecondsToHHMMSS(props.currentCount)}</strong>
-          {props.testTime}
+        <h5 className={props.timeChecked && props.isStarted ? "text-danger" : "text-success"}>
+          <strong>{props.timeChecked !== null && SecondsToHHMMSS(props.currentCount)}</strong>
         </h5>
         <div></div>
         </div>
@@ -35,7 +34,7 @@ const Timer = (props) => {
 
   let noTime = <div></div>
   return (
-    <div>{props.time && props.time !==null ? time : noTime}</div>
+    <div>{props.timeChecked && props.time !==null ? time : noTime}</div>
   )
 }
 export default Timer;
