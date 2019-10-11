@@ -5,10 +5,8 @@ import { withRouter } from 'react-router-dom'
 import * as ROUTES from '../Constants/Routes'
 
 
-class NaviBar extends React.Component {
-    componentDidMount = ()=> {
-    }
-    login = () => {
+const NaviBar = props => {
+    const login = () => {
         auth.signInWithPopup(googleProvider)
         .then((result) => {
             const user = result.user;
@@ -18,47 +16,50 @@ class NaviBar extends React.Component {
             console.log(error.message)
         })
     }
-    logout = () => {
+    const logout = () => {
         auth.signOut()
-        this.props.history.push('/')
+        props.history.push('/')
     }
-    render(){
         return(
             <Navbar collapseOnSelect expand="lg" bg="info" variant="dark">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Form 
                     className="ml-auto searchForm" 
                     inline
-                    onSubmit={(e) => this.props.getResults(this.props.searchText, e)}
+                    onSubmit={(e) => props.getResults(props.searchText, e)}
                     >
                     <FormControl 
                         type="text" 
                         placeholder="Search" 
                         className="search mr-sm-2"
-                        value={this.props.searchText}
-                        onChange={(e) => this.props.handleInput(e)} 
+                        value={props.searchText}
+                        onChange={(e) => props.handleInput(e)} 
                     />
                 </Form>
                 <Navbar.Collapse className="justify-content-end text-center" id="responsive-navbar-nav">
                     <Nav.Link href={ROUTES.ACCOUNT} className="nav-item-avatar">
-                    <img className="nav-avatar" src={this.props.user ? (this.props.user.photoURL ? this.props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar" />
+                    <img className="nav-avatar" src={props.user ? (props.user.photoURL ? props.user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar" />
                     </Nav.Link>
-                    {this.props.user ? null : 
+                    {props.user ? null : 
                     <Nav>
                         <Nav.Link className="navbarlink" href={ROUTES.SIGN_UP}>Sign Up</Nav.Link>
                         <Nav.Link className="navbarlink" href={ROUTES.SIGN_IN}>Sign In</Nav.Link>
                     </Nav>
                     }
-                    {this.props.user ? 
-                    <button onClick={this.logout} className="btn btn-warning my-2">Log Out</button>
+                    {props.user ? 
+                    <button onClick={logout} className="btn btn-warning my-2">Log Out</button>
                     :
-                    <button onClick={this.login} className="btn btn-warning my-2">Log In</button>
+                    <button onClick={login} type="button" className="ml-2 google-button">
+                        <span className="google-button__icon">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />
+                        </span>
+                        <span className="google-button__text">Sign in</span>
+                    </button>
                     }
                 </Navbar.Collapse>
             </Navbar>
             
         )
-    }
 }
 
 export default withRouter(NaviBar);
