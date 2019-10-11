@@ -1374,7 +1374,7 @@ export const userType = shape({
             email: PropTypes.string,
             phoneNumber: PropTypes.any,
             providerId: PropTypes.string,
-          })
+          }),
         ),
         apiKey: PropTypes.string,
         appName: PropTypes.string,
