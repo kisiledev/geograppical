@@ -18,6 +18,11 @@ import PasswordReset from './Components/PasswordReset.jsx';
 import AccountEdit from './Components/AccountEdit.jsx'
 import SearchResults from './Components/SearchResults.jsx';
 import SideNaviBar from './Components/SideNaviBar.jsx'
+
+if (process.env.NODE_ENV !== 'production') {
+  const {whyDidYouUpdate} = require('why-did-you-update');
+  whyDidYouUpdate(React);
+}
 // import LogRocket from 'logrocket';
 // LogRocket.init('w5ty2q/geograppical');
 
