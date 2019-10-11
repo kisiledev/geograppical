@@ -1,105 +1,77 @@
-import React from "react";
-import firebase, { auth, googleProvider } from "./Firebase/firebase";
-import { Alert } from 'react-bootstrap'
-// import {StyledFirebaseAuth} from 'react-firebaseui';
-import {Link, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import useSignUpForm from '../Helpers/CustomHooks';
+import 'firebaseui';
+import { auth, googleProvider } from './Firebase/firebase'
+import { Link, Redirect } from 'react-router-dom'
+import Alert from 'react-bootstrap/Alert'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-class SignIn extends React.Component {
-  state = {
-    email: '',
-    password: '',
-    message: '',
-    methods: []
-  }
 
-  uiConfig = {
-    signInFlow: 'popup',
-    signInSuccessUrl: '/',
-    signInOptions: [
-      firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      firebase.auth.GoogleAuthProvider.PROVIDER_ID
-    ],
-    callbacks: {
-      signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-        console.log('signInSuccessWithAuthResult', authResult, redirectUrl)
-        this.props.history.push('/')
-        return false
-      }
-    }
-  }
-  componentDidMount = () => {
-    // this.timeOut = setTimeout(() => {
-    //   this.setState({loading: false})
-    // }, 1000)
-  }
-  componentWillUnmount = () => {
-    clearTimeout(this.timeOut)
-  }
-  handleChange(e) {
-    e.persist();
-    this.setState({ [e.target.name]: e.target.value}, () => {
-        this.checkPWValue(this.state.password);
-        this.checkEmail(this.state.email)
-    });
-}
-checkEmail = (value) => {
-    const regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const isEmailValid = regex.test(value)
-    this.setState({isEmailValid})
-}
-checkPWValue(value){
-    const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
-    const isPWInvalid = re2.test(value)
-    this.setState({isPWInvalid})
-}
-
-  login(e) {
-    console.log(this.state)
+const SignIn = props => {
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [methods, setMethods] = useState(null)
+  const [message, setMessage] = useState({});
+  
+  const login = () => {
     console.log('reunning login')
-    e.preventDefault();
-    auth.fetchSignInMethodsForEmail(this.state.email).then((u) => {
+    auth.fetchSignInMethodsForEmail(inputs.email).then((u) => {
       console.log(u)
-      this.setState({methods: u})
+      setMethods(u)
       if(u.length === 0 || u.includes('password')){
         console.log('no methods')
-        auth.signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+        auth.signInWithEmailAndPassword(inputs.email, inputs.password).then((u)=>{
           console.log(u)
-          this.setState({message: {style: "success", content: `Logged in user ${u.user.email}`}})
+          setMessage({style: "success", content: `Logged in user ${u.user.email}`})
       }).catch((error) => {
           console.log(error);
           console.log(error.message)
-          this.setState({message: {style: "danger", content: `${error.message} Sign up using the link below`}})
+          setMessage({style: "danger", content: `${error.message} Sign up using the link below`})
         });
       } else {
         console.log('methods found')
+        console.log(methods)
         const content = 
         `You already have an account at ${u[0]} 
         Please login using this authentication method`
         console.log(content)
-        this.setState({message: {style: 'warning', content: content}})
+        setMessage({style: 'warning', content: content})
       }
     })
     .catch((error) => {
         console.log(error);
         console.log(error.message)
-        this.setState({message: {style: "danger", content: `${error.message}`}})
+        setMessage({style: "danger", content: `${error.message}`})
       });
   }
+  const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
 
-  signup(e){
-    console.log(this.state)
-    console.log('reunning signup')
-    e.preventDefault();
-    auth.createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-        this.setState({message: {style: "success", content: `Created user ${u.user.email}`}})
-    }).catch((error) => {
-        this.setState({message: {style: "danger", content: `${error.message}`}})
-      })
+  // const uiConfig = {
+  //   signInFlow: 'popup',
+  //   signInSuccessUrl: '/',
+  //   signInOptions: [
+  //     firebase.auth.EmailAuthProvider.PROVIDER_ID,
+  //     firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  //   ],
+  //   callbacks: {
+  //     signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+  //       console.log('signInSuccessWithAuthResult', authResult, redirectUrl)
+  //       this.props.history.push('/')
+  //       return false
+  //     }
+  //   }
+  // }
+  useEffect(() => {
+    checkEmail(inputs.email);
+  }, [inputs.email])
+
+  
+  const checkEmail = (value) => {
+      const regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      const isEmailValid = regex.test(value)
+      setIsEmailValid(isEmailValid)
   }
-
-  googleSignUp = () => {
+  const googleSignUp = () => {
     auth.signInWithPopup(googleProvider).then((result) =>{
       console.log(result)
     }).catch((error) => {
@@ -108,83 +80,91 @@ checkPWValue(value){
       console.log(credential);
     })
   };
-  
-
-  render() {
-    // googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     
-    const { user } = this.props;
-    if(user && user.uid){
-      return <Redirect to="/account" />
-    } 
-    return (
-      this.state.loading ? 
-      <div className="mx-auto col-lg-4 text-center">
-        <FontAwesomeIcon icon={faSpinner} spin size="3x"/>
-      </div>
-       : 
-      <div className="mx-auto col-lg-4">
-        {<Alert variant={this.state.message.style}>{this.state.message.content}</Alert>}
-        <div className="row mb-3">
-          <div className="col-lg-12 text-center">
-            <h1 className="mt-3">Sign In</h1>
-          </div>
+  
+      
+  const { user } = props;
+  if(user && user.uid){
+    return <Redirect to="/account" />
+  } 
+  
+  const isInvalid = 
+  (inputs.password === '' || !inputs.password) || 
+  (inputs.email === '' || !inputs.email);
+
+  return (
+    props.loading ? 
+    <div className="mx-auto col-lg-4 text-center">
+      <FontAwesomeIcon icon={faSpinner} spin size="3x"/>
+    </div>
+     : 
+    <div className="mx-auto col-lg-4">
+      {<Alert variant={message.style}>{message.content}</Alert>}
+      <div className="row mb-3">
+        <div className="col-lg-12 text-center">
+          <h1 className="mt-3">Sign In</h1>
         </div>
-        <div className="row">
-          <div className="col-lg-12">
-          {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
-            <form>
-            <div className="form-group mx-auto">
-              <label htmlFor="exampleInputEmail1">Email address</label>
+      </div>
+      <div className="row">
+        <div className="col-lg-12">
+        {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
+          <form>
+          <div className="form-group mx-auto">
+            <label htmlFor="exampleInputEmail1">Email address</label>
+              <input 
+                value={inputs.email || ""} 
+                onChange={handleInputChange}
+                type="email" 
+                name="email" 
+                className={"form-control " + ((inputs.email === "" || !inputs.email) ? 'prefinput' : (isEmailValid ? 'form-success' : 'form-error'))}
+                id="exampleInputEmail1" 
+                aria-describedby="emailHelp" 
+                placeholder="Enter email" />
+            </div>
+            <div className="form-group mx-auto mb-3">
+              <label htmlFor="exampleInputPassword1">Password</label>
                 <input 
-                  value={this.state.email} 
-                  onChange={(e) =>this.handleChange(e)} 
-                  type="email" 
-                  name="email" 
-                  className={"form-control " + (this.state.email === "" ? 'prefinput' : (this.state.isInvalid ? 'form-error' : 'form-success'))}
-                  id="exampleInputEmail1" 
-                  aria-describedby="emailHelp" 
-                  placeholder="Enter email" />
-              </div>
-              <div className="form-group mx-auto mb-3">
-                <label htmlFor="exampleInputPassword1">Password</label>
-                  <input 
-                    value={this.state.password} 
-                    onChange={(e) => this.handleChange(e)} 
-                    type="password" 
-                    name="password" 
-                    className={"form-control " + (this.state.password === "" ? 'prefinput' : (this.state.isPWInvalid ? 'form-error' : 'form-success'))}
-                    id="exampleInputPassword1" 
-                    placeholder="Password" />
-              </div>
-              <div className="col-12 d-flex justify-content-center mt-5 mb-3">
-              <button onClick={(e) => this.login(e)} type="button" className="btn-primary email-button">
-                  <span className="email-button__icon">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
-                  </span>
-                  <span className="email-button__text">Sign in with Email</span>
-                </button>
-              </div>
-              <div className="col-12 d-flex justify-content-center mb-3">
-                <button onClick={(e) => this.googleSignUp(e)} type="button" className="google-button">
-                  <span className="google-button__icon">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />
-                  </span>
-                  <span className="google-button__text">Sign in with Google</span>
-                </button>
-              </div>
-              <div className="col-12 d-flex justify-content-center">
-                <p>Don't have an account? <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link></p>
-              </div>
-              <div className="col-12 d-flex justify-content-center">
-                <p>Forgot Your Password? <Link to={`${process.env.PUBLIC_URL}/passwordreset`}>Reset It</Link></p>
-              </div>
-              </form>
-          </div>
+                  value={inputs.password || ""} 
+                  onChange={handleInputChange}
+                  type="password" 
+                  name="password" 
+                  className="form-control prefinput"
+                  id="exampleInputPassword1" 
+                  placeholder="Password" />
+            </div>
+            <div className="col-12 d-flex justify-content-center mt-5 mb-3">
+            <button onClick={handleSubmit} disabled={isInvalid} type="button" className="btn-primary email-button">
+                <span className="email-button__icon">
+                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg" className="emailicon" alt="email icon"/>
+                </span>
+                <span className="email-button__text">Sign in with Email</span>
+              </button>
+            </div>
+            <div className="col-12 d-flex justify-content-center mb-3">
+              <button onClick={googleSignUp} type="button" className="google-button">
+                <span className="google-button__icon">
+                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" className="emailicon" alt="google icon" />
+                </span>
+                <span className="google-button__text">Sign in with Google</span>
+              </button>
+            </div>
+            <div className="col-12 d-flex justify-content-center">
+              <p>Don't have an account? <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link></p>
+            </div>
+            <div className="col-12 d-flex justify-content-center">
+              <p>Forgot Your Password? <Link to={`${process.env.PUBLIC_URL}/passwordreset`}>Reset It</Link></p>
+            </div>
+            </form>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
+const SignUpLink = () => (
+  <div className="col-12 d-flex justify-content-center">
+    <p>Already have an account? <Link to={`${process.env.PUBLIC_URL}/login`}>Sign In</Link></p>
+  </div>
+)
 export default SignIn;
+export { SignUpLink }

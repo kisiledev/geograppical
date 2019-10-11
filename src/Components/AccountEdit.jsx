@@ -35,8 +35,7 @@ const AccountEdit = props => {
         setShow(false);
         setProviders(props.user.providerData)
     }
-    const linkEmail = (e, email, password) => {
-        e.preventDefault();
+    const linkEmail = (email, password) => {
         const credential = Firebase.auth.EmailAuthProvider.credential(email, password);
         auth.currentUser.linkWithCredential(credential)
         .then((usercred) => {
