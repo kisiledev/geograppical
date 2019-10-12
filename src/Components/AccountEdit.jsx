@@ -1,75 +1,85 @@
+/* eslint-disable linebreak-style */
 import React, { useState, useEffect } from 'react';
 import * as Firebase from 'firebase/app';
-import { db, auth, googleProvider, facebookProvider, emailProvider, twitterProvider } from './Firebase/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faArrowLeft, faTrashAlt  } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Modal } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { faSpinner, faArrowLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Alert, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import {
+  db,
+  auth,
+  googleProvider,
+  facebookProvider,
+  emailProvider,
+  twitterProvider,
+} from './Firebase/firebase';
 import LinkEmailModal from './LinkEmailModal';
 
-const AccountEdit = props => {
-    const [providers, setProviders] = useState(props.user.providerData)
-    const [message, setMessage] = useState('')
-    const [favorites, setFavorites] = useState('')
-    const [scores, setScores] = useState('')
-    const [loadingState, setLoadingState] = useState(false)
-    const [modalMessage, setModalMessage] = useState('')
-    const [show, setShow] = useState(false)
+const AccountEdit = (props) => {
+const [providers, setProviders] = useState(props.user.providerData);
+const [message, setMessage] = useState('');
+const [favorites, setFavorites] = useState('');
+const [scores, setScores] = useState('');
+const [loadingState, setLoadingState] = useState(false);
+const [modalMessage, setModalMessage] = useState('');
+const [show, setShow] = useState(false);
+
+
 
     useEffect (() => {
-        setLoadingState(true)
+        setLoadingState(true);
         getFavoritesData();
         getScoresData();
-    }, [])
+    }, []);
 
     const unlink = (provider) => {
-        console.log(props.user.providerData)
+        console.log(props.user.providerData);
         auth.currentUser.unlink(provider).then(() => {
-            setMessage({style: "danger", content: `Unlinked provider ${provider}`})
+            setMessage({style: "danger", content: `Unlinked provider ${provider}`});
             setProviders(props.user.providerData);
         }).catch((error) => {
-            console.log(error)
-        })
-    }
+            console.log(error);
+        });
+    };
     const close = () => {
         setShow(false);
-        setProviders(props.user.providerData)
-    }
+        setProviders(props.user.providerData);
+    };
     const linkEmail = (email, password) => {
         const credential = Firebase.auth.EmailAuthProvider.credential(email, password);
         auth.currentUser.linkWithCredential(credential)
         .then((usercred) => {
-            let user = usercred.user
-            setModalMessage({style: "success", content: "Linked email credentials to account"})
+            let user = usercred.user;
+            setModalMessage({style: "success", content: "Linked email credentials to account"});
             console.log('success', user);
         }).catch((error) => {
-            console.log(error)
-            setModalMessage({style: "danger", content: error.message})
-        })
-    }
+            console.log(error);
+            setModalMessage({style: "danger", content: error.message});
+        });
+    };
     const providerLink = (provider) => {
         auth.currentUser.linkWithPopup(provider).then((result) =>{
           const credential = result.credential;
           const user = result.user;
-          setProviders(props.user.providerData)
-          console.log(credential, user)
+          setProviders(props.user.providerData);
+          console.log(credential, user);
         }).catch((error) => {
           console.error(error);
           const credential = error.credential;
           console.log(credential);
-        })
+        });
         auth.getRedirectResult().then((result) => {
             if(result.credential){
                 const credential = result.credential;
-                const user = result.user
-                console.log(credential, user)
-                console.log(providers)
+                const user = result.user;
+                console.log(credential, user);
+                console.log(providers);
             }
         }).catch((error) => {
           console.error(error);
           const credential = error.credential;
           console.log(credential);
-        })
+        });
       };
     const getFavoritesData = () => {
         let countriesRef = db.collection(`/users/${props.user.uid}/favorites`);
@@ -79,13 +89,13 @@ const AccountEdit = props => {
                 let info = {
                     id: doc.id,
                     data: doc.data().country
-                }
+                };
                 data.push(info);
-            })
-            setFavorites(data)
-            setLoadingState(false)
-        })
-    }
+            });
+            setFavorites(data);
+            setLoadingState(false);
+        });
+    };
     const getScoresData = () => {
         let scoresRef = db.collection(`/users/${props.user.uid}/scores`);
         scoresRef.get().then(querySnapshot => {
@@ -94,13 +104,13 @@ const AccountEdit = props => {
                 let info = {
                     id: doc.data().dateCreated,
                     data: doc.data()
-                }
+                };
                 data.push(info);
-            })
-            setScores(data)
-            setLoadingState(false)
-        })
-    }
+            });
+            setScores(data);
+            setLoadingState(false);
+        });
+    };
         let providersArray = [
             {
                 id: 1,
@@ -136,18 +146,18 @@ const AccountEdit = props => {
                 onClick: () => setShow(true)
                 
             }
-        ]
+        ];
         let userProvs =[];
             providers && providers.map(data =>{
-                return userProvs.push(data.providerId)
+                return userProvs.push(data.providerId);
             });
         let provIcons = [];
         providersArray.map(prov => {
             let provider = {};
             provider["name"] = prov.provName;
             provider["icon"] = prov.icon;
-            return provIcons.push(provider)
-        })
+            return provIcons.push(provider);
+        });
         return(
             <>
             <Modal show={show} onHide={() => this.handleClose()}>
@@ -195,7 +205,7 @@ const AccountEdit = props => {
                         <div key={data.uid}className="card mb-3">
                             {providersArray.map(prov => {
                                 if(data.providerId === prov.provName){
-                                    return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />
+                                    return <img src={prov.icon} key={prov.id} className="mb-3 providericon" alt={`${prov.name.toLowerCase()} icon`} />;
                                 }
                                 return null;
 
@@ -207,7 +217,7 @@ const AccountEdit = props => {
                                     {data.email && <p><strong>Email </strong> - {data.email}</p>}
                                     {providersArray.map(prov => {
                                         if(data.providerId === prov.provName){
-                                            return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>
+                                            return <p key={prov.id}><strong>Provider </strong> - {prov.name}</p>;
                                         }
                                         return null;
                                 })}
@@ -219,7 +229,7 @@ const AccountEdit = props => {
                                 </button>
                             </div>
                         </div>
-                        )
+                        );
                     })}
                     </div>
                     {providersArray.map(provider => {
@@ -231,13 +241,13 @@ const AccountEdit = props => {
                         </span>
                         <span className="google-button__text">Link with {provider.name}</span>
                         </button>
-                    </div>
+                    </div>;
                         }
                         return null;
                     })}
             </div>
             </>
-        )
-    }
+        );
+    };
 
 export default AccountEdit;

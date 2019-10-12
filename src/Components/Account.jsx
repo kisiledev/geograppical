@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
