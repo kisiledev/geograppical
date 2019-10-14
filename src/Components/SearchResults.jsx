@@ -98,7 +98,7 @@ const SearchResults = props => {
             handleOpen = {props.handleOpen}
             handleClose = {props.handleClose}
             user = {props.user}
-            setModal = {props.setModal}
+            setStateModal = {props.setStateModal}
             login = {props.login}
             />
           )}

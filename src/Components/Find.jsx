@@ -302,7 +302,7 @@ const Find = props => {
         setGuesses(checkguesses)
         props.handlePoints(questions);
     }
-    const { isStarted, mapView, mapVisible } = props;
+    const { isStarted, changeMapView, mapVisible } = props;
     let directions = 
     <div className="directions">
         <h5>Directions</h5>
@@ -324,7 +324,7 @@ const Find = props => {
           </div>
           <button 
             className="btn btn-info" 
-            onClick={() => mapView() }
+            onClick={() => changeMapView() }
           >
             <FontAwesomeIcon icon={faGlobeAfrica}/>{ (mapVisible === "Show") ? "Hide" : "Show"} Map
           </button>

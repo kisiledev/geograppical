@@ -147,7 +147,7 @@ const Game = props => {
               Sign In/ Sign Up
               </Button>
             }
-            props.setModal(modal)
+            props.setStateModal(modal)
             props.handleOpen();
         } else {
             setLoadingState(true)
@@ -214,7 +214,6 @@ const Game = props => {
             gameOver = {gameOver}
             correct = {correct}
             incorrect = {incorrect}
-            flagCodes = {props.flagCodes}
             data = {props.data}
             getCountryInfo = {props.getCountryInfo}
             startGame = {startGame}
@@ -236,7 +235,7 @@ const Game = props => {
                 correct = {correct}
                 incorrect = {incorrect}
                 mapVisible = {props.mapVisible}
-                mapView={props.mapView} 
+                changeMapView={props.changeMapView} 
                 worldData = {props.data}
                 countries = {props.countries}
                 changeView = {props.changeView}
@@ -260,7 +259,7 @@ const Game = props => {
                 correct = {correct}
                 incorrect = {incorrect}
                 mapVisible = {props.mapVisible}
-                mapView={props.mapView} 
+                changeMapView={props.changeMapView} 
                 worldData = {props.data}
                 countries = {props.countries}
                 changeView = {props.changeView}

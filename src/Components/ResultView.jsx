@@ -77,7 +77,7 @@ const ResultView = props => {
           <Breakpoint medium up>
           <Maps
             mapVisible = {props.mapVisible}
-            mapView={props.mapView} 
+            changeMapView={props.changeMapView} 
             worldData = {props.data}
             countries = {props.countries}
             changeView = {props.changeView}
@@ -86,8 +86,6 @@ const ResultView = props => {
             hoverOffRegion = {props.hoverOffRegion}
             handleMove = {props.handleMove}
             handleLeave = {props.handleLeave}
-            hovered = {props.hovered}
-            highlighted = {props.highlighted}
             totalRegions = {totalRegions}
             uniqueRegions = {uniqueRegions}
             getOccurrence = {getOccurrence}
@@ -115,7 +113,7 @@ const ResultView = props => {
             handleOpen = {props.handleOpen}
             handleClose = {props.handleClose}
             user = {props.user}
-            setModal = {props.setModal}
+            setStateModal = {props.setStateModal}
             login = {props.login}
             />
           )}
@@ -126,20 +124,16 @@ const ResultView = props => {
               hoverOffRegion = {props.hoverOffRegion}
               changeView = {props.changeView}
               handleSideBar = {props.handleSideBar}
-              viewSidebar={props.viewSidebar}
               data={props.data}
               totalRegions = {totalRegions}
               uniqueRegions = {uniqueRegions}
               getOccurrence = {getOccurrence}
-              sidebar={props.sidebar}
               getCountryInfo = {props.getCountryInfo}
               filterCountryByName = {props.filterCountryByName}
               hoverOnCountry = {props.hoverOnCountry}
               hoverOffCountry = {props.hoverOffCountry}
               handleMove = {props.handleMove}
               handleLeave = {props.handleLeave}
-              hovered = {props.hovered}
-              highlighted = {props.highlighted}
           />
         </Breakpoint>
       </div>

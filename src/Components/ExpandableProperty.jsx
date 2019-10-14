@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { faAngleUp } from "@fortawesome/free-solid-svg-icons";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const PropertyName = styled.div`
   font-weight: bold;
@@ -11,32 +10,36 @@ export const PropertyName = styled.div`
 `;
 
 const ExpandableProperty = (props) => {
-    let [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
-      setTrue(); 
-    }, []);
+  const {
+    country,
+    title,
+    children,
+  } = props;
 
-    const setTrue = () => {
-      if(props.country.name){
+  const setTrue = () => {
+    if (country.name) {
       setIsOpen(true);
-    } else {
-      return
     }
-  }
+  };
+
+  useEffect(() => {
+    setTrue();
+  }, []);
   const toggleValue = () => {
     setIsOpen(!isOpen);
-  }
-      return (
-        <React.Fragment>
-          <PropertyName onClick={() => toggleValue()}>
-            {props.title}
-            {isOpen ? <FontAwesomeIcon icon={faAngleUp} /> : <FontAwesomeIcon icon={faAngleDown} />}
-          </PropertyName>
-          {isOpen ? props.children : null}
-          {React.Children.count(props.children) === 0 && isOpen ? 'The list is empty!' : null}
-        </React.Fragment>
-      );
-    }
+  };
+  return (
+    <>
+      <PropertyName onClick={() => toggleValue()}>
+        {title}
+        {isOpen ? <FontAwesomeIcon icon={faAngleUp} /> : <FontAwesomeIcon icon={faAngleDown} />}
+      </PropertyName>
+      {isOpen ? children : null}
+      {React.Children.count(children) === 0 && isOpen ? 'The list is empty!' : null}
+    </>
+  );
+};
 
-  export default ExpandableProperty; 
+export default ExpandableProperty;

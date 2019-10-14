@@ -32,7 +32,7 @@ const DetailView = (props) => {
 
   const {
     countryDetail, data, user, loading, getCountryInfo, match, history, changeView,
-    viewSidebar, handleSideBar, hoverOffRegion, hoverOnRegion, filterCountryByName,
+    handleSideBar, hoverOffRegion, hoverOnRegion, filterCountryByName,
     hoverOnCountry, hoverOffCountry,
   } = props;
 
@@ -188,7 +188,6 @@ const DetailView = (props) => {
                 <SidebarView
                   data={data}
                   changeView={changeView}
-                  viewSidebar={viewSidebar}
                   totalRegions={totalRegions}
                   uniqueRegions={uniqueRegions}
                   getOccurrence={getOccurrence}
@@ -214,7 +213,6 @@ DetailView.propTypes = {
   loading: PropTypes.bool.isRequired,
   getCountryInfo: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
-  viewSidebar: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,
   hoverOffRegion: PropTypes.func.isRequired,
   hoverOnRegion: PropTypes.func.isRequired,

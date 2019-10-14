@@ -166,7 +166,7 @@ const Find = (props) => {
               </div>
               <button 
                 className="btn btn-info" 
-                onClick={() => props.mapView() }
+                onClick={() => props.changeMapView() }
               >
                 <FontAwesomeIcon icon={faGlobeAfrica}/>{ (props.mapVisible === "Show") ? "Hide" : "Show"} Map
               </button>

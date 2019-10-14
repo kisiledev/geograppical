@@ -367,7 +367,7 @@ class Highlight extends Component {
           </div>    
           <button 
             className="btn btn-info" 
-            onClick={() => this.props.mapView() }
+            onClick={() => this.props.changeMapView() }
           >
             <FontAwesomeIcon icon={faGlobeAfrica}/>{ (this.props.mapVisible === "Show") ? "Hide" : "Show"} Map
           </button>
