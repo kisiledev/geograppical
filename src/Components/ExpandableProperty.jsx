@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -41,5 +42,22 @@ const ExpandableProperty = (props) => {
     </>
   );
 };
-
+ExpandableProperty.propTypes = {
+  country: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    introduction: PropTypes.string.isRequired,
+    geography: PropTypes.string.isRequired,
+    people: PropTypes.string.isRequired,
+    government: PropTypes.string.isRequired,
+    economy: PropTypes.string.isRequired,
+    energy: PropTypes.string.isRequired,
+    communications: PropTypes.string.isRequired,
+    transportation: PropTypes.string.isRequired,
+    military_and_security: PropTypes.string.isRequired,
+    terrorism: PropTypes.string.isRequired,
+    transnational_issues: PropTypes.string.isRequired,
+  }).isRequired,
+  children: PropTypes.node.isRequired,
+  title: PropTypes.string.isRequired,
+};
 export default ExpandableProperty;

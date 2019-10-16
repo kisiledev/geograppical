@@ -50,16 +50,14 @@ const App = (props) => {
   const handleViews = (selectedView) => {
     setView(selectedView);
   };
-  const removeIsoNull = (array) => {
-    array.filter((item) => item.government.capital !== undefined
+  const removeIsoNull = (array) => array.filter((item) => item.government.capital !== undefined
       && item.government.country_name !== undefined
       && item.government.country_name.isoCode !== undefined
       && item.name);
-  };
 
   const removeNull = (array) => {
     if (array !== undefined) {
-      array.filter((item) => item.government.capital !== undefined
+      return array.filter((item) => item.government.capital !== undefined
           && item.government.country_name !== undefined
           && item.name)
         .map((item) => (Array.isArray(item) ? removeNull(item) : item));
@@ -85,48 +83,51 @@ const App = (props) => {
       axios.get('../factbook.json')
         .then((res) => {
           let Data = res && res.data.countries;
-          Data = Object.values(Data).forEach((country) => country.data) || [];
+          // console.log(Data);
+          Data = Object.values(Data).map((country) => country.data) || [];
           const newData = removeNull(Object.values(Data));
-          newData.forEach((element, index, nd) => {
-            nd[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, '');
-            if (nd[index].geography.map_references === 'AsiaEurope') {
-              nd[index].geography.map_references = 'Europe';
-            }
-            if (nd[index].geography.map_references === 'Middle East') {
-              nd[index].geography.map_references = 'Southwest Asia';
-            }
-          });
+          if (newData.length > 0) {
+            newData.forEach((element, index, nd) => {
+              nd[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, '');
+              if (nd[index].geography.map_references === 'AsiaEurope') {
+                nd[index].geography.map_references = 'Europe';
+              }
+              if (nd[index].geography.map_references === 'Middle East') {
+                nd[index].geography.map_references = 'Southwest Asia';
+              }
+            });
+          }
           let loadediso;
           if (iso) {
             loadediso = iso;
           }
-          const countries = {};
-          countries.list = newData;
-          for (let i = 0, len = countries.list.length; i < len; i += 1) {
-            countries[countries.list[i].name] = countries.list[i];
+          let countries = {};
+          countries = newData;
+          for (let i = 0, len = countries.length; i < len; i += 1) {
+            countries[countries[i].name] = countries[i];
           }
-          const codes = {};
+          let codes = {};
           if (codes === undefined) {
             return console.log('unable to load');
           }
-          codes.list = loadediso;
-          if (codes.list && codes.list.length > 0) {
-            for (let i = 0, len = codes.list.length; i < len; i += 1) {
-              if (codes.list[i]) {
-                codes[codes.list[i].name] = codes.list[i];
+          codes = loadediso;
+          if (codes && codes.length > 0) {
+            for (let i = 0, len = codes.length; i < len; i += 1) {
+              if (codes[i]) {
+                codes[codes[i].name] = codes[i];
               }
             }
             let i = 0;
-            const len = codes.list.length;
+            const len = codes.length;
             for (i; i < len; i += 1) {
-              if (countries[codes.list[i].name]) {
-                countries[codes.list[i].name].government.country_name.isoCode = codes.list[i].isoCode;
-              } else if (countries[codes.list[i].shortName]) {
-                countries[codes.list[i].shortName].government.country_name.isoCode = codes.list[i].isoCode;
+              if (countries[codes[i].name]) {
+                countries[codes[i].name].government.country_name.isoCode = codes[i].isoCode;
+              } else if (countries[codes[i].shortName]) {
+                countries[codes[i].shortName].government.country_name.isoCode = codes[i].isoCode;
               }
             }
           }
-          const x = removeIsoNull(countries.list);
+          const x = removeIsoNull(countries);
           setWorldData(x || []);
           setLoadingState(false);
           return x;
@@ -137,7 +138,7 @@ const App = (props) => {
   };
 
   const simplifyString = (string) => {
-    string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '').toUpperCase();
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '').toUpperCase();
   };
 
   const handleClose = () => {
@@ -198,6 +199,7 @@ const App = (props) => {
   const hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
+    console.log(region)
     const countries = Object.values(region)[2];
     console.log(countries);
     if (typeof countries === 'object') {
@@ -222,6 +224,7 @@ const App = (props) => {
   const hoverOffRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
+    console.log(region)
     const countries = Object.values(region)[2];
     if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
@@ -236,11 +239,16 @@ const App = (props) => {
   const getCountryInfo = (name) => {
     const searchDB = Object.values(worldData);
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
-    const match = searchDB.filter((country) => (simplifyString(country.name) === simplifyString(name)
-      || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase()));
+    console.log(name);
+    searchDB.filter(country => console.log(simplifyString(country.name)));
+    console.log(searchDB);
+    const match = searchDB.filter(country => (
+      simplifyString(country.name) === simplifyString(name)));
+      // || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase()));
     if (match === [] || !match || match.length === 0) {
       setCountryDetail('error');
     }
+    console.log(match);
     setCountryDetail(match[0]);
     handleViews('detail');
   };
@@ -258,12 +266,17 @@ const App = (props) => {
 
   const filterCountryByName = (string) => {
     const searchDB = Object.values(worldData);
-    const match = searchDB.filter((country) => country.name.toUpperCase() === string.toUpperCase()
+    console.log(searchDB);
+    const match = searchDB.filter(
+      (country) => country.name.toUpperCase() === string.toUpperCase()
       || country.name.toUpperCase().includes(string.toUpperCase())
       || country.government.country_name.conventional_long_form.toUpperCase() === string.toUpperCase()
-      || country.government.country_name.conventional_long_form.toUpperCase().includes(string.toUpperCase()));
-    // console.log(match)
+      || country.government.country_name.conventional_long_form.toUpperCase().includes(string.toUpperCase()),
+    );
+    console.log(match);
+    setFilterNations(match);
     if (string.length > 0) {
+      console.log(match);
       setFilterNations(match);
       return match;
     }
@@ -302,9 +315,12 @@ const App = (props) => {
     e.persist();
     // console.log('changing')
     const { value } = e.target;
+    console.log(value);
     if (value != null && value.trim() !== '') {
       setSearchText(value);
+      console.log(searchText);
       filterCountryByName(value);
+      console.log(filterCountryByName(value));
       let nodes = [...(document.getElementsByClassName('country'))];
       nodes.forEach((node) => {
         node.style.fill = '#60c080 ';
@@ -371,11 +387,10 @@ const App = (props) => {
   };
   useEffect(() => {
     loadCodes();
-    loadWorldData();
-    auth.onAuthStateChanged((loggeduser) => {
-      console.log(loggeduser);
-      if (loggeduser) {
-        setUser(loggeduser);
+    auth.onAuthStateChanged((u) => {
+      console.log(u);
+      if (u) {
+        setUser(u);
         setAuthenticated(true);
         setLoadingState(false);
       } else {
@@ -385,6 +400,15 @@ const App = (props) => {
       }
     });
   }, []);
+
+  // useEffect(() => {
+  //   filterCountryByName(searchText);
+  //   console.log(searchText);
+  // }, [searchText]);
+
+  useEffect(() => {
+    loadWorldData();
+  }, [iso]);
 
   if (error) {
     return (
@@ -396,6 +420,7 @@ const App = (props) => {
       <Breakpoint large up>
         <SideNaviBar
           view={view}
+          loadingState={loadingState}
           searchText={searchText}
           handleInput={handleInput}
           changeView={handleViews}
@@ -443,7 +468,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/search/:input`}
-            render={() => (
+            render={(props) => (
               <SearchResults
                 changeMapView={changeMapView}
                 searchText={searchText}
@@ -473,7 +498,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/play`}
-            render={() => (
+            render={(props) => (
               <Game
                 simplifyString={simplifyString}
                 changeMapView={changeMapView}
@@ -512,7 +537,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/login`}
-            render={() => (
+            render={(props) => (
               <SignIn
                 user={user}
                 handleOpen={handleOpen}
@@ -526,7 +551,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/passwordreset`}
-            render={() => (
+            render={(props) => (
               <PasswordReset
                 user={user}
                 handleOpen={handleOpen}
@@ -540,7 +565,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/signup`}
-            render={() => (
+            render={(props) => (
               <SignUp
                 user={user}
                 handleOpen={handleOpen}
@@ -554,7 +579,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/`}
-            render={() => (
+            render={(props) => (
               <ResultView
                 changeMapView={changeMapView}
                 countries={filterNations}
@@ -579,7 +604,7 @@ const App = (props) => {
           />
           <Route
             path={`${process.env.PUBLIC_URL}/:country`}
-            render={() => (
+            render={(props) => (
               <DetailView
                 countries={filterNations}
                 handleSideBar={handleSideBar}

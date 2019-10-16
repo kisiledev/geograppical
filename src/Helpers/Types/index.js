@@ -74,7 +74,10 @@ export const countryType = shape({
             value: number,
             units: string,
         }),
-        exclusive_fishing_zone: string,
+        exclusive_fishing_zone: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.object,
+        ]),
         }),
         climate: string,
         terrain: string,
@@ -499,14 +502,20 @@ export const countryType = shape({
             value: number,
             units: string,
         }),
-        male: shape({
+        male: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.shape({
             value: number,
             units: string,
-        }),
-        female: shape({
+          }),
+        ]),
+        female: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.shape({
             value: number,
             units: string,
-        }),
+          }),
+        ]),
         date: string,
         }),
         youth_unemployment: shape({
@@ -1346,7 +1355,10 @@ export const countryType = shape({
         refugees: shape({
             by_country: arrayOf(
             shape({
-                people: number,
+                people: PropTypes.oneOfType([
+                  PropTypes.string,
+                  PropTypes.number,
+                ]),
             }),
             ),
             date: string,

@@ -85,7 +85,7 @@ const SignIn = props => {
       
   const { user } = props;
   if(user && user.uid){
-    return <Redirect to="/account" />
+    return <Redirect exact to="/account" />
   } 
   
   const isInvalid = 

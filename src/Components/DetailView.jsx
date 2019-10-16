@@ -54,6 +54,7 @@ const DetailView = (props) => {
   const makeFavorite = (e, country) => {
     e.persist();
     setShow(true);
+    console.log('adding')
     if (!user) {
       setMessage({
         style: 'warning',
@@ -68,6 +69,7 @@ const DetailView = (props) => {
           // console.log(`Added ${country.name} to favorites`)
           setMessage({ style: 'success', content: `Added ${country.name} to favorites` });
           setFavorite(true);
+          console.log('added favorite')
         })
           .catch((err) => {
           // console.error(err)

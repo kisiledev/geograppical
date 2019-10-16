@@ -40,7 +40,7 @@ const RecursiveProperty = (props) => (
           <ExpandableProperty country={props.property} title={camelCaseToNormal(props.propertyName)} expanded={!!props.rootProperty}>
             {Object.values(props.property).map((property, index, { length }) => (
               <RecursiveProperty
-                key={property}
+                key={`${property.title}1`}
                 property={property}
                 propertyName={Object.getOwnPropertyNames(props.property)[index]}
                 excludeBottomBorder={index === length - 1}

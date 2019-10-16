@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
