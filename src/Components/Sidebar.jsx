@@ -177,16 +177,16 @@ const Sidebar = (props) => {
                       onClick={(e) => sidebarDataHandling(e, region, -5, -5)}
                       className="btn load-more nav-link btn-sm bg-warning mb-1"
                     >
-                      Previous
-                      {regions[region].visible - regions[region].start}
+                      {`Previous  
+                      ${regions[region].visible - regions[region].start}`}
                     </button>
                     <button
                       type="button"
                       onClick={(e) => sidebarDataHandling(e, region, 5, 5)}
                       className="btn load-more nav-link btn-sm bg-success mb-1"
                     >
-                      Next
-                      {regions[region].visible - regions[region].start}
+                      {`Next 
+                      ${regions[region].visible - regions[region].start}`}
                     </button>
                   </div>
                 )}

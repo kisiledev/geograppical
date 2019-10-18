@@ -11,8 +11,6 @@ const PrivateRoute = ({
   loadingState,
   ...rest
 }) => {
-  console.log(loadingState, 'loading');
-  console.log(authenticated);
   if (loadingState || authenticated === false) {
     return (
       <div className="mt-5 mx-auto text-center">

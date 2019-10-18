@@ -3,7 +3,7 @@ import { Navbar, Nav, Collapse } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import PropTypes, { shape } from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   dataType,
   userType,
@@ -32,10 +32,21 @@ const SideNaviBar = (props) => {
     filterCountryByName,
   } = props;
 
-  const expandLinks = (type) => {
-    setExpanded(!expanded);
-    if (type) {
+  const expandLinks = (e, type) => {
+    if (e && type) {
+      e.persist();
+      console.log(e);
+      console.log(e.target);
       handleData(type);
+      setExpanded(false);
+    } else {
+      let target = null;
+      console.log(target);
+      console.log(e.target);
+      console.log(e.target.title)
+      target = e.target;
+      setExpanded(!expanded);
+      e.stopPropagation();
     }
   };
   const closeNav = () => {
@@ -62,6 +73,10 @@ const SideNaviBar = (props) => {
   }, [data]);
 
   useEffect(() => {
+    console.log(expanded)
+  }, [expanded])
+
+  useEffect(() => {
     if (totalRegions.length > 0) {
       getUniqueRegions(totalRegions);
     }
@@ -74,22 +89,27 @@ const SideNaviBar = (props) => {
       <Nav>
         <Nav.Link className="navbarlink" href="/">Home</Nav.Link>
         <Nav.Link className="navbarlink" href="/play">Games</Nav.Link>
-        <Nav>
-          <Nav.Link href={ROUTES.ACCOUNT} title="Account" onMouseEnter={() => expandLinks()} onMouseLeave={() => expandLinks()} className="navbarlink">
+        <Nav
+          onMouseEnter={(e) => expandLinks(e)}
+          onMouseLeave={(e) => expandLinks(e)}
+          onFocus={(e) => expandLinks(e)}
+          onBlur={(e) => expandLinks(e)}
+        >
+          <Nav.Link href={ROUTES.ACCOUNT} title="Account" className="navbarlink">
             Account
             {' '}
             {user && <FontAwesomeIcon className="ml-1 align-middle" icon={!expanded ? faAngleDown : faAngleUp} />}
           </Nav.Link>
-        </Nav>
-        {user && (
+          {user && (
           <Collapse in={expanded}>
-            <Nav onSelect={closeNav}>
-              <Nav.Link onSelect={closeNav} className="sublinks" onClick={() => expandLinks('favorites')}>Favorites</Nav.Link>
-              <Nav.Link onSelect={closeNav} className="sublinks" onClick={() => expandLinks('scores')}>Scores</Nav.Link>
-              <Nav.Link onSelect={closeNav} href={ROUTES.EDIT} className="sublinks">Edit</Nav.Link>
+            <Nav>
+              <Nav.Link className="sublinks" onClick={(e) => expandLinks(e, 'favorites')}>Favorites</Nav.Link>
+              <Nav.Link className="sublinks" onClick={(e) => expandLinks(e, 'scores')}>Scores</Nav.Link>
+              <Nav.Link href={ROUTES.EDIT} className="sublinks">Edit</Nav.Link>
             </Nav>
           </Collapse>
-        )}
+          )}
+        </Nav>
       </Nav>
       <SideCountry
         loadingState={loadingState}

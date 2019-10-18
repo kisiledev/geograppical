@@ -75,6 +75,30 @@ const Account = (props) => {
       setLoadingState(false);
     });
   };
+  const toggleData = (type) => {
+    if (type === 'f') {
+      if (acctFavorites.isOpen) {
+        const oldFav = { ...acctFavorites };
+        oldFav.isOpen = false;
+        setAcctFavorites(oldFav);
+      } else {
+        const oldFav = { ...acctFavorites };
+        oldFav.isOpen = true;
+        setAcctFavorites(oldFav);
+      }
+    }
+    if (type === 's') {
+      if (acctScores.isOpen) {
+        const oldSco = { ...acctScores };
+        oldSco.isOpen = false;
+        setAcctScores(oldSco);
+      } else {
+        const oldSco = { ...acctScores };
+        oldSco.isOpen = true;
+        setAcctScores(oldSco);
+      }
+    }
+  };
   const getScoresData = () => {
     const scoresRef = db.collection(`/users/${user.uid}/scores`);
     scoresRef.onSnapshot((querySnapshot) => {
@@ -150,7 +174,7 @@ const Account = (props) => {
         <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
           <h5
             className="list-group-item d-flex align-items-center"
-            onClick={() => handleData('favorites')}
+            onClick={() => toggleData('f')}
             role="button"
           >
             Favorites
@@ -158,12 +182,12 @@ const Account = (props) => {
               {loadingState ? <FontAwesomeIcon icon={faSpinner} spin />
                 : acctFavorites && acctFavorites.data.length > 0 && acctFavorites.data.length}
             </Badge>
-            {acctFavorites && <FontAwesomeIcon className="align-text-top" icon={favorites ? faAngleDown : faAngleUp} />}
+            {acctFavorites && <FontAwesomeIcon className="align-text-top" icon={favorites ? faAngleUp : faAngleDown} />}
           </h5>
           {loadingState ? null
             : (
               acctFavorites && (
-              <Collapse in={favorites}>
+              <Collapse in={acctFavorites.isOpen}>
                 <ul className="list-group list-group-flush">
                   {acctFavorites && acctFavorites.data.length > 0
                     ? acctFavorites.data.map((favorite) => (
@@ -197,7 +221,7 @@ const Account = (props) => {
             )}
         </div>
         <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-          <h5 className="list-group-item d-flex align-items-center" onClick={() => handleData('scores')}>
+          <h5 className="list-group-item d-flex align-items-center" onClick={() => toggleData('s')}>
             Scores
             <Badge variant="primary">
               {loadingState ? <FontAwesomeIcon icon={faSpinner} spin />
@@ -205,11 +229,11 @@ const Account = (props) => {
                 && acctScores.data.length > 0
                 && acctScores.data.length}
             </Badge>
-            {acctScores && <FontAwesomeIcon className="align-text-top" icon={scores ? faAngleDown : faAngleUp} />}
+            {acctScores && <FontAwesomeIcon className="align-text-top" icon={scores ? faAngleUp : faAngleDown} />}
           </h5>
           {loadingState ? null
             : (acctScores && (
-              <Collapse in={scores}>
+              <Collapse in={acctScores.isOpen}>
                 <ul className="list-group list-group-flush">
                   {acctScores && acctScores.data.length > 0 ? acctScores.data.map((score) => {
                     const milliseconds = score.data.dateCreated.seconds * 1000;

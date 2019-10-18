@@ -47,6 +47,11 @@ const App = (props) => {
   const [iso, setIso] = useState(null);
   const [search, setSearch] = useState('');
 
+  const {
+    history,
+    location,
+  } = props;
+
   const handleViews = (selectedView) => {
     setView(selectedView);
   };
@@ -252,12 +257,12 @@ const App = (props) => {
   const getResults = (results, e) => {
     if (!searchText) {
       setSearchText(results);
-      props.history.goBack();
+      history.goBack();
     } else {
       e.preventDefault();
       setSearch(searchText);
       handleViews('default');
-      props.history.push(`/search/${searchText}`);
+      history.push(`/search/${searchText}`);
     }
   };
 
@@ -295,12 +300,12 @@ const App = (props) => {
     alert('clicked');
     e.preventDefault();
     console.log('handling submit');
-    props.history.push(e.target.value);
+    history.push(e.target.value);
   };
   const handleData = (type) => {
-    if (props.location.pathname !== '/account') {
+    if (location.pathname !== '/account') {
       console.log('not on account page');
-      props.history.push('/account');
+      history.push('/account');
     }
     if (type === 'favorites') {
       setFavorites(!favorites);
