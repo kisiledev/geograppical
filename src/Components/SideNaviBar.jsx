@@ -19,7 +19,6 @@ const SideNaviBar = (props) => {
 
   const {
     loadingState,
-    history,
     user,
     handleData,
     data,
@@ -34,9 +33,6 @@ const SideNaviBar = (props) => {
   } = props;
 
   const expandLinks = (type) => {
-    if (!user) {
-      history.push('/login');
-    }
     setExpanded(!expanded);
     if (type) {
       handleData(type);
@@ -130,9 +126,6 @@ SideNaviBar.propTypes = {
   filterCountryByName: PropTypes.func.isRequired,
   hoverOnCountry: PropTypes.func.isRequired,
   hoverOffCountry: PropTypes.func.isRequired,
-  history: shape({
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
 };
 
 export default withRouter(SideNaviBar);

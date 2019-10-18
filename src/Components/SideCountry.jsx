@@ -1,14 +1,14 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-mixed-operators */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BreakpointProvider } from 'react-socks';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes, { shape } from 'prop-types';
+import PropTypes from 'prop-types';
 import {
   dataType,
-  userType,
 } from '../Helpers/Types/index';
 import Sidebar from './Sidebar';
 import '../App.css';
@@ -33,9 +33,6 @@ const SideCountry = (props) => {
     filterCountryByName,
   } = props;
 
-  useEffect(() => {
-    console.log(uniqueRegions);
-  }, [uniqueRegions]);
 
   const viewSidebar = () => {
     if (sidebar === 'Show') {
@@ -50,10 +47,10 @@ const SideCountry = (props) => {
       <nav className="countriesnav">
         <button
           type="button"
-          className="btn btn-sm btn-block btn-outline-secondary mb-3" 
+          className="btn btn-sm btn-block btn-outline-secondary mb-3"
           onClick={() => viewSidebar()}
         >
-          { (sidebar === 'Hide') ? 'Show' : 'Hide'}
+          { (sidebar === 'Hide') ? 'Show ' : 'Hide '}
           Countries List
         </button>
         {sidebar === 'Show'

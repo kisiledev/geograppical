@@ -1,3 +1,6 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable max-len */
+/* eslint-disable linebreak-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable linebreak-style */
@@ -6,10 +9,26 @@ import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import {
+  dataType,
+} from '../Helpers/Types/index';
 import '../App.css';
 
 const Sidebar = (props) => {
   const [regions, setRegions] = useState('');
+
+  const {
+    data,
+    getCountryInfo,
+    totalRegions,
+    uniqueRegions,
+    getOccurrence,
+    hoverOffRegion,
+    hoverOnRegion,
+    hoverOnCountry,
+    hoverOffCountry,
+  } = props;
 
   const removeNull = (array) => {
     array.filter((item) => item.government.capital !== undefined
@@ -20,7 +39,7 @@ const Sidebar = (props) => {
   };
 
   const getRegion = (region) => {
-    const searchDB = Object.values(props.data);
+    const searchDB = Object.values(data);
     removeNull(searchDB);
     const match = searchDB.filter((place) => place.geography.map_references === region);
     return match;
@@ -49,9 +68,9 @@ const Sidebar = (props) => {
         };
       }
     });
-    console.log(regionsState);
+    // console.log(regionsState);
     setRegions({ ...regionsState });
-    console.log(regions)
+    // console.log(regions)
   };
   const updateOpen = (region) => {
     const open = {
@@ -84,60 +103,66 @@ const Sidebar = (props) => {
   };
 
   useEffect(() => {
-    setDynamicRegions(props.uniqueRegions);
+    setDynamicRegions(uniqueRegions);
   }, []);
 
   useEffect(() => {
-    console.log(regions)
-    console.log(props.uniqueRegions)
-  }, [regions])
+    // console.log(regions)
+    // console.log(uniqueRegions)
+  }, [regions]);
 
   useEffect(() => {
-    console.log(props.uniqueRegions);
-    setDynamicRegions(props.uniqueRegions);
-  }, [props.uniqueRegions]);
+    // console.log(uniqueRegions);
+    setDynamicRegions(uniqueRegions);
+  }, [uniqueRegions]);
   return (
     <div className="sidebar-sticky">
       <ul className="nav nav-pills flex-column">
-        {props.uniqueRegions && props.uniqueRegions.map((region) => (
+        {uniqueRegions && uniqueRegions.map((region) => (
           <li
             className="nav-item regionlist"
             key={region}
             onClick={(e) => handleRegion(e, region)}
-            onFocus={(e) => props.hoverOnRegion(e, regions[region])}
-            onMouseOver={(e) => props.hoverOnRegion(e, regions[region])}
-            onMouseLeave={(e) => props.hoverOffRegion(e, regions[region])}
+            onFocus={(e) => hoverOnRegion(e, regions[region])}
+            onMouseOver={(e) => hoverOnRegion(e, regions[region])}
+            onMouseLeave={(e) => hoverOffRegion(e, regions[region])}
           >
             <span className="nav-link btn-sm bg-success mb-1">
               <strong>{region}</strong>
               -
-              {props.getOccurrence(props.totalRegions, region)}
+              {getOccurrence(totalRegions, region)}
             </span>
             <Collapse in={regions[region] && regions[region].open}>
               <ul className="countryul">
-                {regions[region] && regions[region].countries[0] && regions[region].countries.slice(regions[region].start, regions[region].visible).map((country) => (
-                  <li
-                    key={country.name}
-                    className="nav-item countrylist"
-                  >
-                    <div className="btn-group d-flex">
-                      <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
-                        <button
-                          type="button"
-                          onFocus={(e) => props.hoverOnCountry(e, regions[region], country.name)}
-                          onClick={() => props.getCountryInfo(country.name, country.government.capital.name)}
-                          onMouseOver={(e) => props.hoverOnCountry(e, regions[region], country.name)}
-                          onMouseLeave={(e) => props.hoverOffCountry(e, regions[region], country.name)}
-                          className="btn nav-link countryname btn-sm bg-info mb-1"
-                        >
-                          <strong>{country.name}</strong>
-                          <FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} />
-                        </button>
-                      </Link>
-                    </div>
-                  </li>
-                ))}
-                {regions[region] && regions[region].open && (regions[region].visible < regions[region].countries.length)
+                {regions[region]
+                && regions[region].countries[0]
+                  && regions[region].countries
+                    .slice(regions[region].start, regions[region].visible)
+                    .map((country) => (
+                      <li
+                        key={country.name}
+                        className="nav-item countrylist"
+                      >
+                        <div className="btn-group d-flex">
+                          <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
+                            <button
+                              type="button"
+                              onFocus={(e) => hoverOnCountry(e, regions[region], country.name)}
+                              onClick={() => getCountryInfo(country.name, country.government.capital.name)}
+                              onMouseOver={(e) => hoverOnCountry(e, regions[region], country.name)}
+                              onMouseLeave={(e) => hoverOffCountry(e, regions[region], country.name)}
+                              className="btn nav-link countryname btn-sm bg-info mb-1"
+                            >
+                              <strong>{country.name}</strong>
+                              <FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} />
+                            </button>
+                          </Link>
+                        </div>
+                      </li>
+                    ))}
+                {regions[region]
+                  && regions[region].open
+                  && (regions[region].visible < regions[region].countries.length)
                 && (
                   <div className="btn-group countryactions">
                     <button
@@ -174,5 +199,15 @@ const Sidebar = (props) => {
   );
 };
 
-
+Sidebar.propTypes = {
+  data: dataType.isRequired,
+  getCountryInfo: PropTypes.func.isRequired,
+  totalRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  uniqueRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getOccurrence: PropTypes.func.isRequired,
+  hoverOffRegion: PropTypes.func.isRequired,
+  hoverOnRegion: PropTypes.func.isRequired,
+  hoverOnCountry: PropTypes.func.isRequired,
+  hoverOffCountry: PropTypes.func.isRequired,
+};
 export default Sidebar;

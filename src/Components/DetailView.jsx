@@ -31,7 +31,7 @@ const DetailView = (props) => {
   const [message, setMessage] = useState('');
 
   const {
-    countryDetail, data, user, loading, getCountryInfo, match, history, changeView,
+    countryDetail, data, user, loadingState, getCountryInfo, match, history, changeView,
     handleSideBar, hoverOffRegion, hoverOnRegion, filterCountryByName,
     hoverOnCountry, hoverOffCountry,
   } = props;
@@ -54,7 +54,7 @@ const DetailView = (props) => {
   const makeFavorite = (e, country) => {
     e.persist();
     setShow(true);
-    console.log('adding')
+    console.log('adding');
     if (!user) {
       setMessage({
         style: 'warning',
@@ -69,7 +69,7 @@ const DetailView = (props) => {
           // console.log(`Added ${country.name} to favorites`)
           setMessage({ style: 'success', content: `Added ${country.name} to favorites` });
           setFavorite(true);
-          console.log('added favorite')
+          console.log('added favorite');
         })
           .catch((err) => {
           // console.error(err)
@@ -97,8 +97,9 @@ const DetailView = (props) => {
     ) {
       // console.log(countryDetail)
     }
-    if (!loading) {
+    if (!loadingState) {
       getCountryInfo(match.params.country);
+      console.log(props);
 
     }
   }, []);
@@ -121,7 +122,7 @@ const DetailView = (props) => {
   const errorMsg = (<div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>);
   uniqueRegions = uniqueRegions.filter(Boolean);
   return (
-    loading || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> :
+    loadingState || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> :
       (
         <BreakpointProvider>
           {countryDetail === 'error' || countryDetail === undefined ? (
@@ -212,7 +213,7 @@ DetailView.propTypes = {
   countryDetail: countryType.isRequired,
   data: dataType.isRequired,
   user: userType.isRequired,
-  loading: PropTypes.bool.isRequired,
+  loadingState: PropTypes.bool.isRequired,
   getCountryInfo: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,

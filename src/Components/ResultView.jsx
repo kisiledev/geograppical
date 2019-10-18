@@ -172,7 +172,7 @@ ResultView.defaultProps = {
   user: null,
 };
 ResultView.propTypes = {
-  countries: PropTypes.arrayOf(countryType.isRequired).isRequired,
+  countries: PropTypes.arrayOf(countryType).isRequired,
   data: dataType.isRequired,
   user: userType,
   mapVisible: PropTypes.string.isRequired,

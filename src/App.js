@@ -199,7 +199,7 @@ const App = (props) => {
   const hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
-    console.log(region)
+    console.log(region);
     const countries = Object.values(region)[2];
     console.log(countries);
     if (typeof countries === 'object') {
@@ -224,7 +224,7 @@ const App = (props) => {
   const hoverOffRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
-    console.log(region)
+    console.log(region);
     const countries = Object.values(region)[2];
     if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
@@ -239,12 +239,9 @@ const App = (props) => {
   const getCountryInfo = (name) => {
     const searchDB = Object.values(worldData);
     name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
-    console.log(name);
-    searchDB.filter(country => console.log(simplifyString(country.name)));
-    console.log(searchDB);
-    const match = searchDB.filter(country => (
-      simplifyString(country.name) === simplifyString(name)));
-      // || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase()));
+    const match = searchDB.filter((country) => (
+      simplifyString(country.name) === simplifyString(name)
+      || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase()));
     if (match === [] || !match || match.length === 0) {
       setCountryDetail('error');
     }
@@ -468,7 +465,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/search/:input`}
-            render={(props) => (
+            render={() => (
               <SearchResults
                 changeMapView={changeMapView}
                 searchText={searchText}
@@ -498,7 +495,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/play`}
-            render={(props) => (
+            render={() => (
               <Game
                 simplifyString={simplifyString}
                 changeMapView={changeMapView}
@@ -537,8 +534,9 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/login`}
-            render={(props) => (
+            render={() => (
               <SignIn
+                loadingState={loadingState}
                 user={user}
                 handleOpen={handleOpen}
                 handleClose={handleClose}
@@ -551,7 +549,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/passwordreset`}
-            render={(props) => (
+            render={() => (
               <PasswordReset
                 user={user}
                 handleOpen={handleOpen}
@@ -565,7 +563,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/signup`}
-            render={(props) => (
+            render={() => (
               <SignUp
                 user={user}
                 handleOpen={handleOpen}
@@ -579,7 +577,7 @@ const App = (props) => {
           <Route
             exact
             path={`${process.env.PUBLIC_URL}/`}
-            render={(props) => (
+            render={() => (
               <ResultView
                 changeMapView={changeMapView}
                 countries={filterNations}
@@ -604,7 +602,7 @@ const App = (props) => {
           />
           <Route
             path={`${process.env.PUBLIC_URL}/:country`}
-            render={(props) => (
+            render={() => (
               <DetailView
                 countries={filterNations}
                 handleSideBar={handleSideBar}

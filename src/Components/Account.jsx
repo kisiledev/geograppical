@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { db } from './Firebase/firebase';
 import {
-  dataType,
   userType,
 } from '../Helpers/Types/index';
 
@@ -97,7 +96,10 @@ const Account = (props) => {
     setLoadingState(true);
     getFavoritesData();
     getScoresData();
-  }, []);
+    // return () => {
+
+    // };
+  }, [favorites, scores]);
 
   return (
     <div className="col-sm-12 col-md-8 mx-auto">
@@ -123,11 +125,11 @@ const Account = (props) => {
                   <h6>Stats</h6>
                   <p>
                     {acctFavorites && acctFavorites.data.length}
-                    {acctFavorites && acctFavorites.length === 1 ? 'Favorite' : 'Favorites'}
+                    {acctFavorites && acctFavorites.length === 1 ? ' Favorite' : ' Favorites'}
                   </p>
                   <p>
                     {acctScores && acctScores.data.length}
-                    Scores
+                    {acctScores && acctScores.length === 1 ? ' Score' : ' Scores'}
                   </p>
                 </>
               )}
@@ -174,7 +176,7 @@ const Account = (props) => {
                           </small>
                         </h5>
                         <div className="d-flex justify-content-between">
-                          <Link to={`${process.env.PUBLIC_URL}/${simplifyString(favorite.id)}`}>
+                          <Link to={`${process.env.PUBLIC_URL}/${simplifyString(favorite.id.toLowerCase())}`}>
                             <Flag
                               className="favFlag img-thumbnail"
                               name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : '_unknown') ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
@@ -199,9 +201,11 @@ const Account = (props) => {
             Scores
             <Badge variant="primary">
               {loadingState ? <FontAwesomeIcon icon={faSpinner} spin />
-                : scores && scores.data.length > 0 && scores.data.length}
+                : (acctScores && acctScores.data)
+                && acctScores.data.length > 0
+                && acctScores.data.length}
             </Badge>
-            {scores && <FontAwesomeIcon className="align-text-top" icon={scores ? faAngleDown : faAngleUp} />}
+            {acctScores && <FontAwesomeIcon className="align-text-top" icon={scores ? faAngleDown : faAngleUp} />}
           </h5>
           {loadingState ? null
             : (acctScores && (
@@ -257,7 +261,6 @@ const Account = (props) => {
 
 Account.propTypes = {
   handleData: PropTypes.func.isRequired,
-  data: dataType.isRequired,
   user: userType.isRequired,
   favorites: PropTypes.bool.isRequired,
   scores: PropTypes.bool.isRequired,

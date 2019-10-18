@@ -86,20 +86,26 @@ export const countryType = shape({
             value: number,
             units: string,
         }),
-        lowest_point: shape({
+        lowest_point: PropTypes.oneOfType([
+          PropTypes.shape({
             name: string,
             elevation: shape({
             value: -number,
             units: string,
             }),
-        }),
-        highest_point: shape({
+          }),
+          PropTypes.string,
+        ]),
+        highest_point: PropTypes.oneOfType([
+          PropTypes.shape({
             name: string,
             elevation: shape({
-            value: number,
+            value: -number,
             units: string,
             }),
-        }),
+          }),
+          PropTypes.string,
+        ]),
         }),
         natural_resources: shape({
         resources: arrayOf(string),
@@ -523,14 +529,20 @@ export const countryType = shape({
             value: number,
             units: string,
         }),
-        male: shape({
+        male: PropTypes.oneOfType([
+          PropTypes.shape({
             value: number,
             units: string,
-        }),
-        female: shape({
+          }),
+          PropTypes.string,
+        ]),
+        female: PropTypes.oneOfType([
+          PropTypes.shape({
             value: number,
             units: string,
-        }),
+          }),
+          PropTypes.string,
+        ]),
         global_rank: number,
         date: string,
         }),
@@ -547,7 +559,8 @@ export const countryType = shape({
         government_type: string,
         capital: shape({
         name: string,
-        geographic_coordinates: shape({
+        geographic_coordinates: PropTypes.oneOfType([
+          shape({
             latitude: shape({
             degrees: number,
             minutes: number,
@@ -558,7 +571,10 @@ export const countryType = shape({
             minutes: number,
             hemisphere: string,
             }),
-        }),
+          }),
+          string,
+          number,
+        ]),
         time_difference: shape({
             timezone: number,
             note: string,
@@ -1194,13 +1210,22 @@ export const countryType = shape({
     communications: shape({
         telephones: shape({
         fixed_lines: shape({
-            total_subscriptions: number,
-            subscriptions_per_one_hundred_inhabitants: number,
+            total_subscriptions: PropTypes.oneOfType([
+              PropTypes.number,
+              PropTypes.string,
+            ]),
+            subscriptions_per_one_hundred_inhabitants: PropTypes.oneOfType([
+              PropTypes.number,
+              PropTypes.string,
+            ]),
             global_rank: number,
             date: string,
         }),
         mobile_cellular: shape({
-            total_subscriptions: number,
+            total_subscriptions: PropTypes.oneOfType([
+              PropTypes.number,
+              PropTypes.string,
+            ]),
             subscriptions_per_one_hundred_inhabitants: number,
             global_rank: number,
             date: string,
@@ -1229,7 +1254,10 @@ export const countryType = shape({
             inventory_of_registered_aircraft_operated_by_air_carriers:
             number,
             annual_passenger_traffic_on_registered_air_carriers: number,
-            annual_freight_traffic_on_registered_air_carriers: number,
+            annual_freight_traffic_on_registered_air_carriers: PropTypes.oneOfType([
+              PropTypes.number,
+              PropTypes.string,
+            ]),
             date: string,
         }),
         civil_aircraft_registration_country_code_prefix: shape({
