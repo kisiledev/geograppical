@@ -35,7 +35,7 @@ const Choice = (props) => {
     setCurrentCountry(null);
   };
   const shuffle = (a) => {
-    for (let i = a.length - 1; i > 0; i - 1) {
+    for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
@@ -50,6 +50,7 @@ const Choice = (props) => {
     const int = getRandomInt(0, data.length);
     setCurrentCountryId(int);
     const country = data[int];
+    console.log(country);
     return country;
   };
   const randomExcluded = (min, max, excluded) => {
@@ -71,7 +72,7 @@ const Choice = (props) => {
     const fetchanswers = [];
     if (country) {
       fetchanswers.push({
-        name: country.government.capital.name.split(';')[0],
+        name: country.government.capital.name ? country.government.capital.name.split(';')[0] : 'no capital',
         id: 0,
         correct: 2,
       });
@@ -81,31 +82,42 @@ const Choice = (props) => {
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
         [newName] = data[ran].government.capital.name.split(';');
+        console.log(newName);
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
         [newName] = data[ran].government.capital.name.split(';');
+        console.log(newName);
       }
       const capital = {
         name: newName,
         id: x + 1,
         correct: 2,
       };
+      console.log(fetchanswers);
       fetchanswers.push(capital);
+      console.log(fetchanswers);
       shuffle(fetchanswers);
       setAnswers(fetchanswers);
     }
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
+    console.log(answerQuestions);
     setQuestions(answerQuestions);
+    console.log(questions);
   };
   const takeTurn = () => {
+    console.log('starting');
     if (!isStarted) {
+      console.log('chekcing to start');
       startGame();
     }
+    console.log('in choice, game is started');
     const country = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
+    console.log(currentCountry);
+    console.log(country);
     getAnswers(country);
     if (questions && questions.length === 10) {
       console.log(`number of completed questions: ${questions.length}`);
@@ -146,6 +158,10 @@ const Choice = (props) => {
     console.log('ending game');
     endGame();
   }, [saved, gameOver]);
+
+  useEffect(() => {
+    console.log(questions);
+  }, [questions]);
   const directions = (
     <div className="directions">
       <h5>Directions</h5>
@@ -189,23 +205,23 @@ const Choice = (props) => {
       {!isStarted && directions}
       {isStarted && (
         <div>
-        What is the capital of
-          {currentCountry && currentCountry.name}
-        ?
+          {`What is the capital of
+          ${currentCountry && currentCountry.name}
+          ? `}
         </div>
       )}
       <div className="guesses">
         {isStarted && guesses && (
           <div>
             {guesses}
-            {(guesses === 1) ? 'guess' : 'guesses' }
+            {(guesses === 1) ? ' guess' : ' guesses' }
           </div>
         )}
         {isStarted && guesses && (
           <div>
-            For
-            {3 - guesses}
-            {(guesses === 2 || guesses === 4) ? 'point' : 'points' }
+            {`For 
+            ${3 - guesses}
+            ${(guesses === 2 || guesses === 4) ? ' point' : ' points'}`}
           </div>
         )}
       </div>

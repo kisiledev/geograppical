@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
@@ -23,12 +24,12 @@ const Find = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
   const [guesses, setGuesses] = useState(null);
   const [questions, setQuestions] = useState([]);
-  // const [center, setCenter] = useState([0, 0]);
+  const [center, setCenter] = useState([0, 0]);
   const [zoom, setZoom] = useState(1);
   const [regions, setRegions] = useState('');
   const [continents, setContinents] = useState('');
   const [countries, setCountries] = useState('');
-  // const [bypassClick, setBypassClick] = useState(false)
+  const [bypassClick, setBypassClick] = useState(false);
 
   const {
     isStarted,
@@ -44,7 +45,7 @@ const Find = (props) => {
   } = props;
 
   const proj = () => {
-    geoEqualEarth()
+    return geoEqualEarth()
       .translate([800 / 2, 400 / 2])
       .scale(150);
   };
@@ -185,15 +186,15 @@ const Find = (props) => {
   const handleText = (str) => {
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
   };
-  // const handleMoveStart = newCenter => {
-  //   setCenter(newCenter)
-  //   setBypassClick(true)
-  // };
+  const handleMoveStart = (newCenter) => {
+    setCenter(newCenter);
+    setBypassClick(true);
+  };
 
-  // const handleMoveEnd = newCenter => {
-  //   setCenter(newCenter)
-  //   setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center))
-  // };
+  const handleMoveEnd = (newCenter) => {
+    setCenter(newCenter);
+    setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
+  };
 
   const getAnswers = (curcountry) => {
     console.log(curcountry);
@@ -402,12 +403,12 @@ const Find = (props) => {
           >
             <ZoomableGroup
               zoom={zoom}
-              center={[0, 0]}
-              // onMoveStart={handleMoveStart}
-              // onMoveEnd={handleMoveEnd}
+              center={center}
+              onMoveStart={handleMoveStart}
+              onMoveEnd={handleMoveEnd}
             >
               <Geographies geography={data}>
-                {(geos, pro) => geos.map((geo, i) => (
+                {(geos, proj) => geos.map((geo, i) => (
                   <Geography
                     data-idkey={i}
                     data-longname={handleText(geo.properties.NAME_LONG)}
@@ -419,7 +420,7 @@ const Find = (props) => {
                     onClick={((e) => checkAnswer(e, geo.properties.NAME_LONG))}
                     key={geo.properties.NAME}
                     geography={geo}
-                    projection={pro}
+                    projection={proj}
                     className="gameCountry"
                   />
                 ))}

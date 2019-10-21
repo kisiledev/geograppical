@@ -60,7 +60,14 @@ const Game = (props) => {
   useEffect(() => {
     let interval;
     if (isStarted) {
-      interval = setInterval(() => setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1), 1000));
+      interval = setInterval(() => {
+        setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+      }, 1000);
+    } else if (currentCount <= 50) {
+      alert('gamer over')
+      setGameOver(true);
+      setCurrentCount(0);
+      return () => clearInterval(interval);
     }
     return () => clearInterval(interval);
   }, [isStarted, gameOver]);
