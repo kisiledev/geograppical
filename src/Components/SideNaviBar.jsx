@@ -73,10 +73,6 @@ const SideNaviBar = (props) => {
   }, [data]);
 
   useEffect(() => {
-    console.log(expanded)
-  }, [expanded])
-
-  useEffect(() => {
     if (totalRegions.length > 0) {
       getUniqueRegions(totalRegions);
     }

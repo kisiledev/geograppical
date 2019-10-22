@@ -34,7 +34,10 @@ const Scoreboard = (props) => {
         <div className="col text-danger">{questions}</div>
       </div>
     </div>
-  )
+  );
+};
+Scoreboard.defaultProps = {
+  questions: 0,
 }
 Scoreboard.propTypes = {
   timeChecked: PropTypes.bool.isRequired,
@@ -44,6 +47,6 @@ Scoreboard.propTypes = {
   score: PropTypes.number.isRequired,
   correct: PropTypes.number.isRequired,
   incorrect: PropTypes.number.isRequired,
-  questions: PropTypes.number.isRequired,
+  questions: PropTypes.number,
 };
 export default Scoreboard;

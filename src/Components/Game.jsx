@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -38,10 +38,12 @@ const Game = (props) => {
   const [scoreChecked, setScoreChecked] = useState(true);
   const [timeChecked, setTimeChecked] = useState(true);
   const [currentCount, setCurrentCount] = useState(60);
+  const [gameComplete, setGameComplete] = useState(false);
   // const [isRunning, setIsRunning] = useState(false)
   const [timeMode, setTimeMode] = useState('cd');
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [modalBody, setModalBody] = useState('');
   // const [intId, setIntId] = useState(null)
   // const [gameId, setGameId] = useState(null)
 
@@ -57,20 +59,37 @@ const Game = (props) => {
     login,
   } = props;
 
-  useEffect(() => {
-    let interval;
-    if (isStarted) {
-      interval = setInterval(() => {
-        setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
-      }, 1000);
-    } else if (currentCount <= 50) {
-      alert('gamer over')
-      setGameOver(true);
-      setCurrentCount(0);
-      return () => clearInterval(interval);
+  const tick = () => {
+    if (gameOver) return;
+    if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
+    else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+    console.log('ticking');
+  };
+
+  const intervalRef = useRef(null);
+
+  const stop = useCallback(
+    () => {
+      if (intervalRef.current === null) {
+        return;
+      }
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }, [],
+  );
+
+  const start = useCallback(() => {
+    if (intervalRef.current !== null) {
+      console.log('null')
+      return;
     }
-    return () => clearInterval(interval);
-  }, [isStarted, gameOver]);
+    console.log('starting')
+    intervalRef.current = setInterval(() => tick(), 1000);
+  }, []);
+
+  const reset = useCallback(() => {
+    setCurrentCount(60);
+  }, []);
 
   useEffect(() => {
     if (timeMode === 'cd') {
@@ -80,10 +99,15 @@ const Game = (props) => {
     }
   }, [timeMode]);
 
+
   const startGame = () => {
     setIsStarted(true);
+    start();
   };
   const endGame = () => {
+    stop();
+    reset();
+    if (!gameOver) return;
     setIsStarted(false);
     setGameOver(true);
     setQuestionsRemaining(null);
@@ -94,9 +118,17 @@ const Game = (props) => {
     setSaved(false);
     setCurrentCount(60);
   };
+  const endGameModal = () => {
+    if (isStarted && currentCount === 0) setShow(true);
+  };
+
+  useEffect(() => {
+    endGameModal();
+  }, [gameOver, currentCount]);
+
+
   const handleModalClose = () => {
     setShow(false);
-    endGame();
   };
   const handlePointsQuestions = (q) => {
     const correctCount = q.filter((question) => question.correct === true);
@@ -110,8 +142,12 @@ const Game = (props) => {
   };
   const handleGameOpen = () => {
     console.log('opening');
-    if (questions > 10) {
-      handlePointsQuestions(questions);
+    console.log(questions);
+    handlePointsQuestions(questionsSet);
+    if (questions === 10) {
+      stop();
+      setGameComplete(true);
+      console.log('game is completed');
     }
     setShow(true);
   };
@@ -133,6 +169,7 @@ const Game = (props) => {
     setQuestions(null);
     setScore(0);
     setCorrect(0);
+    setGameOver(false);
     setIncorrect(0);
     setGameMode(null);
     setIsStarted(false);
@@ -156,6 +193,12 @@ const Game = (props) => {
     }
     setTimeChecked(e.target.checked);
   };
+  const handleModalUse = () => {
+    const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
+    const timeExpired = 'Sorry, time expired! Try again';
+    if (gameComplete) setModalBody(ModalText);
+    else setModalBody(timeExpired);
+  };
   const handleScoreCheck = (e) => {
     if (score === null) {
       setScore(0);
@@ -166,6 +209,10 @@ const Game = (props) => {
     }
     setScoreChecked(e.target.checked);
   };
+
+  useEffect(() => {
+    handleModalUse();
+  }, [questions]);
   const saveScore = () => {
     if (!user) {
       const modal = {
@@ -328,17 +375,14 @@ const Game = (props) => {
     </div>
   );
 
-  const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
-  const timeExpired = 'Sorry, time expired! Try again';
-  const ModalBody = timeChecked && currentCount <= 0 ? timeExpired : ModalText;
   return (
     <>
       {/* <button onClick={}>Save Score</button> */}
-      <Modal show={show} onExit={() => setGameOver(true)} onHide={() => handleModalClose()}>
+      <Modal show={show} onExit={() => resetMode()} onHide={() => handleModalClose()}>
         <Modal.Header closeButton>
           <Modal.Title>Game Over</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{ModalBody}</Modal.Body>
+        <Modal.Body>{modalBody}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => handleModalClose()}>
               Close

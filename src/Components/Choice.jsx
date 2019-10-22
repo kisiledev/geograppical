@@ -22,18 +22,14 @@ const Choice = (props) => {
     gameOver,
     data,
     isStarted,
+    endGame,
     startGame,
     updateScore,
   } = props;
   // const [ran, setRan] = useState(null)
 
 
-  const endGame = () => {
-    setAnswers(null);
-    setQuestions([]);
-    setGuesses(null);
-    setCurrentCountry(null);
-  };
+  
   const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -50,7 +46,6 @@ const Choice = (props) => {
     const int = getRandomInt(0, data.length);
     setCurrentCountryId(int);
     const country = data[int];
-    console.log(country);
     return country;
   };
   const randomExcluded = (min, max, excluded) => {
@@ -82,46 +77,33 @@ const Choice = (props) => {
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
         [newName] = data[ran].government.capital.name.split(';');
-        console.log(newName);
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
         [newName] = data[ran].government.capital.name.split(';');
-        console.log(newName);
       }
       const capital = {
         name: newName,
         id: x + 1,
         correct: 2,
       };
-      console.log(fetchanswers);
       fetchanswers.push(capital);
-      console.log(fetchanswers);
       shuffle(fetchanswers);
       setAnswers(fetchanswers);
     }
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
-    console.log(answerQuestions);
     setQuestions(answerQuestions);
-    console.log(questions);
   };
   const takeTurn = () => {
-    console.log('starting');
     if (!isStarted) {
-      console.log('chekcing to start');
       startGame();
     }
-    console.log('in choice, game is started');
     const country = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
-    console.log(currentCountry);
-    console.log(country);
     getAnswers(country);
     if (questions && questions.length === 10) {
-      console.log(`number of completed questions: ${questions.length}`);
-      console.log('showing scores');
       handleOpen();
       // setState({questions: [], answers: [], guesses: null})
     }
@@ -153,15 +135,14 @@ const Choice = (props) => {
   };
   useEffect(() => {
     handlePoints(questions);
-  }, []);
+  });
+
   useEffect(() => {
-    console.log('ending game');
+    setAnswers([]);
+    setQuestions([]);
     endGame();
   }, [saved, gameOver]);
 
-  useEffect(() => {
-    console.log(questions);
-  }, [questions]);
   const directions = (
     <div className="directions">
       <h5>Directions</h5>
@@ -205,9 +186,9 @@ const Choice = (props) => {
       {!isStarted && directions}
       {isStarted && (
         <div>
-          {`What is the capital of
+          { isStarted ? `What is the capital of
           ${currentCountry && currentCountry.name}
-          ? `}
+          ? ` : 'The Game is Over'}
         </div>
       )}
       <div className="guesses">
@@ -225,7 +206,7 @@ const Choice = (props) => {
           </div>
         )}
       </div>
-      {answers && answers.length > 0 && <ul className="px-0 d-flex justify-content-center flex-wrap">{answerChoices}</ul>}
+      {answers && answers.length > 0 ? <ul className="px-0 d-flex justify-content-center flex-wrap">{answerChoices}</ul> : <></>}
     </div>
   );
 };
@@ -237,6 +218,7 @@ Choice.propTypes = {
   gameOver: PropTypes.bool.isRequired,
   handlePoints: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
+  endGame: PropTypes.func.isRequired,
   updateScore: PropTypes.func.isRequired,
   startGame: PropTypes.func.isRequired,
 };
