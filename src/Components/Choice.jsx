@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
@@ -14,6 +16,7 @@ const Choice = (props) => {
   const [guesses, setGuesses] = useState(null);
   const [answers, setAnswers] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [usedCountry, setUsedCountry] = useState([]);
 
   const {
     handlePoints,
@@ -29,7 +32,6 @@ const Choice = (props) => {
   // const [ran, setRan] = useState(null)
 
 
-  
   const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -46,6 +48,10 @@ const Choice = (props) => {
     const int = getRandomInt(0, data.length);
     setCurrentCountryId(int);
     const country = data[int];
+    const usedArray = usedCountry;
+    usedArray.push(int);
+    setUsedCountry(usedArray);
+    console.log(usedCountry);
     return country;
   };
   const randomExcluded = (min, max, excluded) => {
@@ -65,6 +71,7 @@ const Choice = (props) => {
     question.country = country;
     question.correct = null;
     const fetchanswers = [];
+    const usedCaps = [];
     if (country) {
       fetchanswers.push({
         name: country.government.capital.name ? country.government.capital.name.split(';')[0] : 'no capital',
@@ -74,11 +81,19 @@ const Choice = (props) => {
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, data.length - 1, currentCountryId);
+      if (usedCaps.includes(ran) || usedCaps.includes(currentCountryId)) {
+        ran = randomExcluded(0, data.length - 1, currentCountryId);
+      }
+      usedCaps.push(ran);
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
         [newName] = data[ran].government.capital.name.split(';');
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
+        if (usedCaps.includes(ran) || usedCaps.includes(currentCountryId)) {
+          ran = randomExcluded(0, data.length - 1, currentCountryId);
+        }
+        usedCaps.push(ran);
         [newName] = data[ran].government.capital.name.split(';');
       }
       const capital = {
@@ -90,6 +105,7 @@ const Choice = (props) => {
       shuffle(fetchanswers);
       setAnswers(fetchanswers);
     }
+    console.log(usedCaps);
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
@@ -168,15 +184,15 @@ const Choice = (props) => {
           return correct;
         };
         return (
-          <button
-            type="button"
+          <li
+            role="button"
             onClick={() => checkAnswer(answer)}
             className={answerStyle(answer.correct)}
             value={answer.id}
             key={answer.id}
           >
             {answer.name}
-          </button>
+          </li>
         );
       });
     }

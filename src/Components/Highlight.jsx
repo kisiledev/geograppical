@@ -122,7 +122,6 @@ const Highlight = (props) => {
     }
 
     const continentsState = {};
-    console.log(conts);
     if (conts.length > 0) {
       conts.forEach((continent) => {
         if (conts[continent] && conts[continent].countries[0]) {
@@ -158,12 +157,6 @@ const Highlight = (props) => {
   const handleMoveEnd = (newCenter) => {
     setCenter(newCenter);
     setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
-  };
-  const handleClick = (e) => {
-    // access to e.target here
-    console.log(handleText(e.properties.NAME_LONG));
-    console.log(currentCountry.name);
-    alert(handleText(e.properties.NAME_LONG) === currentCountry.name);
   };
   const handleWheel = (event) => {
     const oldZoom = zoom;
@@ -220,8 +213,6 @@ const Highlight = (props) => {
     question.country = currentCountry;
     question.correct = null;
     const fetchanswers = [];
-    console.log(currentCountry.name);
-    console.log(currentCountry);
     if (currentCountry) {
       fetchanswers.push({
         name: currentCountry.name.split(';')[0],
@@ -245,27 +236,22 @@ const Highlight = (props) => {
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
-      console.log(fetchanswers);
       setAnswers(fetchanswers);
     }
     question.answers = fetchanswers;
-
-    console.log(fetchanswers);
-    answerQuestions.push(question);
+    if (answerQuestions !== questions) {
+      answerQuestions.push(question);
+    }
     setQuestions(answerQuestions);
   };
   const getCountryInfo = (country) => {
-    console.log(country);
-    console.log(currentCountry);
     let nodes = (document.getElementsByClassName('gameCountry'));
     nodes = [...nodes];
-    console.log('getting country data in Find');
     if (currentCountry && country) {
       nodes = nodes.filter(
         (node) => handleText(country.name) === handleText(node.dataset.longname)
         || handleText(country.name) === handleText(node.dataset.shortname),
       );
-      console.log(nodes);
     }
     // highVisibility = (nodes) => {
     //   const highViz = country.name;
@@ -276,7 +262,6 @@ const Highlight = (props) => {
     //   });
     // };
     const changeStyle = (nodes) => {
-      console.log(nodes);
       nodes.forEach((node) => {
         node.style.fill = '#FF0000';
         node.style.stroke = '#111';
@@ -326,15 +311,12 @@ const Highlight = (props) => {
     const checkquestions = questions;
     const checkquestion = checkquestions.find((question) => question.country === currentCountry);
     let checkguesses = guesses;
-    console.log(country);
-    console.log(currentCountry);
     if ((country.name === currentCountry.name || country.name === currentCountry.name) || guesses === 4) {
       // give score of 2
       updateScore(3 - guesses);
       // set answer style
       country.correct = 0;
       // initialize correct counter for game
-      console.log(checkquestion);
       if (guesses === 1) {
         checkquestion.correct = true;
       }
@@ -342,36 +324,25 @@ const Highlight = (props) => {
       setTimeout(() => takeTurn(), 300);
     } else {
       country.correct = 1;
-      console.log(checkquestion);
       checkquestion.correct = false;
       checkguesses += 1;
-      if (guesses === 3) {
-        console.log(currentCountry.name);
-        console.log('3 guesses, time up');
-      }
     }
     setGuesses(checkguesses);
     handlePoints(questions);
   };
   useEffect(() => {
     handlePoints(questions);
-  }, []);
+  }, [questions]);
   useEffect(() => {
-    console.log('ending game');
     endGame();
   }, [saved, gameOver]);
   useEffect(() => {
     getMapNations();
-    console.log(regions);
-    handlePoints(questions);
   }, []);
 
   useEffect(() => {
-    console.log(currentCountry);
     if (currentCountry) {
-      console.log(currentCountry)
-      getAnswers(currentCountry);
-      getCountryInfo(currentCountry)
+      getCountryInfo(currentCountry);
     }
   }, [currentCountry]);
 
@@ -382,13 +353,10 @@ const Highlight = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('setting locations');
-    console.log(regions, continents);
     setLocations(regions, continents);
   }, [countries]);
 
   useEffect(() => {
-    console.log('ending game');
     endGame();
   }, [saved, gameOver]);
 
@@ -507,7 +475,7 @@ const Highlight = (props) => {
                         // onMouseEnter={(() => onRegionHover(geo))}
                         // onMouseLeave={(() => onRegionLeave(geo))}
                         onClick={((e) => checkAnswer(e, geo.properties.NAME_LONG))}
-                        key={geo.properties.A3_ISO}
+                        key={geo.properties.NAME}
                         geography={geo}
                         projection={proj}
                         className="gameCountry"

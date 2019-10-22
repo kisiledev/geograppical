@@ -80,10 +80,10 @@ const Game = (props) => {
 
   const start = useCallback(() => {
     if (intervalRef.current !== null) {
-      console.log('null')
+      console.log('null');
       return;
     }
-    console.log('starting')
+    console.log('starting');
     intervalRef.current = setInterval(() => tick(), 1000);
   }, []);
 
@@ -129,6 +129,7 @@ const Game = (props) => {
 
   const handleModalClose = () => {
     setShow(false);
+    endGame();
   };
   const handlePointsQuestions = (q) => {
     const correctCount = q.filter((question) => question.correct === true);
@@ -177,6 +178,8 @@ const Game = (props) => {
     setTimeChecked(true);
     setCurrentCount(60);
     setSaved(false);
+    stop();
+    reset();
   };
   const toggleMode = (e) => {
     e.persist();
@@ -408,7 +411,6 @@ const Game = (props) => {
         correct={correct}
         incorrect={incorrect}
         questions={questions}
-        questionsRemaining={questionsRemaining}
       />
       <div className="card mt-5 col-md-8 mx-auto">
         <h3 className="text-center">{gameMode ? (`Game Mode: ${titleCase(gameMode)}`) : 'Choose a Game Mode'}</h3>
@@ -443,6 +445,17 @@ const Game = (props) => {
               <span style={{ marginLeft: 8 }}>Keep Score</span>
             </label>
             {timeChecked && timeButtons}
+          </div>
+        )}
+        {isStarted && (
+          <div className="text-center mt-5 mb-3">
+            <button
+              type="button"
+              className="text-center btn bg-danger text-white"
+              onClick={() => resetMode()}
+            >
+              End Game
+            </button>
           </div>
         )}
       </div>
