@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-console */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-nested-ternary */
@@ -120,31 +121,31 @@ const SignIn = (props) => {
                 <div className="form-group mx-auto">
                   <label htmlFor="exampleInputEmail1">
                     Email address
-                    <input
-                      value={inputs.email || ''}
-                      onChange={handleInputChange}
-                      type="email"
-                      name="email"
-                      className={`form-control ${(inputs.email === '' || !inputs.email) ? 'prefinput' : (isEmailValid ? 'form-success' : 'form-error')}`}
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
-                      placeholder="Enter email"
-                    />
                   </label>
+                  <input
+                    value={inputs.email || ''}
+                    onChange={handleInputChange}
+                    type="email"
+                    name="email"
+                    className={`form-control ${(inputs.email === '' || !inputs.email) ? 'prefinput' : (isEmailValid ? 'form-success' : 'form-error')}`}
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="Enter email"
+                  />
                 </div>
                 <div className="form-group mx-auto mb-3">
                   <label htmlFor="exampleInputPassword1">
                     Password
-                    <input
-                      value={inputs.password || ''}
-                      onChange={handleInputChange}
-                      type="password"
-                      name="password"
-                      className="form-control prefinput"
-                      id="exampleInputPassword1"
-                      placeholder="Password"
-                    />
                   </label>
+                  <input
+                    value={inputs.password || ''}
+                    onChange={handleInputChange}
+                    type="password"
+                    name="password"
+                    className="form-control prefinput"
+                    id="exampleInputPassword1"
+                    placeholder="Password"
+                  />
                 </div>
                 <div className="col-12 d-flex justify-content-center mt-5 mb-3">
                   <button onClick={handleSubmit} disabled={isInvalid} type="button" className="btn-primary email-button">
