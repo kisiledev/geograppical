@@ -8,7 +8,8 @@ import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { firestore } from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 import PropTypes from 'prop-types';
 import {
   dataType,
@@ -26,7 +27,6 @@ import * as ROUTES from '../Constants/Routes';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
-  const [questionsRemaining, setQuestionsRemaining] = useState(null);
   const [questions, setQuestions] = useState(null);
   const [questionsSet, setQuestionsSet] = useState(null);
   const [score, setScore] = useState(0);
@@ -46,6 +46,7 @@ const Game = (props) => {
   const [modalBody, setModalBody] = useState('');
   // const [intId, setIntId] = useState(null)
   // const [gameId, setGameId] = useState(null)
+  const { firestore } = firebase;
 
   const {
     simplifyString,
@@ -110,7 +111,6 @@ const Game = (props) => {
     if (!gameOver) return;
     setIsStarted(false);
     setGameOver(true);
-    setQuestionsRemaining(null);
     setQuestions(null);
     setScore(0);
     setCorrect(0);
@@ -166,7 +166,6 @@ const Game = (props) => {
       });
   };
   const resetMode = () => {
-    setQuestionsRemaining(null);
     setQuestions(null);
     setScore(0);
     setCorrect(0);

@@ -11,11 +11,6 @@ const PrivateRoute = ({
   loadingState,
   ...rest
 }) => {
-  console.log(
-    `authenticated: ${authenticated},
-    loadingState: ${loadingState},
-  `,
-  );
   if (loadingState) {
     return (
       <div className="mt-5 mx-auto text-center">

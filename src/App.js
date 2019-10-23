@@ -390,7 +390,6 @@ const App = (props) => {
   useEffect(() => {
     loadCodes();
     auth.onAuthStateChanged((u) => {
-      console.log(u);
       if (u) {
         setUser(u);
         setAuthenticated(true);
@@ -402,9 +401,7 @@ const App = (props) => {
       }
     });
     if (user && !authenticated) {
-      console.log(authenticated);
       setAuthenticated(true);
-      console.log('set true');
     }
   }, [user]);
 

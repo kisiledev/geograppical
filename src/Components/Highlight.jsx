@@ -34,7 +34,7 @@ const Highlight = (props) => {
   const [regions, setRegions] = useState('');
   const [continents, setContinents] = useState('');
   const [countries, setCountries] = useState('');
-  const [bypassClick, setBypassClick] = useState(false);
+  // const [bypassClick, setBypassClick] = useState(false);
   const [answers, setAnswers] = useState(null);
 
   const {
@@ -151,12 +151,12 @@ const Highlight = (props) => {
   };
   const handleMoveStart = (newCenter) => {
     setCenter(newCenter);
-    setBypassClick(true);
+    // setBypassClick(true);
   };
 
   const handleMoveEnd = (newCenter) => {
     setCenter(newCenter);
-    setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
+    // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
   const handleWheel = (event) => {
     const oldZoom = zoom;

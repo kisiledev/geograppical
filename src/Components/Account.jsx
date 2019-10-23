@@ -29,7 +29,6 @@ const Account = (props) => {
 
   const {
     user,
-    handleData,
     scores,
     favorites,
     simplifyString,
@@ -284,7 +283,6 @@ const Account = (props) => {
 };
 
 Account.propTypes = {
-  handleData: PropTypes.func.isRequired,
   user: userType.isRequired,
   favorites: PropTypes.bool.isRequired,
   scores: PropTypes.bool.isRequired,

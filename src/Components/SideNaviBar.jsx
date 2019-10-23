@@ -35,27 +35,13 @@ const SideNaviBar = (props) => {
   const expandLinks = (e, type) => {
     if (e && type) {
       e.persist();
-      console.log(e);
-      console.log(e.target);
       handleData(type);
       setExpanded(false);
     } else {
-      let target = null;
-      console.log(target);
-      console.log(e.target);
-      console.log(e.target.title)
-      target = e.target;
       setExpanded(!expanded);
       e.stopPropagation();
     }
   };
-  const closeNav = () => {
-    setExpanded(false);
-  };
-  // const logout = () => {
-  //     auth.signOut()
-  //     return <Redirect to="/" />
-  // }
   const getRegions = () => {
     if (data) {
       setTotalRegions(data.map((a) => a.geography.map_references));

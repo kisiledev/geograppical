@@ -24,26 +24,26 @@ const SignIn = (props) => {
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
 
   const login = () => {
-    console.log('reunning login');
+    // console.log('reunning login');
     auth.fetchSignInMethodsForEmail(inputs.email).then((u) => {
-      console.log(u);
+      // console.log(u);
       setMethods(u);
       if (u.length === 0 || u.includes('password')) {
         console.log('no methods');
         auth.signInWithEmailAndPassword(inputs.email, inputs.password).then((us) => {
-          console.log(us);
+          // console.log(us);
           setMessage({ style: 'success', content: `Logged in user ${us.user.email}` });
         }).catch((error) => {
-          console.log(error);
-          console.log(error.message);
+          // console.log(error);
+          // console.log(error.message);
           setMessage({ style: 'danger', content: `${error.message} Sign up using the link below` });
         });
       } else {
-        console.log('methods found');
-        console.log(methods);
+        // console.log('methods found');
+        // console.log(methods);
         const content = `You already have an account at ${u[0]} 
-        Please login using this authentication method`;
-        console.log(content);
+        Please login using this authentication method. Method: ${methods}`;
+        // console.log(content);
         setMessage({ style: 'warning', content });
       }
     })
@@ -92,7 +92,6 @@ const SignIn = (props) => {
 
   const { user, loadingState } = props;
   if (user && user.uid) {
-    console.log(user);
     return <Redirect to="/account" />;
   }
 

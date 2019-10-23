@@ -29,7 +29,7 @@ const Find = (props) => {
   const [regions, setRegions] = useState('');
   const [continents, setContinents] = useState('');
   const [countries, setCountries] = useState('');
-  const [bypassClick, setBypassClick] = useState(false);
+  // const [bypassClick, setBypassClick] = useState(false);
 
   const {
     isStarted,
@@ -188,12 +188,12 @@ const Find = (props) => {
   };
   const handleMoveStart = (newCenter) => {
     setCenter(newCenter);
-    setBypassClick(true);
+    // setBypassClick(true);
   };
 
   const handleMoveEnd = (newCenter) => {
     setCenter(newCenter);
-    setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
+    // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
 
   const getAnswers = (curcountry) => {
