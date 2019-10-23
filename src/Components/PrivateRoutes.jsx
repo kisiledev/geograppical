@@ -11,7 +11,12 @@ const PrivateRoute = ({
   loadingState,
   ...rest
 }) => {
-  if (loadingState || authenticated === false) {
+  console.log(
+    `authenticated: ${authenticated},
+    loadingState: ${loadingState},
+  `,
+  );
+  if (loadingState) {
     return (
       <div className="mt-5 mx-auto text-center">
         <FontAwesomeIcon icon={faSpinner} spin size="2x" />

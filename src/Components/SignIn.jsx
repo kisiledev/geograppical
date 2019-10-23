@@ -92,7 +92,8 @@ const SignIn = (props) => {
 
   const { user, loadingState } = props;
   if (user && user.uid) {
-    return <Redirect exact to="/account" />;
+    console.log(user);
+    return <Redirect to="/account" />;
   }
 
   const isInvalid = (inputs.password === '' || !inputs.password)

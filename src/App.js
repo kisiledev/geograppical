@@ -401,7 +401,12 @@ const App = (props) => {
         setLoadingState(false);
       }
     });
-  }, []);
+    if (user && !authenticated) {
+      console.log(authenticated);
+      setAuthenticated(true);
+      console.log('set true');
+    }
+  }, [user]);
 
   // useEffect(() => {
   //   filterCountryByName(searchText);
