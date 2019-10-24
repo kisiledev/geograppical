@@ -2,7 +2,7 @@
   text-align: center;
 }
 body {
-  font-family: 'Varela Round', serif;
+  font-family: 'Rubik', serif;
   line-height: inherit;
 }
 p {
@@ -51,12 +51,12 @@ hr {
   margin-top: -1px;
   margin-bottom: -1px;
 }
-.datahead {
-  
-}
 /* CHECKED STYLES */
 [type=radio]:checked + img {
   box-shadow: 0 0 0  red;
+}
+.searchForm input::placeholder {
+  color: white;
 }
 .search {
   background: url('../src/img/logo.png') no-repeat left center/40px;
@@ -225,6 +225,22 @@ input, input[placeholder] {
   height: 40px;
   border-width: 0;
   background: #007bff;
+  color: white;
+  border-radius: 5px;
+  white-space: nowrap;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  transition-property: background-color, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
+  padding: 0;
+}
+.email-button:disabled,
+.email-button:focus:disabled,
+.email-button:hover:disabled,
+.email-button:active:disabled {
+  height: 40px;
+  border-width: 0;
+  background: #a3d0ff;
   color: white;
   border-radius: 5px;
   white-space: nowrap;
@@ -466,14 +482,14 @@ a:hover {
 .gameCountry {
   fill: #ffffff;
   stroke: #000;
-  stroke-width: 0.5;
+  stroke-width: 0.1;
   outline: none;
   stroke-linecap: round;
 }
 .gameCountry:hover {
   fill: #13d45a;
   stroke: #000;
-  stroke-width: 0.5;
+  stroke-width: 0.1;
   outline: none;
   stroke-linecap: round;
   cursor: pointer;
@@ -489,7 +505,7 @@ a:hover {
 .country:hover {
   fill: #024e1b;
   stroke: #000;
-  stroke-width: .7;
+  stroke-width: .1;
   outline: none;
   cursor: pointer;
 }
@@ -584,17 +600,7 @@ audio {
     vertical-align: middle;
   }
 }
-@media (min-width: 768px){
-  .col-md-9 {
-    padding: 0 15px; 
-  }
-  .main {
-    padding: 20px;
-  }
-  .detailFlag  {
-    width: 15%;
-  }
-}
+
 /* .nav {
   flex-wrap: nowrap;
 }
@@ -634,5 +640,58 @@ ul .collapse, ul .show, ul .collapsing {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 1024px){
+  .col-md-9 {
+    padding: 0 15px; 
+  }
+  .main {
+    margin-left: 250px;
+    padding: 0px;
+    overflow: hidden;
+    margin-right: auto;
+    width: auto;
+
+  }
+  .detailFlag  {
+    width: 15%;
+  }
+  .card {
+    height: fit-content
+  }
+  .datacard {
+    padding: 5px;
+  }
+  h5.list-group-item{
+    border: none;
+  }
+  .sidenav {
+    width: 250px;
+    bottom: 0;
+    position: fixed;
+    z-index: 10;
+    height: 100%;
+    padding: 0px;
+  }
+  .navbar-brand {
+    line-height: 62px;
+    margin: 0;
+  }
+  .navbar-expand .navbar-nav {
+    flex-direction: column;
+    text-align: left;
+  }
+  .sublinks{
+    text-align: right;
+    color: #bbb!important
+  }
+  .sublinks:hover {
+    color: white!important;
+  }
+
+  .countriesnav {
+    padding: 10px;
   }
 }
