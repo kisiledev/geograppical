@@ -551,6 +551,7 @@ svg, g, path {
 .detailFlag {
   object-fit: contain;
   padding: .25rem;
+  max-width: 25%;
 }
 .media img {
   object-fit: contain;
