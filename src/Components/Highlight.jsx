@@ -402,15 +402,12 @@ const Highlight = (props) => {
         {!isStarted && directions}
         {isStarted && guesses && (
         <div>
-          {guesses}
-          {(guesses === 1) ? 'guess' : 'guesses' }
+          {`${guesses} ${(guesses === 1) ? ' guess' : ' guesses'}`}
         </div>
         )}
         {isStarted && guesses && (
         <div>
-          For
-          {3 - guesses}
-          {(guesses === 2 || guesses === 4) ? 'point' : 'points' }
+          {`For ${3 - guesses} ${(guesses === 2 || guesses === 4) ? ' point' : ' points'}`}
         </div>
         )}
         <Breakpoint small up>
