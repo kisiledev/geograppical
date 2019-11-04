@@ -219,6 +219,7 @@ const Find = (props) => {
 
   const takeTurn = () => {
     if (!isStarted) {
+      console.log('starting game')
       startGame();
     }
     const country = getRandomCountry();
@@ -260,7 +261,6 @@ const Find = (props) => {
     setTimeout(() => changeStyle(nodes), 300);
 
   };
-
   const checkAnswer = (e, country) => {
     // if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
@@ -269,9 +269,11 @@ const Find = (props) => {
     console.log(e);
     console.log(country);
     console.log(currentCountry);
-    if (!isStarted) {
-      return;
+    console.log(isStarted);
+    if (isStarted === false) {
+      console.log('game has not started')
     }
+    console.log(currentCountry);
     if ((country === currentCountry.name || country === currentCountry.name) || guesses === 4) {
       // give score of 2
       updateScore(3 - guesses);
@@ -307,9 +309,10 @@ const Find = (props) => {
 
   useEffect(() => {
     if (currentCountry) {
+      console.log(currentCountry);
       getAnswers(currentCountry);
     }
-  }, [currentCountry]);
+  }, []);
 
   useEffect(() => {
     setDynamicRegions(regions);

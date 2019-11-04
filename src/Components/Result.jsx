@@ -36,7 +36,8 @@ const Result = (props) => {
             setFavorite(false)
           }
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log('Error getting document:', error);
       });
   };
