@@ -29,6 +29,7 @@ const Find = (props) => {
   const [regions, setRegions] = useState('');
   const [continents, setContinents] = useState('');
   const [countries, setCountries] = useState('');
+  const [readyToCheck, setReadyToCheck] = useState(false);
   // const [bypassClick, setBypassClick] = useState(false);
 
   const {
@@ -219,7 +220,7 @@ const Find = (props) => {
 
   const takeTurn = () => {
     if (!isStarted) {
-      console.log('starting game')
+      console.log('starting game');
       startGame();
     }
     const country = getRandomCountry();
@@ -261,7 +262,12 @@ const Find = (props) => {
     setTimeout(() => changeStyle(nodes), 300);
 
   };
+
+  const handleClick = () => {
+    setReadyToCheck(true);
+  };
   const checkAnswer = (e, country) => {
+    setReadyToCheck(true);
     // if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
     const foundquestion = checkquestions.find((question) => question.country === currentCountry);
@@ -271,7 +277,7 @@ const Find = (props) => {
     console.log(currentCountry);
     console.log(isStarted);
     if (isStarted === false) {
-      console.log('game has not started')
+      console.log('game has not started');
     }
     console.log(currentCountry);
     if ((country === currentCountry.name || country === currentCountry.name) || guesses === 4) {
@@ -299,6 +305,7 @@ const Find = (props) => {
     }
     setGuesses(checkguesses);
     handlePoints(questions);
+    setReadyToCheck(false);
   };
 
   useEffect(() => {
@@ -313,6 +320,12 @@ const Find = (props) => {
       getAnswers(currentCountry);
     }
   }, []);
+
+  useEffect(() => {
+    if (readyToCheck) {
+      checkAnswer();
+    }
+  }, [readyToCheck, currentCountry]);
 
   useEffect(() => {
     setDynamicRegions(regions);
@@ -345,15 +358,12 @@ const Find = (props) => {
         {!isStarted && directions}
         {isStarted && guesses && (
         <div>
-          {guesses}
-          {(guesses === 1) ? 'guess' : 'guesses' }
+          {`${guesses} ${(guesses === 1) ? ' guess' : ' guesses'}`}
         </div>
         )}
         {isStarted && guesses && (
         <div>
-          For
-          {3 - guesses}
-          {(guesses === 2 || guesses === 4) ? 'point' : 'points' }
+          {`For ${3 - guesses} ${(guesses === 2 || guesses === 4) ? ' point' : ' points'}`}
         </div>
         )}
         <Breakpoint small up>
@@ -420,7 +430,7 @@ const Find = (props) => {
                     data-subregion={geo.properties.SUBREGION}
                     // onMouseEnter={(() => onRegionHover(geo))}
                     // onMouseLeave={(() => onRegionLeave(geo))}
-                    onClick={((e) => checkAnswer(e, geo.properties.NAME_LONG))}
+                    onClick={(() => checkAnswer(handleClick))}
                     key={geo.properties.NAME}
                     geography={geo}
                     projection={proj}

@@ -66,10 +66,9 @@ const Game = (props) => {
   } = props;
 
   const tick = () => {
-    if (gameOver) return;
+    if (gameOver || !timeChecked) return;
     if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
     else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
-    console.log('ticking');
   };
 
   const intervalRef = useRef(null);
@@ -90,7 +89,9 @@ const Game = (props) => {
       return;
     }
     console.log('starting');
-    intervalRef.current = setInterval(() => tick(), 1000);
+    if (timeChecked) {
+      intervalRef.current = setInterval(() => tick(), 1000);
+    }
   }, []);
 
   const reset = useCallback(() => {
@@ -108,11 +109,15 @@ const Game = (props) => {
 
   const startGame = () => {
     setIsStarted(true);
-    start();
+    if (timeChecked) {
+      start();
+    }
   };
   const endGame = () => {
-    stop();
-    reset();
+    if (timeChecked) {
+      stop();
+      reset();
+    }
     if (!gameOver) return;
     setIsStarted(false);
     setGameOver(true);
@@ -198,7 +203,10 @@ const Game = (props) => {
     } else {
       setCurrentCount(null);
     }
+    console.log(e.target.checked);
+    console.log(timeChecked);
     setTimeChecked(e.target.checked);
+    console.log(timeChecked);
   };
   const handleModalUse = () => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;

@@ -47,10 +47,12 @@ const Timer = (props) => {
     <div>{timeChecked && time !== null ? time : noTime}</div>
   );
 };
-
+Timer.defaultProps = {
+  currentCount: null,
+}
 Timer.propTypes = {
   timeChecked: PropTypes.bool.isRequired,
   isStarted: PropTypes.bool.isRequired,
-  currentCount: PropTypes.number.isRequired,
+  currentCount: PropTypes.number,
 };
 export default Timer;
