@@ -134,9 +134,7 @@ const ResultView = (props) => {
               capital={country.government.capital.name}
               excerpt={country.excerpt}
               population={country.people.population.total}
-              flag={country.flag}
               flagCode={country.government.country_name.isoCode}
-              imgalt={`${country.name}'s flag`}
               key={country.alpha3Code}
               country={country}
               code={country.alpha3Code}
