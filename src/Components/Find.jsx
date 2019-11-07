@@ -186,7 +186,7 @@ const Find = (props) => {
     setZoom((prevZoom) => prevZoom / 2);
   };
   const handleText = (str) => {
-    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
   };
   const handleMoveStart = (newCenter) => {
     setCenter(newCenter);
@@ -232,6 +232,7 @@ const Find = (props) => {
     getAnswers(country);
     const nodes = [...(document.getElementsByClassName('gameCountry'))];
     nodes.forEach((node) => {
+      console.log('removing styles');
       node.removeAttribute('style');
     });
     if (questions && questions.length === 10) {
@@ -400,8 +401,7 @@ const Find = (props) => {
         <hr />
         {currentCountry && (
           <div>
-            Find
-            {currentCountry.name}
+            {`Find ${currentCountry.name}`}
           </div>
         )}
         {mapVisible === 'Show' ? (
@@ -428,8 +428,6 @@ const Find = (props) => {
                     data-shortname={geo.properties.NAME}
                     data-continent={geo.properties.CONTINENT}
                     data-subregion={geo.properties.SUBREGION}
-                    // onMouseEnter={(() => onRegionHover(geo))}
-                    // onMouseLeave={(() => onRegionLeave(geo))}
                     onClick={(() => handleClick(geo.properties.NAME_LONG))}
                     key={geo.properties.NAME}
                     geography={geo}
