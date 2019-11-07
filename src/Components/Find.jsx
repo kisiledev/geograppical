@@ -22,6 +22,7 @@ import data from '../Data/world-50m.json';
 
 const Find = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [guesses, setGuesses] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [center, setCenter] = useState([0, 0]);
@@ -263,16 +264,15 @@ const Find = (props) => {
 
   };
 
-  const handleClick = () => {
+  const handleClick = (country) => {
     setReadyToCheck(true);
+    setSelectedCountry(country);
   };
-  const checkAnswer = (e, country) => {
-    setReadyToCheck(true);
+  const checkAnswer = (country) => {
     // if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
     const foundquestion = checkquestions.find((question) => question.country === currentCountry);
     let checkguesses = guesses;
-    console.log(e);
     console.log(country);
     console.log(currentCountry);
     console.log(isStarted);
@@ -323,9 +323,9 @@ const Find = (props) => {
 
   useEffect(() => {
     if (readyToCheck) {
-      checkAnswer();
+      checkAnswer(selectedCountry);
     }
-  }, [readyToCheck, currentCountry]);
+  }, [readyToCheck, selectedCountry, currentCountry]);
 
   useEffect(() => {
     setDynamicRegions(regions);
@@ -430,7 +430,7 @@ const Find = (props) => {
                     data-subregion={geo.properties.SUBREGION}
                     // onMouseEnter={(() => onRegionHover(geo))}
                     // onMouseLeave={(() => onRegionLeave(geo))}
-                    onClick={(() => checkAnswer(handleClick))}
+                    onClick={(() => handleClick(geo.properties.NAME_LONG))}
                     key={geo.properties.NAME}
                     geography={geo}
                     projection={proj}
