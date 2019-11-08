@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable operator-linebreak */
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSpinner, faStar } from '@fortawesome/free-solid-svg-icons';
@@ -125,8 +123,8 @@ const DetailView = (props) => {
   const errorMsg = (<div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>);
   uniqueRegions = uniqueRegions.filter(Boolean);
   return (
-    loadingState || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> :
-      (
+    loadingState || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div>
+      : (
         <BreakpointProvider>
           {countryDetail === 'error' || countryDetail === undefined ? (
             errorMsg

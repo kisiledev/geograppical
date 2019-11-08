@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-console */
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
@@ -55,21 +54,6 @@ const SignIn = (props) => {
       });
   };
 
-  // const uiConfig = {
-  //   signInFlow: 'popup',
-  //   signInSuccessUrl: '/',
-  //   signInOptions: [
-  //     firebase.auth.EmailAuthProvider.PROVIDER_ID,
-  //     firebase.auth.GoogleAuthProvider.PROVIDER_ID
-  //   ],
-  //   callbacks: {
-  //     signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-  //       console.log('signInSuccessWithAuthResult', authResult, redirectUrl)
-  //       this.history.push('/')
-  //       return false
-  //     }
-  //   }
-  // }
   useEffect(() => {
     checkEmail(inputs.email);
   }, [inputs.email]);
@@ -116,7 +100,6 @@ const SignIn = (props) => {
           </div>
           <div className="row">
             <div className="col-lg-12">
-              {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
               <form>
                 <div className="form-group mx-auto">
                   <label htmlFor="exampleInputEmail1">
@@ -165,7 +148,7 @@ const SignIn = (props) => {
                 </div>
                 <div className="col-12 d-flex justify-content-center">
                   <p>
-                    Don't have an account?
+                    Don&apos;t have an account?
                     <Link to={`${process.env.PUBLIC_URL}/signup`}>Sign Up</Link>
                   </p>
                 </div>
@@ -191,9 +174,11 @@ const SignUpLink = () => (
     </p>
   </div>
 );
-
+SignIn.defaultProps = {
+  user: null,
+};
 SignIn.propTypes = {
-  user: userType.isRequired,
+  user: userType,
   loadingState: PropTypes.bool.isRequired,
 };
 export default SignIn;

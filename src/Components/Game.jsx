@@ -152,13 +152,10 @@ const Game = (props) => {
     setQuestions(q.length);
   };
   const handleGameOpen = () => {
-    console.log('opening');
-    console.log(questions);
     handlePointsQuestions(questionsSet);
     if (questions === 10) {
       stop();
       setGameComplete(true);
-      console.log('game is completed');
     }
     setShow(true);
   };
@@ -192,7 +189,6 @@ const Game = (props) => {
   };
   const toggleMode = (e) => {
     e.persist();
-    console.log(timeMode);
     if (timeChecked) {
       setTimeMode(e.target.value);
     }
@@ -203,10 +199,7 @@ const Game = (props) => {
     } else {
       setCurrentCount(null);
     }
-    console.log(e.target.checked);
-    console.log(timeChecked);
     setTimeChecked(e.target.checked);
-    console.log(timeChecked);
   };
   const handleModalUse = () => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
@@ -392,7 +385,6 @@ const Game = (props) => {
 
   return (
     <>
-      {/* <button onClick={}>Save Score</button> */}
       <Modal show={show} onExit={() => resetMode()} onHide={() => handleModalClose()}>
         <Modal.Header closeButton>
           <Modal.Title>Game Over</Modal.Title>

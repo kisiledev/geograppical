@@ -16,7 +16,7 @@ import NaviBar from './Components/NaviBar';
 import './App.css';
 import { auth, googleProvider } from './Components/Firebase/firebase';
 import Game from './Components/Game';
-import Account from './Components/Account';
+import Account from './Components/RefactoredAccount';
 import SignIn from './Components/SignIn';
 import SignUp from './Components/SignUp';
 import PrivateRoute from './Components/PrivateRoutes';

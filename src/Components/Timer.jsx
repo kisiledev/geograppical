@@ -1,9 +1,8 @@
-/* eslint-disable max-len */
 import React from 'react';
 import PropTypes from 'prop-types';
 
 const Timer = (props) => {
-  
+
   const {
     timeChecked,
     isStarted,
@@ -49,7 +48,7 @@ const Timer = (props) => {
 };
 Timer.defaultProps = {
   currentCount: null,
-}
+};
 Timer.propTypes = {
   timeChecked: PropTypes.bool.isRequired,
   isStarted: PropTypes.bool.isRequired,

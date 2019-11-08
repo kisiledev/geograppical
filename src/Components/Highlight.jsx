@@ -1,11 +1,3 @@
-/* eslint-disable no-alert */
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-shadow */
-/* eslint-disable max-len */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import {
   ComposableMap,
@@ -89,7 +81,6 @@ const Highlight = (props) => {
 
   const setDynamicRegions = (regs) => {
     if (!regs) {
-      console.log('no regions');
       return;
     }
     const regionsState = {};
@@ -210,7 +201,7 @@ const Highlight = (props) => {
       answerQuestions = [...questions];
     }
     const question = {};
-    question.country = currentCountry;
+    question.country = currentCountry.name;
     question.correct = null;
     const fetchanswers = [];
     if (currentCountry) {
@@ -309,7 +300,7 @@ const Highlight = (props) => {
       return;
     }
     const checkquestions = questions;
-    const checkquestion = checkquestions.find((question) => question.country === currentCountry);
+    const checkquestion = checkquestions.find((question) => question.country === currentCountry.name);
     let checkguesses = guesses;
     if ((country.name === currentCountry.name || country.name === currentCountry.name) || guesses === 4) {
       // give score of 2

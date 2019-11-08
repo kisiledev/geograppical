@@ -68,7 +68,7 @@ const Choice = (props) => {
       answerQuestions = [...questions];
     }
     const question = {};
-    question.country = country;
+    question.country = country.name;
     question.correct = null;
     const fetchanswers = [];
     const usedCaps = [];
@@ -110,6 +110,7 @@ const Choice = (props) => {
 
     answerQuestions.push(question);
     setQuestions(answerQuestions);
+    console.log(answerQuestions);
   };
   const takeTurn = () => {
     if (!isStarted) {
@@ -128,7 +129,7 @@ const Choice = (props) => {
   const checkAnswer = (answer) => {
     //  if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
-    const checkquestion = checkquestions.find((question) => question.country === currentCountry);
+    const checkquestion = checkquestions.find((question) => question.country === currentCountry.name);
     let checkguesses = guesses;
     if (answer.id === 0) {
       //  give score of 2

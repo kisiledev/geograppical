@@ -1,7 +1,3 @@
-/* eslint-disable no-shadow */
-/* eslint-disable max-len */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import {
   ComposableMap,
@@ -105,7 +101,6 @@ const Find = (props) => {
 
   const setDynamicRegions = (regs) => {
     if (!regs) {
-      console.log('no regions');
       return;
     }
     const regionsState = {};
@@ -138,7 +133,6 @@ const Find = (props) => {
     }
 
     const continentsState = {};
-    console.log(conts);
     if (conts.length > 0) {
       conts.forEach((continent) => {
         if (conts[continent] && conts[continent].countries[0]) {
@@ -199,13 +193,12 @@ const Find = (props) => {
   };
 
   const getAnswers = (curcountry) => {
-    console.log(curcountry);
     let answerQuestions;
     if (questions) {
       answerQuestions = [...questions];
     }
     const question = {};
-    question.country = curcountry;
+    question.country = curcountry.name;
     question.correct = null;
     const answers = [];
     if (curcountry) {
@@ -214,31 +207,24 @@ const Find = (props) => {
         correct: 2,
       });
     }
-    console.log(answers);
     answerQuestions.push(question);
     setQuestions(answerQuestions);
   };
 
   const takeTurn = () => {
     if (!isStarted) {
-      console.log('starting game');
       startGame();
     }
     const country = getRandomCountry();
-    console.log(country);
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
-    console.log('setting currentCountry');
     getAnswers(country);
     const nodes = [...(document.getElementsByClassName('gameCountry'))];
     nodes.forEach((node) => {
-      console.log('removing styles');
       node.removeAttribute('style');
     });
     if (questions && questions.length === 10) {
-      console.log('opening modal');
       handleOpen();
-      console.log('ending game');
       if (gameOver) {
         endGame();
       }
@@ -272,21 +258,10 @@ const Find = (props) => {
   const checkAnswer = (country) => {
     // if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
-    const foundquestion = checkquestions.find((question) => question.country === currentCountry);
+    const foundquestion = checkquestions.find((question) => question.country === currentCountry.name);
     let checkguesses = guesses;
-    console.log(country);
-    console.log(currentCountry);
-    console.log(isStarted);
-    if (isStarted === false) {
-      console.log('game has not started');
-    }
-    console.log(currentCountry);
     if ((country === currentCountry.name || country === currentCountry.name) || guesses === 4) {
-      // give score of 2
       updateScore(3 - guesses);
-      // set answer style
-      // answer['correct'] = 0;
-      // initialize correct counter for game
       console.log(foundquestion);
       if (guesses === 1) {
         foundquestion.correct = true;
@@ -294,13 +269,9 @@ const Find = (props) => {
       checkguesses = null;
       setTimeout(() => takeTurn(), 300);
     } else {
-      // answer['correct'] = 1;
-      console.log(foundquestion);
       foundquestion.correct = false;
       checkguesses += 1;
       if (guesses === 3) {
-        console.log(currentCountry.name);
-        console.log('3 guesses, time up');
         getCountryInfo(currentCountry.name);
       }
     }
@@ -311,13 +282,11 @@ const Find = (props) => {
 
   useEffect(() => {
     getMapNations();
-    console.log(regions);
     handlePoints(questions);
   }, []);
 
   useEffect(() => {
     if (currentCountry) {
-      console.log(currentCountry);
       getAnswers(currentCountry);
     }
   }, []);
@@ -335,13 +304,10 @@ const Find = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('setting locations');
-    console.log(regions, continents);
     setLocations(regions, continents);
   }, [countries]);
 
   useEffect(() => {
-    console.log('ending game');
     endGame();
   }, [saved, gameOver]);
 
