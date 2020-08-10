@@ -38,12 +38,13 @@ const Scoreboard = (props) => {
 };
 Scoreboard.defaultProps = {
   questions: 0,
+  currentCount: null,
 }
 Scoreboard.propTypes = {
   timeChecked: PropTypes.bool.isRequired,
   isStarted: PropTypes.bool.isRequired,
   timeMode: PropTypes.string.isRequired,
-  currentCount: PropTypes.number.isRequired,
+  currentCount: PropTypes.number,
   score: PropTypes.number.isRequired,
   correct: PropTypes.number.isRequired,
   incorrect: PropTypes.number.isRequired,

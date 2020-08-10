@@ -4,7 +4,10 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, {
-  useState, useEffect, useRef, useCallback,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
 } from 'react';
 import { Link } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
@@ -63,10 +66,9 @@ const Game = (props) => {
   } = props;
 
   const tick = () => {
-    if (gameOver) return;
+    if (gameOver || !timeChecked) return;
     if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
     else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
-    console.log('ticking');
   };
 
   const intervalRef = useRef(null);
@@ -87,7 +89,9 @@ const Game = (props) => {
       return;
     }
     console.log('starting');
-    intervalRef.current = setInterval(() => tick(), 1000);
+    if (timeChecked) {
+      intervalRef.current = setInterval(() => tick(), 1000);
+    }
   }, []);
 
   const reset = useCallback(() => {
@@ -105,11 +109,15 @@ const Game = (props) => {
 
   const startGame = () => {
     setIsStarted(true);
-    start();
+    if (timeChecked) {
+      start();
+    }
   };
   const endGame = () => {
-    stop();
-    reset();
+    if (timeChecked) {
+      stop();
+      reset();
+    }
     if (!gameOver) return;
     setIsStarted(false);
     setGameOver(true);
@@ -144,13 +152,10 @@ const Game = (props) => {
     setQuestions(q.length);
   };
   const handleGameOpen = () => {
-    console.log('opening');
-    console.log(questions);
     handlePointsQuestions(questionsSet);
     if (questions === 10) {
       stop();
       setGameComplete(true);
-      console.log('game is completed');
     }
     setShow(true);
   };
@@ -184,7 +189,6 @@ const Game = (props) => {
   };
   const toggleMode = (e) => {
     e.persist();
-    console.log(timeMode);
     if (timeChecked) {
       setTimeMode(e.target.value);
     }
@@ -381,7 +385,6 @@ const Game = (props) => {
 
   return (
     <>
-      {/* <button onClick={}>Save Score</button> */}
       <Modal show={show} onExit={() => resetMode()} onHide={() => handleModalClose()}>
         <Modal.Header closeButton>
           <Modal.Title>Game Over</Modal.Title>

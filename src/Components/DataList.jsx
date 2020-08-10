@@ -31,8 +31,7 @@ const RecursiveProperty = (props) => (
       || typeof props.property === 'boolean' ? (
         <>
           <PropertyName>
-            {camelCaseToNormal(props.propertyName)}
-            :
+            {`${camelCaseToNormal(props.propertyName)}: `}
           </PropertyName>
           {props.property.toString()}
         </>

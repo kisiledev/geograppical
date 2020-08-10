@@ -12,11 +12,11 @@ import {
   dataType,
 } from '../Helpers/Types/index';
 import '../App.css';
-import { db } from './Firebase/firebase'
+import { db } from './Firebase/firebase';
 // import * as ROUTES from '../Constants/Routes';
 
 
-const Result = props => {
+const Result = (props) => {
   // const [show, setShow] = useState(false)
   const [favorite, setFavorite] = useState(false);
   // const [message, setMessage] = useState('');
@@ -48,8 +48,9 @@ const Result = props => {
             setFavorite(false);
           }
         }
-      }).catch(function(error) {
-          console.log("Error getting document:", error);
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
       });
   };
   const makeFavorite = (e, coun) => {

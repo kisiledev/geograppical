@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable operator-linebreak */
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSpinner, faStar } from '@fortawesome/free-solid-svg-icons';
@@ -36,6 +34,9 @@ const DetailView = (props) => {
     hoverOnCountry, hoverOffCountry,
   } = props;
 
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
   const checkFavorite = (country) => {
     const docRef = db.collection(`users/${user.uid}/favorites`).doc(`${country}`);
     docRef.get()
@@ -122,8 +123,8 @@ const DetailView = (props) => {
   const errorMsg = (<div className="h3">There has been an error. We cannot find the country in our database. Please go back and choose another country</div>);
   uniqueRegions = uniqueRegions.filter(Boolean);
   return (
-    loadingState || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div> :
-      (
+    loadingState || !countryDetail ? <div className="my-5 text-center mx-auto"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div>
+      : (
         <BreakpointProvider>
           {countryDetail === 'error' || countryDetail === undefined ? (
             errorMsg
@@ -157,11 +158,9 @@ const DetailView = (props) => {
                             <small>{countryDetail.government.capital.name.split(';')[0]}</small>
                           </h3>
                           <h5>
-                            Pop:
-                            {countryDetail.people.population.total}
-                            - Ranked (
-                            {countryDetail.people.population.global_rank}
-                            )
+                            {`Population: 
+                            ${numberWithCommas(countryDetail.people.population.total)}
+                             (${countryDetail.people.population.global_rank})`}
                           </h5>
                         </div>
                       </Breakpoint>
@@ -175,8 +174,8 @@ const DetailView = (props) => {
                         alt={`${countryDetail.name}'s Flag`}
                         basePath="/img/flags"
                       />
-                      <AudioPlayer nation={countryDetail} />
                     </div>
+                    <AudioPlayer nation={countryDetail} />
                   </div>
                   <RecursiveProperty
                     property={countryDetail}

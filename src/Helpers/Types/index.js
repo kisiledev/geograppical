@@ -1439,3 +1439,81 @@ export const matchType = shape({
     path: string.isRequired,
     url: string.isRequired,
 });
+export const acctDataType = PropTypes.oneOfType([
+  shape({
+    isOpen: PropTypes.bool.isRequired,
+    data: PropTypes.arrayOf({
+        id: string.isRequired,
+        data: countryType.isRequired,
+      }).isRequired,
+  }),
+  shape({
+    isOpen: PropTypes.bool.isRequired,
+    data: PropTypes.arrayOf({
+        id: string.isRequired,
+        data: shape({
+          correct: PropTypes.number.isRequired,
+          dateCreated: PropTypes.shape({
+            seconds: PropTypes.number.isRequired,
+            nanoseconds: PropTypes.number.isRequired,
+          }).isRequired,
+          gameMode: PropTypes.string.isRequired,
+          incorrect: PropTypes.number.isRequired,
+          questions: PropTypes.arrayOf(
+            PropTypes.shape({
+              answers: PropTypes.arrayOf(
+                PropTypes.shape({
+                  correct: PropTypes.number.isRequired,
+                  id: PropTypes.number.isRequired,
+                  name: PropTypes.string.isRequired,
+                }).isRequired,
+              ),
+              correct: PropTypes.bool.isRequired,
+              country: PropTypes.string.isRequired,
+            }).isRequired,
+          ).isRequired,
+          score: PropTypes.number.isRequired,
+          time: PropTypes.number.isRequired,
+          userId: PropTypes.string.isRequired,
+        }),
+      }).isRequired,
+  }),
+]);
+export const scoreType = shape({
+  isOpen: PropTypes.bool.isRequired,
+  data: PropTypes.arrayOf({
+      id: string.isRequired,
+      data: shape({
+        correct: PropTypes.number.isRequired,
+        dateCreated: PropTypes.shape({
+          seconds: PropTypes.number.isRequired,
+          nanoseconds: PropTypes.number.isRequired,
+        }).isRequired,
+        gameMode: PropTypes.string,
+        incorrect: PropTypes.number,
+        questions: PropTypes.arrayOf(
+          PropTypes.shape({
+            answers: PropTypes.arrayOf(
+              PropTypes.shape({
+                correct: PropTypes.number.isRequired,
+                id: PropTypes.number.isRequired,
+                name: PropTypes.string.isRequired,
+              }).isRequired,
+            ),
+            correct: PropTypes.bool.isRequired,
+            country: PropTypes.string.isRequired,
+          }).isRequired,
+        ).isRequired,
+        score: PropTypes.number,
+        time: PropTypes.number,
+        userId: PropTypes.string.isRequired,
+      }),
+    }).isRequired,
+});
+export const favType = shape({
+  isOpen: PropTypes.bool.isRequired,
+  data: PropTypes.arrayOf({
+      id: string.isRequired,
+      data: countryType.isRequired,
+    }).isRequired,
+});

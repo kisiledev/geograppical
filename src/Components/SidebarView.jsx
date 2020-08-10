@@ -29,8 +29,8 @@ const SidebarView = (props) => {
     : <Sidebar {...props} />);
   return (
     <BreakpointProvider>
-      <nav className="sidebar card col-md-3">
-        <Breakpoint small down>
+      <nav className="sidebar card col-md-12 col-lg-12">
+        <Breakpoint medium down>
           <button
             type="button"
             className="btn btn-sm btn-block btn-outline-secondary mb-3"
