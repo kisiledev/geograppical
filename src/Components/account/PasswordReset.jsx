@@ -12,7 +12,7 @@ import {
   userType,
 } from '../Helpers/Types/index';
 import useSignUpForm from '../Helpers/CustomHooks';
-import { auth } from './Firebase/firebase';
+import { auth } from '../Firebase/firebase';
 
 
 const PasswordReset = (props) => {

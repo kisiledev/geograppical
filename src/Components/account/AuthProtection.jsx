@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth } from './Firebase/firebase';
+import { auth } from '../Firebase/firebase';
 
 const withAuthProtection = redirectPath => WrappedComponent => {
     class WithAuthProtection extends React.Component {

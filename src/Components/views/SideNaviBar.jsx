@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 import {
   dataType,
   userType,
-} from '../Helpers/Types/index';
+} from '../../../Helpers/Types/index';
 import SideCountry from './SideCountry';
-import * as ROUTES from '../Constants/Routes';
+import * as ROUTES from '../../../Constants/Routes';
 
 
 const SideNaviBar = (props) => {

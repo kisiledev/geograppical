@@ -8,10 +8,10 @@ import { Alert, Badge } from 'react-bootstrap';
 import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { db } from './Firebase/firebase';
+import { db } from '../../Firebase/firebase';
 import {
   userType,
-} from '../Helpers/Types/index';
+} from '../../Helpers/Types/index';
 
 
 const Account = (props) => {

@@ -1,99 +1,87 @@
-/* eslint-disable no-console */
-import React, { useState } from 'react';
-import { Breakpoint, BreakpointProvider } from 'react-socks';
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { withRouter } from 'react-router-dom';
+import { BreakpointProvider } from 'react-socks';
 import { Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import {
   countryType,
   dataType,
   userType,
-} from '../Helpers/Types/index';
-import { db } from './Firebase/firebase';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+  matchType,
+} from '../../../Helpers/Types/index';
+import * as ROUTES from '../../../Constants/Routes';
+import Result from '../Result';
+import { db } from '../../../Firebase/firebase';
 import '../App.css';
-import SidebarView from './SidebarView';
-import Maps from './Maps';
-import Result from './Result';
-import * as ROUTES from '../Constants/Routes';
 
 
-const ResultView = (props) => {
-  const [show, setShow] = useState(false);
+const SearchResults = (props) => {
+  const [loadingState, setLoadingState] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [message, setMessage] = useState('');
   const [alert, setAlert] = useState(false);
+  const [show, setShow] = useState(false);
 
   const {
+    searchText,
+    match,
     user,
     data,
     countries,
-    mapVisible,
-    changeMapView,
     changeView,
     getCountryInfo,
-    hoverOnRegion,
-    hoverOffRegion,
-    hoverOnCountry,
-    hoverOffCountry,
     handleOpen,
     handleClose,
-    handleSideBar,
+    handleRefresh,
     setStateModal,
-    filterCountryByName,
     login,
   } = props;
+
+  useEffect(() => {
+    handleRefresh(match.params.input);
+    setLoadingState(false);
+  }, [data]);
 
   const makeFavorite = (e, country) => {
     e.persist();
     setShow(true);
     if (!user) {
-      setAlert(true);
       setMessage({
-        style: 'warning', content: 'You need to sign in to favorite countries. Login', link: ROUTES.SIGN_IN, linkContent: ' here',
+        style: 'warning', content: 'You need to sign in to favorite countries. Login ', link: ROUTES.SIGN_IN, linkContent: 'here',
       });
     } else if (!favorite) {
       db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).set({
         country,
       }).then(() => {
-        console.log(`Added ${country.name} to favorites`);
         setAlert(true);
         setMessage({ style: 'success', content: `Added ${country.name} to favorites` });
         setFavorite(true);
       })
         .catch((err) => {
-          console.error(err);
           setAlert(true);
           setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
         });
     } else {
       db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).delete()
         .then(() => {
-          console.log(`Removed ${country.name} from favorites`);
           setAlert(true);
           setMessage({ style: 'warning', content: `Removed ${country.name} from favorites` });
           setFavorite(false);
           setShow(true);
         })
         .catch((err) => {
-          console.error(err);
           setAlert(true);
           setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
         });
     }
   };
-
-  const totalRegions = data.map((a) => a.geography.map_references.replace(/;/g, ''));
-  function getOccurrence(array, value) {
-    return array.filter((v) => (v === value)).length;
-  }
-  let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
-  uniqueRegions = uniqueRegions.filter(Boolean);
-
   return (
     <BreakpointProvider>
       <div className="row">
-        <main className="col-md-9 col-lg-12 px-0">
+        <main className="col-md-9 px-5">
           {countries[0] === undefined
             ? null
             : null }
@@ -106,21 +94,16 @@ const ResultView = (props) => {
             </Alert.Link>
           </Alert>
           )}
-          <Breakpoint medium up>
-            <Maps
-              mapVisible={mapVisible}
-              changeMapView={changeMapView}
-              worldData={data}
-              countries={countries}
-              changeView={changeView}
-              getCountryInfo={getCountryInfo}
-              hoverOnRegion={hoverOnRegion}
-              hoverOffRegion={hoverOffRegion}
-              totalRegions={totalRegions}
-              uniqueRegions={uniqueRegions}
-              getOccurrence={getOccurrence}
-            />
-          </Breakpoint>
+          <div className="col-12 text-center">
+            { loadingState ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" />
+              : (searchText === '' ? <h4 className="my-3">No search terms are entered</h4> : (
+                <h4 className="my-3">
+                  Search Results for
+                  {' '}
+                  {data ? searchText : match.params.input}
+                </h4>
+              ))}
+          </div>
           {countries[0] && countries.map((country) => (
             <Result
               filtered={countries[0]}
@@ -134,7 +117,9 @@ const ResultView = (props) => {
               capital={country.government.capital.name}
               excerpt={country.excerpt}
               population={country.people.population.total}
+              flag={country.flag}
               flagCode={country.government.country_name.isoCode}
+              imgalt={`${country.name}'s flag`}
               key={country.alpha3Code}
               country={country}
               code={country.alpha3Code}
@@ -146,46 +131,25 @@ const ResultView = (props) => {
             />
           ))}
         </main>
-        <Breakpoint medium down>
-          <SidebarView
-            hoverOnRegion={hoverOnRegion}
-            hoverOffRegion={hoverOffRegion}
-            changeView={changeView}
-            handleSideBar={handleSideBar}
-            data={data}
-            totalRegions={totalRegions}
-            uniqueRegions={uniqueRegions}
-            getOccurrence={getOccurrence}
-            getCountryInfo={getCountryInfo}
-            filterCountryByName={filterCountryByName}
-            hoverOnCountry={hoverOnCountry}
-            hoverOffCountry={hoverOffCountry}
-          />
-        </Breakpoint>
       </div>
     </BreakpointProvider>
   );
 };
-ResultView.defaultProps = {
+SearchResults.defaultProps = {
   user: null,
 };
-ResultView.propTypes = {
+SearchResults.propTypes = {
   countries: PropTypes.arrayOf(countryType).isRequired,
   data: dataType.isRequired,
   user: userType,
-  mapVisible: PropTypes.string.isRequired,
+  match: matchType.isRequired,
   getCountryInfo: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
-  changeMapView: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
+  handleRefresh: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired,
   setStateModal: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
+  searchText: PropTypes.string.isRequired,
 };
-export default ResultView;
+export default withRouter(SearchResults);

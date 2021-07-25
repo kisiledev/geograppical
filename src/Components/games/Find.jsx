@@ -15,7 +15,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Breakpoint, { BreakpointProvider } from "react-socks";
 import PropTypes from "prop-types";
-import { dataType } from "../Helpers/Types/index";
+import { dataType } from "../../Helpers/Types/index";
 import data from "../Data/world-50m.json";
 
 const Find = props => {

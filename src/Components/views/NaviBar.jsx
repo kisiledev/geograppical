@@ -6,7 +6,7 @@ import {
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { auth, googleProvider } from './Firebase/firebase';
+import { auth, googleProvider } from '../Firebase/firebase';
 import {
   userType,
 } from '../Helpers/Types/index';

@@ -6,7 +6,7 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../App.css';
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar';
 
 
 const SidebarView = (props) => {

@@ -11,16 +11,16 @@ import {
   dataType,
   userType,
   matchType,
-} from '../Helpers/Types/index';
+} from '../../../Helpers/Types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
 import '../App.css';
 
 import SidebarView from './SidebarView';
-import { db } from './Firebase/firebase';
+import { db } from '../../../Firebase/firebase';
 
 
-import * as ROUTES from '../Constants/Routes';
+import * as ROUTES from '../../../Constants/Routes';
 
 
 const DetailView = (props) => {

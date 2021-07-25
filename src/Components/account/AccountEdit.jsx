@@ -14,9 +14,9 @@ import {
   facebookProvider,
   emailProvider,
   twitterProvider,
-} from './Firebase/firebase';
-import LinkEmailModal from './LinkEmailModal';
-import { userType } from '../Helpers/Types';
+} from '../../Firebase/firebase';
+import LinkEmailModal from './views/LinkEmailModal';
+import { userType } from '../../Helpers/Types';
 
 const AccountEdit = (props) => {
   const { user } = props;

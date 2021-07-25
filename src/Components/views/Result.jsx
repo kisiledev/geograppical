@@ -12,7 +12,7 @@ import {
   dataType,
 } from '../Helpers/Types/index';
 import '../App.css';
-import { db } from './Firebase/firebase';
+import { db } from '../Firebase/firebase';
 // import * as ROUTES from '../Constants/Routes';
 
 

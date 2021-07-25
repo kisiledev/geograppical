@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import {
   userType,
 } from '../Helpers/Types/index';
-import { auth, googleProvider } from './Firebase/firebase';
+import { auth, googleProvider } from '../Firebase/firebase';
 import useSignUpForm from '../Helpers/CustomHooks';
 
 

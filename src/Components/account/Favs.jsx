@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import {
   countryType,
   acctDataType,
-} from '../Helpers/Types/index';
+} from '../../Helpers/Types/index';
 
 const Favs = (props) => {
   const {
