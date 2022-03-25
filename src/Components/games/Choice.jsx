@@ -5,7 +5,7 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { dataType } from "../Helpers/Types/index";
+import { dataType } from "../../helpers/Types/index";
 
 const Choice = props => {
 	const [currentCountry, setCurrentCountry] = useState(null);

@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {
   dataType,
-} from '../Helpers/Types/index';
+} from '../../helpers/Types/index';
 import Sidebar from './Sidebar';
-import '../App.css';
+import '../../App.css';
 
 
 const SideCountry = (props) => {

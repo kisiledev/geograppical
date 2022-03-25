@@ -2,7 +2,7 @@ import React from 'react';
 // import { faPlus } from "@fortawesome/free-solid-svg-icons";
 // import { faHome } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import '../App.css';
+import '../../App.css';
 
 const Search = props => {
 

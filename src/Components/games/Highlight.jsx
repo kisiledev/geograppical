@@ -13,8 +13,8 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import {
   dataType,
-} from '../Helpers/Types/index';
-import data from '../Data/world-50m.json';
+} from '../../helpers/Types/index';
+import data from '../../data/world-50m.json';
 
 const Highlight = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);

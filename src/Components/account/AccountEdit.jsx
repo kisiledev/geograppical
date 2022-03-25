@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
 import React, { useState, useEffect } from 'react';
-import * as Firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faArrowLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Modal } from 'react-bootstrap';
@@ -14,9 +14,9 @@ import {
   facebookProvider,
   emailProvider,
   twitterProvider,
-} from '../../Firebase/firebase';
-import LinkEmailModal from './views/LinkEmailModal';
-import { userType } from '../../Helpers/Types';
+} from '../../firebase/firebase';
+import LinkEmailModal from '../views/LinkEmailModal';
+import { userType } from '../../helpers/Types';
 
 const AccountEdit = (props) => {
   const { user } = props;
@@ -44,7 +44,7 @@ const AccountEdit = (props) => {
     setProviders(user.providerData);
   };
   const linkEmail = (email, password) => {
-    const credential = Firebase.auth.EmailAuthProvider.credential(email, password);
+    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
     auth.currentUser.linkWithCredential(credential)
       .then((usercred) => {
         const funcuser = usercred.user;
@@ -127,7 +127,7 @@ const AccountEdit = (props) => {
       name: 'Facebook',
       source: facebookProvider,
       provName: 'facebook.com',
-      icon: require('../img/facebook-icon-white.svg'),
+      icon: require('../../img/facebook-icon-white.svg'),
       onClick: () => providerLink(facebookProvider),
     },
     {
@@ -135,7 +135,7 @@ const AccountEdit = (props) => {
       name: 'Twitter',
       source: twitterProvider,
       provName: 'twitter.com',
-      icon: require('../img/Twitter_Logo_WhiteOnBlue.svg'),
+      icon: require('../../img/Twitter_Logo_WhiteOnBlue.svg'),
       onClick: () => providerLink(twitterProvider),
     },
     {
@@ -143,7 +143,7 @@ const AccountEdit = (props) => {
       name: 'Email',
       source: emailProvider,
       provName: 'password',
-      icon: require('../img/auth_service_email.svg'),
+      icon: require('../../img/auth_service_email.svg'),
       onClick: () => setShow(true),
     },
   ];
@@ -168,7 +168,7 @@ const AccountEdit = (props) => {
         <div className="card col-lg-8 col-xl-8 mx-auto ">
           <div className="row">
             <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
-              <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../img/user.png')} alt="" />
+              <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../../img/user.png')} alt="" />
               <div className="btn btn-link btn-file">
                 Edit avatar
                 <input type="file" id="upload-img" />

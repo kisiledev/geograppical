@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 // import {
 //   countryType,
-// } from '../Helpers/Types/index';
+// } from '../../helpers/Types/index';
 
 const AcctHeader = (props) => {
   const {
@@ -25,7 +25,7 @@ const AcctHeader = (props) => {
     <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
       <div className="row">
         <div className="col-12 text-center">
-          <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../img/user.png')} alt="" />
+          <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../../img/user.png')} alt="" />
         </div>
         <div className="col-12 text-center">
           <h5 className="mt-3">

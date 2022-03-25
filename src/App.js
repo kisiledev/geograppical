@@ -5,43 +5,45 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-mixed-operators */
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import { Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import PropTypes, { shape } from 'prop-types';
-import ResultView from './Components/ResultView';
-import DetailView from './Components/account/views/DetailView';
-import NaviBar from './Components/NaviBar';
+import ResultView from './components/views/ResultView';
+import DetailView from './components/views/DetailView';
+import NaviBar from './components/views/NaviBar';
 import './App.css';
-import { auth, googleProvider } from './Firebase/firebase';
-import Game from './Components/games/Game';
-import Account from './Components/account/RefactoredAccount';
-import SignIn from './Components/SignIn';
-import SignUp from './Components/SignUp';
-import PrivateRoute from './Components/PrivateRoutes';
-import PasswordReset from './Components/PasswordReset';
-import AccountEdit from './Components/account/AccountEdit';
-import SearchResults from './Components/account/views/SearchResults';
-import SideNaviBar from './Components/account/views/SideNaviBar';
-
-// import LogRocket from 'logrocket';
-// LogRocket.init('w5ty2q/geograppical');
+import { auth, googleProvider } from './firebase/firebase';
+import Game from './components/games/Game';
+import Account from './components/account/RefactoredAccount';
+import SignIn from './components/account/SignIn';
+import SignUp from './components/account/SignUp';
+import PrivateRoute from './components/account/PrivateRoutes';
+import PasswordReset from './components/account/PasswordReset';
+import AccountEdit from './components/account/AccountEdit';
+import SearchResults from './components/views/SearchResults';
+import SideNaviBar from './components/views/SideNaviBar';
+import { loginUser, changeView, changeMap } from './redux-toolkit';
+import { loadData } from './redux/data/dataSlice';
 
 const App = (props) => {
-
+  const dispatch = useDispatch();
+  const mapView = useSelector(state => state.mapView.value)
+  const view = useSelector(state => state.view.value)
+  const toggleSidebar = useSelector(state => state.toggleSidebar)
+  const mode = useSelector(state => state.mode.value)
+  const user = useSelector(state => state.user.value)
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
   const [error, setError] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
-  const [mapView, setMapView] = useState('Show');
-  const [view, setView] = useState('default');
   const [filterNations, setFilterNations] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [worldData, setWorldData] = useState([]);
   const [countryDetail, setCountryDetail] = useState([]);
-  const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({});
   const [iso, setIso] = useState(null);
@@ -53,7 +55,7 @@ const App = (props) => {
   } = props;
 
   const handleViews = (selectedView) => {
-    setView(selectedView);
+    dispatch(changeView(selectedView));
   };
   const removeIsoNull = (array) => array.filter((item) => item.government.capital !== undefined
       && item.government.country_name !== undefined
@@ -88,7 +90,6 @@ const App = (props) => {
       axios.get('../factbook.json')
         .then((res) => {
           let Data = res && res.data.countries;
-          // console.log(Data);
           Data = Object.values(Data).map((country) => country.data) || [];
           const newData = removeNull(Object.values(Data));
           if (newData.length > 0) {
@@ -153,13 +154,12 @@ const App = (props) => {
     setShowModal(true);
   };
   const setStateModal = (modalsetting) => {
-    console.log('setting modal');
     setModal(modalsetting);
   };
   const login = () => {
     auth.signInWithPopup(googleProvider)
       .then((result) => {
-        console.log(result.user);
+        return
       }).catch((err) => {
         console.log(err);
         console.log(err.message);
@@ -169,13 +169,11 @@ const App = (props) => {
   const hoverOnCountry = (e, region, country) => {
     e.stopPropagation();
     if (view === 'detail') {
-      setView('default');
+      dispatch(changeView('default'))
     }
     let nodes = (document.getElementsByClassName('country'));
     nodes = [...nodes];
     nodes = nodes.filter((y) => simplifyString(country) === simplifyString(y.dataset.longname) || simplifyString(country) === simplifyString(y.dataset.shortname));
-    console.log(nodes);
-    console.log(country);
     nodes.forEach((node) => {
       node.style.fill = '#ee0a43';
       node.style.stroke = '#111';
@@ -190,7 +188,6 @@ const App = (props) => {
     let nodes = (document.getElementsByClassName('country'));
     nodes = [...nodes];
     nodes = nodes.filter((y) => simplifyString(country) === simplifyString(y.dataset.longname) || simplifyString(country) === simplifyString(y.dataset.shortname));
-    console.log(nodes);
     nodes.forEach((node) => {
       node.removeAttribute('style');
       node.style.fill = '#024e1b';
@@ -204,18 +201,13 @@ const App = (props) => {
   const hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
-    console.log(region);
-    const countries = Object.values(region)[2];
-    console.log(countries);
+    const countries = region && Object.values(region)[2];
     if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
     }
     let nodes = (document.getElementsByClassName('country'));
     nodes = [...nodes];
-    console.log(nodes);
-    console.log(svgs);
     nodes = nodes.filter((y) => svgs.includes(simplifyString(y.dataset.longname)) || svgs.includes(simplifyString(y.dataset.shortname)));
-    console.log(nodes);
     nodes.forEach((node) => {
       node.style.fill = '#024e1b';
       node.style.stroke = '#111';
@@ -223,13 +215,10 @@ const App = (props) => {
       node.style.outline = 'none';
       node.style.willChange = 'all';
     });
-    // console.log(state[regionName])
-    // console.log(state[regionName].open)
   };
   const hoverOffRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
-    console.log(region);
     const countries = Object.values(region)[2];
     if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
@@ -250,7 +239,6 @@ const App = (props) => {
     if (match === [] || !match || match.length === 0) {
       setCountryDetail('error');
     }
-    console.log(match);
     setCountryDetail(match[0]);
     handleViews('detail');
   };
@@ -265,31 +253,31 @@ const App = (props) => {
       history.push(`/search/${searchText}`);
     }
   };
-
   const filterCountryByName = (string) => {
     const searchDB = Object.values(worldData);
-    console.log(searchDB);
     const match = searchDB.filter(
       (country) => country.name.toUpperCase() === string.toUpperCase()
       || country.name.toUpperCase().includes(string.toUpperCase())
       || country.government.country_name.conventional_long_form.toUpperCase() === string.toUpperCase()
       || country.government.country_name.conventional_long_form.toUpperCase().includes(string.toUpperCase()),
     );
-    console.log(match);
     setFilterNations(match);
     if (string.length > 0) {
-      console.log(match);
       setFilterNations(match);
       return match;
     }
     return null;
   };
 
+  useEffect(() => {
+    loadWorldData();
+
+  }, [])
   const changeMapView = () => {
     if (mapView === 'Show') {
-      setMapView('Hide');
+      dispatch(changeMap('Hide'));
     } else {
-      setMapView('Show');
+      dispatch(changeMap('Show'));
     }
   };
   const handleSideBar = (string) => {
@@ -317,12 +305,9 @@ const App = (props) => {
     e.persist();
     // console.log('changing')
     const { value } = e.target;
-    console.log(value);
     if (value != null && value.trim() !== '') {
       setSearchText(value);
-      console.log(searchText);
       filterCountryByName(value);
-      console.log(filterCountryByName(value));
       let nodes = [...(document.getElementsByClassName('country'))];
       nodes.forEach((node) => {
         node.style.fill = '#60c080 ';
@@ -331,11 +316,8 @@ const App = (props) => {
         node.style.outline = 'none';
         node.style.willChange = 'all';
       });
-      console.log(filterCountryByName(value));
       const filtered = filterCountryByName(value).map((country) => country.name);
-      console.log(nodes.map((y) => y.dataset.shortname));
       nodes = nodes.filter((y) => filtered.includes(y.dataset.shortname));
-      console.log(nodes);
       nodes.forEach((node) => {
         node.style.fill = '#024e1b';
         node.style.stroke = '#111';
@@ -391,11 +373,11 @@ const App = (props) => {
     loadCodes();
     auth.onAuthStateChanged((u) => {
       if (u) {
-        setUser(u);
+        dispatch(loginUser(u))
         setAuthenticated(true);
         setLoadingState(false);
       } else {
-        setUser(null);
+        dispatch(loginUser(null))
         setAuthenticated(false);
         setLoadingState(false);
       }
@@ -405,10 +387,6 @@ const App = (props) => {
     }
   }, [user]);
 
-  // useEffect(() => {
-  //   filterCountryByName(searchText);
-  //   console.log(searchText);
-  // }, [searchText]);
 
   useEffect(() => {
     loadWorldData();

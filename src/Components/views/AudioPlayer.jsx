@@ -1,5 +1,5 @@
 import React from "react";
-import { countryType } from "../../../Helpers/Types";
+import { countryType } from "../../helpers/Types";
 
 const AudioPlayer = props => {
 	const { nation } = props;

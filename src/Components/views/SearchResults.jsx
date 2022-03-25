@@ -11,11 +11,11 @@ import {
   dataType,
   userType,
   matchType,
-} from '../../../Helpers/Types/index';
-import * as ROUTES from '../../../Constants/Routes';
-import Result from '../Result';
-import { db } from '../../../Firebase/firebase';
-import '../App.css';
+} from '../../helpers/Types/index';
+import * as ROUTES from '../../constants/Routes';
+import Result from './Result';
+import { db } from '../../firebase/firebase';
+import '../../App.css';
 
 
 const SearchResults = (props) => {

@@ -6,11 +6,11 @@ import {
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { auth, googleProvider } from '../Firebase/firebase';
+import { auth, googleProvider } from '../../firebase/firebase';
 import {
   userType,
-} from '../Helpers/Types/index';
-import * as ROUTES from '../Constants/Routes';
+} from '../../helpers/Types/index';
+import * as ROUTES from '../../constants/Routes';
 
 
 const NaviBar = (props) => {
@@ -53,7 +53,7 @@ const NaviBar = (props) => {
       </Form>
       <Navbar.Collapse className="justify-content-end text-center" id="responsive-navbar-nav">
         <Nav.Link href={ROUTES.ACCOUNT} className="nav-item-avatar">
-          <img className="nav-avatar" src={user ? (user.photoURL ? user.photoURL : require('../img/user.png')) : require('../img/user.png')} alt="avatar" />
+          <img className="nav-avatar" src={user ? (user.photoURL ? user.photoURL : require('../../img/user.png')) : require('../../img/user.png')} alt="avatar" />
         </Nav.Link>
         {user ? null : (
           <Nav>

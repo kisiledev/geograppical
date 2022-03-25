@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import { faPlus, faMinus, faGlobeAfrica } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
-import data from '../Data/world-50m.json';
+import data from '../../data/world-50m.json';
 
 const Find = (props) => {
   const [center, setCenter] = useState([0, 20]);

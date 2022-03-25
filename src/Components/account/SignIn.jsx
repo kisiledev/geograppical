@@ -11,9 +11,9 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import {
   userType,
-} from '../Helpers/Types/index';
-import { auth, googleProvider } from '../Firebase/firebase';
-import useSignUpForm from '../Helpers/CustomHooks';
+} from '../../helpers/Types/index';
+import { auth, googleProvider } from '../../firebase/firebase';
+import useSignUpForm from '../../helpers/CustomHooks';
 
 
 const SignIn = (props) => {

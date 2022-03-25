@@ -21,6 +21,8 @@ export const PropertyName = styled.span`
   color: black;
   font-size: 14px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
 `;
 
 const RecursiveProperty = (props) => (
@@ -39,7 +41,7 @@ const RecursiveProperty = (props) => (
           <ExpandableProperty country={props.property} title={camelCaseToNormal(props.propertyName)} expanded={!!props.rootProperty}>
             {Object.values(props.property).map((property, index, { length }) => (
               <RecursiveProperty
-                key={`${property.title}1`}
+                key={`${index}`}
                 property={property}
                 propertyName={Object.getOwnPropertyNames(props.property)[index]}
                 excludeBottomBorder={index === length - 1}

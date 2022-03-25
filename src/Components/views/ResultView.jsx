@@ -7,15 +7,15 @@ import {
   countryType,
   dataType,
   userType,
-} from '../Helpers/Types/index';
-import { db } from '../Firebase/firebase';
+} from '../../helpers/Types/index';
+import { db } from '../../firebase/firebase';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import '../App.css';
-import SidebarView from './views/SidebarView';
-import Maps from './views/Maps';
+import '../../App.css';
+import SidebarView from './SidebarView';
+import Maps from './Maps';
 import Result from './Result';
-import * as ROUTES from '../Constants/Routes';
+import * as ROUTES from '../../constants/Routes';
 
 
 const ResultView = (props) => {

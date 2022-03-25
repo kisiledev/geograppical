@@ -11,16 +11,16 @@ import {
   dataType,
   userType,
   matchType,
-} from '../../../Helpers/Types/index';
+} from '../../helpers/Types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
-import '../App.css';
+import '../../App.css';
 
 import SidebarView from './SidebarView';
-import { db } from '../../../Firebase/firebase';
+import { db } from '../../firebase/firebase';
 
 
-import * as ROUTES from '../../../Constants/Routes';
+import * as ROUTES from '../../constants/Routes';
 
 
 const DetailView = (props) => {
@@ -37,6 +37,13 @@ const DetailView = (props) => {
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
+
+  const showFunc = () => {
+    setShow(true)
+    setTimeout(() => {
+      setShow(false)
+    }, 4000);
+  }
   const checkFavorite = (country) => {
     const docRef = db.collection(`users/${user.uid}/favorites`).doc(`${country}`);
     docRef.get()
@@ -54,7 +61,6 @@ const DetailView = (props) => {
   };
   const makeFavorite = (e, country) => {
     e.persist();
-    setShow(true);
     console.log('adding');
     if (!user) {
       setMessage({
@@ -63,32 +69,35 @@ const DetailView = (props) => {
         link: ROUTES.SIGN_IN,
         linkContent: 'here',
       });
-      if (!favorite) {
-        db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).set({
-          country,
-        }).then(() => {
-          // console.log(`Added ${country.name} to favorites`)
-          setMessage({ style: 'success', content: `Added ${country.name} to favorites` });
-          setFavorite(true);
-          console.log('added favorite');
+    }
+    if (!favorite) {
+      db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).set({
+        country,
+      }).then(() => {
+        // console.log(`Added ${country.name} to favorites`)
+        setMessage({ style: 'success', content: `Added ${country.name} to favorites` });
+        setFavorite(true);
+        console.log('added favorite');
+        showFunc();
+      })
+        .catch((err) => {
+        // console.error(err)
+          setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
+          showFunc()
+        });
+    } else {
+      db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).delete()
+        .then(() => {
+        // console.log(`Removed ${country.name} from favorites`)
+          setMessage({ style: 'warning', content: `Removed ${country.name} from favorites` });
+          setFavorite(false);
+          showFunc()
         })
-          .catch((err) => {
-          // console.error(err)
-            setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
-          });
-      } else {
-        db.collection(`users/${user.uid}/favorites`).doc(`${country.name}`).delete()
-          .then(() => {
-          // console.log(`Removed ${country.name} from favorites`)
-            setMessage({ style: 'warning', content: `Removed ${country.name} from favorites` });
-            setFavorite(false);
-            setShow(true);
-          })
-          .catch((err) => {
-          // console.error(err)
-            setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
-          });
-      }
+        .catch((err) => {
+        // console.error(err)
+          setMessage({ style: 'danger', content: `Error adding ${country.name} to favorites, ${err}` });
+          showFunc()
+        });
     }
   };
 
@@ -100,8 +109,6 @@ const DetailView = (props) => {
     }
     if (!loadingState) {
       getCountryInfo(match.params.country);
-      console.log(props);
-
     }
   }, []);
 
@@ -144,10 +151,10 @@ const DetailView = (props) => {
                     <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
                       <Link
                         to={`${process.env.PUBLIC_URL}/`}
-                        className="btn btn-primary"
+                        className="btn btn-primary justify-content"
                         onClick={() => history.goBack()}
                       >
-                        <FontAwesomeIcon icon={faArrowLeft} />
+                        <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
                         Back
                       </Link>
                       <Breakpoint medium up>

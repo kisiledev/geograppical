@@ -10,9 +10,9 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import {
   userType,
-} from '../Helpers/Types/index';
-import useSignUpForm from '../Helpers/CustomHooks';
-import { auth } from '../Firebase/firebase';
+} from '../../helpers/Types/index';
+import useSignUpForm from '../../helpers/CustomHooks';
+import { auth } from '../../firebase/firebase';
 
 
 const PasswordReset = (props) => {

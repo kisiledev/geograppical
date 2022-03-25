@@ -8,6 +8,8 @@ export const PropertyName = styled.div`
   font-weight: bold;
   cursor: pointer;
   padding: 5px 0;
+  display: flex;
+  align-items: center;
 `;
 
 const ExpandableProperty = (props) => {

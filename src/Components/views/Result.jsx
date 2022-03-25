@@ -10,10 +10,10 @@ import {
   countryType,
   userType,
   dataType,
-} from '../Helpers/Types/index';
-import '../App.css';
-import { db } from '../Firebase/firebase';
-// import * as ROUTES from '../Constants/Routes';
+} from '../../helpers/Types/index';
+import '../../App.css';
+import { db } from '../../firebase/firebase';
+// import * as ROUTES from '../../constants/Routes';
 
 
 const Result = (props) => {
@@ -32,8 +32,6 @@ const Result = (props) => {
     population,
     flagCode,
   } = props;
-
-  console.log(props);
 
   const checkFavorite = (coun) => {
     const docRef = db.collection(`users/${user.uid}/favorites`).doc(`${coun}`);

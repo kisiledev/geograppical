@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Flag from 'react-flags';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -8,16 +9,18 @@ import { Alert, Badge } from 'react-bootstrap';
 import Collapse from 'react-bootstrap/Collapse';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { db } from '../../Firebase/firebase';
+import { db } from '../../firebase/firebase';
+import { saveFavoriteActionCreator, saveScoreActionCreator } from '../../redux-toolkit'
 import {
   userType,
-} from '../../Helpers/Types/index';
+} from '../../helpers/Types/index';
 
 
 const Account = (props) => {
+  const dispatch = useDispatch();
+  const acctFavorites = useSelector(state => state.favorites)
+  const acctScores = useSelector(state => state.scores)
   const [loadingState, setLoadingState] = useState(false);
-  const [acctFavorites, setAcctFavorites] = useState('');
-  const [acctScores, setAcctScores] = useState('');
   const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
 
@@ -64,7 +67,7 @@ const Account = (props) => {
         data.push(info);
         data.isOpen = true;
       });
-      setAcctFavorites({ isOpen: false, data });
+      dispatch(saveFavoriteActionCreator({ isOpen: false, data }));
       setLoadingState(false);
     });
   };
@@ -73,22 +76,22 @@ const Account = (props) => {
       if (acctFavorites.isOpen) {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = false;
-        setAcctFavorites(oldFav);
+        dispatch(saveFavoriteActionCreator(oldFav));
       } else {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = true;
-        setAcctFavorites(oldFav);
+        dispatch(saveFavoriteActionCreator(oldFav));
       }
     }
     if (type === 's') {
       if (acctScores.isOpen) {
         const oldSco = { ...acctScores };
         oldSco.isOpen = false;
-        setAcctScores(oldSco);
+        dispatch(saveScoreActionCreator(oldSco));
       } else {
         const oldSco = { ...acctScores };
         oldSco.isOpen = true;
-        setAcctScores(oldSco);
+        dispatch(saveScoreActionCreator(oldSco));
       }
     }
   };
@@ -104,7 +107,7 @@ const Account = (props) => {
         data.push(info);
         data.isOpen = true;
       });
-      setAcctScores({ isOpen: false, data });
+      dispatch(saveScoreActionCreator({ isOpen: false, data }));
       setLoadingState(false);
     });
   };
@@ -124,7 +127,7 @@ const Account = (props) => {
       <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
         <div className="row">
           <div className="col-12 text-center">
-            <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../img/user.png')} alt="" />
+            <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../../img/user.png')} alt="" />
           </div>
           <div className="col-12 text-center">
             <h5 className="mt-3">

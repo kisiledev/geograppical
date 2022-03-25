@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {
   dataType,
-} from '../Helpers/Types/index';
-import '../App.css';
+} from '../../helpers/Types/index';
+import '../../App.css';
 
 const Sidebar = (props) => {
   const [regions, setRegions] = useState('');

@@ -1,8 +1,10 @@
+@import url("https://use.typekit.net/vza0kng.css");
+
 .App {
   text-align: center;
 }
 body {
-  font-family: 'Rubik', serif;
+  font-family: sofia-pro-soft, sans-serif;
   line-height: inherit;
 }
 p {
@@ -451,6 +453,8 @@ a:hover {
   border-bottom: 1px solid #b2d6ff;
   color: #666;    
   font-size: 16px;
+  display: flex;
+  align-items: center;
 }
 .recursivename {
   color: black;
@@ -583,6 +587,14 @@ audio {
   background: #1da1f2;
   color: white;
 }
+.regionlist>.bg-success:hover {
+  cursor: pointer;
+  background-color: #067520!important;
+}
+.fa-star:hover {
+  cursor: pointer;
+}
+
 @media (max-width: 768px){
   /* .navbar-nav {
     flex-direction: row;

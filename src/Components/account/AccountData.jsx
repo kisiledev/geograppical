@@ -9,7 +9,7 @@ import Favs from './Favs';
 import Scores from './Scores';
 import {
   acctDataType,
-} from '../Helpers/Types/index';
+} from '../../helpers/Types/index';
 
 const AccountData = (props) => {
 
@@ -24,6 +24,7 @@ const AccountData = (props) => {
     acctData,
     boolean,
   } = props;
+
   return (
     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
       <h5

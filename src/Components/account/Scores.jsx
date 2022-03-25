@@ -7,7 +7,7 @@ import {
   countryType,
   acctDataType,
   scoreType,
-} from '../Helpers/Types/index';
+} from '../../helpers/Types/index';
 
 const Scores = (props) => {
   const {

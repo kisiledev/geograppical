@@ -4,9 +4,9 @@ import Alert from 'react-bootstrap/Alert';
 import 'firebaseui';
 import {
   userType,
-} from '../Helpers/Types/index';
-import { auth, googleProvider } from '../Firebase/firebase';
-import useSignUpForm from '../Helpers/CustomHooks';
+} from '../../helpers/Types/index';
+import { auth, googleProvider } from '../../firebase/firebase';
+import useSignUpForm from '../../helpers/CustomHooks';
 
 
 const SignUp = (props) => {

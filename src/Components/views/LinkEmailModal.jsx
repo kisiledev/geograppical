@@ -2,16 +2,16 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-import * as Firebase from 'firebase/app';
+import firebase from 'firebase/app';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import PropTypes from 'prop-types';
 import {
   userType,
-} from '../../../Helpers/Types/index';
-import useSignUpForm from '../../../Helpers/CustomHooks';
-import { auth } from '../../../Firebase/firebase';
+} from '../../helpers/Types/index';
+import useSignUpForm from '../../helpers/CustomHooks';
+import { auth } from '../../firebase/firebase';
 
 
 const LinkEmailModal = (props) => {
@@ -26,7 +26,7 @@ const LinkEmailModal = (props) => {
   } = props;
 
   const linkEmail = () => {
-    const credential = Firebase.auth.EmailAuthProvider.credential(inputs.email, inputs.passwordOne);
+    const credential = firebase.auth.EmailAuthProvider.credential(inputs.email, inputs.passwordOne);
     auth.currentUser.linkWithCredential(credential)
       .then((usercred) => {
         const u = usercred.user;
@@ -121,7 +121,7 @@ const LinkEmailModal = (props) => {
             <div className="mx-auto form-group">
               <button disabled={isInvalid} type="submit" className="provider-button email-button">
                 <span className="email-button__icon">
-                  <img src={require('../img/auth_service_email.svg')} className="emailicon" alt="email icon" />
+                  <img src={require('../../img/auth_service_email.svg')} className="emailicon" alt="email icon" />
                 </span>
                 <span className="google-button__text">Link with Email</span>
               </button>

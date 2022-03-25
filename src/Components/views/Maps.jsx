@@ -25,8 +25,8 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import {
   dataType,
-} from '../../../Helpers/Types/index';
-import data from '../Data/world-50m.json';
+} from '../../helpers/Types/index';
+import data from '../../data/world-50m.json';
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
@@ -74,7 +74,6 @@ const Maps = (props) => {
 
   const setDynamicRegions = (regs) => {
     if (!regs) {
-      console.log('no regions');
       return;
     }
     const regionsState = {};
@@ -224,7 +223,7 @@ const Maps = (props) => {
                 className="btn btn-info"
                 onClick={() => changeMapView()}
               >
-                <FontAwesomeIcon icon={faGlobeAfrica} />
+                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
                 { (mapVisible === 'Show') ? 'Hide' : 'Show'}
                 {' '}
                 Map
@@ -250,19 +249,18 @@ const Maps = (props) => {
                   onMoveEnd={handleMoveEnd}
                 >
                   <Geographies geography={data}>
-                    {(geos, proj) => geos.map((geo) => (
-                      <Link key={geo.properties.ISO_A3} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME_LONG.toLowerCase()}`}>
+                    {(geos, proj) => geos && geos.map((geo) => (
+                      <Link key={geo.properties.NAME} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME_LONG.toLowerCase()}`}>
                         <Geography
+                          key={geo.properties.NAME}
                           onWheel={(e) => handleWheel(e)}
                           data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '')}
                           data-tip={JSON.stringify(geo.properties)}
-                          onMouseEnter={() => console.log(geo.properties)}
                           data-shortname={geo.properties.NAME}
                           data-continent={geo.properties.CONTINENT}
                           data-subregion={geo.properties.SUBREGION}
                           data-iso={geo.properties.ISO_A3}
                           onClick={((e) => handleClick(e))}
-                          key={geo.properties.ISO_A3}
                           geography={geo}
                           projection={proj}
                           className="country"

@@ -8,11 +8,11 @@
 import React, { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import AccountData from './games/account/AccountData';
-import { db } from '../../Firebase/firebase';
+import AccountData from './AccountData';
+import { db } from '../../firebase/firebase';
 import {
   userType,
-} from '../../Helpers/Types/index';
+} from '../../helpers/Types/index';
 import AcctHeader from './AcctHeader';
 
 
