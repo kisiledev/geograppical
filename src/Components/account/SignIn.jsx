@@ -18,8 +18,6 @@ const SignIn = (props) => {
   const [methods, setMethods] = useState(null);
   const [message, setMessage] = useState({});
 
-  const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
-
   const login = () => {
     // console.log('reunning login');
     auth
@@ -61,6 +59,7 @@ const SignIn = (props) => {
         setMessage({ style: "danger", content: `${error.message}` });
       });
   };
+  const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
 
   useEffect(() => {
     checkEmail(inputs.email);

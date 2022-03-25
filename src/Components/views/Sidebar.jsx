@@ -145,9 +145,7 @@ const Sidebar = (props) => {
                         <li key={country.name} className="nav-item countrylist">
                           <div className="btn-group d-flex">
                             <Link
-                              to={`${
-                                import.meta.PUBLIC_URL
-                              }/${country.name.toLowerCase()}`}
+                              to={`/${country.name.toLowerCase()}`}
                               className="btn-group w-100"
                             >
                               <button

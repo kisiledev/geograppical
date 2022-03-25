@@ -280,9 +280,7 @@ const Maps = (props) => {
                     geos.map((geo) => (
                       <Link
                         key={geo.properties.NAME}
-                        to={`${
-                          import.meta.PUBLIC_URL
-                        }/${geo.properties.NAME_LONG.toLowerCase()}`}
+                        to={`/${geo.properties.NAME_LONG.toLowerCase()}`}
                       >
                         <Geography
                           key={geo.properties.NAME}

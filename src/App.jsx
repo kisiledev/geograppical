@@ -620,7 +620,7 @@ const App = (props) => {
             )}
           />
           <Route
-            path={`:country`}
+            path={`/:country`}
             render={() => (
               <DetailView
                 countries={filterNations}
