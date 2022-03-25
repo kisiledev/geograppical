@@ -269,7 +269,7 @@ const App = (props) => {
         country.government.country_name.conventional_long_form.toUpperCase() ===
           name.toUpperCase()
     );
-    if (match === [] || !match || match.length === 0) {
+    if (!match || match.length === 0) {
       setCountryDetail("error");
     }
     setCountryDetail(match[0]);
