@@ -8,52 +8,58 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-console */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
   Geography,
-} from 'react-simple-maps';
-import { geoEqualEarth } from 'd3-geo';
-import ReactTooltip from 'react-tooltip';
-import { Link } from 'react-router-dom';
-import Flag from 'react-flags';
-import { faPlus, faMinus, faGlobeAfrica } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Breakpoint, { BreakpointProvider } from 'react-socks';
-import PropTypes from 'prop-types';
+} from "react-simple-maps";
+import { geoEqualEarth } from "d3-geo";
+import ReactTooltip from "react-tooltip";
+import { Link } from "react-router-dom";
+import Flag from "react-flags";
 import {
-  dataType,
-} from '../../helpers/Types/index';
-import data from '../../data/world-50m.json';
+  faPlus,
+  faMinus,
+  faGlobeAfrica,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Breakpoint, { BreakpointProvider } from "react-socks";
+import PropTypes from "prop-types";
+import { dataType } from "../../helpers/Types/index";
+import data from "../../data/world-50m.json";
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
   const [zoom, setZoom] = useState(1);
-  const [regions, setRegions] = useState('');
-  const [continents, setContinents] = useState('');
-  const [countries, setCountries] = useState('');
+  const [regions, setRegions] = useState("");
+  const [continents, setContinents] = useState("");
+  const [countries, setCountries] = useState("");
   // const [bypassClick, setBypassClick] = useState(false);
 
-  const {
-    mapVisible,
-    changeMapView,
-    worldData,
-    getCountryInfo,
-  } = props;
+  const { mapVisible, changeMapView, worldData, getCountryInfo } = props;
 
-  const proj = () => geoEqualEarth()
-    .translate([800 / 2, 400 / 2])
-    .scale(150);
+  const proj = () =>
+    geoEqualEarth()
+      .translate([800 / 2, 400 / 2])
+      .scale(150);
 
   const getMapNations = () => {
-    const mapCountries = [...(document.getElementsByClassName('country'))];
-    const totalMapRegions = mapCountries.map((a) => a.dataset.subregion.replace(/;/g, ''));
-    let uniqueMapRegions = totalMapRegions.filter((v, i, a) => a.indexOf(v) === i);
+    const mapCountries = [...document.getElementsByClassName("country")];
+    const totalMapRegions = mapCountries.map((a) =>
+      a.dataset.subregion.replace(/;/g, "")
+    );
+    let uniqueMapRegions = totalMapRegions.filter(
+      (v, i, a) => a.indexOf(v) === i
+    );
     uniqueMapRegions = uniqueMapRegions.filter(Boolean);
-    const totalMapContinents = mapCountries.map((a) => a.dataset.continent.replace(/;/g, ''));
-    let uniqueMapContinents = totalMapContinents.filter((v, i, a) => a.indexOf(v) === i);
+    const totalMapContinents = mapCountries.map((a) =>
+      a.dataset.continent.replace(/;/g, "")
+    );
+    let uniqueMapContinents = totalMapContinents.filter(
+      (v, i, a) => a.indexOf(v) === i
+    );
     uniqueMapContinents = uniqueMapContinents.filter(Boolean);
     setCountries(mapCountries);
     setRegions(uniqueMapRegions);
@@ -61,13 +67,13 @@ const Maps = (props) => {
   };
 
   const getRegion = (region) => {
-    const nodes = [...(document.getElementsByClassName('country'))];
+    const nodes = [...document.getElementsByClassName("country")];
     const match = nodes.filter((node) => node.dataset.subregion === region);
     return match;
   };
 
   const getContinent = (continent) => {
-    const nodes = [...(document.getElementsByClassName('country'))];
+    const nodes = [...document.getElementsByClassName("country")];
     const match = nodes.filter((node) => node.dataset.continent === continent);
     return match;
   };
@@ -109,10 +115,16 @@ const Maps = (props) => {
     if (conts.length > 0) {
       conts.forEach((continent) => {
         if (conts[continent] && conts[continent].countries[0]) {
-          continentsState[continent] = { id: continent, countries: conts[continent].countries };
+          continentsState[continent] = {
+            id: continent,
+            countries: conts[continent].countries,
+          };
         } else {
           getContinent(continent);
-          continentsState[continent] = { id: continent, countries: getContinent(continent) };
+          continentsState[continent] = {
+            id: continent,
+            countries: getContinent(continent),
+          };
         }
       });
     }
@@ -132,8 +144,13 @@ const Maps = (props) => {
   };
 
   const handleClick = (e) => {
-    console.log('getting info');
-    getCountryInfo(e.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, ''), e.properties.ISO_A3);
+    console.log("getting info");
+    getCountryInfo(
+      e.properties.NAME_LONG.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z\s]/gi, ""),
+      e.properties.ISO_A3
+    );
   };
   // const handleText = (str) => {
   //   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
@@ -171,17 +188,17 @@ const Maps = (props) => {
   const handleContent = (dataTip) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
-      return '';
+      return "";
     }
     const obj = JSON.parse(dataTip);
     return obj.NAME ? (
       <div>
-        <strong>{obj.NAME}</strong>
-        {' '}
-        <br />
+        <strong>{obj.NAME}</strong> <br />
         <Flag
           className="mapFlag text-center"
-          name={(obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`}
+          name={
+            (obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`
+          }
           format="svg"
           pngSize={64}
           shiny={false}
@@ -192,11 +209,9 @@ const Maps = (props) => {
     ) : null;
   };
 
-
   useEffect(() => {
     setDynamicRegions(regions);
     setLocations(regions, continents);
-
   }, []);
 
   useEffect(() => {
@@ -214,63 +229,86 @@ const Maps = (props) => {
           <Breakpoint small up>
             <div className="d-flex justify-content-between pb-3">
               <div className="btn-group">
-                <button type="button" className="btn btn-info" onClick={() => handleZoomOut(zoom)}><FontAwesomeIcon icon={faMinus} /></button>
-                <button type="button" className="btn btn-info" onClick={() => handleZoomIn(zoom)}><FontAwesomeIcon icon={faPlus} /></button>
+                <button
+                  type="button"
+                  className="btn btn-info"
+                  onClick={() => handleZoomOut(zoom)}
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-info"
+                  onClick={() => handleZoomIn(zoom)}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
               </div>
-              <h2 className="text-center"><strong>Capstone Geography</strong></h2>
+              <h2 className="text-center">
+                <strong>Capstone Geography</strong>
+              </h2>
               <button
                 type="button"
                 className="btn btn-info"
                 onClick={() => changeMapView()}
               >
                 <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-                { (mapVisible === 'Show') ? 'Hide' : 'Show'}
-                {' '}
-                Map
+                {mapVisible === "Show" ? "Hide" : "Show"} Map
               </button>
             </div>
           </Breakpoint>
-          {mapVisible === 'Show'
-            ? (
-              <ComposableMap
-                projection={proj}
-                width={800}
-                height={400}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
+          {mapVisible === "Show" ? (
+            <ComposableMap
+              projection={proj}
+              width={800}
+              height={400}
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+            >
+              <ZoomableGroup
+                onWheel={handleWheel}
+                zoom={zoom}
+                center={center}
+                onMoveStart={handleMoveStart}
+                onMoveEnd={handleMoveEnd}
               >
-                <ZoomableGroup
-                  onWheel={handleWheel}
-                  zoom={zoom}
-                  center={center}
-                  onMoveStart={handleMoveStart}
-                  onMoveEnd={handleMoveEnd}
-                >
-                  <Geographies geography={data}>
-                    {(geos, proj) => geos && geos.map((geo) => (
-                      <Link key={geo.properties.NAME} to={`${process.env.PUBLIC_URL}/${geo.properties.NAME_LONG.toLowerCase()}`}>
+                <Geographies geography={data}>
+                  {(geos, proj) =>
+                    geos &&
+                    geos.map((geo) => (
+                      <Link
+                        key={geo.properties.NAME}
+                        to={`${
+                          import.meta.PUBLIC_URL
+                        }/${geo.properties.NAME_LONG.toLowerCase()}`}
+                      >
                         <Geography
                           key={geo.properties.NAME}
                           onWheel={(e) => handleWheel(e)}
-                          data-longname={geo.properties.NAME_LONG.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '')}
+                          data-longname={geo.properties.NAME_LONG.normalize(
+                            "NFD"
+                          )
+                            .replace(/[\u0300-\u036f]/g, "")
+                            .replace(/[^a-z\s]/gi, "")}
                           data-tip={JSON.stringify(geo.properties)}
                           data-shortname={geo.properties.NAME}
                           data-continent={geo.properties.CONTINENT}
                           data-subregion={geo.properties.SUBREGION}
                           data-iso={geo.properties.ISO_A3}
-                          onClick={((e) => handleClick(e))}
+                          onClick={(e) => handleClick(e)}
                           geography={geo}
                           projection={proj}
                           className="country"
                         />
                       </Link>
-                    ))}
-                  </Geographies>
-                </ZoomableGroup>
-              </ComposableMap>
-            ) : null }
+                    ))
+                  }
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+          ) : null}
           <ReactTooltip
             place="top"
             type="dark"

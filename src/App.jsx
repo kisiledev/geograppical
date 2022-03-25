@@ -4,147 +4,158 @@
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-mixed-operators */
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
-import { BreakpointProvider, Breakpoint } from 'react-socks';
-import { Modal, Button } from 'react-bootstrap';
-import axios from 'axios';
-import PropTypes, { shape } from 'prop-types';
-import ResultView from './components/views/ResultView';
-import DetailView from './components/views/DetailView';
-import NaviBar from './components/views/NaviBar';
-import './App.css';
-import { auth, googleProvider } from './firebase/firebase';
-import Game from './components/games/Game';
-import Account from './components/account/RefactoredAccount';
-import SignIn from './components/account/SignIn';
-import SignUp from './components/account/SignUp';
-import PrivateRoute from './components/account/PrivateRoutes';
-import PasswordReset from './components/account/PasswordReset';
-import AccountEdit from './components/account/AccountEdit';
-import SearchResults from './components/views/SearchResults';
-import SideNaviBar from './components/views/SideNaviBar';
-import { loginUser, changeView, changeMap } from './redux-toolkit';
-import { loadData } from './redux/data/dataSlice';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Route, Switch, withRouter } from "react-router-dom";
+import { BreakpointProvider, Breakpoint } from "react-socks";
+import { Modal, Button } from "react-bootstrap";
+import axios from "axios";
+import PropTypes, { shape } from "prop-types";
+import ResultView from "./components/views/ResultView";
+import DetailView from "./components/views/DetailView";
+import NaviBar from "./components/views/NaviBar";
+import "./App.css";
+import { auth, googleProvider } from "./firebase/firebase";
+import Game from "./components/games/Game";
+import Account from "./components/account/RefactoredAccount";
+import SignIn from "./components/account/SignIn";
+import SignUp from "./components/account/SignUp";
+import PrivateRoute from "./components/account/PrivateRoutes";
+import PasswordReset from "./components/account/PasswordReset";
+import AccountEdit from "./components/account/AccountEdit";
+import SearchResults from "./components/views/SearchResults";
+import SideNaviBar from "./components/views/SideNaviBar";
+import { loginUser, changeView, changeMap } from "./redux-toolkit";
+import { loadData } from "./redux/data/dataSlice";
 
 const App = (props) => {
   const dispatch = useDispatch();
-  const mapView = useSelector(state => state.mapView.value)
-  const view = useSelector(state => state.view.value)
-  const toggleSidebar = useSelector(state => state.toggleSidebar)
-  const mode = useSelector(state => state.mode.value)
-  const user = useSelector(state => state.user.value)
+  const mapView = useSelector((state) => state.mapView.value);
+  const view = useSelector((state) => state.view.value);
+  const toggleSidebar = useSelector((state) => state.toggleSidebar);
+  const mode = useSelector((state) => state.mode.value);
+  const user = useSelector((state) => state.user.value);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
   const [error, setError] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
   const [filterNations, setFilterNations] = useState([]);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [worldData, setWorldData] = useState([]);
   const [countryDetail, setCountryDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({});
   const [iso, setIso] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
-  const {
-    history,
-    location,
-  } = props;
+  const { history, location } = props;
 
   const handleViews = (selectedView) => {
     dispatch(changeView(selectedView));
   };
-  const removeIsoNull = (array) => array.filter((item) => item.government.capital !== undefined
-      && item.government.country_name !== undefined
-      && item.government.country_name.isoCode !== undefined
-      && item.name);
+  const removeIsoNull = (array) =>
+    array.filter(
+      (item) =>
+        item.government.capital !== undefined &&
+        item.government.country_name !== undefined &&
+        item.government.country_name.isoCode !== undefined &&
+        item.name
+    );
 
   const removeNull = (array) => {
     if (array !== undefined) {
-      return array.filter((item) => item.government.capital !== undefined
-          && item.government.country_name !== undefined
-          && item.name)
+      return array
+        .filter(
+          (item) =>
+            item.government.capital !== undefined &&
+            item.government.country_name !== undefined &&
+            item.name
+        )
         .map((item) => (Array.isArray(item) ? removeNull(item) : item));
     }
   };
   const loadCodes = () => {
-    axios.get('../iso.json')
-      .then((res) => {
-        const codes = res.data;
-        const isoCodes = codes.map((code) => {
-          const container = {};
-          container.name = code['CLDR display name'];
-          container.shortName = code['UNTERM English Short'];
-          container.isoCode = code['ISO3166-1-Alpha-3'];
-          container.capital = code.Capital;
-          return container;
-        });
-        setIso(isoCodes);
+    axios.get("../iso.json").then((res) => {
+      const codes = res.data;
+      const isoCodes = codes.map((code) => {
+        const container = {};
+        container.name = code["CLDR display name"];
+        container.shortName = code["UNTERM English Short"];
+        container.isoCode = code["ISO3166-1-Alpha-3"];
+        container.capital = code.Capital;
+        return container;
       });
+      setIso(isoCodes);
+    });
   };
   const loadWorldData = () => {
     try {
-      axios.get('../factbook.json')
-        .then((res) => {
-          let Data = res && res.data.countries;
-          Data = Object.values(Data).map((country) => country.data) || [];
-          const newData = removeNull(Object.values(Data));
-          if (newData.length > 0) {
-            newData.forEach((element, index, nd) => {
-              nd[index].geography.map_references = newData[index].geography.map_references.replace(/;/g, '');
-              if (nd[index].geography.map_references === 'AsiaEurope') {
-                nd[index].geography.map_references = 'Europe';
-              }
-              if (nd[index].geography.map_references === 'Middle East') {
-                nd[index].geography.map_references = 'Southwest Asia';
-              }
-            });
-          }
-          let loadediso;
-          if (iso) {
-            loadediso = iso;
-          }
-          let countries = {};
-          countries = newData;
-          for (let i = 0, len = countries.length; i < len; i += 1) {
-            countries[countries[i].name] = countries[i];
-          }
-          let codes = {};
-          if (codes === undefined) {
-            return console.log('unable to load');
-          }
-          codes = loadediso;
-          if (codes && codes.length > 0) {
-            for (let i = 0, len = codes.length; i < len; i += 1) {
-              if (codes[i]) {
-                codes[codes[i].name] = codes[i];
-              }
+      axios.get("../factbook.json").then((res) => {
+        let Data = res && res.data.countries;
+        Data = Object.values(Data).map((country) => country.data) || [];
+        const newData = removeNull(Object.values(Data));
+        if (newData.length > 0) {
+          newData.forEach((element, index, nd) => {
+            nd[index].geography.map_references = newData[
+              index
+            ].geography.map_references.replace(/;/g, "");
+            if (nd[index].geography.map_references === "AsiaEurope") {
+              nd[index].geography.map_references = "Europe";
             }
-            let i = 0;
-            const len = codes.length;
-            for (i; i < len; i += 1) {
-              if (countries[codes[i].name]) {
-                countries[codes[i].name].government.country_name.isoCode = codes[i].isoCode;
-              } else if (countries[codes[i].shortName]) {
-                countries[codes[i].shortName].government.country_name.isoCode = codes[i].isoCode;
-              }
+            if (nd[index].geography.map_references === "Middle East") {
+              nd[index].geography.map_references = "Southwest Asia";
+            }
+          });
+        }
+        let loadediso;
+        if (iso) {
+          loadediso = iso;
+        }
+        let countries = {};
+        countries = newData;
+        for (let i = 0, len = countries.length; i < len; i += 1) {
+          countries[countries[i].name] = countries[i];
+        }
+        let codes = {};
+        if (codes === undefined) {
+          return console.log("unable to load");
+        }
+        codes = loadediso;
+        if (codes && codes.length > 0) {
+          for (let i = 0, len = codes.length; i < len; i += 1) {
+            if (codes[i]) {
+              codes[codes[i].name] = codes[i];
             }
           }
-          const x = removeIsoNull(countries);
-          setWorldData(x || []);
-          setLoadingState(false);
-          return x;
-        });
+          let i = 0;
+          const len = codes.length;
+          for (i; i < len; i += 1) {
+            if (countries[codes[i].name]) {
+              countries[codes[i].name].government.country_name.isoCode =
+                codes[i].isoCode;
+            } else if (countries[codes[i].shortName]) {
+              countries[codes[i].shortName].government.country_name.isoCode =
+                codes[i].isoCode;
+            }
+          }
+        }
+        const x = removeIsoNull(countries);
+        setWorldData(x || []);
+        setLoadingState(false);
+        return x;
+      });
     } catch (err) {
       setError(err);
     }
   };
 
   const simplifyString = (string) => {
-    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '').toUpperCase();
+    return string
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z\s]/gi, "")
+      .toUpperCase();
   };
 
   const handleClose = () => {
@@ -157,10 +168,12 @@ const App = (props) => {
     setModal(modalsetting);
   };
   const login = () => {
-    auth.signInWithPopup(googleProvider)
+    auth
+      .signInWithPopup(googleProvider)
       .then((result) => {
-        return
-      }).catch((err) => {
+        return;
+      })
+      .catch((err) => {
         console.log(err);
         console.log(err.message);
       });
@@ -168,79 +181,99 @@ const App = (props) => {
 
   const hoverOnCountry = (e, region, country) => {
     e.stopPropagation();
-    if (view === 'detail') {
-      dispatch(changeView('default'))
+    if (view === "detail") {
+      dispatch(changeView("default"));
     }
-    let nodes = (document.getElementsByClassName('country'));
+    let nodes = document.getElementsByClassName("country");
     nodes = [...nodes];
-    nodes = nodes.filter((y) => simplifyString(country) === simplifyString(y.dataset.longname) || simplifyString(country) === simplifyString(y.dataset.shortname));
+    nodes = nodes.filter(
+      (y) =>
+        simplifyString(country) === simplifyString(y.dataset.longname) ||
+        simplifyString(country) === simplifyString(y.dataset.shortname)
+    );
     nodes.forEach((node) => {
-      node.style.fill = '#ee0a43';
-      node.style.stroke = '#111';
+      node.style.fill = "#ee0a43";
+      node.style.stroke = "#111";
       node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
+      node.style.outline = "none";
+      node.style.willChange = "all";
     });
-
   };
   const hoverOffCountry = (e, region, country) => {
     e.stopPropagation();
-    let nodes = (document.getElementsByClassName('country'));
+    let nodes = document.getElementsByClassName("country");
     nodes = [...nodes];
-    nodes = nodes.filter((y) => simplifyString(country) === simplifyString(y.dataset.longname) || simplifyString(country) === simplifyString(y.dataset.shortname));
+    nodes = nodes.filter(
+      (y) =>
+        simplifyString(country) === simplifyString(y.dataset.longname) ||
+        simplifyString(country) === simplifyString(y.dataset.shortname)
+    );
     nodes.forEach((node) => {
-      node.removeAttribute('style');
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
+      node.removeAttribute("style");
+      node.style.fill = "#024e1b";
+      node.style.stroke = "#111";
       node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
+      node.style.outline = "none";
+      node.style.willChange = "all";
     });
-
   };
   const hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
     const countries = region && Object.values(region)[2];
-    if (typeof countries === 'object') {
+    if (typeof countries === "object") {
       svgs = countries.map((country) => simplifyString(country.name));
     }
-    let nodes = (document.getElementsByClassName('country'));
+    let nodes = document.getElementsByClassName("country");
     nodes = [...nodes];
-    nodes = nodes.filter((y) => svgs.includes(simplifyString(y.dataset.longname)) || svgs.includes(simplifyString(y.dataset.shortname)));
+    nodes = nodes.filter(
+      (y) =>
+        svgs.includes(simplifyString(y.dataset.longname)) ||
+        svgs.includes(simplifyString(y.dataset.shortname))
+    );
     nodes.forEach((node) => {
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
+      node.style.fill = "#024e1b";
+      node.style.stroke = "#111";
       node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
+      node.style.outline = "none";
+      node.style.willChange = "all";
     });
   };
   const hoverOffRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
     const countries = Object.values(region)[2];
-    if (typeof countries === 'object') {
+    if (typeof countries === "object") {
       svgs = countries.map((country) => simplifyString(country.name));
     }
-    let nodes = (document.getElementsByClassName('country'));
+    let nodes = document.getElementsByClassName("country");
     nodes = [...nodes];
-    nodes = nodes.filter((y) => svgs.includes(simplifyString(y.dataset.longname)) || svgs.includes(simplifyString(y.dataset.shortname)));
+    nodes = nodes.filter(
+      (y) =>
+        svgs.includes(simplifyString(y.dataset.longname)) ||
+        svgs.includes(simplifyString(y.dataset.shortname))
+    );
     nodes.forEach((node) => {
-      node.removeAttribute('style');
+      node.removeAttribute("style");
     });
   };
   const getCountryInfo = (name) => {
     const searchDB = Object.values(worldData);
-    name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
-    const match = searchDB.filter((country) => (
-      simplifyString(country.name) === simplifyString(name)
-      || country.government.country_name.conventional_long_form.toUpperCase() === name.toUpperCase()));
+    name = name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z\s]/gi, "");
+    const match = searchDB.filter(
+      (country) =>
+        simplifyString(country.name) === simplifyString(name) ||
+        country.government.country_name.conventional_long_form.toUpperCase() ===
+          name.toUpperCase()
+    );
     if (match === [] || !match || match.length === 0) {
-      setCountryDetail('error');
+      setCountryDetail("error");
     }
     setCountryDetail(match[0]);
-    handleViews('detail');
+    handleViews("detail");
   };
   const getResults = (results, e) => {
     if (!searchText) {
@@ -249,17 +282,21 @@ const App = (props) => {
     } else {
       e.preventDefault();
       setSearch(searchText);
-      handleViews('default');
+      handleViews("default");
       history.push(`/search/${searchText}`);
     }
   };
   const filterCountryByName = (string) => {
     const searchDB = Object.values(worldData);
     const match = searchDB.filter(
-      (country) => country.name.toUpperCase() === string.toUpperCase()
-      || country.name.toUpperCase().includes(string.toUpperCase())
-      || country.government.country_name.conventional_long_form.toUpperCase() === string.toUpperCase()
-      || country.government.country_name.conventional_long_form.toUpperCase().includes(string.toUpperCase()),
+      (country) =>
+        country.name.toUpperCase() === string.toUpperCase() ||
+        country.name.toUpperCase().includes(string.toUpperCase()) ||
+        country.government.country_name.conventional_long_form.toUpperCase() ===
+          string.toUpperCase() ||
+        country.government.country_name.conventional_long_form
+          .toUpperCase()
+          .includes(string.toUpperCase())
     );
     setFilterNations(match);
     if (string.length > 0) {
@@ -271,31 +308,30 @@ const App = (props) => {
 
   useEffect(() => {
     loadWorldData();
-
-  }, [])
+  }, []);
   const changeMapView = () => {
-    if (mapView === 'Show') {
-      dispatch(changeMap('Hide'));
+    if (mapView === "Show") {
+      dispatch(changeMap("Hide"));
     } else {
-      dispatch(changeMap('Show'));
+      dispatch(changeMap("Show"));
     }
   };
   const handleSideBar = (string) => {
-    alert('handling sidebar');
+    alert("handling sidebar");
     setFilterNations(filterCountryByName(string));
   };
   const handleSubmit = (e) => {
-    alert('clicked');
+    alert("clicked");
     e.preventDefault();
-    console.log('handling submit');
+    console.log("handling submit");
     history.push(e.target.value);
   };
   const handleData = (type) => {
-    if (location.pathname !== '/account') {
-      console.log('not on account page');
-      history.push('/account');
+    if (location.pathname !== "/account") {
+      console.log("not on account page");
+      history.push("/account");
     }
-    if (type === 'favorites') {
+    if (type === "favorites") {
       setFavorites(!favorites);
     } else {
       setScores(!scores);
@@ -305,39 +341,41 @@ const App = (props) => {
     e.persist();
     // console.log('changing')
     const { value } = e.target;
-    if (value != null && value.trim() !== '') {
+    if (value != null && value.trim() !== "") {
       setSearchText(value);
       filterCountryByName(value);
-      let nodes = [...(document.getElementsByClassName('country'))];
+      let nodes = [...document.getElementsByClassName("country")];
       nodes.forEach((node) => {
-        node.style.fill = '#60c080 ';
-        node.style.stroke = '#111';
+        node.style.fill = "#60c080 ";
+        node.style.stroke = "#111";
         node.style.strokeWidth = 0.1;
-        node.style.outline = 'none';
-        node.style.willChange = 'all';
+        node.style.outline = "none";
+        node.style.willChange = "all";
       });
-      const filtered = filterCountryByName(value).map((country) => country.name);
+      const filtered = filterCountryByName(value).map(
+        (country) => country.name
+      );
       nodes = nodes.filter((y) => filtered.includes(y.dataset.shortname));
       nodes.forEach((node) => {
-        node.style.fill = '#024e1b';
-        node.style.stroke = '#111';
+        node.style.fill = "#024e1b";
+        node.style.stroke = "#111";
         node.style.strokeWidth = 0.1;
-        node.style.outline = 'none';
-        node.style.willChange = 'all';
+        node.style.outline = "none";
+        node.style.willChange = "all";
       });
     } else {
       setSearchText(value);
       setFilterNations([]);
-      const nodes = [...(document.getElementsByClassName('country'))];
+      const nodes = [...document.getElementsByClassName("country")];
       // console.log(filterNations)
       nodes.forEach((node) => {
-        node.removeAttribute('style');
+        node.removeAttribute("style");
       });
     }
   };
   const handleRefresh = (value) => {
     if (worldData) {
-      if (value != null && value.trim() !== '') {
+      if (value != null && value.trim() !== "") {
         setSearchText(value);
         filterCountryByName(value);
         // let nodes = [...(document.getElementsByClassName("country"))];
@@ -357,7 +395,6 @@ const App = (props) => {
         //   node.style.outline =  "none";
         //   node.style.transition = "all 250ms"
         // })
-
       } else {
         setSearchText(value);
         setFilterNations([]);
@@ -373,11 +410,11 @@ const App = (props) => {
     loadCodes();
     auth.onAuthStateChanged((u) => {
       if (u) {
-        dispatch(loginUser(u))
+        dispatch(loginUser(u));
         setAuthenticated(true);
         setLoadingState(false);
       } else {
-        dispatch(loginUser(null))
+        dispatch(loginUser(null));
         setAuthenticated(false);
         setLoadingState(false);
       }
@@ -387,15 +424,12 @@ const App = (props) => {
     }
   }, [user]);
 
-
   useEffect(() => {
     loadWorldData();
   }, [iso]);
 
   if (error) {
-    return (
-      <h1>{error}</h1>
-    );
+    return <h1>{error}</h1>;
   }
   return (
     <BreakpointProvider>
@@ -449,7 +483,7 @@ const App = (props) => {
         <Switch>
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/search/:input`}
+            path={`/search/:input`}
             render={() => (
               <SearchResults
                 changeMapView={changeMapView}
@@ -479,7 +513,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/play`}
+            path={`/play`}
             render={() => (
               <Game
                 simplifyString={simplifyString}
@@ -498,7 +532,7 @@ const App = (props) => {
           />
           <PrivateRoute
             exact
-            path={`${process.env.PUBLIC_URL}/account`}
+            path={`/account`}
             user={user}
             simplifyString={simplifyString}
             component={Account}
@@ -510,7 +544,7 @@ const App = (props) => {
           />
           <PrivateRoute
             exact
-            path={`${process.env.PUBLIC_URL}/account/edit`}
+            path={`/account/edit`}
             user={user}
             component={AccountEdit}
             loadingState={loadingState}
@@ -518,7 +552,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/login`}
+            path={`/login`}
             render={() => (
               <SignIn
                 loadingState={loadingState}
@@ -533,7 +567,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/passwordreset`}
+            path={`/passwordreset`}
             render={() => (
               <PasswordReset
                 user={user}
@@ -547,7 +581,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/signup`}
+            path={`/signup`}
             render={() => (
               <SignUp
                 user={user}
@@ -561,7 +595,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`${process.env.PUBLIC_URL}/`}
+            path={`/`}
             render={() => (
               <ResultView
                 changeMapView={changeMapView}
@@ -586,7 +620,7 @@ const App = (props) => {
             )}
           />
           <Route
-            path={`${process.env.PUBLIC_URL}/:country`}
+            path={`:country`}
             render={() => (
               <DetailView
                 countries={filterNations}
@@ -620,7 +654,7 @@ const App = (props) => {
           <Modal.Body>{modal.body}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => handleClose()}>
-                Close
+              Close
             </Button>
             {modal.primaryButton}
           </Modal.Footer>

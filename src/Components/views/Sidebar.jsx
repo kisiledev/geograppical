@@ -4,19 +4,17 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable linebreak-style */
-import React, { useState, useEffect } from 'react';
-import Collapse from 'react-bootstrap/Collapse';
-import { Link } from 'react-router-dom';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import {
-  dataType,
-} from '../../helpers/Types/index';
-import '../../App.css';
+import React, { useState, useEffect } from "react";
+import Collapse from "react-bootstrap/Collapse";
+import { Link } from "react-router-dom";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
+import { dataType } from "../../helpers/Types/index";
+import "../../App.css";
 
 const Sidebar = (props) => {
-  const [regions, setRegions] = useState('');
+  const [regions, setRegions] = useState("");
 
   const {
     data,
@@ -31,17 +29,23 @@ const Sidebar = (props) => {
   } = props;
 
   const removeNull = (array) => {
-    array.filter((item) => item.government.capital !== undefined
-      && item.government.country_name !== undefined
-      && item.government.country_name.isoCode !== undefined
-      && item.name)
+    array
+      .filter(
+        (item) =>
+          item.government.capital !== undefined &&
+          item.government.country_name !== undefined &&
+          item.government.country_name.isoCode !== undefined &&
+          item.name
+      )
       .map((item) => (Array.isArray(item) ? removeNull(item) : item));
   };
 
   const getRegion = (region) => {
     const searchDB = Object.values(data);
     removeNull(searchDB);
-    const match = searchDB.filter((place) => place.geography.map_references === region);
+    const match = searchDB.filter(
+      (place) => place.geography.map_references === region
+    );
     return match;
   };
 
@@ -118,82 +122,112 @@ const Sidebar = (props) => {
   return (
     <div className="sidebar-sticky">
       <ul className="nav nav-pills flex-column">
-        {uniqueRegions && uniqueRegions.map((region) => (
-          <li
-            className="nav-item regionlist"
-            key={region}
-            onClick={(e) => handleRegion(e, region)}
-            onFocus={(e) => hoverOnRegion(e, regions[region])}
-            onMouseOver={(e) => hoverOnRegion(e, regions[region])}
-            onMouseLeave={(e) => hoverOffRegion(e, regions[region])}
-          >
-            <span className="nav-link btn-sm bg-success mb-1">
-              <strong>{region}</strong>
-              -
-              {getOccurrence(totalRegions, region)}
-            </span>
-            <Collapse in={regions[region] && regions[region].open}>
-              <ul className="countryul">
-                {regions[region]
-                && regions[region].countries[0]
-                  && regions[region].countries
-                    .slice(regions[region].start, regions[region].visible)
-                    .map((country) => (
-                      <li
-                        key={country.name}
-                        className="nav-item countrylist"
-                      >
-                        <div className="btn-group d-flex">
-                          <Link to={`${process.env.PUBLIC_URL}/${country.name.toLowerCase()}`} className="btn-group w-100">
-                            <button
-                              type="button"
-                              onFocus={(e) => hoverOnCountry(e, regions[region], country.name)}
-                              onClick={() => getCountryInfo(country.name, country.government.capital.name)}
-                              onMouseOver={(e) => hoverOnCountry(e, regions[region], country.name)}
-                              onMouseLeave={(e) => hoverOffCountry(e, regions[region], country.name)}
-                              className="btn nav-link countryname btn-sm bg-info mb-1"
+        {uniqueRegions &&
+          uniqueRegions.map((region) => (
+            <li
+              className="nav-item regionlist"
+              key={region}
+              onClick={(e) => handleRegion(e, region)}
+              onFocus={(e) => hoverOnRegion(e, regions[region])}
+              onMouseOver={(e) => hoverOnRegion(e, regions[region])}
+              onMouseLeave={(e) => hoverOffRegion(e, regions[region])}
+            >
+              <span className="nav-link btn-sm bg-success mb-1">
+                <strong>{region}</strong>-{getOccurrence(totalRegions, region)}
+              </span>
+              <Collapse in={regions[region] && regions[region].open}>
+                <ul className="countryul">
+                  {regions[region] &&
+                    regions[region].countries[0] &&
+                    regions[region].countries
+                      .slice(regions[region].start, regions[region].visible)
+                      .map((country) => (
+                        <li key={country.name} className="nav-item countrylist">
+                          <div className="btn-group d-flex">
+                            <Link
+                              to={`${
+                                import.meta.PUBLIC_URL
+                              }/${country.name.toLowerCase()}`}
+                              className="btn-group w-100"
                             >
-                              <strong>{country.name}</strong>
-                              <FontAwesomeIcon size="2x" color="white" icon={faInfoCircle} />
-                            </button>
-                          </Link>
-                        </div>
-                      </li>
-                    ))}
-                {regions[region]
-                  && regions[region].open
-                  && (regions[region].visible < regions[region].countries.length)
-                && (
-                  <div className="btn-group countryactions">
-                    <button
-                      type="button"
-                      onClick={(e) => sidebarDataHandling(e, region, 5, 0)}
-                      className="btn load-more nav-link btn-sm bg-secondary mb-1"
-                    >
-                      Load More
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => sidebarDataHandling(e, region, -5, -5)}
-                      className="btn load-more nav-link btn-sm bg-warning mb-1"
-                    >
-                      {`Previous  
+                              <button
+                                type="button"
+                                onFocus={(e) =>
+                                  hoverOnCountry(
+                                    e,
+                                    regions[region],
+                                    country.name
+                                  )
+                                }
+                                onClick={() =>
+                                  getCountryInfo(
+                                    country.name,
+                                    country.government.capital.name
+                                  )
+                                }
+                                onMouseOver={(e) =>
+                                  hoverOnCountry(
+                                    e,
+                                    regions[region],
+                                    country.name
+                                  )
+                                }
+                                onMouseLeave={(e) =>
+                                  hoverOffCountry(
+                                    e,
+                                    regions[region],
+                                    country.name
+                                  )
+                                }
+                                className="btn nav-link countryname btn-sm bg-info mb-1"
+                              >
+                                <strong>{country.name}</strong>
+                                <FontAwesomeIcon
+                                  size="2x"
+                                  color="white"
+                                  icon={faInfoCircle}
+                                />
+                              </button>
+                            </Link>
+                          </div>
+                        </li>
+                      ))}
+                  {regions[region] &&
+                    regions[region].open &&
+                    regions[region].visible <
+                      regions[region].countries.length && (
+                      <div className="btn-group countryactions">
+                        <button
+                          type="button"
+                          onClick={(e) => sidebarDataHandling(e, region, 5, 0)}
+                          className="btn load-more nav-link btn-sm bg-secondary mb-1"
+                        >
+                          Load More
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            sidebarDataHandling(e, region, -5, -5)
+                          }
+                          className="btn load-more nav-link btn-sm bg-warning mb-1"
+                        >
+                          {`Previous  
                       ${regions[region].visible - regions[region].start}`}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => sidebarDataHandling(e, region, 5, 5)}
-                      className="btn load-more nav-link btn-sm bg-success mb-1"
-                    >
-                      {`Next 
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => sidebarDataHandling(e, region, 5, 5)}
+                          className="btn load-more nav-link btn-sm bg-success mb-1"
+                        >
+                          {`Next 
                       ${regions[region].visible - regions[region].start}`}
-                    </button>
-                  </div>
-                )}
-              </ul>
-            </Collapse>
-          </li>
-        ))}
+                        </button>
+                      </div>
+                    )}
+                </ul>
+              </Collapse>
+            </li>
+          ))}
       </ul>
     </div>
   );

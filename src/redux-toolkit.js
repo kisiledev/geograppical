@@ -1,10 +1,10 @@
 import { createSlice, configureStore } from "@reduxjs/toolkit";
-import logger from 'redux-logger'
+import logger from "redux-logger";
 
 const initialDataState = {
   isOpen: false,
-  data: []
-}
+  data: [],
+};
 
 const initialGameState = {
   questions: null,
@@ -19,118 +19,117 @@ const initialGameState = {
   timeChecked: true,
   currentCount: 60,
   gameComplete: false,
-  timeMode: 'countdown'
-}
+  timeMode: "countdown",
+};
 
 const favoriteSlice = createSlice({
-  name: 'favorites',
+  name: "favorites",
   initialState: initialDataState,
   reducers: {
-    saveFavorite: (state, {payload}) => {
-      return [...state, state.data = payload]
+    saveFavorite: (state, { payload }) => {
+      return [...state, (state.data = payload)];
     },
-    unsaveFavorite: (state, {payload}) => {
-      return [...state, state.data.filter(fav => payload !== fav)]
-    }
-  }
-})
+    unsaveFavorite: (state, { payload }) => {
+      return [...state, state.data.filter((fav) => payload !== fav)];
+    },
+  },
+});
 
 const scoreSlice = createSlice({
-  name: 'scores',
+  name: "scores",
   initialState: initialDataState,
   reducers: {
-    saveScore: (state, {payload}) => {
-      return [...state, state.data = payload] 
-    }, 
-    unsaveScore: (state, {payload}) => {
-      return [...state, state.data.filter(fav => payload !== fav)]
-    }
-  }
-})
+    saveScore: (state, { payload }) => {
+      return [...state, (state.data = payload)];
+    },
+    unsaveScore: (state, { payload }) => {
+      return [...state, state.data.filter((fav) => payload !== fav)];
+    },
+  },
+});
 
 const mapViewSlice = createSlice({
-  name: 'mapView',
-  initialState: {value: 'Show'},
+  name: "mapView",
+  initialState: { value: "Show" },
   reducers: {
-    changeMap: (state, {payload}) => {
-      console.log(payload)
-       state.value = payload
-    }
-  }
-})
+    changeMap: (state, { payload }) => {
+      console.log(payload);
+      state.value = payload;
+    },
+  },
+});
 
 const viewSlice = createSlice({
-  name: 'view',
-  initialState: {value: 'Default'},
+  name: "view",
+  initialState: { value: "Default" },
   reducers: {
-    changeView: (state, {payload}) => {
-      console.log(payload)
-      return state.value = payload.view
-    }
-  }
-})
+    changeView: (state, { payload }) => {
+      console.log(payload);
+      return (state.value = payload.view);
+    },
+  },
+});
 
 const modeSlice = createSlice({
-  name: 'mode',
-  initialState: {value: 'info'},
+  name: "mode",
+  initialState: { value: "info" },
   reducers: {
-    changeMode: (state, {payload}) => {
-      console.log(payload)
-      state.value = payload
-    }
-  }
-})
+    changeMode: (state, { payload }) => {
+      console.log(payload);
+      state.value = payload;
+    },
+  },
+});
 
 const gameModeSlice = createSlice({
-  name: 'gameMode',
-  initialState: {value: 'questions'},
+  name: "gameMode",
+  initialState: { value: "questions" },
   reducers: {
-    changeGame: (state, {payload}) => {
-      console.log(payload)
-      state.value = payload
-    }
-  }
-})
+    changeGame: (state, { payload }) => {
+      console.log(payload);
+      state.value = payload;
+    },
+  },
+});
 
 const userSlice = createSlice({
-  name: 'user',
-  initialState: {value: null},
+  name: "user",
+  initialState: { value: null },
   reducers: {
-    loginUser: (state, {payload}) => {
-      state.value = payload
-    }
-  }
-})
+    loginUser: (state, { payload }) => {
+      state.value = payload;
+    },
+  },
+});
 
 const gameSlice = createSlice({
-  name: 'game',
+  name: "game",
   initialState: initialGameState,
   reducers: {
-    reset: (state, {payload}) => {
-      state = initialGameState
+    reset: (state, { payload }) => {
+      state = initialGameState;
     },
-    changeGame: (state, {payload}) => {
-      state.gameMode = payload
+    changeGame: (state, { payload }) => {
+      state.gameMode = payload;
     },
-    addQuestion: (state, {payload}) => {
-      state.questionsSet.push(payload)
-    }
+    addQuestion: (state, { payload }) => {
+      state.questionsSet.push(payload);
+    },
+  },
+});
+export const { saveFavorite, unsaveFavorite } = favoriteSlice.actions;
 
-  }
-})
-export const { saveFavorite, unsaveFavorite } = favoriteSlice.actions
+export const { saveScore, unsaveScore } = scoreSlice.actions;
 
-export const { saveScore, unsaveScore } = scoreSlice.actions
+export const { changeMap } = mapViewSlice.actions;
 
-export const {changeMap} = mapViewSlice.actions
+export const { changeView } = viewSlice.actions;
 
-export const {changeView} = viewSlice.actions
+export const { changeMode } = modeSlice.actions;
 
-export const {changeMode} = modeSlice.actions
+export const { changeGame } = gameModeSlice.actions;
 
-export const {changeGame} = gameModeSlice.actions
-
-export const {loginUser} = userSlice.actions
+export const { loginUser } = userSlice.actions;
 
 const reducers = {
   favorites: favoriteSlice.reducer,
@@ -139,14 +138,14 @@ const reducers = {
   view: viewSlice.reducer,
   mode: modeSlice.reducer,
   gameMode: gameModeSlice.reducer,
-  user: userSlice.reducer
-}
-
+  user: userSlice.reducer,
+};
 
 export default configureStore({
   reducer: reducers,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false
-  }).concat(logger),
-  devTools: process.env.NODE_ENV !== 'production',
-})
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(logger),
+  devTools: import.meta.NODE_ENV !== "production",
+});

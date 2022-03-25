@@ -1,58 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Flag from 'react-flags';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Flag from "react-flags";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSpinner, faAngleUp, faAngleDown, faTrashAlt, faPencilAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { Alert, Badge } from 'react-bootstrap';
-import Collapse from 'react-bootstrap/Collapse';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { db } from '../../firebase/firebase';
-import { saveFavoriteActionCreator, saveScoreActionCreator } from '../../redux-toolkit'
+  faSpinner,
+  faAngleUp,
+  faAngleDown,
+  faTrashAlt,
+  faPencilAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { Alert, Badge } from "react-bootstrap";
+import Collapse from "react-bootstrap/Collapse";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { db } from "../../firebase/firebase";
 import {
-  userType,
-} from '../../helpers/Types/index';
-
+  saveFavoriteActionCreator,
+  saveScoreActionCreator,
+} from "../../redux-toolkit";
+import { userType } from "../../helpers/Types/index";
 
 const Account = (props) => {
   const dispatch = useDispatch();
-  const acctFavorites = useSelector(state => state.favorites)
-  const acctScores = useSelector(state => state.scores)
+  const acctFavorites = useSelector((state) => state.favorites);
+  const acctScores = useSelector((state) => state.scores);
   const [loadingState, setLoadingState] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
 
-  const {
-    user,
-    scores,
-    favorites,
-    simplifyString,
-  } = props;
+  const { user, scores, favorites, simplifyString } = props;
 
   const deleteFavorite = (id) => {
-    db.collection(`users/${user.uid}/favorites`).doc(id).delete()
+    db.collection(`users/${user.uid}/favorites`)
+      .doc(id)
+      .delete()
       .then(() => {
         console.log(`Removed ${id} from favorites`);
         setShow(true);
-        setMessage({ style: 'warning', content: `Removed ${id} from favorites` });
+        setMessage({
+          style: "warning",
+          content: `Removed ${id} from favorites`,
+        });
       })
       .catch((err) => {
         console.error(err);
-        setMessage({ style: 'danger', content: `Error removing ${id} from favorites, ${err}` });
+        setMessage({
+          style: "danger",
+          content: `Error removing ${id} from favorites, ${err}`,
+        });
       });
   };
   const deleteScore = (id) => {
-    db.collection(`users/${user.uid}/scores`).doc(id).delete()
+    db.collection(`users/${user.uid}/scores`)
+      .doc(id)
+      .delete()
       .then(() => {
         console.log(`Removed ${id} from scores`);
         setShow(true);
-        setMessage({ style: 'warning', content: `Removed ${id} from scores` });
+        setMessage({ style: "warning", content: `Removed ${id} from scores` });
       })
       .catch((err) => {
         console.error(err);
-        setMessage({ style: 'danger', content: `Error removing ${id} from scores, ${err}` });
+        setMessage({
+          style: "danger",
+          content: `Error removing ${id} from scores, ${err}`,
+        });
       });
   };
   const getFavoritesData = () => {
@@ -72,7 +84,7 @@ const Account = (props) => {
     });
   };
   const toggleData = (type) => {
-    if (type === 'f') {
+    if (type === "f") {
       if (acctFavorites.isOpen) {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = false;
@@ -83,7 +95,7 @@ const Account = (props) => {
         dispatch(saveFavoriteActionCreator(oldFav));
       }
     }
-    if (type === 's') {
+    if (type === "s") {
       if (acctScores.isOpen) {
         const oldSco = { ...acctScores };
         oldSco.isOpen = false;
@@ -123,44 +135,59 @@ const Account = (props) => {
 
   return (
     <div className="col-sm-12 col-md-8 mx-auto">
-      <Alert show={show} variant={message.style}>{message.content}</Alert>
+      <Alert show={show} variant={message.style}>
+        {message.content}
+      </Alert>
       <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
         <div className="row">
           <div className="col-12 text-center">
-            <img className="avatar img-fluid" src={user && user.photoURL ? user.photoURL : require('../../img/user.png')} alt="" />
+            <img
+              className="avatar img-fluid"
+              src={
+                user && user.photoURL
+                  ? user.photoURL
+                  : require("../../img/user.png")
+              }
+              alt=""
+            />
           </div>
           <div className="col-12 text-center">
-            <h5 className="mt-3">
-              {user.displayName}
-            </h5>
+            <h5 className="mt-3">{user.displayName}</h5>
             <p>
               Account created
               {new Date(user.metadata.creationTime).toLocaleDateString()}
             </p>
             <p>{user.email}</p>
-            <p>{user.phoneNumber ? user.phoneNumber : 'No phone number added'}</p>
-            {loadingState ? <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x" />
-              : (
-                <>
-                  <h6>Stats</h6>
-                  <p>
-                    {acctFavorites && acctFavorites.data.length}
-                    {acctFavorites && acctFavorites.length === 1 ? ' Favorite' : ' Favorites'}
-                  </p>
-                  <p>
-                    {acctScores && acctScores.data.length}
-                    {acctScores && acctScores.length === 1 ? ' Score' : ' Scores'}
-                  </p>
-                </>
-              )}
+            <p>
+              {user.phoneNumber ? user.phoneNumber : "No phone number added"}
+            </p>
+            {loadingState ? (
+              <FontAwesomeIcon
+                className="my-5"
+                icon={faSpinner}
+                spin
+                size="2x"
+              />
+            ) : (
+              <>
+                <h6>Stats</h6>
+                <p>
+                  {acctFavorites && acctFavorites.data.length}
+                  {acctFavorites && acctFavorites.length === 1
+                    ? " Favorite"
+                    : " Favorites"}
+                </p>
+                <p>
+                  {acctScores && acctScores.data.length}
+                  {acctScores && acctScores.length === 1 ? " Score" : " Scores"}
+                </p>
+              </>
+            )}
           </div>
           <div className="col-12 text-center">
-            <Link
-              className="btn btn-success"
-              to={`${process.env.PUBLIC_URL}/account/edit`}
-            >
+            <Link className="btn btn-success" to={`/account/edit`}>
               <FontAwesomeIcon className="acctedit" icon={faPencilAlt} />
-                Edit Account
+              Edit Account
             </Link>
           </div>
         </div>
@@ -170,109 +197,155 @@ const Account = (props) => {
         <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
           <h5
             className="list-group-item d-flex align-items-center"
-            onClick={() => toggleData('f')}
+            onClick={() => toggleData("f")}
             role="button"
           >
             Favorites
             <Badge variant="primary">
-              {loadingState ? <FontAwesomeIcon icon={faSpinner} spin />
-                : acctFavorites && acctFavorites.data.length > 0 && acctFavorites.data.length}
+              {loadingState ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                acctFavorites &&
+                acctFavorites.data.length > 0 &&
+                acctFavorites.data.length
+              )}
             </Badge>
-            {acctFavorites && <FontAwesomeIcon className="align-text-top" icon={favorites ? faAngleUp : faAngleDown} />}
-          </h5>
-          {loadingState ? null
-            : (
-              acctFavorites && (
-              <Collapse in={acctFavorites.isOpen}>
-                <ul className="list-group list-group-flush">
-                  {acctFavorites && acctFavorites.data.length > 0
-                    ? acctFavorites.data.map((favorite) => (
-                      <li className="list-group-item" key={favorite.id}>
-                        <h5>
-                          {favorite.id}
-                           -
-                          <small>
-                            {favorite.data.government.capital.name.split(';')[0]}
-                          </small>
-                        </h5>
-                        <div className="d-flex justify-content-between">
-                          <Link to={`${process.env.PUBLIC_URL}/${simplifyString(favorite.id.toLowerCase())}`}>
-                            <Flag
-                              className="favFlag img-thumbnail"
-                              name={(favorite.data.government.country_name.isoCode ? favorite.data.government.country_name.isoCode : '_unknown') ? favorite.data.government.country_name.isoCode : `_${favorite.data.name}`}
-                              format="svg"
-                              pngSize={64}
-                              shiny={false}
-                              alt={`${favorite.data.name}'s Flag`}
-                              basePath="/img/flags"
-                            />
-                          </Link>
-                          <FontAwesomeIcon className="align-self-center" onClick={() => deleteFavorite(favorite.id)} icon={faTrashAlt} size="2x" color="darkred" />
-                        </div>
-                      </li>
-                    )) : <h5>You have no favorites saved</h5> }
-                </ul>
-              </Collapse>
-              )
+            {acctFavorites && (
+              <FontAwesomeIcon
+                className="align-text-top"
+                icon={favorites ? faAngleUp : faAngleDown}
+              />
             )}
+          </h5>
+          {loadingState
+            ? null
+            : acctFavorites && (
+                <Collapse in={acctFavorites.isOpen}>
+                  <ul className="list-group list-group-flush">
+                    {acctFavorites && acctFavorites.data.length > 0 ? (
+                      acctFavorites.data.map((favorite) => (
+                        <li className="list-group-item" key={favorite.id}>
+                          <h5>
+                            {favorite.id}-
+                            <small>
+                              {
+                                favorite.data.government.capital.name.split(
+                                  ";"
+                                )[0]
+                              }
+                            </small>
+                          </h5>
+                          <div className="d-flex justify-content-between">
+                            <Link
+                              to={`/${simplifyString(
+                                favorite.id.toLowerCase()
+                              )}`}
+                            >
+                              <Flag
+                                className="favFlag img-thumbnail"
+                                name={
+                                  (
+                                    favorite.data.government.country_name
+                                      .isoCode
+                                      ? favorite.data.government.country_name
+                                          .isoCode
+                                      : "_unknown"
+                                  )
+                                    ? favorite.data.government.country_name
+                                        .isoCode
+                                    : `_${favorite.data.name}`
+                                }
+                                format="svg"
+                                pngSize={64}
+                                shiny={false}
+                                alt={`${favorite.data.name}'s Flag`}
+                                basePath="/img/flags"
+                              />
+                            </Link>
+                            <FontAwesomeIcon
+                              className="align-self-center"
+                              onClick={() => deleteFavorite(favorite.id)}
+                              icon={faTrashAlt}
+                              size="2x"
+                              color="darkred"
+                            />
+                          </div>
+                        </li>
+                      ))
+                    ) : (
+                      <h5>You have no favorites saved</h5>
+                    )}
+                  </ul>
+                </Collapse>
+              )}
         </div>
         <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-          <h5 className="list-group-item d-flex align-items-center" onClick={() => toggleData('s')}>
+          <h5
+            className="list-group-item d-flex align-items-center"
+            onClick={() => toggleData("s")}
+          >
             Scores
             <Badge variant="primary">
-              {loadingState ? <FontAwesomeIcon icon={faSpinner} spin />
-                : (acctScores && acctScores.data)
-                && acctScores.data.length > 0
-                && acctScores.data.length}
+              {loadingState ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                acctScores &&
+                acctScores.data &&
+                acctScores.data.length > 0 &&
+                acctScores.data.length
+              )}
             </Badge>
-            {acctScores && <FontAwesomeIcon className="align-text-top" icon={scores ? faAngleUp : faAngleDown} />}
+            {acctScores && (
+              <FontAwesomeIcon
+                className="align-text-top"
+                icon={scores ? faAngleUp : faAngleDown}
+              />
+            )}
           </h5>
-          {loadingState ? null
-            : (acctScores && (
-              <Collapse in={acctScores.isOpen}>
-                <ul className="list-group list-group-flush">
-                  {acctScores && acctScores.data.length > 0 ? acctScores.data.map((score) => {
-                    const milliseconds = score.data.dateCreated.seconds * 1000;
-                    const currentDate = new Date(milliseconds);
-                    const dateTime = currentDate.toGMTString();
-                    return (
-                      <li className="list-group-item" key={score.id}>
-                        <div className="d-flex justify-content-between">
-                          <div className="d-flex flex-column">
-                            <h6>
-                              <strong>{dateTime}</strong>
-                            </h6>
-                            {score.data.gameMode
-                              && (
+          {loadingState
+            ? null
+            : acctScores && (
+                <Collapse in={acctScores.isOpen}>
+                  <ul className="list-group list-group-flush">
+                    {acctScores && acctScores.data.length > 0 ? (
+                      acctScores.data.map((score) => {
+                        const milliseconds =
+                          score.data.dateCreated.seconds * 1000;
+                        const currentDate = new Date(milliseconds);
+                        const dateTime = currentDate.toGMTString();
+                        return (
+                          <li className="list-group-item" key={score.id}>
+                            <div className="d-flex justify-content-between">
+                              <div className="d-flex flex-column">
                                 <h6>
-                                  Mode -
-                                  {score.data.gameMode}
+                                  <strong>{dateTime}</strong>
                                 </h6>
-                              )}
-                            {score.data.score
-                              && (
-                              <h6>
-                                Score -
-                                {score.data.score}
-                              </h6>
-                              )}
-                            <h6>
-                              Correct -
-                              {score.data.correct}
-                            </h6>
-                            <h6>
-                              Incorrect -
-                              {score.data.incorrect}
-                            </h6>
-                          </div>
-                          <FontAwesomeIcon className="align-self-center" onClick={() => deleteScore(score.id)} icon={faTrashAlt} size="2x" color="darkred" />
-                        </div>
-                      </li>
-                    );
-                  }) : <h5>You have no scores saved</h5>}
-                </ul>
-              </Collapse>
-            ))}
+                                {score.data.gameMode && (
+                                  <h6>Mode -{score.data.gameMode}</h6>
+                                )}
+                                {score.data.score && (
+                                  <h6>Score -{score.data.score}</h6>
+                                )}
+                                <h6>Correct -{score.data.correct}</h6>
+                                <h6>Incorrect -{score.data.incorrect}</h6>
+                              </div>
+                              <FontAwesomeIcon
+                                className="align-self-center"
+                                onClick={() => deleteScore(score.id)}
+                                icon={faTrashAlt}
+                                size="2x"
+                                color="darkred"
+                              />
+                            </div>
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <h5>You have no scores saved</h5>
+                    )}
+                  </ul>
+                </Collapse>
+              )}
         </div>
       </div>
     </div>

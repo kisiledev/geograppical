@@ -1,38 +1,35 @@
 /* eslint-disable global-require */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/app';
-import 'firebaseui';
-import { Link, Redirect } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
-import PropTypes from 'prop-types';
-import {
-  userType,
-} from '../../helpers/Types/index';
-import useSignUpForm from '../../helpers/CustomHooks';
-import { auth } from '../../firebase/firebase';
-
+import React, { useState, useEffect } from "react";
+import firebase from "firebase/app";
+import "firebaseui";
+import { Link, Redirect } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import PropTypes from "prop-types";
+import { userType } from "../../helpers/Types/index";
+import useSignUpForm from "../../helpers/CustomHooks";
+import { auth } from "../../firebase/firebase";
 
 const LinkEmailModal = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
 
-  const {
-    message,
-    close,
-    show,
-    user,
-  } = props;
+  const { message, close, show, user } = props;
 
   const linkEmail = () => {
-    const credential = firebase.auth.EmailAuthProvider.credential(inputs.email, inputs.passwordOne);
-    auth.currentUser.linkWithCredential(credential)
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      inputs.email,
+      inputs.passwordOne
+    );
+    auth.currentUser
+      .linkWithCredential(credential)
       .then((usercred) => {
         const u = usercred.user;
         // setModalMessage({style: "success", content: "Linked email credentials to account"})
-        console.log('success', u);
-      }).catch((error) => {
+        console.log("success", u);
+      })
+      .catch((error) => {
         console.log(error);
         // setModalMessage({style: "danger", content: error.message})
       });
@@ -48,7 +45,8 @@ const LinkEmailModal = (props) => {
   }, [inputs.passwordOne]);
 
   const checkEmail = (value) => {
-    const regex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const regex =
+      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const iEV = regex.test(value);
     setIsEmailValid(iEV);
   };
@@ -62,14 +60,17 @@ const LinkEmailModal = (props) => {
     return <Redirect to="/account" />;
   }
 
-  const isInvalid = inputs.passwordOne !== inputs.passwordTwo
-  || inputs.passwordOne === ''
-  || inputs.email === ''
-  || inputs.username === '';
+  const isInvalid =
+    inputs.passwordOne !== inputs.passwordTwo ||
+    inputs.passwordOne === "" ||
+    inputs.email === "" ||
+    inputs.username === "";
 
   return (
     <div className="mx-auto text-center col-lg-12">
-      <Alert className="mt-3" show={show} variant={message.style}>{message.content}</Alert>
+      <Alert className="mt-3" show={show} variant={message.style}>
+        {message.content}
+      </Alert>
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-2">Link Email</h1>
@@ -80,7 +81,7 @@ const LinkEmailModal = (props) => {
           <form onSubmit={handleSubmit}>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.username || ''}
+                value={inputs.username || ""}
                 onChange={handleInputChange}
                 type="text"
                 name="username"
@@ -90,45 +91,80 @@ const LinkEmailModal = (props) => {
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.email || ''}
+                value={inputs.email || ""}
                 onChange={handleInputChange}
                 type="email"
                 name="email"
-                className={`form-control ${(inputs.email === '' || !inputs.email) ? 'prefinput' : (isEmailValid ? 'form-success' : 'form-error')}`}
+                className={`form-control ${
+                  inputs.email === "" || !inputs.email
+                    ? "prefinput"
+                    : isEmailValid
+                    ? "form-success"
+                    : "form-error"
+                }`}
                 placeholder="Enter email"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordOne || ''}
+                value={inputs.passwordOne || ""}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordOne"
-                className={`form-control ${(inputs.passwordOne === '' || !inputs.passwordOne) ? 'prefinput' : (isPWValid ? 'form-success' : 'form-error')}`}
+                className={`form-control ${
+                  inputs.passwordOne === "" || !inputs.passwordOne
+                    ? "prefinput"
+                    : isPWValid
+                    ? "form-success"
+                    : "form-error"
+                }`}
                 placeholder="Password"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordTwo || ''}
+                value={inputs.passwordTwo || ""}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordTwo"
-                className={`form-control ${(inputs.passwordTwo === '' || !inputs.passwordTwo) ? 'prefinput' : (inputs.passwordTwo === inputs.passwordOne ? 'form-success' : 'form-error')}`}
+                className={`form-control ${
+                  inputs.passwordTwo === "" || !inputs.passwordTwo
+                    ? "prefinput"
+                    : inputs.passwordTwo === inputs.passwordOne
+                    ? "form-success"
+                    : "form-error"
+                }`}
                 placeholder="Confirm Password"
               />
             </div>
             <div className="mx-auto form-group">
-              <button disabled={isInvalid} type="submit" className="provider-button email-button">
+              <button
+                disabled={isInvalid}
+                type="submit"
+                className="provider-button email-button"
+              >
                 <span className="email-button__icon">
-                  <img src={require('../../img/auth_service_email.svg')} className="emailicon" alt="email icon" />
+                  <img
+                    src={require("../../img/auth_service_email.svg")}
+                    className="emailicon"
+                    alt="email icon"
+                  />
                 </span>
                 <span className="google-button__text">Link with Email</span>
               </button>
             </div>
             <div className="mx-auto form-group">
-              <button disabled={isInvalid} onClick={() => close()} type="button" className="provider-button">
-                <span className="google-button__text">{message.style && message.style === 'success' ? 'Close' : 'Cancel'}</span>
+              <button
+                disabled={isInvalid}
+                onClick={() => close()}
+                type="button"
+                className="provider-button"
+              >
+                <span className="google-button__text">
+                  {message.style && message.style === "success"
+                    ? "Close"
+                    : "Cancel"}
+                </span>
               </button>
             </div>
           </form>
@@ -142,7 +178,7 @@ const SignUpLink = () => (
   <div className="col-12 d-flex justify-content-center">
     <p>
       Already have an account?
-      <Link to={`${process.env.PUBLIC_URL}/login`}>Sign In</Link>
+      <Link to={`/login`}>Sign In</Link>
     </p>
   </div>
 );
