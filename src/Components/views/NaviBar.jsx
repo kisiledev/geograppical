@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-nested-ternary */
 import React from "react";
-import { Navbar, Nav, Form, FormControl } from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, Row } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { auth, googleProvider } from "../../firebase/firebase";
@@ -38,16 +38,17 @@ const NaviBar = (props) => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Form
         className="ml-auto searchForm"
-        inline
         onSubmit={(e) => getResults(searchText, e)}
       >
-        <FormControl
-          type="text"
-          placeholder="Search"
-          className="search mr-sm-2"
-          value={searchText}
-          onChange={(e) => handleInput(e)}
-        />
+        <Row>
+          <FormControl
+            type="text"
+            placeholder="Search"
+            className="search mr-sm-2"
+            value={searchText}
+            onChange={(e) => handleInput(e)}
+          />
+        </Row>
       </Form>
       <Navbar.Collapse
         className="justify-content-end text-center"

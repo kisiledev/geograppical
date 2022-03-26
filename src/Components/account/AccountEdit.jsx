@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
 import React, { useState, useEffect } from "react";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSpinner,

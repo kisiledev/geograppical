@@ -1,29 +1,20 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from 'react';
-import { Link } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import PropTypes from 'prop-types';
-import {
-  dataType,
-  userType,
-} from '../../helpers/Types/index';
-import Highlight from './Highlight';
-import Find from './Find';
-import Scoreboard from './Scoreboard';
-import Choice from './Choice';
-import Checkbox from '../../elements/Checkbox';
-import Radio from '../../elements/Radio';
-import { db } from '../../firebase/firebase';
-import * as ROUTES from '../../constants/Routes';
-
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import firebase from "firebase/compat/app";
+import "firebase/firestore";
+import PropTypes from "prop-types";
+import { dataType, userType } from "../../helpers/Types/index";
+import Highlight from "./Highlight";
+import Find from "./Find";
+import Scoreboard from "./Scoreboard";
+import Choice from "./Choice";
+import Checkbox from "../../elements/Checkbox";
+import Radio from "../../elements/Radio";
+import { db } from "../../firebase/firebase";
+import * as ROUTES from "../../constants/Routes";
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -40,10 +31,10 @@ const Game = (props) => {
   const [currentCount, setCurrentCount] = useState(60);
   const [gameComplete, setGameComplete] = useState(false);
   // const [isRunning, setIsRunning] = useState(false)
-  const [timeMode, setTimeMode] = useState('cd');
+  const [timeMode, setTimeMode] = useState("cd");
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [modalBody, setModalBody] = useState('');
+  const [modalBody, setModalBody] = useState("");
   // const [intId, setIntId] = useState(null)
   // const [gameId, setGameId] = useState(null)
   const { firestore } = firebase;
@@ -62,28 +53,26 @@ const Game = (props) => {
 
   const tick = () => {
     if (gameOver || !timeChecked) return;
-    if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
-    else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+    if (timeMode === "cd" && currentCount === 0) setGameOver(true);
+    else setCurrentCount((curC) => (timeMode === "cd" ? curC - 1 : curC + 1));
   };
 
   const intervalRef = useRef(null);
 
-  const stop = useCallback(
-    () => {
-      if (intervalRef.current === null) {
-        return;
-      }
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }, [],
-  );
+  const stop = useCallback(() => {
+    if (intervalRef.current === null) {
+      return;
+    }
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }, []);
 
   const start = useCallback(() => {
     if (intervalRef.current !== null) {
-      console.log('null');
+      console.log("null");
       return;
     }
-    console.log('starting');
+    console.log("starting");
     if (timeChecked) {
       intervalRef.current = setInterval(() => tick(), 1000);
     }
@@ -94,13 +83,12 @@ const Game = (props) => {
   }, []);
 
   useEffect(() => {
-    if (timeMode === 'cd') {
+    if (timeMode === "cd") {
       setCurrentCount(60);
     } else {
       setCurrentCount(0);
     }
   }, [timeMode]);
-
 
   const startGame = () => {
     setIsStarted(true);
@@ -131,7 +119,6 @@ const Game = (props) => {
     endGameModal();
   }, [gameOver, currentCount]);
 
-
   const handleModalClose = () => {
     setShow(false);
     endGame();
@@ -159,12 +146,13 @@ const Game = (props) => {
   };
 
   const titleCase = (oldString) => {
-    return oldString.replace(/([a-z])([A-Z])/g, (allMatches, firstMatch, secondMatch) => {
-      return `${firstMatch} ${secondMatch}`;
-    })
+    return oldString
+      .replace(/([a-z])([A-Z])/g, (allMatches, firstMatch, secondMatch) => {
+        return `${firstMatch} ${secondMatch}`;
+      })
       .toLowerCase()
       .replace(/([ -_]|^)(.)/g, (allMatches, firstMatch, secondMatch) => {
-        return (firstMatch ? ' ' : '') + secondMatch.toUpperCase();
+        return (firstMatch ? " " : "") + secondMatch.toUpperCase();
       });
   };
   const resetMode = () => {
@@ -198,7 +186,7 @@ const Game = (props) => {
   };
   const handleModalUse = () => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
-    const timeExpired = 'Sorry, time expired! Try again';
+    const timeExpired = "Sorry, time expired! Try again";
     if (gameComplete) setModalBody(ModalText);
     else setModalBody(timeExpired);
   };
@@ -219,12 +207,11 @@ const Game = (props) => {
   const saveScore = () => {
     if (!user) {
       const modal = {
-        title: 'Not Logged In',
-        body: 'You need to sign in to favorite countries',
-        primaryButton:
-        (
+        title: "Not Logged In",
+        body: "You need to sign in to favorite countries",
+        primaryButton: (
           <Button variant="primary" onClick={login}>
-          Sign In/ Sign Up
+            Sign In/ Sign Up
           </Button>
         ),
       };
@@ -233,51 +220,60 @@ const Game = (props) => {
     } else {
       setLoadingState(true);
       if (timeChecked && score) {
-        db.collection('users').doc(user.uid).collection('scores').add({
-          userId: user.uid && user.uid,
-          gameMode,
-          dateCreated: firestore.Timestamp.fromDate(new Date()),
-          score,
-          correct,
-          incorrect,
-          time: 60 - currentCount,
-          questions: questionsSet,
-        })
+        db.collection("users")
+          .doc(user.uid)
+          .collection("scores")
+          .add({
+            userId: user.uid && user.uid,
+            gameMode,
+            dateCreated: firestore.Timestamp.fromDate(new Date()),
+            score,
+            correct,
+            incorrect,
+            time: 60 - currentCount,
+            questions: questionsSet,
+          })
           .then((d) => {
-            console.log('Data written successfully', d, d.id);
+            console.log("Data written successfully", d, d.id);
             setSaved(true);
             setIsStarted(false);
             setLoadingState(false);
           })
           .catch((error) => console.error(error));
       } else if (timeChecked && !score) {
-        db.collection('users').doc(user.uid).collection('scores').add({
-          userId: user.uid && user.uid,
-          gameMode,
-          dateCreated: firestore.Timestamp.fromDate(new Date()),
-          correct,
-          incorrect,
-          time: 60 - currentCount,
-          questions: questionsSet,
-        })
+        db.collection("users")
+          .doc(user.uid)
+          .collection("scores")
+          .add({
+            userId: user.uid && user.uid,
+            gameMode,
+            dateCreated: firestore.Timestamp.fromDate(new Date()),
+            correct,
+            incorrect,
+            time: 60 - currentCount,
+            questions: questionsSet,
+          })
           .then((d) => {
-            console.log('Data written successfully', d, d.id);
+            console.log("Data written successfully", d, d.id);
             setSaved(true);
             setIsStarted(false);
             setLoadingState(false);
           })
           .catch((error) => console.error(error));
       } else {
-        db.collection('users').doc(user.uid).collection('scores').add({
-          userId: user.uid && user.uid,
-          gameMode,
-          dateCreated: firestore.Timestamp.fromDate(new Date()),
-          correct,
-          incorrect,
-          questions: questionsSet,
-        })
+        db.collection("users")
+          .doc(user.uid)
+          .collection("scores")
+          .add({
+            userId: user.uid && user.uid,
+            gameMode,
+            dateCreated: firestore.Timestamp.fromDate(new Date()),
+            correct,
+            incorrect,
+            questions: questionsSet,
+          })
           .then((d) => {
-            console.log('Data written successfully', d, d.id);
+            console.log("Data written successfully", d, d.id);
             setSaved(true);
             setIsStarted(false);
             setLoadingState(false);
@@ -287,9 +283,17 @@ const Game = (props) => {
     }
   };
 
-  const back = !isStarted && <button type="button" className="btn btn-info mb-3" onClick={() => resetMode()}>Go Back</button>;
+  const back = !isStarted && (
+    <button
+      type="button"
+      className="btn btn-info mb-3"
+      onClick={() => resetMode()}
+    >
+      Go Back
+    </button>
+  );
   let returnGameMode;
-  if (gameMode === 'choice') {
+  if (gameMode === "choice") {
     returnGameMode = (
       <div>
         {back}
@@ -309,7 +313,7 @@ const Game = (props) => {
         />
       </div>
     );
-  } else if (gameMode === 'find') {
+  } else if (gameMode === "find") {
     returnGameMode = (
       <div>
         {back}
@@ -331,7 +335,7 @@ const Game = (props) => {
         />
       </div>
     );
-  } else if (gameMode === 'highlight') {
+  } else if (gameMode === "highlight") {
     returnGameMode = (
       <div>
         {back}
@@ -362,7 +366,7 @@ const Game = (props) => {
       <label>
         <Radio
           value="et"
-          checked={timeMode === 'et'}
+          checked={timeMode === "et"}
           onChange={(e) => toggleMode(e)}
         />
         <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
@@ -370,7 +374,7 @@ const Game = (props) => {
       <label>
         <Radio
           value="cd"
-          checked={timeMode === 'cd'}
+          checked={timeMode === "cd"}
           onChange={(e) => toggleMode(e)}
         />
         <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
@@ -380,25 +384,34 @@ const Game = (props) => {
 
   return (
     <>
-      <Modal show={show} onExit={() => resetMode()} onHide={() => handleModalClose()}>
+      <Modal
+        show={show}
+        onExit={() => resetMode()}
+        onHide={() => handleModalClose()}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Game Over</Modal.Title>
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => handleModalClose()}>
-              Close
+            Close
           </Button>
-          {saved
-            ? (
-              <Button variant="success">
-                <Link to={ROUTES.ACCOUNT}>{loadingState ? <FontAwesomeIcon icon={faSpinner} spin size="3x" /> : 'View Score'}</Link>
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={() => saveScore()}>
-                  Save Score
-              </Button>
-            )}
+          {saved ? (
+            <Button variant="success">
+              <Link to={ROUTES.ACCOUNT}>
+                {loadingState ? (
+                  <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+                ) : (
+                  "View Score"
+                )}
+              </Link>
+            </Button>
+          ) : (
+            <Button variant="primary" onClick={() => saveScore()}>
+              Save Score
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
       <Scoreboard
@@ -412,21 +425,42 @@ const Game = (props) => {
         questions={questions}
       />
       <div className="card mt-5 col-md-8 mx-auto">
-        <h3 className="text-center">{gameMode ? (`Game Mode: ${titleCase(gameMode)}`) : 'Choose a Game Mode'}</h3>
+        <h3 className="text-center">
+          {gameMode
+            ? `Game Mode: ${titleCase(gameMode)}`
+            : "Choose a Game Mode"}
+        </h3>
         {!gameMode && (
           <div>
             <div className="row">
               <div className="col-md-12 mx-auto">
                 <ul className="px-0 text-center">
-                  <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('choice')}>Questions</li>
-                  <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('find')}>Find Country on Map</li>
-                  <li className="choice list-group-item text-dark btn-info" onClick={() => setGameMode('highlight')}>Select Highlighted Country</li>
+                  <li
+                    className="choice list-group-item text-dark btn-info"
+                    onClick={() => setGameMode("choice")}
+                  >
+                    Questions
+                  </li>
+                  <li
+                    className="choice list-group-item text-dark btn-info"
+                    onClick={() => setGameMode("find")}
+                  >
+                    Find Country on Map
+                  </li>
+                  <li
+                    className="choice list-group-item text-dark btn-info"
+                    onClick={() => setGameMode("highlight")}
+                  >
+                    Select Highlighted Country
+                  </li>
                 </ul>
               </div>
             </div>
           </div>
         )}
-        <div className="text-center col-md-8 col-lg-12 px-0 mx-auto">{returnGameMode}</div>
+        <div className="text-center col-md-8 col-lg-12 px-0 mx-auto">
+          {returnGameMode}
+        </div>
         {!isStarted && (
           <div className="col-12 d-flex justify-content-center flex-wrap">
             <label>

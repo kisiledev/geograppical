@@ -15,7 +15,7 @@ import {
   Geographies,
   Geography,
 } from "react-simple-maps";
-import { geoEqualEarth } from "d3-geo";
+import * as d3 from "d3";
 import ReactTooltip from "react-tooltip";
 import { Link } from "react-router-dom";
 import Flag from "react-flags";
@@ -40,10 +40,10 @@ const Maps = (props) => {
 
   const { mapVisible, changeMapView, worldData, getCountryInfo } = props;
 
-  const proj = () =>
-    geoEqualEarth()
-      .translate([800 / 2, 400 / 2])
-      .scale(150);
+  const proj = d3
+    .geoEqualEarth()
+    .translate([800 / 2, 400 / 2])
+    .scale(150);
 
   const getMapNations = () => {
     const mapCountries = [...document.getElementsByClassName("country")];
@@ -275,34 +275,38 @@ const Maps = (props) => {
                 onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
-                  {(geos, proj) =>
-                    geos &&
-                    geos.map((geo) => (
-                      <Link
-                        key={geo.properties.NAME}
-                        to={`/${geo.properties.NAME_LONG.toLowerCase()}`}
-                      >
-                        <Geography
-                          key={geo.properties.NAME}
-                          onWheel={(e) => handleWheel(e)}
-                          data-longname={geo.properties.NAME_LONG.normalize(
-                            "NFD"
-                          )
-                            .replace(/[\u0300-\u036f]/g, "")
-                            .replace(/[^a-z\s]/gi, "")}
-                          data-tip={JSON.stringify(geo.properties)}
-                          data-shortname={geo.properties.NAME}
-                          data-continent={geo.properties.CONTINENT}
-                          data-subregion={geo.properties.SUBREGION}
-                          data-iso={geo.properties.ISO_A3}
-                          onClick={(e) => handleClick(e)}
-                          geography={geo}
-                          projection={proj}
-                          className="country"
-                        />
-                      </Link>
-                    ))
-                  }
+                  {({ geographies, projection }) => {
+                    return (
+                      geographies &&
+                      geographies.map((geo) => {
+                        return (
+                          <Link
+                            key={geo.properties.NAME}
+                            to={`/${geo.properties.NAME_LONG.toLowerCase()}`}
+                          >
+                            <Geography
+                              key={geo.properties.NAME}
+                              onWheel={(e) => handleWheel(e)}
+                              data-longname={geo.properties.NAME_LONG.normalize(
+                                "NFD"
+                              )
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .replace(/[^a-z\s]/gi, "")}
+                              data-tip={JSON.stringify(geo.properties)}
+                              data-shortname={geo.properties.NAME}
+                              data-continent={geo.properties.CONTINENT}
+                              data-subregion={geo.properties.SUBREGION}
+                              data-iso={geo.properties.ISO_A3}
+                              onClick={(e) => handleClick(e)}
+                              geography={geo}
+                              // projection={projection}
+                              className="country"
+                            />
+                          </Link>
+                        );
+                      })
+                    );
+                  }}
                 </Geographies>
               </ZoomableGroup>
             </ComposableMap>
