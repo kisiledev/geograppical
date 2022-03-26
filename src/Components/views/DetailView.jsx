@@ -21,7 +21,14 @@ import AudioPlayer from "./AudioPlayer";
 import "../../App.css";
 
 import SidebarView from "./SidebarView";
-import { db } from "../../firebase/firebase";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  deleteDoc,
+  setDoc,
+} from "firebase/firestore";
+import { firebaseApp } from "../../firebase/firebase";
 
 import * as ROUTES from "../../constants/Routes";
 
@@ -47,6 +54,7 @@ const DetailView = (props) => {
     hoverOffCountry,
   } = props;
 
+  const db = getFirestore(firebaseApp);
   const numberWithCommas = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -57,26 +65,24 @@ const DetailView = (props) => {
       setShow(false);
     }, 4000);
   };
-  const checkFavorite = (country) => {
-    const docRef = db
-      .collection(`users/${user.uid}/favorites`)
-      .doc(`${country}`);
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc) {
-          if (doc.exists) {
-            setFavorite(true);
-          } else {
-            setFavorite(false);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting document:", error);
-      });
+  const checkFavorite = async (country) => {
+    const docRef = doc(
+      db,
+      ...`users/${user.uid}/favorites/${country}`.split("/")
+    );
+
+    try {
+      const countryDoc = await getDoc(docRef);
+      if (countryDoc.exists) {
+        setFavorite(true);
+      } else {
+        setFavorite(false);
+      }
+    } catch (error) {
+      console.log("Error getting document:", error);
+    }
   };
-  const makeFavorite = (e, country) => {
+  const makeFavorite = async (e, country) => {
     e.persist();
     console.log("adding");
     if (!user) {
@@ -88,50 +94,48 @@ const DetailView = (props) => {
       });
     }
     if (!favorite) {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .set({
-          country,
-        })
-        .then(() => {
-          // console.log(`Added ${country.name} to favorites`)
-          setMessage({
-            style: "success",
-            content: `Added ${country.name} to favorites`,
-          });
-          setFavorite(true);
-          console.log("added favorite");
-          showFunc();
-        })
-        .catch((err) => {
-          // console.error(err)
-          setMessage({
-            style: "danger",
-            content: `Error adding ${country.name} to favorites, ${err}`,
-          });
-          showFunc();
+      const docRef = doc(
+        db,
+        ...`users/${user.uid}/favorites/${country.name}`.split("/")
+      );
+
+      try {
+        await setDoc(docRef, { country });
+        setMessage({
+          style: "success",
+          content: `Added ${country.name} to favorites`,
         });
+        setFavorite(true);
+        console.log("added favorite");
+        showFunc();
+      } catch (error) {
+        setMessage({
+          style: "danger",
+          content: `Error adding ${country.name} to favorites, ${err}`,
+        });
+        showFunc();
+      }
     } else {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .delete()
-        .then(() => {
-          // console.log(`Removed ${country.name} from favorites`)
-          setMessage({
-            style: "warning",
-            content: `Removed ${country.name} from favorites`,
-          });
-          setFavorite(false);
-          showFunc();
-        })
-        .catch((err) => {
-          // console.error(err)
-          setMessage({
-            style: "danger",
-            content: `Error adding ${country.name} to favorites, ${err}`,
-          });
-          showFunc();
+      const docRef = doc(
+        db,
+        ...`users/${user.uid}/favorites/${country.name}`.split("/")
+      );
+
+      try {
+        await deleteDoc(docRef);
+        setMessage({
+          style: "warning",
+          content: `Removed ${country.name} from favorites`,
         });
+        setFavorite(false);
+        showFunc();
+      } catch (error) {
+        setMessage({
+          style: "danger",
+          content: `Error adding ${country.name} to favorites, ${err}`,
+        });
+        showFunc();
+      }
     }
   };
 

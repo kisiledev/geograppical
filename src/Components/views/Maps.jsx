@@ -185,6 +185,7 @@ const Maps = (props) => {
     // ];
     // setState({zoom: newZoom, center: newCenter})
   };
+  console.log("center", center);
   const handleContent = (dataTip) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
@@ -271,8 +272,8 @@ const Maps = (props) => {
                 onWheel={handleWheel}
                 zoom={zoom}
                 center={center}
-                onMoveStart={handleMoveStart}
-                onMoveEnd={handleMoveEnd}
+                // onMoveStart={handleMoveStart}
+                // onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
                   {({ geographies, projection }) => {

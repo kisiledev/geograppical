@@ -1,19 +1,25 @@
 /* eslint-disable max-len */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/destructuring-assignment */
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import ExpandableProperty from './ExpandableProperty';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import ExpandableProperty from "./ExpandableProperty";
 
-const camelCaseToNormal = (str) => str.split('_').join(' ').replace(/([A-Z])/g, ' $1').replace(/^./, (str2) => str2.toUpperCase());
+const camelCaseToNormal = (str) =>
+  str
+    .split("_")
+    .join(" ")
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str2) => str2.toUpperCase());
 
 const RecursivePropertyContainer = styled.div`
   padding-top: 10px;
   padding-left: 3px;
   margin-left: 10px;
-  ${(props) => (props.excludeBottomBorder ? '' : 'border-bottom: 2px solid #eeeeee;')}
-  color: #666;    
+  ${(props) =>
+    props.excludeBottomBorder ? "" : "border-bottom: 2px solid #eeeeee;"}
+  color: #666;
   font-size: 16px;
 `;
 
@@ -28,29 +34,35 @@ export const PropertyName = styled.span`
 const RecursiveProperty = (props) => (
   <RecursivePropertyContainer excludeBottomBorder={props.excludeBottomBorder}>
     {props.property ? (
-      typeof props.property === 'number'
-      || typeof props.property === 'string'
-      || typeof props.property === 'boolean' ? (
+      typeof props.property === "number" ||
+      typeof props.property === "string" ||
+      typeof props.property === "boolean" ? (
         <>
           <PropertyName>
             {`${camelCaseToNormal(props.propertyName)}: `}
           </PropertyName>
           {props.property.toString()}
         </>
-        ) : (
-          <ExpandableProperty country={props.property} title={camelCaseToNormal(props.propertyName)} expanded={!!props.rootProperty}>
-            {Object.values(props.property).map((property, index, { length }) => (
+      ) : (
+        <ExpandableProperty
+          country={props.property}
+          title={camelCaseToNormal(props.propertyName)}
+          expanded={!!props.rootProperty}
+        >
+          {Object.values(props.property).map((property, index, { length }) => {
+            return (
               <RecursiveProperty
                 key={`${index}`}
-                property={property}
+                property={property || undefined}
                 propertyName={Object.getOwnPropertyNames(props.property)[index]}
                 excludeBottomBorder={index === length - 1}
               />
-            ))}
-          </ExpandableProperty>
-        )
+            );
+          })}
+        </ExpandableProperty>
+      )
     ) : (
-      'Property is empty'
+      "Property is empty"
     )}
   </RecursivePropertyContainer>
 );
