@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft,
   faSpinner,
-  faStar,
-} from "@fortawesome/free-solid-svg-icons";
-import { Alert } from "react-bootstrap";
-import Flag from "react-flags";
-import { withRouter, Link } from "react-router-dom";
-import { BreakpointProvider, Breakpoint } from "react-socks";
-import PropTypes, { shape } from "prop-types";
-import {
-  countryType,
-  dataType,
-  userType,
-  matchType,
-} from "../../helpers/Types/index";
-import RecursiveProperty from "./DataList";
-import AudioPlayer from "./AudioPlayer";
-import "../../App.css";
-
-import SidebarView from "./SidebarView";
+  faStar
+} from '@fortawesome/free-solid-svg-icons';
+import { Alert } from 'react-bootstrap';
+import Flag from 'react-flags';
+import { withRouter, Link } from 'react-router-dom';
+import { BreakpointProvider, Breakpoint } from 'react-socks';
+import PropTypes, { shape } from 'prop-types';
 import {
   getFirestore,
   doc,
   getDoc,
   deleteDoc,
-  setDoc,
-} from "firebase/firestore";
-import { firebaseApp } from "../../firebase/firebase";
+  setDoc
+} from 'firebase/firestore';
+import {
+  countryType,
+  dataType,
+  userType,
+  matchType
+} from '../../helpers/Types/index';
+import RecursiveProperty from './DataList';
+import AudioPlayer from './AudioPlayer';
+import '../../App.css';
 
-import * as ROUTES from "../../constants/Routes";
+import SidebarView from './SidebarView';
+import { firebaseApp } from '../../Firebase/firebase';
+
+import * as ROUTES from '../../constants/Routes';
 
 const DetailView = (props) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const {
     countryDetail,
@@ -51,13 +51,12 @@ const DetailView = (props) => {
     hoverOnRegion,
     filterCountryByName,
     hoverOnCountry,
-    hoverOffCountry,
+    hoverOffCountry
   } = props;
 
   const db = getFirestore(firebaseApp);
-  const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  const numberWithCommas = (x) =>
+    x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   const showFunc = () => {
     setShow(true);
@@ -68,7 +67,7 @@ const DetailView = (props) => {
   const checkFavorite = async (country) => {
     const docRef = doc(
       db,
-      ...`users/${user.uid}/favorites/${country}`.split("/")
+      ...`users/${user.uid}/favorites/${country}`.split('/')
     );
 
     try {
@@ -79,60 +78,60 @@ const DetailView = (props) => {
         setFavorite(false);
       }
     } catch (error) {
-      console.log("Error getting document:", error);
+      console.log('Error getting document:', error);
     }
   };
   const makeFavorite = async (e, country) => {
     e.persist();
-    console.log("adding");
+    console.log('adding');
     if (!user) {
       setMessage({
-        style: "warning",
-        content: "You need to sign in to favorite countries. Login ",
+        style: 'warning',
+        content: 'You need to sign in to favorite countries. Login ',
         link: ROUTES.SIGN_IN,
-        linkContent: "here",
+        linkContent: 'here'
       });
     }
     if (!favorite) {
       const docRef = doc(
         db,
-        ...`users/${user.uid}/favorites/${country.name}`.split("/")
+        ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
         await setDoc(docRef, { country });
         setMessage({
-          style: "success",
-          content: `Added ${country.name} to favorites`,
+          style: 'success',
+          content: `Added ${country.name} to favorites`
         });
         setFavorite(true);
-        console.log("added favorite");
+        console.log('added favorite');
         showFunc();
       } catch (error) {
         setMessage({
-          style: "danger",
-          content: `Error adding ${country.name} to favorites, ${err}`,
+          style: 'danger',
+          content: `Error adding ${country.name} to favorites, ${err}`
         });
         showFunc();
       }
     } else {
       const docRef = doc(
         db,
-        ...`users/${user.uid}/favorites/${country.name}`.split("/")
+        ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
         await deleteDoc(docRef);
         setMessage({
-          style: "warning",
-          content: `Removed ${country.name} from favorites`,
+          style: 'warning',
+          content: `Removed ${country.name} from favorites`
         });
         setFavorite(false);
         showFunc();
       } catch (error) {
         setMessage({
-          style: "danger",
-          content: `Error adding ${country.name} to favorites, ${err}`,
+          style: 'danger',
+          content: `Error adding ${country.name} to favorites, ${err}`
         });
         showFunc();
       }
@@ -178,7 +177,7 @@ const DetailView = (props) => {
     </div>
   ) : (
     <BreakpointProvider>
-      {countryDetail === "error" || countryDetail === undefined ? (
+      {countryDetail === 'error' || countryDetail === undefined ? (
         errorMsg
       ) : (
         <div className="row">
@@ -195,7 +194,7 @@ const DetailView = (props) => {
               <div className="row justify-content-between">
                 <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
                   <Link
-                    to={`/`}
+                    to={'/'}
                     className="btn btn-primary justify-content"
                     onClick={() => history.goBack()}
                   >
@@ -207,7 +206,7 @@ const DetailView = (props) => {
                       <h3>
                         {countryDetail.name}-
                         <small>
-                          {countryDetail.government.capital.name.split(";")[0]}
+                          {countryDetail.government.capital.name.split(';')[0]}
                         </small>
                       </h3>
                       <h5>
@@ -222,7 +221,7 @@ const DetailView = (props) => {
                   <FontAwesomeIcon
                     onClick={(e) => makeFavorite(e, countryDetail)}
                     size="2x"
-                    color={favorite ? "gold" : "gray"}
+                    color={favorite ? 'gold' : 'gray'}
                     icon={faStar}
                   />
                   <Flag
@@ -231,7 +230,7 @@ const DetailView = (props) => {
                       (
                         countryDetail.government.country_name.isoCode
                           ? countryDetail.government.country_name.isoCode
-                          : "_unknown"
+                          : '_unknown'
                       )
                         ? countryDetail.government.country_name.isoCode
                         : `_${countryDetail.name}`
@@ -290,7 +289,7 @@ DetailView.propTypes = {
   hoverOffCountry: PropTypes.func.isRequired,
   match: matchType.isRequired,
   history: shape({
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
+    goBack: PropTypes.func.isRequired
+  }).isRequired
 };
 export default withRouter(DetailView);

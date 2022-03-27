@@ -185,7 +185,6 @@ const Maps = (props) => {
     // ];
     // setState({zoom: newZoom, center: newCenter})
   };
-  console.log("center", center);
   const handleContent = (dataTip) => {
     ReactTooltip.rebuild();
     if (!dataTip) {

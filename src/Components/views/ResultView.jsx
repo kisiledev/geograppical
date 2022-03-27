@@ -1,22 +1,22 @@
 /* eslint-disable no-console */
-import React, { useState } from "react";
-import { Breakpoint, BreakpointProvider } from "react-socks";
-import { Alert } from "react-bootstrap";
-import PropTypes from "prop-types";
-import { countryType, dataType, userType } from "../../helpers/Types/index";
-import { db } from "../../firebase/firebase";
+import React, { useState } from 'react';
+import { Breakpoint, BreakpointProvider } from 'react-socks';
+import { Alert } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { countryType, dataType, userType } from '../../helpers/Types/index';
+import { db } from '../../Firebase/firebase';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import "../../App.css";
-import SidebarView from "./SidebarView";
-import Maps from "./Maps";
-import Result from "./Result";
-import * as ROUTES from "../../constants/Routes";
+import '../../App.css';
+import SidebarView from './SidebarView';
+import Maps from './Maps';
+import Result from './Result';
+import * as ROUTES from '../../constants/Routes';
 
 const ResultView = (props) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [alert, setAlert] = useState(false);
 
   const {
@@ -36,7 +36,7 @@ const ResultView = (props) => {
     handleSideBar,
     setStateModal,
     filterCountryByName,
-    login,
+    login
   } = props;
 
   const makeFavorite = (e, country) => {
@@ -45,23 +45,23 @@ const ResultView = (props) => {
     if (!user) {
       setAlert(true);
       setMessage({
-        style: "warning",
-        content: "You need to sign in to favorite countries. Login",
+        style: 'warning',
+        content: 'You need to sign in to favorite countries. Login',
         link: ROUTES.SIGN_IN,
-        linkContent: " here",
+        linkContent: ' here'
       });
     } else if (!favorite) {
       db.collection(`users/${user.uid}/favorites`)
         .doc(`${country.name}`)
         .set({
-          country,
+          country
         })
         .then(() => {
           console.log(`Added ${country.name} to favorites`);
           setAlert(true);
           setMessage({
-            style: "success",
-            content: `Added ${country.name} to favorites`,
+            style: 'success',
+            content: `Added ${country.name} to favorites`
           });
           setFavorite(true);
         })
@@ -69,8 +69,8 @@ const ResultView = (props) => {
           console.error(err);
           setAlert(true);
           setMessage({
-            style: "danger",
-            content: `Error adding ${country.name} to favorites, ${err}`,
+            style: 'danger',
+            content: `Error adding ${country.name} to favorites, ${err}`
           });
         });
     } else {
@@ -81,8 +81,8 @@ const ResultView = (props) => {
           console.log(`Removed ${country.name} from favorites`);
           setAlert(true);
           setMessage({
-            style: "warning",
-            content: `Removed ${country.name} from favorites`,
+            style: 'warning',
+            content: `Removed ${country.name} from favorites`
           });
           setFavorite(false);
           setShow(true);
@@ -91,15 +91,15 @@ const ResultView = (props) => {
           console.error(err);
           setAlert(true);
           setMessage({
-            style: "danger",
-            content: `Error adding ${country.name} to favorites, ${err}`,
+            style: 'danger',
+            content: `Error adding ${country.name} to favorites, ${err}`
           });
         });
     }
   };
 
   const totalRegions = data.map((a) =>
-    a.geography.map_references.replace(/;/g, "")
+    a.geography.map_references.replace(/;/g, '')
   );
   function getOccurrence(array, value) {
     return array.filter((v) => v === value).length;
@@ -156,6 +156,9 @@ const ResultView = (props) => {
                 user={user}
                 setStateModal={setStateModal}
                 login={login}
+                show={show}
+                setShow={setShow}
+                setMessage={setMessage}
               />
             ))}
         </main>
@@ -180,7 +183,7 @@ const ResultView = (props) => {
   );
 };
 ResultView.defaultProps = {
-  user: null,
+  user: null
 };
 ResultView.propTypes = {
   countries: PropTypes.arrayOf(countryType).isRequired,
@@ -199,6 +202,6 @@ ResultView.propTypes = {
   hoverOffCountry: PropTypes.func.isRequired,
   setStateModal: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired
 };
 export default ResultView;
