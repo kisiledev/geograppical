@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Navbar, Nav, Form, FormControl, Row } from 'react-bootstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import { Search } from '@mui/icons-material';
@@ -18,8 +17,8 @@ import {
   Typography
 } from '@mui/material';
 import { auth, googleProvider } from '../../Firebase/firebase';
-import { userType } from '../../helpers/Types/index';
-import * as ROUTES from '../../constants/Routes';
+import { userType } from '../../Helpers/Types/index';
+// import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
 
 const useStyles = makeStyles({
@@ -47,7 +46,7 @@ const useStyles = makeStyles({
 });
 
 function NaviBar(props) {
-  const { history, getResults, searchText, handleInput, user } = props;
+  const { history, searchText, handleInput, user } = props;
 
   const settings = [
     { name: 'Profile', link: '/profile' },
@@ -75,20 +74,25 @@ function NaviBar(props) {
     setAnchorElUser(null);
   };
 
-  const login = () => {
-    auth
-      .signInWithPopup(googleProvider)
-      .then((result) => {
-        const u = result.user;
-        console.log(u);
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+  const login = async () => {
+    try {
+      await auth.signInWithPopup(googleProvider);
+    } catch (error) {
+      throw new Error(error);
+    }
   };
   const logout = () => {
     auth.signOut();
     history.push('/');
+  };
+
+  const handleMenuClick = (name) => {
+    if (name === 'Logout') {
+      logout();
+    }
+    if (name === 'Login') {
+      login();
+    }
   };
 
   const searchMarkup = (
@@ -132,7 +136,7 @@ function NaviBar(props) {
       >
         {settings.map((setting) => (
           <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-            <Button onClick={setting.name === 'Logout' && logout}>
+            <Button onClick={() => handleMenuClick(setting.name)}>
               <Typography textAlign="center">{setting.name}</Typography>
             </Button>
           </MenuItem>

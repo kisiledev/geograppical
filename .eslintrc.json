@@ -18,11 +18,15 @@
       {
         "singleQuote": true,
         "semi": true,
-        "trailingComma": "none"
+        "trailingComma": "none",
+        "endOfLine": "auto"
       }
     ],
     "comma-dangle": ["error", "never"],
     "object-curly-newline": "off",
-    "react/function-component-definition": "off"
+    "react/function-component-definition": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "function-paren-newline": "off"
   }
 }

@@ -11,13 +11,13 @@ import {
   string,
   arrayOf,
   bool,
-  PropTypes,
-} from "prop-types";
+  PropTypes
+} from 'prop-types';
 
 export const countryType = shape({
   name: string,
   introduction: shape({
-    background: string,
+    background: string
   }),
   geography: shape({
     location: string,
@@ -25,72 +25,72 @@ export const countryType = shape({
       latitude: shape({
         degrees: number,
         minutes: number,
-        hemisphere: string,
+        hemisphere: string
       }),
       longitude: shape({
         degrees: number,
         minutes: number,
-        hemisphere: string,
-      }),
+        hemisphere: string
+      })
     }),
     map_references: string,
     area: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       land: shape({
         value: number,
-        units: string,
+        units: string
       }),
       water: shape({
         value: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      comparative: string,
+      comparative: string
     }),
     land_boundaries: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       border_countries: arrayOf(
         shape({
           country: string,
           border_length: shape({
             value: number,
-            units: string,
-          }),
+            units: string
+          })
         })
-      ),
+      )
     }),
     coastline: shape({
       value: number,
-      units: string,
+      units: string
     }),
     maritime_claims: shape({
       territorial_sea: shape({
         value: number,
-        units: string,
+        units: string
       }),
       exclusive_fishing_zone: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.object,
-      ]),
+        PropTypes.object
+      ])
     }),
     climate: string,
     terrain: string,
     elevation: shape({
       mean_elevation: shape({
         value: number,
-        units: string,
-      }),
+        units: string
+      })
       // lowest_point: PropTypes.oneOfType([
       //   PropTypes.shape({
       //     name: string,
       //     elevation: shape({
-      //     value: -number,
+      //     value: number,
       //     units: string,
       //     }),
       //   }),
@@ -100,7 +100,7 @@ export const countryType = shape({
       //     PropTypes.shape({
       //       name: string,
       //       elevation: shape({
-      //         value: -number,
+      //         value: number,
       //         units: string,
       //       }),
       //     }),
@@ -108,444 +108,444 @@ export const countryType = shape({
       //   ]),
     }),
     natural_resources: shape({
-      resources: arrayOf(string),
+      resources: arrayOf(string)
     }),
     land_use: shape({
       by_sector: shape({
         agricultural_land_total: shape({
           value: number,
-          units: string,
+          units: string
         }),
         arable_land: shape({
           value: number,
           units: string,
-          note: string,
+          note: string
         }),
         permanent_crops: shape({
           value: number,
           units: string,
-          note: string,
+          note: string
         }),
         permanent_pasture: shape({
           value: number,
-          units: string,
+          units: string
         }),
         forest: shape({
           value: number,
-          units: string,
+          units: string
         }),
         other: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
-      date: string,
+      date: string
     }),
     irrigated_land: shape({
       value: number,
       units: string,
-      date: string,
+      date: string
     }),
     population_distribution: string,
     natural_hazards: arrayOf(
       shape({
         description: string,
-        type: string,
+        type: string
       })
     ),
     environment: shape({
       current_issues: arrayOf(string),
       international_agreements: shape({
         party_to: arrayOf(string),
-        signed_but_not_ratified: any,
-      }),
-    }),
+        signed_but_not_ratified: any
+      })
+    })
   }),
   people: shape({
     population: shape({
       total: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     nationality: shape({
       noun: string,
-      adjective: string,
+      adjective: string
     }),
     ethnic_groups: shape({
       ethnicity: arrayOf(
         shape({
           name: string,
-          percent: number,
+          percent: number
         })
       ),
-      note: string,
+      note: string
     }),
     languages: shape({
       language: arrayOf(
         shape({
           name: string,
-          note: string,
+          note: string
         })
-      ),
+      )
     }),
     religions: shape({
       religion: arrayOf(
         shape({
           name: string,
           percent: number,
-          note: string,
+          note: string
         })
       ),
-      date: string,
+      date: string
     }),
     demographic_profile: string,
     age_structure: shape({
-      "0_to_14": shape({
+      '0_to_14': shape({
         percent: number,
         males: number,
-        females: number,
+        females: number
       }),
-      "15_to_24": shape({
+      '15_to_24': shape({
         percent: number,
         males: number,
-        females: number,
+        females: number
       }),
-      "25_to_54": shape({
+      '25_to_54': shape({
         percent: number,
         males: number,
-        females: number,
+        females: number
       }),
-      "55_to_64": shape({
+      '55_to_64': shape({
         percent: number,
         males: number,
-        females: number,
+        females: number
       }),
-      "65_and_over": shape({
+      '65_and_over': shape({
         percent: number,
         males: number,
-        females: number,
+        females: number
       }),
-      date: string,
+      date: string
     }),
     dependency_ratios: shape({
       ratios: shape({
         total_dependency_ratio: shape({
           value: number,
-          units: string,
+          units: string
         }),
         youth_dependency_ratio: shape({
           value: number,
-          units: string,
+          units: string
         }),
         elderly_dependency_ratio: shape({
           value: number,
-          units: string,
+          units: string
         }),
         potential_support_ratio: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
-      date: string,
+      date: string
     }),
     median_age: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: shape({
         value: number,
-        units: string,
+        units: string
       }),
       female: shape({
         value: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      date: string,
+      date: string
     }),
     population_growth_rate: shape({
       growth_rate: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     birth_rate: shape({
       births_per_1000_population: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     death_rate: shape({
       deaths_per_1000_population: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     net_migration_rate: shape({
-      migrants_per_1000_population: -number,
+      migrants_per_1000_population: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     population_distribution: string,
     urbanization: shape({
       urban_population: shape({
         value: number,
         units: string,
-        date: string,
+        date: string
       }),
       rate_of_urbanization: shape({
         value: number,
-        units: string,
-      }),
+        units: string
+      })
     }),
     major_urban_areas: shape({
       places: arrayOf(
         shape({
           place: string,
           population: number,
-          is_capital: bool,
+          is_capital: bool
         })
       ),
-      date: string,
+      date: string
     }),
     sex_ratio: shape({
       by_age: shape({
         at_birth: shape({
           value: number,
-          units: string,
+          units: string
         }),
-        "0_to_14_years": shape({
+        '0_to_14_years': shape({
           value: number,
-          units: string,
+          units: string
         }),
-        "15_to_24_years": shape({
+        '15_to_24_years': shape({
           value: number,
-          units: string,
+          units: string
         }),
-        "25_to_54_years": shape({
+        '25_to_54_years': shape({
           value: number,
-          units: string,
+          units: string
         }),
-        "55_to_64_years": shape({
+        '55_to_64_years': shape({
           value: number,
-          units: string,
+          units: string
         }),
-        "65_years_and_over": shape({
+        '65_years_and_over': shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
       total_population: shape({
         value: number,
-        units: string,
+        units: string
       }),
-      date: string,
+      date: string
     }),
     maternal_mortality_rate: shape({
       deaths_per_100k_live_births: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     infant_mortality_rate: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: shape({
         value: number,
-        units: string,
+        units: string
       }),
       female: shape({
         value: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      date: string,
+      date: string
     }),
     life_expectancy_at_birth: shape({
       total_population: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: shape({
         value: number,
-        units: string,
+        units: string
       }),
       female: shape({
         value: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      date: string,
+      date: string
     }),
     total_fertility_rate: shape({
       children_born_per_woman: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     contraceptive_prevalence_rate: shape({
       value: number,
       units: string,
-      date: string,
+      date: string
     }),
     health_expenditures: shape({
       percent_of_gdp: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     hospital_bed_density: shape({
       beds_per_1000_population: number,
-      date: string,
+      date: string
     }),
     drinking_water_source: shape({
       improved: shape({
         urban: shape({
           value: number,
-          units: string,
+          units: string
         }),
         rural: shape({
           value: number,
-          units: string,
+          units: string
         }),
         total: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
       unimproved: shape({
         urban: shape({
           value: number,
-          units: string,
+          units: string
         }),
         rural: shape({
           value: number,
-          units: string,
+          units: string
         }),
         total: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
-      date: string,
+      date: string
     }),
     sanitation_facility_access: shape({
       improved: shape({
         urban: shape({
           value: number,
-          units: string,
+          units: string
         }),
         rural: shape({
           value: number,
-          units: string,
+          units: string
         }),
         total: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
       unimproved: shape({
         urban: shape({
           value: number,
-          units: string,
+          units: string
         }),
         rural: shape({
           value: number,
-          units: string,
+          units: string
         }),
         total: shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       }),
-      date: string,
+      date: string
     }),
     hiv_aids: shape({
       adult_prevalence_rate: shape({
         percent_of_adults: number,
-        date: string,
+        date: string
       }),
       people_living_with_hiv_aids: shape({
         total: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       deaths: shape({
         total: number,
-        date: string,
-      }),
+        date: string
+      })
     }),
     adult_obesity: shape({
       percent_of_adults: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     underweight_children: shape({
       percent_of_children_under_the_age_of_five: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     education_expenditures: shape({
       percent_of_gdp: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     literacy: shape({
       definition: string,
       total_population: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: shape({
         value: number,
-        units: string,
+        units: string
       }),
       female: shape({
         value: number,
-        units: string,
+        units: string
       }),
-      date: string,
+      date: string
     }),
     school_life_expectancy: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       ]),
       female: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.shape({
           value: number,
-          units: string,
-        }),
+          units: string
+        })
       ]),
-      date: string,
+      date: string
     }),
     youth_unemployment: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       male: PropTypes.oneOfType([
         PropTypes.shape({
           value: number,
-          units: string,
+          units: string
         }),
-        PropTypes.string,
+        PropTypes.string
       ]),
       female: PropTypes.oneOfType([
         PropTypes.shape({
           value: number,
-          units: string,
+          units: string
         }),
-        PropTypes.string,
+        PropTypes.string
       ]),
       global_rank: number,
-      date: string,
-    }),
+      date: string
+    })
   }),
   government: shape({
     country_name: shape({
@@ -554,7 +554,7 @@ export const countryType = shape({
       local_long_form: string,
       local_short_form: string,
       etymology: string,
-      isoCode: string,
+      isoCode: string
     }),
     government_type: string,
     capital: shape({
@@ -564,37 +564,37 @@ export const countryType = shape({
           latitude: shape({
             degrees: number,
             minutes: number,
-            hemisphere: string,
+            hemisphere: string
           }),
           longitude: shape({
             degrees: number,
             minutes: number,
-            hemisphere: string,
-          }),
+            hemisphere: string
+          })
         }),
         string,
-        number,
+        number
       ]),
       time_difference: shape({
         timezone: number,
-        note: string,
+        note: string
       }),
-      etymology: string,
+      etymology: string
     }),
     independence: shape({
       date: string,
-      note: string,
+      note: string
     }),
     national_holidays: arrayOf(
       shape({
         name: string,
         day: string,
-        original_year: string,
+        original_year: string
       })
     ),
     constitution: shape({
       history: string,
-      amendments: string,
+      amendments: string
     }),
     legal_system: string,
     international_law_organization_participation: arrayOf(string),
@@ -602,43 +602,43 @@ export const countryType = shape({
       citizenship_by_birth: string,
       citizenship_by_descent_only: string,
       dual_citizenship_recognized: string,
-      residency_requirement_for_naturalization: string,
+      residency_requirement_for_naturalization: string
     }),
     suffrage: shape({
       age: number,
       universal: bool,
-      compulsory: bool,
+      compulsory: bool
     }),
     executive_branch: shape({
       chief_of_state: string,
       head_of_government: string,
       cabinet: string,
       elections_appointments: string,
-      election_results: string,
+      election_results: string
     }),
     legislative_branch: shape({
       description: string,
       elections: string,
-      election_results: string,
+      election_results: string
     }),
     judicial_branch: shape({
       highest_courts: string,
       judge_selection_and_term_of_office: string,
-      subordinate_courts: string,
+      subordinate_courts: string
     }),
     political_parties_and_leaders: shape({
       parties: arrayOf(
         shape({
           name: string,
           name_alternative: string,
-          leaders: arrayOf(string),
+          leaders: arrayOf(string)
         })
       ),
-      note: string,
+      note: string
     }),
     international_organization_participation: arrayOf(
       shape({
-        organization: string,
+        organization: string
       })
     ),
     diplomatic_representation: shape({
@@ -647,37 +647,37 @@ export const countryType = shape({
         chancery: string,
         telephone: string,
         fax: string,
-        consulates_general: string,
+        consulates_general: string
       }),
       from_united_states: shape({
         chief_of_mission: string,
         embassy: string,
         mailing_address: string,
         telephone: string,
-        fax: string,
-      }),
+        fax: string
+      })
     }),
     flag_description: shape({
-      description: string,
+      description: string
     }),
     national_symbol: shape({
       symbols: arrayOf(
         shape({
-          symbol: string,
+          symbol: string
         })
       ),
       colors: arrayOf(
         shape({
-          color: string,
+          color: string
         })
-      ),
+      )
     }),
     national_anthem: shape({
       name: string,
       lyrics_music: string,
       note: string,
-      audio_url: string,
-    }),
+      audio_url: string
+    })
   }),
   economy: shape({
     overview: string,
@@ -687,275 +687,275 @@ export const countryType = shape({
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
         global_rank: number,
-        note: string,
+        note: string
       }),
       official_exchange_rate: shape({
         USD: number,
-        date: string,
+        date: string
       }),
       real_growth_rate: shape({
         annual_values: arrayOf(
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
-        global_rank: number,
+        global_rank: number
       }),
       per_capita_purchasing_power_parity: shape({
         annual_values: arrayOf(
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
         global_rank: number,
-        note: string,
+        note: string
       }),
       composition: shape({
         by_end_use: shape({
           end_uses: shape({
             household_consumption: shape({
               value: number,
-              units: string,
+              units: string
             }),
             government_consumption: shape({
               value: number,
-              units: string,
+              units: string
             }),
             investment_in_fixed_capital: shape({
               value: number,
-              units: string,
+              units: string
             }),
             investment_in_inventories: shape({
               value: number,
-              units: string,
+              units: string
             }),
             exports_of_goods_and_services: shape({
               value: number,
-              units: string,
+              units: string
             }),
             imports_of_goods_and_services: shape({
-              value: -number,
-              units: string,
-            }),
+              value: number,
+              units: string
+            })
           }),
-          date: string,
+          date: string
         }),
         by_sector_of_origin: shape({
           sectors: shape({
             agriculture: shape({
               value: number,
-              units: string,
+              units: string
             }),
             industry: shape({
               value: number,
-              units: string,
+              units: string
             }),
             services: shape({
               value: number,
-              units: string,
-            }),
+              units: string
+            })
           }),
-          date: string,
-        }),
-      }),
+          date: string
+        })
+      })
     }),
     gross_national_saving: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     agriculture_products: shape({
-      products: arrayOf(string),
+      products: arrayOf(string)
     }),
     industries: shape({
-      industries: arrayOf(string),
+      industries: arrayOf(string)
     }),
     industrial_production_growth_rate: shape({
       annual_percentage_increase: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     labor_force: shape({
       total_size: shape({
         total_people: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       by_occupation: shape({
         occupation: shape({
           agriculture: shape({
             value: number,
-            units: string,
+            units: string
           }),
           industry: shape({
             value: number,
-            units: string,
+            units: string
           }),
           services: shape({
             value: number,
-            units: string,
-          }),
+            units: string
+          })
         }),
-        date: string,
-      }),
+        date: string
+      })
     }),
     unemployment_rate: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     population_below_poverty_line: shape({
       value: number,
       units: string,
-      date: string,
+      date: string
     }),
     household_income_by_percentage_share: shape({
       lowest_ten_percent: shape({
         value: number,
-        units: string,
+        units: string
       }),
       highest_ten_percent: shape({
         value: number,
-        units: string,
+        units: string
       }),
-      date: string,
+      date: string
     }),
     distribution_of_family_income: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     budget: shape({
       revenues: shape({
         value: number,
-        units: string,
+        units: string
       }),
       expenditures: shape({
         value: number,
-        units: string,
+        units: string
       }),
-      date: string,
+      date: string
     }),
     taxes_and_other_revenues: shape({
       percent_of_gdp: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     budget_surplus_or_deficit: shape({
-      percent_of_gdp: -number,
+      percent_of_gdp: number,
       global_rank: number,
-      date: string,
+      date: string
     }),
     public_debt: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
       global_rank: number,
-      note: string,
+      note: string
     }),
     fiscal_year: shape({
       start: string,
-      end: string,
+      end: string
     }),
     inflation_rate: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     central_bank_discount_rate: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     commercial_bank_prime_lending_rate: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     stock_of_narrow_money: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     stock_of_broad_money: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     stock_of_domestic_credit: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     market_value_of_publicly_traded_shares: shape({
-      note: string,
+      note: string
     }),
     current_account_balance: shape({
       annual_values: arrayOf(
         shape({
-          value: -number,
+          value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     exports: shape({
       total_value: shape({
@@ -963,24 +963,24 @@ export const countryType = shape({
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
-        global_rank: number,
+        global_rank: number
       }),
       commodities: shape({
         by_commodity: arrayOf(string),
-        date: string,
+        date: string
       }),
       partners: shape({
         by_country: arrayOf(
           shape({
             name: string,
-            percent: number,
+            percent: number
           })
         ),
-        date: string,
-      }),
+        date: string
+      })
     }),
     imports: shape({
       total_value: shape({
@@ -988,43 +988,43 @@ export const countryType = shape({
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
-        global_rank: number,
+        global_rank: number
       }),
       commodities: shape({
-        by_commodity: arrayOf(string),
+        by_commodity: arrayOf(string)
       }),
       partners: shape({
         by_country: arrayOf(
           shape({
             name: string,
-            percent: number,
+            percent: number
           })
         ),
-        date: string,
-      }),
+        date: string
+      })
     }),
     reserves_of_foreign_exchange_and_gold: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     external_debt: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     stock_of_direct_foreign_investment: shape({
       at_home: shape({
@@ -1032,207 +1032,207 @@ export const countryType = shape({
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
-        global_rank: number,
+        global_rank: number
       }),
       abroad: shape({
         annual_values: arrayOf(
           shape({
             value: number,
             units: string,
-            date: string,
+            date: string
           })
         ),
-        global_rank: number,
-      }),
+        global_rank: number
+      })
     }),
     exchange_rates: shape({
       annual_values: arrayOf(
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      note: string,
-    }),
+      note: string
+    })
   }),
   energy: shape({
     electricity: shape({
       access: shape({
         population_without_electricity: shape({
           value: number,
-          units: string,
+          units: string
         }),
         total_electrification: shape({
           value: number,
-          units: string,
+          units: string
         }),
         urban_electrification: shape({
           value: number,
-          units: string,
+          units: string
         }),
         rural_electrification: shape({
           value: number,
-          units: string,
+          units: string
         }),
-        date: string,
+        date: string
       }),
       production: shape({
         kWh: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       consumption: shape({
         kWh: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       exports: shape({
         kWh: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       imports: shape({
         kWh: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       installed_generating_capacity: shape({
         kW: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       by_source: shape({
         fossil_fuels: shape({
           percent: number,
           global_rank: number,
-          date: string,
+          date: string
         }),
         nuclear_fuels: shape({
           percent: number,
           global_rank: number,
-          date: string,
+          date: string
         }),
         hydroelectric_plants: shape({
           percent: number,
           global_rank: number,
-          date: string,
+          date: string
         }),
         other_renewable_sources: shape({
           percent: number,
           global_rank: number,
-          date: string,
-        }),
-      }),
+          date: string
+        })
+      })
     }),
     crude_oil: shape({
       production: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       exports: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       imports: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       proved_reserves: shape({
         bbl: number,
         global_rank: number,
-        date: string,
-      }),
+        date: string
+      })
     }),
     refined_petroleum_products: shape({
       production: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       consumption: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       exports: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       imports: shape({
         bbl_per_day: number,
         global_rank: number,
-        date: string,
-      }),
+        date: string
+      })
     }),
     natural_gas: shape({
       production: shape({
         cubic_metres: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       consumption: shape({
         cubic_metres: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       exports: shape({
         cubic_metres: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       imports: shape({
         cubic_metres: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       proved_reserves: shape({
         cubic_metres: number,
         global_rank: number,
-        date: string,
-      }),
+        date: string
+      })
     }),
     carbon_dioxide_emissions_from_consumption_of_energy: shape({
       megatonnes: number,
       global_rank: number,
-      date: string,
-    }),
+      date: string
+    })
   }),
   communications: shape({
     telephones: shape({
       fixed_lines: shape({
         total_subscriptions: PropTypes.oneOfType([
           PropTypes.number,
-          PropTypes.string,
+          PropTypes.string
         ]),
         subscriptions_per_one_hundred_inhabitants: PropTypes.oneOfType([
           PropTypes.number,
-          PropTypes.string,
+          PropTypes.string
         ]),
         global_rank: number,
-        date: string,
+        date: string
       }),
       mobile_cellular: shape({
         total_subscriptions: PropTypes.oneOfType([
           PropTypes.number,
-          PropTypes.string,
+          PropTypes.string
         ]),
         subscriptions_per_one_hundred_inhabitants: number,
         global_rank: number,
-        date: string,
+        date: string
       }),
       system: shape({
         general_assessment: string,
         domestic: string,
-        international: string,
-      }),
+        international: string
+      })
     }),
     broadcast_media: string,
     internet: shape({
@@ -1241,9 +1241,9 @@ export const countryType = shape({
         total: number,
         percent_of_population: number,
         global_rank: number,
-        date: string,
-      }),
-    }),
+        date: string
+      })
+    })
   }),
   transportation: shape({
     air_transport: shape({
@@ -1253,102 +1253,102 @@ export const countryType = shape({
         annual_passenger_traffic_on_registered_air_carriers: number,
         annual_freight_traffic_on_registered_air_carriers: PropTypes.oneOfType([
           PropTypes.number,
-          PropTypes.string,
+          PropTypes.string
         ]),
-        date: string,
+        date: string
       }),
       civil_aircraft_registration_country_code_prefix: shape({
         prefix: string,
-        date: string,
+        date: string
       }),
       airports: shape({
         total: shape({
           airports: number,
           global_rank: number,
-          date: string,
+          date: string
         }),
         paved: shape({
           total: number,
           over_3047_metres: number,
-          "2438_to_3047_metres": number,
-          "1524_to_2437_metres": number,
-          "914_to_1523_metres": number,
+          '2438_to_3047_metres': number,
+          '1524_to_2437_metres': number,
+          '914_to_1523_metres': number,
           under_914_metres: number,
-          date: string,
+          date: string
         }),
         unpaved: shape({
           total: number,
-          "2438_to_3047_metres": number,
-          "1524_to_2437_metres": number,
-          "914_to_1523_metres": number,
+          '2438_to_3047_metres': number,
+          '1524_to_2437_metres': number,
+          '914_to_1523_metres': number,
           under_914_metres: number,
-          date: string,
-        }),
+          date: string
+        })
       }),
       heliports: shape({
         total: number,
-        date: string,
-      }),
+        date: string
+      })
     }),
     pipelines: shape({
       by_type: arrayOf(
         shape({
           type: string,
           length: number,
-          units: string,
+          units: string
         })
       ),
-      date: string,
+      date: string
     }),
     railways: shape({
       total: shape({
         length: number,
-        units: string,
+        units: string
       }),
       standard_gauge: shape({
         length: number,
         electrified: number,
         units: string,
-        gauge: string,
+        gauge: string
       }),
       narrow_gauge: shape({
         length: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      date: string,
+      date: string
     }),
     roadways: shape({
       total: shape({
         value: number,
-        units: string,
+        units: string
       }),
       paved: shape({
         value: number,
-        units: string,
+        units: string
       }),
       unpaved: shape({
         value: number,
-        units: string,
+        units: string
       }),
       global_rank: number,
-      date: string,
+      date: string
     }),
     merchant_marine: shape({
       total: number,
       by_type: arrayOf(
         shape({
           type: string,
-          count: number,
+          count: number
         })
       ),
       global_rank: number,
-      date: string,
+      date: string
     }),
     ports_and_terminals: shape({
       major_seaports: arrayOf(string),
-      liquid_natural_gas_terminals_export: arrayOf(string),
-    }),
+      liquid_natural_gas_terminals_export: arrayOf(string)
+    })
   }),
   military_and_security: shape({
     expenditures: shape({
@@ -1356,23 +1356,23 @@ export const countryType = shape({
         shape({
           value: number,
           units: string,
-          date: string,
+          date: string
         })
       ),
-      global_rank: number,
+      global_rank: number
     }),
     branches: shape({
       by_name: arrayOf(string),
-      date: string,
+      date: string
     }),
     service_age_and_obligation: shape({
       years_of_age: number,
       note: string,
-      date: string,
-    }),
+      date: string
+    })
   }),
   terrorism: shape({
-    home_based: string,
+    home_based: string
   }),
   transnational_issues: shape({
     disputes: arrayOf(string),
@@ -1380,17 +1380,17 @@ export const countryType = shape({
       refugees: shape({
         by_country: arrayOf(
           shape({
-            people: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+            people: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
           })
         ),
-        date: string,
-      }),
+        date: string
+      })
     }),
     trafficking_in_persons: shape({
       current_situation: string,
-      tier_rating: string,
-    }),
-  }),
+      tier_rating: string
+    })
+  })
 });
 export const dataType = arrayOf(countryType);
 export const userType = shape({
@@ -1409,7 +1409,7 @@ export const userType = shape({
       photoURL: PropTypes.string,
       email: PropTypes.string,
       phoneNumber: PropTypes.any,
-      providerId: PropTypes.string,
+      providerId: PropTypes.string
     })
   ),
   apiKey: PropTypes.string,
@@ -1419,27 +1419,27 @@ export const userType = shape({
     apiKey: PropTypes.string,
     refreshToken: PropTypes.string,
     accessToken: PropTypes.string,
-    expirationTime: PropTypes.number,
+    expirationTime: PropTypes.number
   }),
   redirectEventId: PropTypes.any,
   lastLoginAt: PropTypes.string,
-  createdAt: PropTypes.string,
+  createdAt: PropTypes.string
 });
 export const matchType = shape({
   isExact: bool.isRequired,
   params: shape({
-    country: string.isRequired,
+    country: string.isRequired
   }),
   path: string.isRequired,
-  url: string.isRequired,
+  url: string.isRequired
 });
 export const acctDataType = PropTypes.oneOfType([
   shape({
     isOpen: PropTypes.bool.isRequired,
     data: PropTypes.arrayOf({
       id: string.isRequired,
-      data: countryType.isRequired,
-    }).isRequired,
+      data: countryType.isRequired
+    }).isRequired
   }),
   shape({
     isOpen: PropTypes.bool.isRequired,
@@ -1449,7 +1449,7 @@ export const acctDataType = PropTypes.oneOfType([
         correct: PropTypes.number.isRequired,
         dateCreated: PropTypes.shape({
           seconds: PropTypes.number.isRequired,
-          nanoseconds: PropTypes.number.isRequired,
+          nanoseconds: PropTypes.number.isRequired
         }).isRequired,
         gameMode: PropTypes.string.isRequired,
         incorrect: PropTypes.number.isRequired,
@@ -1459,19 +1459,19 @@ export const acctDataType = PropTypes.oneOfType([
               PropTypes.shape({
                 correct: PropTypes.number.isRequired,
                 id: PropTypes.number.isRequired,
-                name: PropTypes.string.isRequired,
+                name: PropTypes.string.isRequired
               }).isRequired
             ),
             correct: PropTypes.bool.isRequired,
-            country: PropTypes.string.isRequired,
+            country: PropTypes.string.isRequired
           }).isRequired
         ).isRequired,
         score: PropTypes.number.isRequired,
         time: PropTypes.number.isRequired,
-        userId: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-  }),
+        userId: PropTypes.string.isRequired
+      })
+    }).isRequired
+  })
 ]);
 export const scoreType = shape({
   isOpen: PropTypes.bool.isRequired,
@@ -1481,7 +1481,7 @@ export const scoreType = shape({
       correct: PropTypes.number.isRequired,
       dateCreated: PropTypes.shape({
         seconds: PropTypes.number.isRequired,
-        nanoseconds: PropTypes.number.isRequired,
+        nanoseconds: PropTypes.number.isRequired
       }).isRequired,
       gameMode: PropTypes.string,
       incorrect: PropTypes.number,
@@ -1491,23 +1491,23 @@ export const scoreType = shape({
             PropTypes.shape({
               correct: PropTypes.number.isRequired,
               id: PropTypes.number.isRequired,
-              name: PropTypes.string.isRequired,
+              name: PropTypes.string.isRequired
             }).isRequired
           ),
           correct: PropTypes.bool.isRequired,
-          country: PropTypes.string.isRequired,
+          country: PropTypes.string.isRequired
         }).isRequired
       ).isRequired,
       score: PropTypes.number,
       time: PropTypes.number,
-      userId: PropTypes.string.isRequired,
-    }),
-  }).isRequired,
+      userId: PropTypes.string.isRequired
+    })
+  }).isRequired
 });
 export const favType = shape({
   isOpen: PropTypes.bool.isRequired,
   data: PropTypes.arrayOf({
     id: string.isRequired,
-    data: countryType.isRequired,
-  }).isRequired,
+    data: countryType.isRequired
+  }).isRequired
 });

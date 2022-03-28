@@ -4,13 +4,10 @@ import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import {
-  dataType,
-  userType,
-} from '../../helpers/Types/index';
+import { dataType, userType } from '../../helpers/Types/index';
 import SideCountry from './SideCountry';
 import * as ROUTES from '../../constants/Routes';
-
+import { Drawer } from '@mui/material';
 
 const SideNaviBar = (props) => {
   const [expanded, setExpanded] = useState(false);
@@ -29,9 +26,10 @@ const SideNaviBar = (props) => {
     hoverOffRegion,
     hoverOnCountry,
     hoverOnRegion,
-    filterCountryByName,
+    filterCountryByName
   } = props;
 
+  const drawerWidth = 250;
   const expandLinks = (e, type) => {
     if (e && type) {
       e.persist();
@@ -48,10 +46,12 @@ const SideNaviBar = (props) => {
     }
   };
   function getOccurrence(array, value) {
-    return array.filter((v) => (v === value)).length;
+    return array.filter((v) => v === value).length;
   }
   const getUniqueRegions = (totRegs) => {
-    setUniqueRegions(totRegs.filter((v, i, a) => a.indexOf(v) === i).filter(Boolean));
+    setUniqueRegions(
+      totRegs.filter((v, i, a) => a.indexOf(v) === i).filter(Boolean)
+    );
   };
 
   useEffect(() => {
@@ -65,31 +65,66 @@ const SideNaviBar = (props) => {
   }, [totalRegions]);
 
   return (
-    <Navbar className="flex-column sidenav" bg="dark" variant="dark">
+    <Drawer
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          boxSizing: 'border-box'
+        }
+      }}
+      variant="persistent"
+      open={open}
+    >
       <Navbar.Brand href="/">Geograppical</Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Nav>
-        <Nav.Link className="navbarlink" href="/">Home</Nav.Link>
-        <Nav.Link className="navbarlink" href="/play">Games</Nav.Link>
+        <Nav.Link className="navbarlink" href="/">
+          Home
+        </Nav.Link>
+        <Nav.Link className="navbarlink" href="/play">
+          Games
+        </Nav.Link>
         <Nav
           onMouseEnter={(e) => expandLinks(e)}
           onMouseLeave={(e) => expandLinks(e)}
           onFocus={(e) => expandLinks(e)}
           onBlur={(e) => expandLinks(e)}
         >
-          <Nav.Link href={ROUTES.ACCOUNT} title="Account" className="navbarlink">
-            Account
-            {' '}
-            {user && <FontAwesomeIcon className="ml-1 align-middle" icon={!expanded ? faAngleDown : faAngleUp} />}
+          <Nav.Link
+            href={ROUTES.ACCOUNT}
+            title="Account"
+            className="navbarlink"
+          >
+            Account{' '}
+            {user && (
+              <FontAwesomeIcon
+                className="ml-1 align-middle"
+                icon={!expanded ? faAngleDown : faAngleUp}
+              />
+            )}
           </Nav.Link>
           {user && (
-          <Collapse in={expanded}>
-            <Nav>
-              <Nav.Link className="sublinks" onClick={(e) => expandLinks(e, 'favorites')}>Favorites</Nav.Link>
-              <Nav.Link className="sublinks" onClick={(e) => expandLinks(e, 'scores')}>Scores</Nav.Link>
-              <Nav.Link href={ROUTES.EDIT} className="sublinks">Edit</Nav.Link>
-            </Nav>
-          </Collapse>
+            <Collapse in={expanded}>
+              <Nav>
+                <Nav.Link
+                  className="sublinks"
+                  onClick={(e) => expandLinks(e, 'favorites')}
+                >
+                  Favorites
+                </Nav.Link>
+                <Nav.Link
+                  className="sublinks"
+                  onClick={(e) => expandLinks(e, 'scores')}
+                >
+                  Scores
+                </Nav.Link>
+                <Nav.Link href={ROUTES.EDIT} className="sublinks">
+                  Edit
+                </Nav.Link>
+              </Nav>
+            </Collapse>
           )}
         </Nav>
       </Nav>
@@ -108,12 +143,11 @@ const SideNaviBar = (props) => {
         hoverOnCountry={hoverOnCountry}
         hoverOffCountry={hoverOffCountry}
       />
-    </Navbar>
-
+    </Drawer>
   );
 };
 SideNaviBar.defaultProps = {
-  user: null,
+  user: null
 };
 SideNaviBar.propTypes = {
   loadingState: PropTypes.bool.isRequired,
@@ -127,7 +161,7 @@ SideNaviBar.propTypes = {
   hoverOnRegion: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired,
   hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired,
+  hoverOffCountry: PropTypes.func.isRequired
 };
 
 export default withRouter(SideNaviBar);

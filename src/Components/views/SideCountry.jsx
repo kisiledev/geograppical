@@ -7,15 +7,12 @@ import { BreakpointProvider } from 'react-socks';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import {
-  dataType,
-} from '../../helpers/Types/index';
+import { dataType } from '../../Helpers/Types/index';
 import Sidebar from './Sidebar';
 import '../../App.css';
 
-
 const SideCountry = (props) => {
-  const [sidebar, setSidebar] = useState('Show');
+  const [showSideBar, setShowSideBar] = useState(true);
 
   const {
     data,
@@ -30,31 +27,27 @@ const SideCountry = (props) => {
     hoverOffRegion,
     hoverOnCountry,
     hoverOnRegion,
-    filterCountryByName,
+    filterCountryByName
   } = props;
 
-
-  const viewSidebar = () => {
-    if (sidebar === 'Show') {
-      setSidebar('Hide');
-    } else {
-      setSidebar('Show');
-    }
+  const toggleSidebar = () => {
+    setShowSideBar(!showSideBar);
   };
 
+  const sideBarMarkup = console.log(showSideBar);
   return (
     <BreakpointProvider>
       <nav className="countriesnav">
         <button
           type="button"
           className="btn btn-sm btn-block btn-outline-secondary mb-3"
-          onClick={() => viewSidebar()}
+          onClick={() => toggleSidebar()}
         >
-          { (sidebar === 'Hide') ? 'Show ' : 'Hide '}
+          {showSideBar ? 'Hide ' : 'Show '}
           Countries List
         </button>
-        {sidebar === 'Show'
-          ? (loadingState ? (
+        {showSideBar ? (
+          loadingState ? (
             <div className="mx-auto text-center">
               <FontAwesomeIcon icon={faSpinner} spin size="3x" />
             </div>
@@ -73,7 +66,8 @@ const SideCountry = (props) => {
               hoverOnCountry={hoverOnCountry}
               hoverOffCountry={hoverOffCountry}
             />
-          )) : null}
+          )
+        ) : null}
       </nav>
     </BreakpointProvider>
   );
@@ -92,6 +86,6 @@ SideCountry.propTypes = {
   hoverOnRegion: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired,
   hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired,
+  hoverOffCountry: PropTypes.func.isRequired
 };
 export default SideCountry;
