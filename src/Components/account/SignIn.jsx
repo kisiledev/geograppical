@@ -2,16 +2,16 @@
 /* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from "react";
-import "firebaseui";
-import { Link, Redirect } from "react-router-dom";
-import Alert from "react-bootstrap/Alert";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import PropTypes from "prop-types";
-import { userType } from "../../helpers/Types/index";
-import { auth, googleProvider } from "../../firebase/firebase";
-import useSignUpForm from "../../helpers/CustomHooks";
+import React, { useState, useEffect } from 'react';
+import 'firebaseui';
+import { Link, Redirect } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
+import { userType } from '../../Helpers/Types/index';
+import { auth, googleProvider } from '../../Firebase/firebase';
+import useSignUpForm from '../../Helpers/CustomHooks';
 
 const SignIn = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -25,23 +25,23 @@ const SignIn = (props) => {
       .then((u) => {
         // console.log(u);
         setMethods(u);
-        if (u.length === 0 || u.includes("password")) {
-          console.log("no methods");
+        if (u.length === 0 || u.includes('password')) {
+          console.log('no methods');
           auth
             .signInWithEmailAndPassword(inputs.email, inputs.password)
             .then((us) => {
               // console.log(us);
               setMessage({
-                style: "success",
-                content: `Logged in user ${us.user.email}`,
+                style: 'success',
+                content: `Logged in user ${us.user.email}`
               });
             })
             .catch((error) => {
               // console.log(error);
               // console.log(error.message);
               setMessage({
-                style: "danger",
-                content: `${error.message} Sign up using the link below`,
+                style: 'danger',
+                content: `${error.message} Sign up using the link below`
               });
             });
         } else {
@@ -50,13 +50,13 @@ const SignIn = (props) => {
           const content = `You already have an account at ${u[0]} 
         Please login using this authentication method. Method: ${methods}`;
           // console.log(content);
-          setMessage({ style: "warning", content });
+          setMessage({ style: 'warning', content });
         }
       })
       .catch((error) => {
         console.log(error);
         console.log(error.message);
-        setMessage({ style: "danger", content: `${error.message}` });
+        setMessage({ style: 'danger', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
@@ -90,9 +90,9 @@ const SignIn = (props) => {
   }
 
   const isInvalid =
-    inputs.password === "" ||
+    inputs.password === '' ||
     !inputs.password ||
-    inputs.email === "" ||
+    inputs.email === '' ||
     !inputs.email;
 
   return loadingState ? (
@@ -113,16 +113,16 @@ const SignIn = (props) => {
             <div className="form-group mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input
-                value={inputs.email || ""}
+                value={inputs.email || ''}
                 onChange={handleInputChange}
                 type="email"
                 name="email"
                 className={`form-control ${
-                  inputs.email === "" || !inputs.email
-                    ? "prefinput"
+                  inputs.email === '' || !inputs.email
+                    ? 'prefinput'
                     : isEmailValid
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -132,7 +132,7 @@ const SignIn = (props) => {
             <div className="form-group mx-auto mb-3">
               <label htmlFor="exampleInputPassword1">Password</label>
               <input
-                value={inputs.password || ""}
+                value={inputs.password || ''}
                 onChange={handleInputChange}
                 type="password"
                 name="password"
@@ -202,11 +202,11 @@ const SignUpLink = () => (
   </div>
 );
 SignIn.defaultProps = {
-  user: null,
+  user: null
 };
 SignIn.propTypes = {
   user: userType,
-  loadingState: PropTypes.bool.isRequired,
+  loadingState: PropTypes.bool.isRequired
 };
 export default SignIn;
 export { SignUpLink };

@@ -22,16 +22,19 @@ import {
   dataType,
   userType,
   matchType
-} from '../../helpers/Types/index';
+} from '../../Helpers/Types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
-import '../../App.css';
+// import '../../App.css';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../Firebase/firebase';
 
-import * as ROUTES from '../../constants/Routes';
+import * as ROUTES from '../../Constants/Routes';
 
+function getOccurrence(array, value) {
+  return array.filter((v) => v === value).length;
+}
 const DetailView = (props) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);
@@ -110,7 +113,7 @@ const DetailView = (props) => {
       } catch (error) {
         setMessage({
           style: 'danger',
-          content: `Error adding ${country.name} to favorites, ${err}`
+          content: `Error adding ${country.name} to favorites, ${error}`
         });
         showFunc();
       }
@@ -131,7 +134,7 @@ const DetailView = (props) => {
       } catch (error) {
         setMessage({
           style: 'danger',
-          content: `Error adding ${country.name} to favorites, ${err}`
+          content: `Error adding ${country.name} to favorites, ${error}`
         });
         showFunc();
       }
@@ -160,9 +163,7 @@ const DetailView = (props) => {
   }, [data]);
 
   const totalRegions = data.map((a) => a.geography.map_references);
-  function getOccurrence(array, value) {
-    return array.filter((v) => v === value).length;
-  }
+
   let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
   const errorMsg = (
     <div className="h3">
@@ -194,7 +195,7 @@ const DetailView = (props) => {
               <div className="row justify-content-between">
                 <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
                   <Link
-                    to={'/'}
+                    to="/"
                     className="btn btn-primary justify-content"
                     onClick={() => history.goBack()}
                   >
@@ -203,12 +204,6 @@ const DetailView = (props) => {
                   </Link>
                   <Breakpoint medium up>
                     <div className="col-lg-12">
-                      <h3>
-                        {countryDetail.name}-
-                        <small>
-                          {countryDetail.government.capital.name.split(';')[0]}
-                        </small>
-                      </h3>
                       <h5>
                         {`Population: 
                             ${numberWithCommas(

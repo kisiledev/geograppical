@@ -3,18 +3,22 @@ import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import { ThemeProvider } from '@mui/styles';
+import { Provider } from 'react-redux';
+import theme from './Helpers/Theme';
 import App from './App';
-import toolkitStore from './redux-toolkit'
-import { Provider } from 'react-redux'
+import toolkitStore from './redux-toolkit';
 import * as serviceWorker from './serviceWorker';
 
 render(
   <BrowserRouter>
     <Provider store={toolkitStore}>
-      <App />
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
     </Provider>
   </BrowserRouter>,
-  document.getElementById('root'),
+  document.getElementById('root')
 );
 
 // if (module.hot) {

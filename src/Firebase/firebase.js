@@ -1,23 +1,23 @@
 /* eslint-disable prefer-destructuring */
-import firebase from "firebase/compat/app";
-import { getFirestore } from "firebase/firestore";
+import firebase from 'firebase/compat/app';
+import { getFirestore } from 'firebase/firestore';
 import {
   getAuth,
   GoogleAuthProvider,
   FacebookAuthProvider,
   EmailAuthProvider,
-  TwitterAuthProvider,
-} from "firebase/auth";
+  TwitterAuthProvider
+} from 'firebase/auth';
 
 const { initializeApp } = firebase;
 const firebaseApp = initializeApp({
-  apiKey: "AIzaSyB3q_SxKc0U9aYcfFP_rXaorTsSS-8kkdA",
-  authDomain: "react-geogr.firebaseapp.com",
-  databaseURL: "https://react-geogr.firebaseio.com",
-  projectId: "react-geogr",
-  storageBucket: "react-geogr.appspot.com",
-  messagingSenderId: "68621396656",
-  appId: "1:68621396656:web:e534f2a9e3133c1e",
+  apiKey: 'AIzaSyB3q_SxKc0U9aYcfFP_rXaorTsSS-8kkdA',
+  authDomain: 'react-geogr.firebaseapp.com',
+  databaseURL: 'https://react-geogr.firebaseio.com',
+  projectId: 'react-geogr',
+  storageBucket: 'react-geogr.appspot.com',
+  messagingSenderId: '68621396656',
+  appId: '1:68621396656:web:e534f2a9e3133c1e'
 });
 
 const db = getFirestore(firebaseApp);
@@ -36,7 +36,7 @@ export {
   emailProvider,
   twitterProvider,
   firestore,
-  firebaseApp,
+  firebaseApp
 };
 
 export default firebase;

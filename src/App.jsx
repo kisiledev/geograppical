@@ -4,29 +4,28 @@
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-mixed-operators */
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Route, Switch, withRouter } from "react-router-dom";
-import { BreakpointProvider, Breakpoint } from "react-socks";
-import { Modal, Button } from "react-bootstrap";
-import axios from "axios";
-import PropTypes, { shape } from "prop-types";
-import ResultView from "./components/views/ResultView";
-import DetailView from "./components/views/DetailView";
-import NaviBar from "./components/views/NaviBar";
-import "./App.css";
-import { auth, googleProvider } from "./firebase/firebase";
-import Game from "./components/games/Game";
-import Account from "./components/account/RefactoredAccount";
-import SignIn from "./components/account/SignIn";
-import SignUp from "./components/account/SignUp";
-import PrivateRoute from "./components/account/PrivateRoutes";
-import PasswordReset from "./components/account/PasswordReset";
-import AccountEdit from "./components/account/AccountEdit";
-import SearchResults from "./components/views/SearchResults";
-import SideNaviBar from "./components/views/SideNaviBar";
-import { loginUser, changeView, changeMap } from "./redux-toolkit";
-import { loadData } from "./redux/data/dataSlice";
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import { BreakpointProvider, Breakpoint } from 'react-socks';
+import { Modal, Button } from 'react-bootstrap';
+import axios from 'axios';
+import PropTypes, { shape } from 'prop-types';
+import ResultView from './Components/views/ResultView';
+import DetailView from './Components/views/DetailView';
+import NaviBar from './Components/views/NaviBar';
+import { auth, googleProvider } from './Firebase/firebase';
+import Game from './Components/games/Game';
+import Account from './Components/account/RefactoredAccount';
+import SignIn from './Components/account/SignIn';
+import SignUp from './Components/account/SignUp';
+import PrivateRoute from './Components/account/PrivateRoutes';
+import PasswordReset from './Components/account/PasswordReset';
+import AccountEdit from './Components/account/AccountEdit';
+import SearchResults from './Components/views/SearchResults';
+import SideNaviBar from './Components/views/SideNaviBar';
+import { loginUser, changeView, changeMap } from './redux-toolkit';
+import { loadData } from './redux/data/dataSlice';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -34,20 +33,20 @@ const App = (props) => {
   const view = useSelector((state) => state.view.value);
   const toggleSidebar = useSelector((state) => state.toggleSidebar);
   const mode = useSelector((state) => state.mode.value);
-  const user = useSelector((state) => state.user.value);
+  const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
   const [error, setError] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
   const [filterNations, setFilterNations] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [worldData, setWorldData] = useState([]);
   const [countryDetail, setCountryDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({});
   const [iso, setIso] = useState(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const { history, location } = props;
 
@@ -74,15 +73,16 @@ const App = (props) => {
         )
         .map((item) => (Array.isArray(item) ? removeNull(item) : item));
     }
+    return null;
   };
   const loadCodes = () => {
-    axios.get("../iso.json").then((res) => {
+    axios.get('../iso.json').then((res) => {
       const codes = res.data;
       const isoCodes = codes.map((code) => {
         const container = {};
-        container.name = code["CLDR display name"];
-        container.shortName = code["UNTERM English Short"];
-        container.isoCode = code["ISO3166-1-Alpha-3"];
+        container.name = code['CLDR display name'];
+        container.shortName = code['UNTERM English Short'];
+        container.isoCode = code['ISO3166-1-Alpha-3'];
         container.capital = code.Capital;
         return container;
       });
@@ -91,7 +91,7 @@ const App = (props) => {
   };
   const loadWorldData = () => {
     try {
-      axios.get("../factbook.json").then((res) => {
+      axios.get('../factbook.json').then((res) => {
         let Data = res && res.data.countries;
         Data = Object.values(Data).map((country) => country.data) || [];
         const newData = removeNull(Object.values(Data));
@@ -99,12 +99,12 @@ const App = (props) => {
           newData.forEach((element, index, nd) => {
             nd[index].geography.map_references = newData[
               index
-            ].geography.map_references.replace(/;/g, "");
-            if (nd[index].geography.map_references === "AsiaEurope") {
-              nd[index].geography.map_references = "Europe";
+            ].geography.map_references.replace(/;/g, '');
+            if (nd[index].geography.map_references === 'AsiaEurope') {
+              nd[index].geography.map_references = 'Europe';
             }
-            if (nd[index].geography.map_references === "Middle East") {
-              nd[index].geography.map_references = "Southwest Asia";
+            if (nd[index].geography.map_references === 'Middle East') {
+              nd[index].geography.map_references = 'Southwest Asia';
             }
           });
         }
@@ -119,7 +119,7 @@ const App = (props) => {
         }
         let codes = {};
         if (codes === undefined) {
-          return console.log("unable to load");
+          return console.log('unable to load');
         }
         codes = loadediso;
         if (codes && codes.length > 0) {
@@ -150,13 +150,12 @@ const App = (props) => {
     }
   };
 
-  const simplifyString = (string) => {
-    return string
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z\s]/gi, "")
+  const simplifyString = (string) =>
+    string
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z\s]/gi, '')
       .toUpperCase();
-  };
 
   const handleClose = () => {
     setShowModal(false);
@@ -167,24 +166,20 @@ const App = (props) => {
   const setStateModal = (modalsetting) => {
     setModal(modalsetting);
   };
-  const login = () => {
-    auth
-      .signInWithPopup(googleProvider)
-      .then((result) => {
-        return;
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(err.message);
-      });
+  const login = async () => {
+    try {
+      await auth.signInWithPopup(googleProvider);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const hoverOnCountry = (e, region, country) => {
     e.stopPropagation();
-    if (view === "detail") {
-      dispatch(changeView("default"));
+    if (view === 'detail') {
+      dispatch(changeView('default'));
     }
-    let nodes = document.getElementsByClassName("country");
+    let nodes = document.getElementsByClassName('country');
     nodes = [...nodes];
     nodes = nodes.filter(
       (y) =>
@@ -192,16 +187,16 @@ const App = (props) => {
         simplifyString(country) === simplifyString(y.dataset.shortname)
     );
     nodes.forEach((node) => {
-      node.style.fill = "#ee0a43";
-      node.style.stroke = "#111";
+      node.style.fill = '#ee0a43';
+      node.style.stroke = '#111';
       node.style.strokeWidth = 0.1;
-      node.style.outline = "none";
-      node.style.willChange = "all";
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
     });
   };
   const hoverOffCountry = (e, region, country) => {
     e.stopPropagation();
-    let nodes = document.getElementsByClassName("country");
+    let nodes = document.getElementsByClassName('country');
     nodes = [...nodes];
     nodes = nodes.filter(
       (y) =>
@@ -209,22 +204,22 @@ const App = (props) => {
         simplifyString(country) === simplifyString(y.dataset.shortname)
     );
     nodes.forEach((node) => {
-      node.removeAttribute("style");
-      node.style.fill = "#024e1b";
-      node.style.stroke = "#111";
+      node.removeAttribute('style');
+      node.style.fill = '#024e1b';
+      node.style.stroke = '#111';
       node.style.strokeWidth = 0.1;
-      node.style.outline = "none";
-      node.style.willChange = "all";
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
     });
   };
   const hoverOnRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
     const countries = region && Object.values(region)[2];
-    if (typeof countries === "object") {
+    if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
     }
-    let nodes = document.getElementsByClassName("country");
+    let nodes = document.getElementsByClassName('country');
     nodes = [...nodes];
     nodes = nodes.filter(
       (y) =>
@@ -232,21 +227,21 @@ const App = (props) => {
         svgs.includes(simplifyString(y.dataset.shortname))
     );
     nodes.forEach((node) => {
-      node.style.fill = "#024e1b";
-      node.style.stroke = "#111";
+      node.style.fill = '#024e1b';
+      node.style.stroke = '#111';
       node.style.strokeWidth = 0.1;
-      node.style.outline = "none";
-      node.style.willChange = "all";
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
     });
   };
   const hoverOffRegion = (e, region) => {
     let svgs = [];
     e.stopPropagation();
     const countries = Object.values(region)[2];
-    if (typeof countries === "object") {
+    if (typeof countries === 'object') {
       svgs = countries.map((country) => simplifyString(country.name));
     }
-    let nodes = document.getElementsByClassName("country");
+    let nodes = document.getElementsByClassName('country');
     nodes = [...nodes];
     nodes = nodes.filter(
       (y) =>
@@ -254,15 +249,16 @@ const App = (props) => {
         svgs.includes(simplifyString(y.dataset.shortname))
     );
     nodes.forEach((node) => {
-      node.removeAttribute("style");
+      node.removeAttribute('style');
     });
   };
-  const getCountryInfo = (name) => {
+  const getCountryInfo = (e, name) => {
+    e.stopPropagation();
     const searchDB = Object.values(worldData);
     name = name
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z\s]/gi, "");
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z\s]/gi, '');
     const match = searchDB.filter(
       (country) =>
         simplifyString(country.name) === simplifyString(name) ||
@@ -270,10 +266,10 @@ const App = (props) => {
           name.toUpperCase()
     );
     if (!match || match.length === 0) {
-      setCountryDetail("error");
+      setCountryDetail('error');
     }
     setCountryDetail(match[0]);
-    handleViews("detail");
+    handleViews('detail');
   };
   const getResults = (results, e) => {
     if (!searchText) {
@@ -282,7 +278,7 @@ const App = (props) => {
     } else {
       e.preventDefault();
       setSearch(searchText);
-      handleViews("default");
+      handleViews('default');
       history.push(`/search/${searchText}`);
     }
   };
@@ -310,28 +306,28 @@ const App = (props) => {
     loadWorldData();
   }, []);
   const changeMapView = () => {
-    if (mapView === "Show") {
-      dispatch(changeMap("Hide"));
+    if (mapView === 'Show') {
+      dispatch(changeMap('Hide'));
     } else {
-      dispatch(changeMap("Show"));
+      dispatch(changeMap('Show'));
     }
   };
   const handleSideBar = (string) => {
-    alert("handling sidebar");
+    alert('handling sidebar');
     setFilterNations(filterCountryByName(string));
   };
   const handleSubmit = (e) => {
-    alert("clicked");
+    alert('clicked');
     e.preventDefault();
-    console.log("handling submit");
+    console.log('handling submit');
     history.push(e.target.value);
   };
   const handleData = (type) => {
-    if (location.pathname !== "/account") {
-      console.log("not on account page");
-      history.push("/account");
+    if (location.pathname !== '/account') {
+      console.log('not on account page');
+      history.push('/account');
     }
-    if (type === "favorites") {
+    if (type === 'favorites') {
       setFavorites(!favorites);
     } else {
       setScores(!scores);
@@ -341,41 +337,41 @@ const App = (props) => {
     e.persist();
     // console.log('changing')
     const { value } = e.target;
-    if (value != null && value.trim() !== "") {
+    if (value != null && value.trim() !== '') {
       setSearchText(value);
       filterCountryByName(value);
-      let nodes = [...document.getElementsByClassName("country")];
+      let nodes = [...document.getElementsByClassName('country')];
       nodes.forEach((node) => {
-        node.style.fill = "#60c080 ";
-        node.style.stroke = "#111";
+        node.style.fill = '#60c080 ';
+        node.style.stroke = '#111';
         node.style.strokeWidth = 0.1;
-        node.style.outline = "none";
-        node.style.willChange = "all";
+        node.style.outline = 'none';
+        node.style.willChange = 'all';
       });
       const filtered = filterCountryByName(value).map(
         (country) => country.name
       );
       nodes = nodes.filter((y) => filtered.includes(y.dataset.shortname));
       nodes.forEach((node) => {
-        node.style.fill = "#024e1b";
-        node.style.stroke = "#111";
+        node.style.fill = '#024e1b';
+        node.style.stroke = '#111';
         node.style.strokeWidth = 0.1;
-        node.style.outline = "none";
-        node.style.willChange = "all";
+        node.style.outline = 'none';
+        node.style.willChange = 'all';
       });
     } else {
       setSearchText(value);
       setFilterNations([]);
-      const nodes = [...document.getElementsByClassName("country")];
+      const nodes = [...document.getElementsByClassName('country')];
       // console.log(filterNations)
       nodes.forEach((node) => {
-        node.removeAttribute("style");
+        node.removeAttribute('style');
       });
     }
   };
   const handleRefresh = (value) => {
     if (worldData) {
-      if (value != null && value.trim() !== "") {
+      if (value != null && value.trim() !== '') {
         setSearchText(value);
         filterCountryByName(value);
         // let nodes = [...(document.getElementsByClassName("country"))];
@@ -410,11 +406,11 @@ const App = (props) => {
     loadCodes();
     auth.onAuthStateChanged((u) => {
       if (u) {
-        dispatch(loginUser(u));
+        setUser(u);
         setAuthenticated(true);
         setLoadingState(false);
       } else {
-        dispatch(loginUser(null));
+        setUser(null);
         setAuthenticated(false);
         setLoadingState(false);
       }
@@ -483,7 +479,7 @@ const App = (props) => {
         <Switch>
           <Route
             exact
-            path={`/search/:input`}
+            path="/search/:input"
             render={() => (
               <SearchResults
                 changeMapView={changeMapView}
@@ -513,7 +509,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`/play`}
+            path="/play"
             render={() => (
               <Game
                 simplifyString={simplifyString}
@@ -532,7 +528,7 @@ const App = (props) => {
           />
           <PrivateRoute
             exact
-            path={`/account`}
+            path="/account"
             user={user}
             simplifyString={simplifyString}
             component={Account}
@@ -544,7 +540,7 @@ const App = (props) => {
           />
           <PrivateRoute
             exact
-            path={`/account/edit`}
+            path="/account/edit"
             user={user}
             component={AccountEdit}
             loadingState={loadingState}
@@ -552,7 +548,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`/login`}
+            path="/login"
             render={() => (
               <SignIn
                 loadingState={loadingState}
@@ -567,7 +563,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`/passwordreset`}
+            path="/passwordreset"
             render={() => (
               <PasswordReset
                 user={user}
@@ -581,7 +577,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`/signup`}
+            path="/signup"
             render={() => (
               <SignUp
                 user={user}
@@ -595,7 +591,7 @@ const App = (props) => {
           />
           <Route
             exact
-            path={`/`}
+            path="/"
             render={() => (
               <ResultView
                 changeMapView={changeMapView}
@@ -620,7 +616,7 @@ const App = (props) => {
             )}
           />
           <Route
-            path={`/:country`}
+            path="/:country"
             render={() => (
               <DetailView
                 countries={filterNations}
@@ -669,10 +665,10 @@ App.propTypes = {
     pathname: PropTypes.string,
     search: PropTypes.string,
     hash: PropTypes.string,
-    key: PropTypes.string,
+    key: PropTypes.string
   }).isRequired,
   history: shape({
-    goBack: PropTypes.func.isRequired,
-  }).isRequired,
+    goBack: PropTypes.func.isRequired
+  }).isRequired
 };
 export default withRouter(App);
