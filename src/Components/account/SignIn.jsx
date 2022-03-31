@@ -9,6 +9,7 @@ import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
+import { signInWithPopup } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
 import { auth, googleProvider } from '../../Firebase/firebase';
 import useSignUpForm from '../../Helpers/CustomHooks';
@@ -71,17 +72,13 @@ const SignIn = (props) => {
     const checkValidity = regex.test(value);
     setIsEmailValid(checkValidity);
   };
-  const googleSignUp = () => {
-    auth
-      .signInWithPopup(googleProvider)
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((error) => {
-        console.error(error);
-        const { credential } = error.credential;
-        console.log(credential);
-      });
+  const googleSignUp = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error(error);
+      const { credential } = error.credential;
+    }
   };
 
   const { user, loadingState } = props;

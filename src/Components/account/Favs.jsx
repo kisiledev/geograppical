@@ -1,15 +1,14 @@
-import React from "react";
-import Flag from "react-flags";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import { Collapse } from "react-bootstrap";
-import PropTypes from "prop-types";
-import { countryType, acctDataType } from "../../helpers/Types/index";
+import React from 'react';
+import Flag from 'react-flags';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { Collapse } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { countryType, acctDataType } from '../../helpers/Types/index';
 
 const Favs = (props) => {
-  const { acctData, simplifyString, deleteFavorite } = props;
-  console.log(acctData);
+  const { acctData, simplifyString, deleteDocument } = props;
   return (
     <Collapse in={acctData.isOpen}>
       <ul className="list-group list-group-flush">
@@ -19,7 +18,7 @@ const Favs = (props) => {
               <h5>
                 {favorite.id}-
                 <small>
-                  {favorite.data.government.capital.name.split(";")[0]}
+                  {favorite.data.government.capital.name.split(';')[0]}
                 </small>
               </h5>
               <div className="d-flex justify-content-between">
@@ -30,7 +29,7 @@ const Favs = (props) => {
                       (
                         favorite.data.government.country_name.isoCode
                           ? favorite.data.government.country_name.isoCode
-                          : "_unknown"
+                          : '_unknown'
                       )
                         ? favorite.data.government.country_name.isoCode
                         : `_${favorite.data.name}`
@@ -44,7 +43,7 @@ const Favs = (props) => {
                 </Link>
                 <FontAwesomeIcon
                   className="align-self-center"
-                  onClick={() => deleteFavorite(favorite.id)}
+                  onClick={() => deleteDocument(favorite.id, 'favorites')}
                   icon={faTrashAlt}
                   size="2x"
                   color="darkred"
@@ -66,12 +65,12 @@ Favs.propTypes = {
       PropTypes.shape({
         id: PropTypes.string.isRequired,
         data: countryType.isRequired,
-        isOpen: PropTypes.bool.isRequired,
+        isOpen: PropTypes.bool.isRequired
       }).isRequired,
-      acctDataType.isRequired,
-    ]).isRequired,
+      acctDataType.isRequired
+    ]).isRequired
   ]).isRequired,
-  deleteFavorite: PropTypes.func.isRequired,
-  simplifyString: PropTypes.func.isRequired,
+  deleteDocument: PropTypes.func.isRequired,
+  simplifyString: PropTypes.func.isRequired
 };
 export default Favs;

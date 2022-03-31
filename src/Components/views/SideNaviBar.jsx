@@ -52,7 +52,6 @@ const SideNaviBar = (props) => {
       color: '#fff'
     }
   };
-  console.log('user', user);
   const drawerWidth = 275;
   const expandLinks = (e, type) => {
     if (e && type) {

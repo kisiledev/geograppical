@@ -168,7 +168,8 @@ const App = (props) => {
   };
   const login = async () => {
     try {
-      await auth.signInWithPopup(googleProvider);
+      const loggedInUser = await auth.signInWithPopup(googleProvider);
+      setUser(loggedInUser);
     } catch (err) {
       console.log(err);
     }
