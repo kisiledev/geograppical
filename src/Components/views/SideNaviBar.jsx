@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav, Collapse } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import { Link as RouterLink, Drawer, Typography } from '@mui/material';
+import {
+  Link as RouterLink,
+  Drawer,
+  Typography,
+  Collapse
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { dataType, userType } from '../../Helpers/Types/index';
 import SideCountry from './SideCountry';
@@ -41,8 +45,14 @@ const SideNaviBar = (props) => {
     },
     padding: '1rem'
   };
+  const sublinks = {
+    textAlign: 'right',
+    color: '#bbb',
+    '&:hover': {
+      color: '#fff'
+    }
+  };
   console.log('user', user);
-  const classes = useStyles();
   const drawerWidth = 275;
   const expandLinks = (e, type) => {
     if (e && type) {
@@ -135,23 +145,18 @@ const SideNaviBar = (props) => {
       </RouterLink>
       {user && (
         <Collapse in={expanded}>
-          <Nav>
-            <Nav.Link
-              className="sublinks"
-              onClick={(e) => expandLinks(e, 'favorites')}
-            >
-              Favorites
-            </Nav.Link>
-            <Nav.Link
-              className="sublinks"
-              onClick={(e) => expandLinks(e, 'scores')}
-            >
-              Scores
-            </Nav.Link>
-            <Nav.Link href={ROUTES.EDIT} className="sublinks">
-              Edit
-            </Nav.Link>
-          </Nav>
+          <RouterLink
+            sx={sublinks}
+            onClick={(e) => expandLinks(e, 'favorites')}
+          >
+            Favorites
+          </RouterLink>
+          <RouterLink sx={sublinks} onClick={(e) => expandLinks(e, 'scores')}>
+            Scores
+          </RouterLink>
+          <RouterLink href={ROUTES.EDIT} sx={sublinks}>
+            Edit
+          </RouterLink>
         </Collapse>
       )}
       <SideCountry

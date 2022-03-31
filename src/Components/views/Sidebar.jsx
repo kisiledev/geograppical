@@ -230,7 +230,7 @@ const Sidebar = (props) => {
                           alignItems: 'center',
                           backgroundColor: '#0dcaf0',
                           borderRadius: '5px',
-                          marginBottom: '2px',
+                          marginBottom: '5px',
                           '&:hover': {
                             backgroundColor: '#0dcaf0'
                           }
@@ -238,7 +238,7 @@ const Sidebar = (props) => {
                       >
                         <strong>{country.name}</strong>
                         <FontAwesomeIcon
-                          size="2x"
+                          size="lg"
                           color="white"
                           icon={faInfoCircle}
                         />
