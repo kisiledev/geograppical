@@ -304,7 +304,7 @@ const Maps = (props) => {
                         />
                       </Link>
                     ))
-                  }
+                    }
                 </Geographies>
               </ZoomableGroup>
             </ComposableMap>

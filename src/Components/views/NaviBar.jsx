@@ -23,7 +23,8 @@ import userImg from '../../img/user.png';
 
 const useStyles = makeStyles({
   appbar: {
-    marginBottom: '50px'
+    marginBottom: '50px',
+    paddingLeft: '275px'
   },
   search: {
     position: 'relative',
@@ -49,10 +50,12 @@ function NaviBar(props) {
   const { history, searchText, handleInput, user } = props;
 
   const settings = [
-    { name: 'Profile', link: '/profile' },
-    { name: 'Favorites', link: '/favorites' },
-    { name: 'Dashboard', link: '/dashboard' },
-    { name: 'Logout', link: '/logout' }
+    { name: 'Profile', link: '/profile', loggedIn: true },
+    { name: 'Favorites', link: '/favorites', loggedIn: true },
+    { name: 'Dashboard', link: '/dashboard', loggedIn: true },
+    { name: 'Logout', link: '/logout', loggedIn: true },
+    { name: 'Sign In', link: '/login', loggedIn: false },
+    { name: 'Sign Up', link: '/signup', loggedIn: false }
   ];
   const classes = useStyles();
 
@@ -134,13 +137,15 @@ function NaviBar(props) {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {settings.map((setting) => (
-          <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-            <Button onClick={() => handleMenuClick(setting.name)}>
-              <Typography textAlign="center">{setting.name}</Typography>
-            </Button>
-          </MenuItem>
-        ))}
+        {settings
+          .filter((s) => (user ? s.loggedIn : !s.loggedIn))
+          .map((setting) => (
+            <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+              <Button onClick={() => handleMenuClick(setting.name)}>
+                <Typography textAlign="center">{setting.name}</Typography>
+              </Button>
+            </MenuItem>
+          ))}
       </Menu>
     </Box>
   );

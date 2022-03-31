@@ -25,7 +25,7 @@ import {
 } from '../../Helpers/Types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
-import '../../App.css';
+// import '../../App.css';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../Firebase/firebase';

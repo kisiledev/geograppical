@@ -5,9 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../../App.css';
 import Sidebar from './Sidebar';
-
 
 const SidebarView = (props) => {
   const [sidebar, setSidebar] = useState('Show');
@@ -25,8 +23,13 @@ const SidebarView = (props) => {
     setLoadingState(false);
   }, [props]);
 
-  const show = (loadingState ? <div className="mx-auto text-center"><FontAwesomeIcon icon={faSpinner} spin size="3x" /></div>
-    : <Sidebar {...props} />);
+  const show = loadingState ? (
+    <div className="mx-auto text-center">
+      <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+    </div>
+  ) : (
+    <Sidebar {...props} />
+  );
   return (
     <BreakpointProvider>
       <nav className="sidebar card col-md-12 col-lg-12">
@@ -36,12 +39,9 @@ const SidebarView = (props) => {
             className="btn btn-sm btn-block btn-outline-secondary mb-3"
             onClick={() => viewSidebar()}
           >
-            { (sidebar === 'Hide') ? 'Show ' : 'Hide '}
-            {' '}
-            Countries List
+            {sidebar === 'Hide' ? 'Show ' : 'Hide '}
           </button>
-          {sidebar === 'Show'
-            ? show : null}
+          {sidebar === 'Show' ? show : null}
         </Breakpoint>
       </nav>
     </BreakpointProvider>

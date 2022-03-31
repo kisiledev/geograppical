@@ -14,7 +14,6 @@ import PropTypes, { shape } from 'prop-types';
 import ResultView from './Components/views/ResultView';
 import DetailView from './Components/views/DetailView';
 import NaviBar from './Components/views/NaviBar';
-import './App.css';
 import { auth, googleProvider } from './Firebase/firebase';
 import Game from './Components/games/Game';
 import Account from './Components/account/RefactoredAccount';
@@ -34,7 +33,7 @@ const App = (props) => {
   const view = useSelector((state) => state.view.value);
   const toggleSidebar = useSelector((state) => state.toggleSidebar);
   const mode = useSelector((state) => state.mode.value);
-  const user = useSelector((state) => state.user.value);
+  const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
   const [error, setError] = useState(null);
@@ -253,7 +252,8 @@ const App = (props) => {
       node.removeAttribute('style');
     });
   };
-  const getCountryInfo = (name) => {
+  const getCountryInfo = (e, name) => {
+    e.stopPropagation();
     const searchDB = Object.values(worldData);
     name = name
       .normalize('NFD')
@@ -406,11 +406,11 @@ const App = (props) => {
     loadCodes();
     auth.onAuthStateChanged((u) => {
       if (u) {
-        dispatch(loginUser(u));
+        setUser(u);
         setAuthenticated(true);
         setLoadingState(false);
       } else {
-        dispatch(loginUser(null));
+        setUser(null);
         setAuthenticated(false);
         setLoadingState(false);
       }
