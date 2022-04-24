@@ -1,15 +1,16 @@
 /* eslint-disable global-require */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from "react";
-import firebase from "firebase/compat/app";
-import "firebaseui";
-import { Link, Redirect } from "react-router-dom";
-import Alert from "react-bootstrap/Alert";
-import PropTypes from "prop-types";
-import { userType } from "../../helpers/Types/index";
-import useSignUpForm from "../../helpers/CustomHooks";
-import { auth } from "../../firebase/firebase";
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase/compat/app';
+import 'firebaseui';
+import { Link, Redirect } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
+import PropTypes from 'prop-types';
+import { userType } from '../../Helpers/Types/index';
+import useSignUpForm from '../../Helpers/CustomHooks';
+import { auth } from '../../Firebase/firebase';
+import svgImg from '../../img/auth_service_email.svg';
 
 const LinkEmailModal = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -27,7 +28,7 @@ const LinkEmailModal = (props) => {
       .then((usercred) => {
         const u = usercred.user;
         // setModalMessage({style: "success", content: "Linked email credentials to account"})
-        console.log("success", u);
+        console.log('success', u);
       })
       .catch((error) => {
         console.log(error);
@@ -62,9 +63,9 @@ const LinkEmailModal = (props) => {
 
   const isInvalid =
     inputs.passwordOne !== inputs.passwordTwo ||
-    inputs.passwordOne === "" ||
-    inputs.email === "" ||
-    inputs.username === "";
+    inputs.passwordOne === '' ||
+    inputs.email === '' ||
+    inputs.username === '';
 
   return (
     <div className="mx-auto text-center col-lg-12">
@@ -81,7 +82,7 @@ const LinkEmailModal = (props) => {
           <form onSubmit={handleSubmit}>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.username || ""}
+                value={inputs.username || ''}
                 onChange={handleInputChange}
                 type="text"
                 name="username"
@@ -91,48 +92,48 @@ const LinkEmailModal = (props) => {
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.email || ""}
+                value={inputs.email || ''}
                 onChange={handleInputChange}
                 type="email"
                 name="email"
                 className={`form-control ${
-                  inputs.email === "" || !inputs.email
-                    ? "prefinput"
+                  inputs.email === '' || !inputs.email
+                    ? 'prefinput'
                     : isEmailValid
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Enter email"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordOne || ""}
+                value={inputs.passwordOne || ''}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordOne"
                 className={`form-control ${
-                  inputs.passwordOne === "" || !inputs.passwordOne
-                    ? "prefinput"
+                  inputs.passwordOne === '' || !inputs.passwordOne
+                    ? 'prefinput'
                     : isPWValid
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Password"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordTwo || ""}
+                value={inputs.passwordTwo || ''}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordTwo"
                 className={`form-control ${
-                  inputs.passwordTwo === "" || !inputs.passwordTwo
-                    ? "prefinput"
+                  inputs.passwordTwo === '' || !inputs.passwordTwo
+                    ? 'prefinput'
                     : inputs.passwordTwo === inputs.passwordOne
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Confirm Password"
               />
@@ -144,11 +145,7 @@ const LinkEmailModal = (props) => {
                 className="provider-button email-button"
               >
                 <span className="email-button__icon">
-                  <img
-                    src={require("../../img/auth_service_email.svg")}
-                    className="emailicon"
-                    alt="email icon"
-                  />
+                  <img src={svgImg} className="emailicon" alt="email icon" />
                 </span>
                 <span className="google-button__text">Link with Email</span>
               </button>
@@ -161,9 +158,9 @@ const LinkEmailModal = (props) => {
                 className="provider-button"
               >
                 <span className="google-button__text">
-                  {message.style && message.style === "success"
-                    ? "Close"
-                    : "Cancel"}
+                  {message.style && message.style === 'success'
+                    ? 'Close'
+                    : 'Cancel'}
                 </span>
               </button>
             </div>
@@ -183,16 +180,16 @@ const SignUpLink = () => (
   </div>
 );
 LinkEmailModal.defaultProps = {
-  user: null,
+  user: null
 };
 LinkEmailModal.propTypes = {
   user: userType,
   message: PropTypes.shape({
     style: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired
   }).isRequired,
   show: PropTypes.bool.isRequired,
-  close: PropTypes.bool.isRequired,
+  close: PropTypes.bool.isRequired
 };
 export default LinkEmailModal;
 export { SignUpLink };

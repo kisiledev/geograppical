@@ -16,7 +16,7 @@ import DetailView from './Components/views/DetailView';
 import NaviBar from './Components/views/NaviBar';
 import { auth, googleProvider } from './Firebase/firebase';
 import Game from './Components/games/Game';
-import Account from './Components/account/RefactoredAccount';
+import Account from './Components/account/Account';
 import SignIn from './Components/account/SignIn';
 import SignUp from './Components/account/SignUp';
 import PrivateRoute from './Components/account/PrivateRoutes';

@@ -1,20 +1,25 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { Modal, Button } from "react-bootstrap";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import firebase from "firebase/compat/app";
-import "firebase/firestore";
-import PropTypes from "prop-types";
-import { dataType, userType } from "../../helpers/Types/index";
-import Highlight from "./Highlight";
-import Find from "./Find";
-import Scoreboard from "./Scoreboard";
-import Choice from "./Choice";
-import Checkbox from "../../elements/Checkbox";
-import Radio from "../../elements/Radio";
-import { db } from "../../firebase/firebase";
-import * as ROUTES from "../../constants/Routes";
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  Timestamp
+} from 'firebase/firestore';
+import { firebaseApp } from '../../Firebase/firebase';
+import { dataType, userType } from '../../Helpers/Types/index';
+import Highlight from './Highlight';
+import Find from './Find';
+import Scoreboard from './Scoreboard';
+import Choice from './Choice';
+import Checkbox from '../../Elements/Checkbox';
+import Radio from '../../Elements/Radio';
+import * as ROUTES from '../../Constants/Routes';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -31,13 +36,12 @@ const Game = (props) => {
   const [currentCount, setCurrentCount] = useState(60);
   const [gameComplete, setGameComplete] = useState(false);
   // const [isRunning, setIsRunning] = useState(false)
-  const [timeMode, setTimeMode] = useState("cd");
+  const [timeMode, setTimeMode] = useState('cd');
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [modalBody, setModalBody] = useState("");
+  const [modalBody, setModalBody] = useState('');
   // const [intId, setIntId] = useState(null)
   // const [gameId, setGameId] = useState(null)
-  const { firestore } = firebase;
 
   const {
     simplifyString,
@@ -48,13 +52,15 @@ const Game = (props) => {
     user,
     handleOpen,
     setStateModal,
-    login,
+    login
   } = props;
+
+  const db = getFirestore(firebaseApp);
 
   const tick = () => {
     if (gameOver || !timeChecked) return;
-    if (timeMode === "cd" && currentCount === 0) setGameOver(true);
-    else setCurrentCount((curC) => (timeMode === "cd" ? curC - 1 : curC + 1));
+    if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
+    else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
   };
 
   const intervalRef = useRef(null);
@@ -69,10 +75,10 @@ const Game = (props) => {
 
   const start = useCallback(() => {
     if (intervalRef.current !== null) {
-      console.log("null");
+      console.log('null');
       return;
     }
-    console.log("starting");
+    console.log('starting');
     if (timeChecked) {
       intervalRef.current = setInterval(() => tick(), 1000);
     }
@@ -83,7 +89,7 @@ const Game = (props) => {
   }, []);
 
   useEffect(() => {
-    if (timeMode === "cd") {
+    if (timeMode === 'cd') {
       setCurrentCount(60);
     } else {
       setCurrentCount(0);
@@ -145,16 +151,18 @@ const Game = (props) => {
     setScore(score + int);
   };
 
-  const titleCase = (oldString) => {
-    return oldString
-      .replace(/([a-z])([A-Z])/g, (allMatches, firstMatch, secondMatch) => {
-        return `${firstMatch} ${secondMatch}`;
-      })
+  const titleCase = (oldString) =>
+    oldString
+      .replace(
+        /([a-z])([A-Z])/g,
+        (allMatches, firstMatch, secondMatch) => `${firstMatch} ${secondMatch}`
+      )
       .toLowerCase()
-      .replace(/([ -_]|^)(.)/g, (allMatches, firstMatch, secondMatch) => {
-        return (firstMatch ? " " : "") + secondMatch.toUpperCase();
-      });
-  };
+      .replace(
+        /([ -_]|^)(.)/g,
+        (allMatches, firstMatch, secondMatch) =>
+          (firstMatch ? ' ' : '') + secondMatch.toUpperCase()
+      );
   const resetMode = () => {
     setQuestions(null);
     setScore(0);
@@ -177,18 +185,13 @@ const Game = (props) => {
     }
   };
   const handleTimeCheck = (e) => {
-    if (!timeChecked) {
-      setCurrentCount(60);
-    } else {
-      setCurrentCount(null);
-    }
+    setCurrentCount(!timeChecked ? 60 : null);
     setTimeChecked(e.target.checked);
   };
   const handleModalUse = () => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
-    const timeExpired = "Sorry, time expired! Try again";
-    if (gameComplete) setModalBody(ModalText);
-    else setModalBody(timeExpired);
+    const timeExpired = 'Sorry, time expired! Try again';
+    setModalBody(gameComplete ? ModalText : timeExpired);
   };
   const handleScoreCheck = (e) => {
     if (score === null) {
@@ -204,81 +207,42 @@ const Game = (props) => {
   useEffect(() => {
     handleModalUse();
   }, [questions]);
-  const saveScore = () => {
+  const saveScore = async () => {
     if (!user) {
       const modal = {
-        title: "Not Logged In",
-        body: "You need to sign in to favorite countries",
+        title: 'Not Logged In',
+        body: 'You need to sign in to favorite countries',
         primaryButton: (
           <Button variant="primary" onClick={login}>
             Sign In/ Sign Up
           </Button>
-        ),
+        )
       };
       setStateModal(modal);
       handleOpen();
     } else {
       setLoadingState(true);
-      if (timeChecked && score) {
-        db.collection("users")
-          .doc(user.uid)
-          .collection("scores")
-          .add({
-            userId: user.uid && user.uid,
-            gameMode,
-            dateCreated: firestore.Timestamp.fromDate(new Date()),
-            score,
-            correct,
-            incorrect,
-            time: 60 - currentCount,
-            questions: questionsSet,
-          })
-          .then((d) => {
-            console.log("Data written successfully", d, d.id);
-            setSaved(true);
-            setIsStarted(false);
-            setLoadingState(false);
-          })
-          .catch((error) => console.error(error));
-      } else if (timeChecked && !score) {
-        db.collection("users")
-          .doc(user.uid)
-          .collection("scores")
-          .add({
-            userId: user.uid && user.uid,
-            gameMode,
-            dateCreated: firestore.Timestamp.fromDate(new Date()),
-            correct,
-            incorrect,
-            time: 60 - currentCount,
-            questions: questionsSet,
-          })
-          .then((d) => {
-            console.log("Data written successfully", d, d.id);
-            setSaved(true);
-            setIsStarted(false);
-            setLoadingState(false);
-          })
-          .catch((error) => console.error(error));
-      } else {
-        db.collection("users")
-          .doc(user.uid)
-          .collection("scores")
-          .add({
-            userId: user.uid && user.uid,
-            gameMode,
-            dateCreated: firestore.Timestamp.fromDate(new Date()),
-            correct,
-            incorrect,
-            questions: questionsSet,
-          })
-          .then((d) => {
-            console.log("Data written successfully", d, d.id);
-            setSaved(true);
-            setIsStarted(false);
-            setLoadingState(false);
-          })
-          .catch((error) => console.error(error));
+      const newData = {
+        userId: user.uid && user.uid,
+        gameMode,
+        dateCreated: Timestamp.fromDate(new Date()),
+        ...(timeChecked && score && { score }),
+        correct,
+        incorrect,
+        ...(timeChecked && { time: 60 - currentCount }),
+        questions: questionsSet
+      };
+      try {
+        const docRef = await addDoc(
+          collection(db, ...`users/${user.uid}/scores`.split('/')),
+          newData
+        );
+        console.log('Data written successfully', docRef, docRef.id);
+        setSaved(true);
+        setIsStarted(false);
+        setLoadingState(false);
+      } catch (error) {
+        console.error(error);
       }
     }
   };
@@ -293,7 +257,7 @@ const Game = (props) => {
     </button>
   );
   let returnGameMode;
-  if (gameMode === "choice") {
+  if (gameMode === 'choice') {
     returnGameMode = (
       <div>
         {back}
@@ -313,7 +277,7 @@ const Game = (props) => {
         />
       </div>
     );
-  } else if (gameMode === "find") {
+  } else if (gameMode === 'find') {
     returnGameMode = (
       <div>
         {back}
@@ -335,7 +299,7 @@ const Game = (props) => {
         />
       </div>
     );
-  } else if (gameMode === "highlight") {
+  } else if (gameMode === 'highlight') {
     returnGameMode = (
       <div>
         {back}
@@ -366,7 +330,7 @@ const Game = (props) => {
       <label>
         <Radio
           value="et"
-          checked={timeMode === "et"}
+          checked={timeMode === 'et'}
           onChange={(e) => toggleMode(e)}
         />
         <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
@@ -374,7 +338,7 @@ const Game = (props) => {
       <label>
         <Radio
           value="cd"
-          checked={timeMode === "cd"}
+          checked={timeMode === 'cd'}
           onChange={(e) => toggleMode(e)}
         />
         <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
@@ -403,7 +367,7 @@ const Game = (props) => {
                 {loadingState ? (
                   <FontAwesomeIcon icon={faSpinner} spin size="3x" />
                 ) : (
-                  "View Score"
+                  'View Score'
                 )}
               </Link>
             </Button>
@@ -428,7 +392,7 @@ const Game = (props) => {
         <h3 className="text-center">
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
-            : "Choose a Game Mode"}
+            : 'Choose a Game Mode'}
         </h3>
         {!gameMode && (
           <div>
@@ -437,19 +401,19 @@ const Game = (props) => {
                 <ul className="px-0 text-center">
                   <li
                     className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode("choice")}
+                    onClick={() => setGameMode('choice')}
                   >
                     Questions
                   </li>
                   <li
                     className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode("find")}
+                    onClick={() => setGameMode('find')}
                   >
                     Find Country on Map
                   </li>
                   <li
                     className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode("highlight")}
+                    onClick={() => setGameMode('highlight')}
                   >
                     Select Highlighted Country
                   </li>
@@ -496,7 +460,7 @@ const Game = (props) => {
   );
 };
 Game.defaultProps = {
-  user: null,
+  user: null
 };
 Game.propTypes = {
   simplifyString: PropTypes.func.isRequired,
@@ -507,6 +471,6 @@ Game.propTypes = {
   user: userType,
   handleOpen: PropTypes.func.isRequired,
   setStateModal: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired
 };
 export default Game;

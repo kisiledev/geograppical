@@ -3,15 +3,16 @@ import React, { useState } from 'react';
 import { Breakpoint, BreakpointProvider } from 'react-socks';
 import { Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { countryType, dataType, userType } from '../../helpers/Types/index';
-import { db } from '../../Firebase/firebase';
+import { getFirestore, doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { countryType, dataType, userType } from '../../Helpers/Types/index';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../../App.css';
 import SidebarView from './SidebarView';
 import Maps from './Maps';
 import Result from './Result';
-import * as ROUTES from '../../constants/Routes';
+import * as ROUTES from '../../Constants/Routes';
+import { firebaseApp } from '../../Firebase/firebase';
 
 const ResultView = (props) => {
   const [show, setShow] = useState(false);
@@ -39,62 +40,62 @@ const ResultView = (props) => {
     login
   } = props;
 
-  const makeFavorite = (e, country) => {
+  const db = getFirestore(firebaseApp);
+  const makeFavorite = async (e, country) => {
     e.persist();
-    setShow(true);
+    console.log('adding');
     if (!user) {
       setAlert(true);
       setMessage({
         style: 'warning',
-        content: 'You need to sign in to favorite countries. Login',
+        content: 'You need to sign in to favorite countries. Login ',
         link: ROUTES.SIGN_IN,
-        linkContent: ' here'
+        linkContent: 'here'
       });
-    } else if (!favorite) {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .set({
-          country
-        })
-        .then(() => {
-          console.log(`Added ${country.name} to favorites`);
-          setAlert(true);
-          setMessage({
-            style: 'success',
-            content: `Added ${country.name} to favorites`
-          });
-          setFavorite(true);
-        })
-        .catch((err) => {
-          console.error(err);
-          setAlert(true);
-          setMessage({
-            style: 'danger',
-            content: `Error adding ${country.name} to favorites, ${err}`
-          });
+    }
+    if (!favorite) {
+      const docRef = doc(
+        db,
+        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+      );
+
+      try {
+        await setDoc(docRef, { country });
+        setAlert(true);
+        setMessage({
+          style: 'success',
+          content: `Added ${country.name} to favorites`
         });
+        setFavorite(true);
+        console.log('added favorite');
+        setShow(true);
+      } catch (error) {
+        setMessage({
+          style: 'danger',
+          content: `Error adding ${country.name} to favorites, ${error}`
+        });
+      }
     } else {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .delete()
-        .then(() => {
-          console.log(`Removed ${country.name} from favorites`);
-          setAlert(true);
-          setMessage({
-            style: 'warning',
-            content: `Removed ${country.name} from favorites`
-          });
-          setFavorite(false);
-          setShow(true);
-        })
-        .catch((err) => {
-          console.error(err);
-          setAlert(true);
-          setMessage({
-            style: 'danger',
-            content: `Error adding ${country.name} to favorites, ${err}`
-          });
+      const docRef = doc(
+        db,
+        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+      );
+
+      try {
+        await deleteDoc(docRef);
+        setMessage({
+          style: 'warning',
+          content: `Removed ${country.name} from favorites`
         });
+        setFavorite(false);
+        showFunc();
+      } catch (error) {
+        setMessage({
+          style: 'danger',
+          content: `Error adding ${country.name} to favorites, ${error}`
+        });
+        showFunc();
+      }
     }
   };
 

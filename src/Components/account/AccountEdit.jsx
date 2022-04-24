@@ -1,52 +1,58 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
-import React, { useState, useEffect } from "react";
-import firebase from "firebase/compat/app";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase/compat/app';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSpinner,
   faArrowLeft,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { Alert, Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+  faTrashAlt
+} from '@fortawesome/free-solid-svg-icons';
+import { Alert, Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { auth, firebaseApp } from '../../Firebase/firebase';
+import LinkEmailModal from '../views/LinkEmailModal';
+import { userType } from '../../Helpers/Types';
+
+import facebook from '../../img/facebook-icon-white.svg';
+import twitter from '../../img/Twitter_Logo_WhiteOnBlue.svg';
+import email from '../../img/auth_service_email.svg';
 import {
-  db,
-  auth,
-  googleProvider,
-  facebookProvider,
-  emailProvider,
-  twitterProvider,
-} from "../../firebase/firebase";
-import LinkEmailModal from "../views/LinkEmailModal";
-import { userType } from "../../helpers/Types";
+  EmailAuthProvider,
+  FacebookAuthProvider,
+  getRedirectResult,
+  GoogleAuthProvider,
+  signInWithPopup,
+  TwitterAuthProvider,
+  unlink
+} from 'firebase/auth';
 
 const AccountEdit = (props) => {
   const { user } = props;
 
   const [providers, setProviders] = useState(user.providerData);
-  const [message, setMessage] = useState("");
-  const [favorites, setFavorites] = useState("");
-  const [scores, setScores] = useState("");
+  const [message, setMessage] = useState('');
+  const [favorites, setFavorites] = useState('');
+  const [scores, setScores] = useState('');
   const [loadingState, setLoadingState] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalMessage, setModalMessage] = useState('');
   const [show, setShow] = useState(false);
 
-  const unlink = (provider) => {
-    console.log(user.providerData);
-    auth.currentUser
-      .unlink(provider)
-      .then(() => {
-        setMessage({
-          style: "danger",
-          content: `Unlinked provider ${provider}`,
-        });
-        setProviders(user.providerData);
-      })
-      .catch((error) => {
-        console.log(error);
+  const db = getFirestore(firebaseApp);
+  const unlinkProvider = async (provider) => {
+    try {
+      console.log('provider', provider);
+      await unlink(auth.currentUser, provider);
+      setMessage({
+        style: 'danger',
+        content: `Unlinked provider ${provider}`
       });
+      setProviders(user.providerData);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const close = () => {
     setShow(false);
@@ -62,113 +68,143 @@ const AccountEdit = (props) => {
       .then((usercred) => {
         const funcuser = usercred.user;
         setModalMessage({
-          style: "success",
-          content: "Linked email credentials to account",
+          style: 'success',
+          content: 'Linked email credentials to account'
         });
-        console.log("success", funcuser);
+        console.log('success', funcuser);
       })
       .catch((error) => {
         console.log(error);
-        setModalMessage({ style: "danger", content: error.message });
+        setModalMessage({ style: 'danger', content: error.message });
       });
   };
-  const providerLink = (provider) => {
-    auth.currentUser
-      .linkWithPopup(provider)
-      .then((result) => {
-        const { credential, resuser } = result;
+  const providerLink = async (provider) => {
+    let providerSource;
+    switch (provider) {
+      case 'Twitter':
+        providerSource = new TwitterAuthProvider();
+        break;
+      case 'Facebook':
+        providerSource = new FacebookAuthProvider();
+        break;
+      case 'Google':
+        providerSource = new GoogleAuthProvider();
+        break;
+      default:
+        return providerSource;
+    }
+    try {
+      const result = await signInWithPopup(auth, providerSource);
+      const redirectResult = await getRedirectResult(auth);
+
+      if (redirectResult) {
+        const credential = providerSource.credentialFromResult(redirectResult);
+        const token = credential.accessToken;
+        console.log(credential, token);
         setProviders(user.providerData);
-        console.log(credential, resuser);
-      })
-      .catch((error) => {
-        console.error(error);
-        const { credential } = error;
-        console.log(credential);
-      });
-    auth
-      .getRedirectResult()
-      .then((result) => {
-        if (result.credential) {
-          const { credential, resuser } = result;
-          console.log(credential, resuser);
-          console.log(providers);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        const { credential } = error;
-        console.log(credential);
-      });
-  };
-  const getFavoritesData = () => {
-    const countriesRef = db.collection(`/users/${user.uid}/favorites`);
-    countriesRef.onSnapshot((querySnapshot) => {
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        const info = {
-          id: doc.id,
-          data: doc.data().country,
-        };
-        data.push(info);
-      });
-      setFavorites(data);
-      setLoadingState(false);
-    });
-  };
-  const getScoresData = () => {
-    const scoresRef = db.collection(`/users/${user.uid}/scores`);
-    scoresRef.get().then((querySnapshot) => {
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        const info = {
-          id: doc.data().dateCreated,
-          data: doc.data(),
-        };
-        data.push(info);
-      });
-      setScores(data);
-      setLoadingState(false);
-    });
+      }
+    } catch (error) {
+      console.error(error);
+      const { credential } = error;
+      console.log(credential);
+    }
+    // auth
+    //   .getRedirectResult()
+    //   .then((result) => {
+    //     if (result.credential) {
+    //       const { credential, resuser } = result;
+    //       console.log(credential, resuser);
+    //       console.log(providers);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     const { credential } = error;
+    //     console.log(credential);
+    //   });
   };
 
   useEffect(() => {
     setLoadingState(true);
+    let isSubscribed = true;
+    const getFavoritesData = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, ...`users/${user.uid}/favorites`.split('/'))
+        );
+        const data = [];
+        querySnapshot.forEach((favoriteDoc) => {
+          const info = {
+            id: favoriteDoc.id,
+            data: favoriteDoc.data().country
+          };
+          data.push(info);
+        });
+        if (isSubscribed) {
+          setFavorites(data);
+        }
+        setLoadingState(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getScoresData = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, ...`users/${user.uid}/scores`.split('/'))
+        );
+        const data = [];
+        querySnapshot.forEach((scoreDoc) => {
+          const info = {
+            id: scoreDoc.id,
+            data: scoreDoc.data()
+          };
+          data.push(info);
+        });
+        if (isSubscribed) {
+          setScores(data);
+        }
+        setLoadingState(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     getFavoritesData();
     getScoresData();
-  }, []);
+    // eslint-disable-next-line no-return-assign
+    return () => (isSubscribed = false);
+  }, [user]);
+
   const providersArray = [
     {
       id: 1,
-      name: "Google",
-      source: googleProvider,
-      provName: "google.com",
-      icon: "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg",
-      onClick: () => providerLink(googleProvider),
+      name: 'Google',
+      provName: 'google.com',
+      icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+      onClick: () => providerLink('Google')
     },
     {
       id: 2,
-      name: "Facebook",
-      source: facebookProvider,
-      provName: "facebook.com",
-      icon: require("../../img/facebook-icon-white.svg"),
-      onClick: () => providerLink(facebookProvider),
+      name: 'Facebook',
+      provName: 'facebook.com',
+      icon: facebook,
+      onClick: () => providerLink('Facebook')
     },
     {
       id: 3,
-      name: "Twitter",
-      source: twitterProvider,
-      provName: "twitter.com",
-      icon: require("../../img/Twitter_Logo_WhiteOnBlue.svg"),
-      onClick: () => providerLink(twitterProvider),
+      name: 'Twitter',
+      provName: 'twitter.com',
+      icon: twitter,
+      onClick: () => providerLink('Twitter')
     },
     {
       id: 4,
-      name: "Email",
-      source: emailProvider,
-      provName: "password",
-      icon: require("../../img/auth_service_email.svg"),
-      onClick: () => setShow(true),
-    },
+      name: 'Email',
+      provName: 'password',
+      icon: email,
+      onClick: () => setShow(true)
+    }
   ];
   const userProvs = [];
   if (providers) {
@@ -202,7 +238,7 @@ const AccountEdit = (props) => {
                 src={
                   user && user.photoURL
                     ? user.photoURL
-                    : require("../../img/user.png")
+                    : require('../../img/user.png')
                 }
                 alt=""
               />
@@ -238,8 +274,8 @@ const AccountEdit = (props) => {
                   <p>
                     {favorites && favorites.length}
                     {favorites && favorites.length === 1
-                      ? "Favorite"
-                      : "Favorites"}
+                      ? 'Favorite'
+                      : 'Favorites'}
                   </p>
                   <p>
                     {scores && scores.length}
@@ -297,7 +333,7 @@ const AccountEdit = (props) => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => unlink(data.providerId)}
+                    onClick={() => unlinkProvider(data.providerId)}
                     className="align-self-end btn btn-sm btn-danger"
                   >
                     Unlink
@@ -333,8 +369,7 @@ const AccountEdit = (props) => {
                     />
                   </span>
                   <span className="google-button__text">
-                    Link with
-                    {provider.name}
+                    {`Link with ${provider.name}`}
                   </span>
                 </button>
               </div>
@@ -348,7 +383,7 @@ const AccountEdit = (props) => {
 };
 
 AccountEdit.propTypes = {
-  user: userType.isRequired,
+  user: userType.isRequired
 };
 
 export default AccountEdit;

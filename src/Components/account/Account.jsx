@@ -1,353 +1,174 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import Flag from "react-flags";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable linebreak-style */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-console */
+/* eslint-disable global-require */
+import React, { useState, useEffect } from 'react';
+import { Alert } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import {
-  faSpinner,
-  faAngleUp,
-  faAngleDown,
-  faTrashAlt,
-  faPencilAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { Alert, Badge } from "react-bootstrap";
-import Collapse from "react-bootstrap/Collapse";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { db } from "../../firebase/firebase";
-import {
-  saveFavoriteActionCreator,
-  saveScoreActionCreator,
-} from "../../redux-toolkit";
-import { userType } from "../../helpers/Types/index";
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  getFirestore
+} from 'firebase/firestore';
+import AccountData from './AccountData';
+import { firebaseApp } from '../../Firebase/firebase';
+import { userType } from '../../Helpers/Types/index';
+import AcctHeader from './AcctHeader';
 
 const Account = (props) => {
-  const dispatch = useDispatch();
-  const acctFavorites = useSelector((state) => state.favorites);
-  const acctScores = useSelector((state) => state.scores);
   const [loadingState, setLoadingState] = useState(false);
-  const [message, setMessage] = useState("");
+  const [acctFavorites, setAcctFavorites] = useState('');
+  const [acctScores, setAcctScores] = useState('');
+  const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
 
   const { user, scores, favorites, simplifyString } = props;
 
-  const deleteFavorite = (id) => {
-    db.collection(`users/${user.uid}/favorites`)
-      .doc(id)
-      .delete()
-      .then(() => {
-        console.log(`Removed ${id} from favorites`);
-        setShow(true);
-        setMessage({
-          style: "warning",
-          content: `Removed ${id} from favorites`,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setMessage({
-          style: "danger",
-          content: `Error removing ${id} from favorites, ${err}`,
-        });
+  const db = getFirestore(firebaseApp);
+  const deleteDocument = async (id, type) => {
+    const docRef = doc(db, ...`users/${user.uid}/${type}/${id}`.split('/'));
+    try {
+      await deleteDoc(docRef);
+      setShow(true);
+      setMessage({
+        style: 'warning',
+        content: `Removed ${id} from ${type}`
       });
-  };
-  const deleteScore = (id) => {
-    db.collection(`users/${user.uid}/scores`)
-      .doc(id)
-      .delete()
-      .then(() => {
-        console.log(`Removed ${id} from scores`);
-        setShow(true);
-        setMessage({ style: "warning", content: `Removed ${id} from scores` });
-      })
-      .catch((err) => {
-        console.error(err);
-        setMessage({
-          style: "danger",
-          content: `Error removing ${id} from scores, ${err}`,
-        });
+    } catch (error) {
+      setMessage({
+        style: 'danger',
+        content: `Error removing ${id} from ${type}, ${error}`
       });
+    }
   };
-  const getFavoritesData = () => {
-    const countriesRef = db.collection(`/users/${user.uid}/favorites`);
-    countriesRef.onSnapshot((querySnapshot) => {
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        const info = {
-          id: doc.id,
-          data: doc.data().country,
-        };
-        data.push(info);
-        data.isOpen = true;
-      });
-      dispatch(saveFavoriteActionCreator({ isOpen: false, data }));
-      setLoadingState(false);
-    });
-  };
+
   const toggleData = (type) => {
-    if (type === "f") {
+    if (type === 'favorites') {
       if (acctFavorites.isOpen) {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = false;
-        dispatch(saveFavoriteActionCreator(oldFav));
+        setAcctFavorites(oldFav);
       } else {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = true;
-        dispatch(saveFavoriteActionCreator(oldFav));
+        setAcctFavorites(oldFav);
       }
     }
-    if (type === "s") {
+    if (type === 'scores') {
       if (acctScores.isOpen) {
         const oldSco = { ...acctScores };
         oldSco.isOpen = false;
-        dispatch(saveScoreActionCreator(oldSco));
+        setAcctScores(oldSco);
       } else {
         const oldSco = { ...acctScores };
         oldSco.isOpen = true;
-        dispatch(saveScoreActionCreator(oldSco));
+        setAcctScores(oldSco);
       }
     }
-  };
-  const getScoresData = () => {
-    const scoresRef = db.collection(`/users/${user.uid}/scores`);
-    scoresRef.onSnapshot((querySnapshot) => {
-      const data = [];
-      querySnapshot.forEach((doc) => {
-        const info = {
-          id: doc.id,
-          data: doc.data(),
-        };
-        data.push(info);
-        data.isOpen = true;
-      });
-      dispatch(saveScoreActionCreator({ isOpen: false, data }));
-      setLoadingState(false);
-    });
   };
 
   useEffect(() => {
     setLoadingState(true);
+    let isSubscribed = true;
+    const getFavoritesData = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, ...`users/${user.uid}/favorites`.split('/'))
+        );
+        const data = [];
+        querySnapshot.forEach((favoriteDoc) => {
+          const info = {
+            id: favoriteDoc.id,
+            data: favoriteDoc.data().country
+          };
+          data.push(info);
+          data.isOpen = true;
+        });
+        if (isSubscribed) {
+          setAcctFavorites({ isOpen: false, data });
+        }
+        setLoadingState(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const getScoresData = async () => {
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, ...`users/${user.uid}/scores`.split('/'))
+        );
+        const data = [];
+        querySnapshot.forEach((scoreDoc) => {
+          const info = {
+            id: scoreDoc.id,
+            data: scoreDoc.data()
+          };
+          data.push(info);
+          data.isOpen = true;
+        });
+        if (isSubscribed) {
+          setAcctScores({ isOpen: false, data });
+        }
+        setLoadingState(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     getFavoritesData();
     getScoresData();
-    // return () => {
+    // eslint-disable-next-line no-return-assign
+    return () => (isSubscribed = false);
+  }, [user, favorites, scores]);
 
-    // };
-  }, [favorites, scores]);
-
+  const data = [
+    {
+      name: 'favorites',
+      data: acctFavorites,
+      boolean: favorites
+    },
+    {
+      name: 'scores',
+      data: acctScores,
+      boolean: scores
+    }
+  ];
+  const acct = [];
+  const capitalize = (s) => {
+    if (typeof s !== 'string') return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+  data.forEach((piece) => {
+    const dynamicProps = {
+      key: piece.name,
+      name: piece.name,
+      toggleData,
+      loadingState,
+      boolean: piece.boolean,
+      simplifyString,
+      capitalize,
+      deleteDocument
+    };
+    dynamicProps.acctData = piece.data;
+    acct.push(<AccountData {...dynamicProps} />);
+  });
   return (
     <div className="col-sm-12 col-md-8 mx-auto">
       <Alert show={show} variant={message.style}>
         {message.content}
       </Alert>
-      <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
-        <div className="row">
-          <div className="col-12 text-center">
-            <img
-              className="avatar img-fluid"
-              src={
-                user && user.photoURL
-                  ? user.photoURL
-                  : require("../../img/user.png")
-              }
-              alt=""
-            />
-          </div>
-          <div className="col-12 text-center">
-            <h5 className="mt-3">{user.displayName}</h5>
-            <p>
-              Account created
-              {new Date(user.metadata.creationTime).toLocaleDateString()}
-            </p>
-            <p>{user.email}</p>
-            <p>
-              {user.phoneNumber ? user.phoneNumber : "No phone number added"}
-            </p>
-            {loadingState ? (
-              <FontAwesomeIcon
-                className="my-5"
-                icon={faSpinner}
-                spin
-                size="2x"
-              />
-            ) : (
-              <>
-                <h6>Stats</h6>
-                <p>
-                  {acctFavorites && acctFavorites.data.length}
-                  {acctFavorites && acctFavorites.length === 1
-                    ? " Favorite"
-                    : " Favorites"}
-                </p>
-                <p>
-                  {acctScores && acctScores.data.length}
-                  {acctScores && acctScores.length === 1 ? " Score" : " Scores"}
-                </p>
-              </>
-            )}
-          </div>
-          <div className="col-12 text-center">
-            <Link className="btn btn-success" to={`/account/edit`}>
-              <FontAwesomeIcon className="acctedit" icon={faPencilAlt} />
-              Edit Account
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="row">
-        <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-          <h5
-            className="list-group-item d-flex align-items-center"
-            onClick={() => toggleData("f")}
-            role="button"
-          >
-            Favorites
-            <Badge variant="primary">
-              {loadingState ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
-              ) : (
-                acctFavorites &&
-                acctFavorites.data.length > 0 &&
-                acctFavorites.data.length
-              )}
-            </Badge>
-            {acctFavorites && (
-              <FontAwesomeIcon
-                className="align-text-top"
-                icon={favorites ? faAngleUp : faAngleDown}
-              />
-            )}
-          </h5>
-          {loadingState
-            ? null
-            : acctFavorites && (
-                <Collapse in={acctFavorites.isOpen}>
-                  <ul className="list-group list-group-flush">
-                    {acctFavorites && acctFavorites.data.length > 0 ? (
-                      acctFavorites.data.map((favorite) => (
-                        <li className="list-group-item" key={favorite.id}>
-                          <h5>
-                            {favorite.id}-
-                            <small>
-                              {
-                                favorite.data.government.capital.name.split(
-                                  ";"
-                                )[0]
-                              }
-                            </small>
-                          </h5>
-                          <div className="d-flex justify-content-between">
-                            <Link
-                              to={`/${simplifyString(
-                                favorite.id.toLowerCase()
-                              )}`}
-                            >
-                              <Flag
-                                className="favFlag img-thumbnail"
-                                name={
-                                  (
-                                    favorite.data.government.country_name
-                                      .isoCode
-                                      ? favorite.data.government.country_name
-                                          .isoCode
-                                      : "_unknown"
-                                  )
-                                    ? favorite.data.government.country_name
-                                        .isoCode
-                                    : `_${favorite.data.name}`
-                                }
-                                format="svg"
-                                pngSize={64}
-                                shiny={false}
-                                alt={`${favorite.data.name}'s Flag`}
-                                basePath="/img/flags"
-                              />
-                            </Link>
-                            <FontAwesomeIcon
-                              className="align-self-center"
-                              onClick={() => deleteFavorite(favorite.id)}
-                              icon={faTrashAlt}
-                              size="2x"
-                              color="darkred"
-                            />
-                          </div>
-                        </li>
-                      ))
-                    ) : (
-                      <h5>You have no favorites saved</h5>
-                    )}
-                  </ul>
-                </Collapse>
-              )}
-        </div>
-        <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
-          <h5
-            className="list-group-item d-flex align-items-center"
-            onClick={() => toggleData("s")}
-          >
-            Scores
-            <Badge variant="primary">
-              {loadingState ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
-              ) : (
-                acctScores &&
-                acctScores.data &&
-                acctScores.data.length > 0 &&
-                acctScores.data.length
-              )}
-            </Badge>
-            {acctScores && (
-              <FontAwesomeIcon
-                className="align-text-top"
-                icon={scores ? faAngleUp : faAngleDown}
-              />
-            )}
-          </h5>
-          {loadingState
-            ? null
-            : acctScores && (
-                <Collapse in={acctScores.isOpen}>
-                  <ul className="list-group list-group-flush">
-                    {acctScores && acctScores.data.length > 0 ? (
-                      acctScores.data.map((score) => {
-                        const milliseconds =
-                          score.data.dateCreated.seconds * 1000;
-                        const currentDate = new Date(milliseconds);
-                        const dateTime = currentDate.toGMTString();
-                        return (
-                          <li className="list-group-item" key={score.id}>
-                            <div className="d-flex justify-content-between">
-                              <div className="d-flex flex-column">
-                                <h6>
-                                  <strong>{dateTime}</strong>
-                                </h6>
-                                {score.data.gameMode && (
-                                  <h6>Mode -{score.data.gameMode}</h6>
-                                )}
-                                {score.data.score && (
-                                  <h6>Score -{score.data.score}</h6>
-                                )}
-                                <h6>Correct -{score.data.correct}</h6>
-                                <h6>Incorrect -{score.data.incorrect}</h6>
-                              </div>
-                              <FontAwesomeIcon
-                                className="align-self-center"
-                                onClick={() => deleteScore(score.id)}
-                                icon={faTrashAlt}
-                                size="2x"
-                                color="darkred"
-                              />
-                            </div>
-                          </li>
-                        );
-                      })
-                    ) : (
-                      <h5>You have no scores saved</h5>
-                    )}
-                  </ul>
-                </Collapse>
-              )}
-        </div>
-      </div>
+      <AcctHeader
+        loadingState={loadingState}
+        acctFavorites={acctFavorites}
+        acctScores={acctScores}
+        user={user}
+      />
+      <div className="row">{acct}</div>
     </div>
   );
 };
@@ -356,6 +177,6 @@ Account.propTypes = {
   user: userType.isRequired,
   favorites: PropTypes.bool.isRequired,
   scores: PropTypes.bool.isRequired,
-  simplifyString: PropTypes.func.isRequired,
+  simplifyString: PropTypes.func.isRequired
 };
 export default Account;
