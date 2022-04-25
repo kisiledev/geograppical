@@ -164,8 +164,8 @@ const Account = (props) => {
       </Alert>
       <AcctHeader
         loadingState={loadingState}
-        acctFavorites={acctFavorites}
-        acctScores={acctScores}
+        favorites={acctFavorites?.data}
+        scores={acctScores?.data}
         user={user}
       />
       <div className="row">{acct}</div>

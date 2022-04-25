@@ -20,6 +20,7 @@ import { auth, googleProvider } from '../../Firebase/firebase';
 import { userType } from '../../Helpers/Types/index';
 // import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
+import { signInWithPopup } from 'firebase/auth';
 
 const useStyles = makeStyles({
   appbar: {
@@ -79,7 +80,7 @@ function NaviBar(props) {
 
   const login = async () => {
     try {
-      await auth.signInWithPopup(googleProvider);
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
       throw new Error(error);
     }
@@ -93,8 +94,11 @@ function NaviBar(props) {
     if (name === 'Logout') {
       logout();
     }
-    if (name === 'Login') {
+    if (name === 'Sign In') {
       login();
+    }
+    if (name === 'Sign Up') {
+      history.push('/signup');
     }
   };
 

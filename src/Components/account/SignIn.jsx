@@ -9,7 +9,7 @@ import Alert from 'react-bootstrap/Alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import { signInWithPopup } from 'firebase/auth';
+import { fetchSignInMethodsForEmail, signInWithPopup } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
 import { auth, googleProvider } from '../../Firebase/firebase';
 import useSignUpForm from '../../Helpers/CustomHooks';
@@ -21,8 +21,7 @@ const SignIn = (props) => {
 
   const login = () => {
     // console.log('reunning login');
-    auth
-      .fetchSignInMethodsForEmail(inputs.email)
+    fetchSignInMethodsForEmail(auth, inputs.email)
       .then((u) => {
         // console.log(u);
         setMethods(u);

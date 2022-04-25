@@ -12,13 +12,6 @@ import {
 import { Alert, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
-import { auth, firebaseApp } from '../../Firebase/firebase';
-import LinkEmailModal from '../views/LinkEmailModal';
-import { userType } from '../../Helpers/Types';
-
-import facebook from '../../img/facebook-icon-white.svg';
-import twitter from '../../img/Twitter_Logo_WhiteOnBlue.svg';
-import email from '../../img/auth_service_email.svg';
 import {
   EmailAuthProvider,
   FacebookAuthProvider,
@@ -28,6 +21,13 @@ import {
   TwitterAuthProvider,
   unlink
 } from 'firebase/auth';
+import { auth, firebaseApp } from '../../Firebase/firebase';
+import LinkEmailModal from '../views/LinkEmailModal';
+import { userType } from '../../Helpers/Types';
+import userImg from '../../img/user.png';
+import facebookIcon from '../../img/facebook-icon-white.svg';
+import twitterIcon from '../../img/Twitter_Logo_WhiteOnBlue.svg';
+import emailIcon from '../../img/auth_service_email.svg';
 
 const AccountEdit = (props) => {
   const { user } = props;
@@ -188,21 +188,21 @@ const AccountEdit = (props) => {
       id: 2,
       name: 'Facebook',
       provName: 'facebook.com',
-      icon: facebook,
+      icon: facebookIcon,
       onClick: () => providerLink('Facebook')
     },
     {
       id: 3,
       name: 'Twitter',
       provName: 'twitter.com',
-      icon: twitter,
+      icon: twitterIcon,
       onClick: () => providerLink('Twitter')
     },
     {
       id: 4,
       name: 'Email',
       provName: 'password',
-      icon: email,
+      icon: emailIcon,
       onClick: () => setShow(true)
     }
   ];
@@ -235,11 +235,7 @@ const AccountEdit = (props) => {
             <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
               <img
                 className="avatar img-fluid"
-                src={
-                  user && user.photoURL
-                    ? user.photoURL
-                    : require('../../img/user.png')
-                }
+                src={user ? user.photoURL : userImg}
                 alt=""
               />
               <div className="btn btn-link btn-file">
@@ -272,14 +268,16 @@ const AccountEdit = (props) => {
                 <>
                   <h6>Stats</h6>
                   <p>
-                    {favorites && favorites.length}
-                    {favorites && favorites.length === 1
-                      ? 'Favorite'
-                      : 'Favorites'}
+                    {favorites?.length === 0
+                      ? 'No Favorites'
+                      : `${favorites?.length} Favorite${
+                          favorites?.length === 1 && 's'
+                        }`}
                   </p>
                   <p>
-                    {scores && scores.length}
-                    Scores
+                    {scores?.length === 0
+                      ? 'No Scores'
+                      : `${scores?.length} Score${scores?.length === 1 && 's'}`}
                   </p>
                 </>
               )}

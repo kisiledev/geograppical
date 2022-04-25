@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
-import Alert from "react-bootstrap/Alert";
-import "firebaseui";
-import { userType } from "../../helpers/Types/index";
-import { auth, googleProvider } from "../../firebase/firebase";
-import useSignUpForm from "../../helpers/CustomHooks";
+/* eslint-disable no-use-before-define */
+import React, { useState, useEffect } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert';
+import 'firebaseui';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { userType } from '../../Helpers/Types/index';
+import { auth, googleProvider } from '../../Firebase/firebase';
+import useSignUpForm from '../../Helpers/CustomHooks';
 
 const SignUp = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
   const [message, setMessage] = useState({});
 
-  const { inputs, handleInputChange, handleSubmit } = useSignUpForm(signup);
-
   const signup = () => {
-    auth
-      .createUserWithEmailAndPassword(inputs.email, inputs.passwordOne)
+    createUserWithEmailAndPassword(auth, inputs.email, inputs.passwordOne)
       .then((u) => {
         setMessage({
-          style: "success",
-          content: `Created user ${u.user.email}`,
+          style: 'success',
+          content: `Created user ${u.user.email}`
         });
       })
       .catch((error) => {
-        setMessage({ style: "danger", content: `${error.message}` });
+        setMessage({ style: 'danger', content: `${error.message}` });
       });
   };
+  const { inputs, handleInputChange, handleSubmit } = useSignUpForm(signup);
 
-  console.log(inputs.email);
+  console.log(inputs.passwordOne);
 
   const checkEmail = (value) => {
     const regex =
@@ -55,12 +55,12 @@ const SignUp = (props) => {
       });
   };
   useEffect(() => {
-    console.log("checking email");
+    console.log('checking email');
     checkEmail(inputs.email);
   }, [inputs.email]);
 
   useEffect(() => {
-    console.log("checking password");
+    console.log('checking password');
     checkPWValue(inputs.passwordOne);
   }, [inputs.passwordOne]);
 
@@ -71,9 +71,9 @@ const SignUp = (props) => {
 
   const isInvalid =
     inputs.passwordOne !== inputs.passwordTwo ||
-    inputs.passwordOne === "" ||
-    inputs.email === "" ||
-    inputs.username === "";
+    inputs.passwordOne === '' ||
+    inputs.email === '' ||
+    inputs.username === '';
 
   return (
     <div className="mx-auto col-lg-4">
@@ -88,7 +88,7 @@ const SignUp = (props) => {
           <form onSubmit={handleSubmit}>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.username || ""}
+                value={inputs.username || ''}
                 onChange={handleInputChange}
                 type="text"
                 name="username"
@@ -98,48 +98,48 @@ const SignUp = (props) => {
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.email || ""}
+                value={inputs.email || ''}
                 onChange={handleInputChange}
                 type="email"
                 name="email"
                 className={`form-control ${
-                  inputs.email === "" || !inputs.email
-                    ? "prefinput"
+                  inputs.email === '' || !inputs.email
+                    ? 'prefinput'
                     : isEmailValid
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Enter email"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordOne || ""}
+                value={inputs.passwordOne || ''}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordOne"
                 className={`form-control ${
-                  inputs.passwordOne === "" || !inputs.passwordOne
-                    ? "prefinput"
+                  inputs.passwordOne === '' || !inputs.passwordOne
+                    ? 'prefinput'
                     : isPWValid
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Password"
               />
             </div>
             <div className="form-group col-12 mb-4 mx-auto">
               <input
-                value={inputs.passwordTwo || ""}
+                value={inputs.passwordTwo || ''}
                 onChange={handleInputChange}
                 type="password"
                 name="passwordTwo"
                 className={`form-control ${
-                  inputs.passwordTwo === "" || !inputs.passwordTwo
-                    ? "prefinput"
+                  inputs.passwordTwo === '' || !inputs.passwordTwo
+                    ? 'prefinput'
                     : inputs.passwordTwo === inputs.passwordOne
-                    ? "form-success"
-                    : "form-error"
+                    ? 'form-success'
+                    : 'form-error'
                 }`}
                 placeholder="Confirm Password"
               />
@@ -193,7 +193,7 @@ const SignUpLink = () => (
 );
 
 SignUp.propTypes = {
-  user: userType.isRequired,
+  user: userType.isRequired
 };
 export default SignUp;
 export { SignUpLink };

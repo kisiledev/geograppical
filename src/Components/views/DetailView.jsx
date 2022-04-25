@@ -146,7 +146,7 @@ const DetailView = (props) => {
       countryDetail &&
       (countryDetail.length !== 0 || countryDetail === undefined)
     ) {
-      // console.log(countryDetail)
+      console.log(countryDetail);
     }
     if (!loadingState) {
       getCountryInfo(match.params.country);
@@ -269,22 +269,22 @@ const DetailView = (props) => {
     </BreakpointProvider>
   );
 };
-DetailView.propTypes = {
-  countryDetail: countryType.isRequired,
-  data: dataType.isRequired,
-  user: userType.isRequired,
-  loadingState: PropTypes.bool.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired,
-  match: matchType.isRequired,
-  history: shape({
-    goBack: PropTypes.func.isRequired
-  }).isRequired
-};
+// DetailView.propTypes = {
+//   countryDetail: countryType.isRequired,
+//   data: dataType.isRequired,
+//   user: userType.isRequired,
+//   loadingState: PropTypes.bool.isRequired,
+//   getCountryInfo: PropTypes.func.isRequired,
+//   changeView: PropTypes.func.isRequired,
+//   handleSideBar: PropTypes.func.isRequired,
+//   hoverOffRegion: PropTypes.func.isRequired,
+//   hoverOnRegion: PropTypes.func.isRequired,
+//   filterCountryByName: PropTypes.func.isRequired,
+//   hoverOnCountry: PropTypes.func.isRequired,
+//   hoverOffCountry: PropTypes.func.isRequired,
+//   match: matchType.isRequired,
+//   history: shape({
+//     goBack: PropTypes.func.isRequired
+//   }).isRequired
+// };
 export default withRouter(DetailView);
