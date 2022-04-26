@@ -4,9 +4,15 @@
 /* eslint-disable no-mixed-operators */
 import React, { useState } from 'react';
 import { BreakpointProvider } from 'react-socks';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEye,
+  faEyeSlash,
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import { Box, Button } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { dataType } from '../../Helpers/Types/index';
 import Sidebar from './Sidebar';
 // import '../../App.css';
@@ -30,6 +36,7 @@ const SideCountry = (props) => {
     filterCountryByName
   } = props;
 
+  const theme = useTheme();
   const toggleSidebar = () => {
     setShowSideBar(!showSideBar);
   };
@@ -37,19 +44,25 @@ const SideCountry = (props) => {
   return (
     <BreakpointProvider>
       <nav className="countriesnav">
-        <button
-          type="button"
-          className="btn btn-sm btn-block btn-outline-secondary mb-3"
+        <Button
+          sx={{ fontFamily: theme.typography.fontFamily }}
+          variant="contained"
+          color="primary"
           onClick={() => toggleSidebar()}
         >
           {showSideBar ? 'Hide ' : 'Show '}
           Countries List
-        </button>
+          <FontAwesomeIcon
+            style={{ marginLeft: '5px' }}
+            icon={showSideBar ? faEyeSlash : faEye}
+            size="sm"
+          />
+        </Button>
         {showSideBar ? (
           loadingState ? (
-            <div className="mx-auto text-center">
+            <Box sx={{ margin: '0 auto', textAlign: 'center' }}>
               <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-            </div>
+            </Box>
           ) : (
             <Sidebar
               data={data}

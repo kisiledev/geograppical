@@ -9,24 +9,16 @@ import {
   Typography,
   Collapse
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import { dataType, userType } from '../../Helpers/Types/index';
 import SideCountry from './SideCountry';
 import * as ROUTES from '../../Constants/Routes';
 
-const useStyles = makeStyles({
-  navbarLink: {}
-});
-
-console.log('running first');
 const SideNaviBar = (props) => {
-  const [expanded, setExpanded] = useState(false);
   const [uniqueRegions, setUniqueRegions] = useState([]);
   const [totalRegions, setTotalRegions] = useState([]);
   const {
     loadingState,
-    user,
-    handleData,
     data,
     changeView,
     getCountryInfo,
@@ -45,24 +37,9 @@ const SideNaviBar = (props) => {
     },
     padding: '1rem'
   };
-  const sublinks = {
-    textAlign: 'right',
-    color: '#bbb',
-    '&:hover': {
-      color: '#fff'
-    }
-  };
   const drawerWidth = 275;
-  const expandLinks = (e, type) => {
-    if (e && type) {
-      e.persist();
-      handleData(type);
-      setExpanded(false);
-    } else {
-      setExpanded(!expanded);
-      e.stopPropagation();
-    }
-  };
+
+  const theme = useTheme();
   const getRegions = () => {
     if (data) {
       setTotalRegions(data.map((a) => a.geography.map_references));
@@ -111,7 +88,8 @@ const SideNaviBar = (props) => {
           padding: '10px',
           textDecoration: 'none',
           lineHeight: '62px',
-          color: '#fff'
+          color: '#fff',
+          fontFamily: theme.typography.fontFamily
         }}
         variant="h5"
         component={Link}
@@ -120,44 +98,14 @@ const SideNaviBar = (props) => {
         Geograppical
       </Typography>
       <RouterLink sx={navLinks} href="/" underline="none">
-        Home
+        Learn
       </RouterLink>
       <RouterLink sx={navLinks} href="/play" underline="none">
-        Games
+        Play
       </RouterLink>
-      <RouterLink
-        onMouseEnter={(e) => expandLinks(e)}
-        onMouseLeave={(e) => expandLinks(e)}
-        onFocus={(e) => expandLinks(e)}
-        onBlur={(e) => expandLinks(e)}
-        href={ROUTES.ACCOUNT}
-        underline="none"
-        sx={navLinks}
-      >
+      <RouterLink href={ROUTES.ACCOUNT} underline="none" sx={navLinks}>
         Account
-        {user && (
-          <FontAwesomeIcon
-            className="ml-1 align-middle"
-            icon={!expanded ? faAngleDown : faAngleUp}
-          />
-        )}
       </RouterLink>
-      {user && (
-        <Collapse in={expanded}>
-          <RouterLink
-            sx={sublinks}
-            onClick={(e) => expandLinks(e, 'favorites')}
-          >
-            Favorites
-          </RouterLink>
-          <RouterLink sx={sublinks} onClick={(e) => expandLinks(e, 'scores')}>
-            Scores
-          </RouterLink>
-          <RouterLink href={ROUTES.EDIT} sx={sublinks}>
-            Edit
-          </RouterLink>
-        </Collapse>
-      )}
       <SideCountry
         loadingState={loadingState}
         data={data}

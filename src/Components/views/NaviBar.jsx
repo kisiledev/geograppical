@@ -16,11 +16,11 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
+import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../Firebase/firebase';
 import { userType } from '../../Helpers/Types/index';
 // import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
-import { signInWithPopup } from 'firebase/auth';
 
 const useStyles = makeStyles({
   appbar: {
@@ -34,7 +34,6 @@ const useStyles = makeStyles({
     width: '20vw',
     display: 'flex',
     alignItems: 'center',
-    marginLeft: '20px',
     padding: '5px'
   },
   searchField: {
@@ -60,18 +59,10 @@ function NaviBar(props) {
   ];
   const classes = useStyles();
 
-  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -104,17 +95,16 @@ function NaviBar(props) {
 
   const searchMarkup = (
     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-      <Typography>Geograppical</Typography>
-      <div className={classes.search}>
-        <div className={classes.searchIconWrapper}>
+      <Box className={classes.search}>
+        <Box className={classes.searchIconWrapper}>
           <Search />
-        </div>
+        </Box>
         <InputBase
           value={searchText}
           onChange={(e) => handleInput(e)}
           className={classes.searchField}
         />
-      </div>
+      </Box>
     </Box>
   );
 
