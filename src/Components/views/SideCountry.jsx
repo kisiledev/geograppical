@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import { Box, Button } from '@mui/material';
+import { Box, Button, List } from '@mui/material';
 import { useTheme } from '@mui/styles';
 import { dataType } from '../../Helpers/Types/index';
 import Sidebar from './Sidebar';
@@ -43,7 +43,7 @@ const SideCountry = (props) => {
 
   return (
     <BreakpointProvider>
-      <nav className="countriesnav">
+      <List sx={{ padding: '20px' }}>
         <Button
           sx={{ fontFamily: theme.typography.fontFamily }}
           variant="contained"
@@ -80,7 +80,7 @@ const SideCountry = (props) => {
             />
           )
         ) : null}
-      </nav>
+      </List>
     </BreakpointProvider>
   );
 };
