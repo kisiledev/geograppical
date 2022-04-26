@@ -43,7 +43,7 @@ const SideCountry = (props) => {
 
   return (
     <BreakpointProvider>
-      <List sx={{ padding: '20px' }}>
+      <List component="nav" sx={{ padding: '20px' }}>
         <Button
           sx={{ fontFamily: theme.typography.fontFamily }}
           variant="contained"
