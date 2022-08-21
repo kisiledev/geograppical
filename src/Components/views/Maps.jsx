@@ -18,7 +18,7 @@ import {
 import * as d3 from 'd3';
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
-import Flag from 'react-flags';
+import Flag from 'react-world-flags';
 import {
   faPlus,
   faMinus,
@@ -197,7 +197,7 @@ const Maps = (props) => {
         <br />
         <Flag
           className="mapFlag text-center"
-          name={
+          code={
             (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
           format="svg"
@@ -304,7 +304,7 @@ const Maps = (props) => {
                         />
                       </Link>
                     ))
-                    }
+                  }
                 </Geographies>
               </ZoomableGroup>
             </ComposableMap>

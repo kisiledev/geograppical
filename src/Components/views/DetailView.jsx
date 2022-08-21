@@ -6,7 +6,7 @@ import {
   faStar
 } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap';
-import Flag from 'react-flags';
+import Flag from 'react-world-flags';
 import { withRouter, Link } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import PropTypes, { shape } from 'prop-types';
@@ -221,7 +221,7 @@ const DetailView = (props) => {
                   />
                   <Flag
                     className="detailFlag order-lg-12 align-self-end text-right img-thumbnail"
-                    name={
+                    code={
                       (
                         countryDetail.government.country_name.isoCode
                           ? countryDetail.government.country_name.isoCode

@@ -1,5 +1,5 @@
 import React from 'react';
-import Flag from 'react-flags';
+import Flag from 'react-world-flags';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
@@ -25,7 +25,7 @@ const Favs = (props) => {
                 <Link to={`/${simplifyString(favorite.id.toLowerCase())}`}>
                   <Flag
                     className="favFlag img-thumbnail"
-                    name={
+                    code={
                       (
                         favorite.data.government.country_name.isoCode
                           ? favorite.data.government.country_name.isoCode

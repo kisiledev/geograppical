@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
-import Flag from 'react-flags';
+import Flag from 'react-world-flags';
 import { Link } from 'react-router-dom';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -163,7 +163,7 @@ const Result = (props) => {
         )}
         <Flag
           className="img-thumbnail"
-          name={flagCode || '_unknown'}
+          code={flagCode || '_unknown'}
           format="svg"
           pngSize={64}
           shiny={false}

@@ -254,6 +254,7 @@ const App = (props) => {
     });
   };
   const getCountryInfo = (e, name) => {
+    console.log(e);
     e.stopPropagation();
     const searchDB = Object.values(worldData);
     name = name
