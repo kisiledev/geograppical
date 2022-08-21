@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -138,11 +138,11 @@ const SignIn = (props) => {
               />
             </div>
             <div className="col-12 d-flex justify-content-center mt-5 mb-3">
-              <button
+              <Button
                 onClick={handleSubmit}
                 disabled={isInvalid}
-                type="button"
-                className="btn-primary email-button"
+                variant="contained"
+                className="email-button"
               >
                 <span className="email-button__icon">
                   <img
@@ -152,12 +152,12 @@ const SignIn = (props) => {
                   />
                 </span>
                 <span className="email-button__text">Sign in with Email</span>
-              </button>
+              </Button>
             </div>
             <div className="col-12 d-flex justify-content-center mb-3">
-              <button
+              <Button
                 onClick={googleSignUp}
-                type="button"
+                variant="contained"
                 className="google-button"
               >
                 <span className="google-button__icon">
@@ -168,7 +168,7 @@ const SignIn = (props) => {
                   />
                 </span>
                 <span className="google-button__text">Sign in with Google</span>
-              </button>
+              </Button>
             </div>
             <div className="col-12 d-flex justify-content-center">
               <p>

@@ -250,7 +250,7 @@ const Sidebar = (props) => {
                     regions[region].countries.length && (
                     <ButtonGroup>
                       <Button
-                        type="button"
+                        variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, 5, 0)}
                         sx={{
                           textTransform: 'none',
@@ -265,7 +265,7 @@ const Sidebar = (props) => {
                         Load More
                       </Button>
                       <Button
-                        type="button"
+                        variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, -5, -5)}
                         sx={{
                           textTransform: 'none',
@@ -281,7 +281,7 @@ const Sidebar = (props) => {
                   ${regions[region].visible - regions[region].start}`}
                       </Button>
                       <Button
-                        type="button"
+                        variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, 5, 5)}
                         sx={{
                           textTransform: 'none',

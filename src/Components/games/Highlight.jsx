@@ -3,18 +3,21 @@ import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography,
+  Geography
 } from 'react-simple-maps';
 import { geoEqualEarth } from 'd3-geo';
 import ReactTooltip from 'react-tooltip';
-import { faPlus, faMinus, faGlobeAfrica } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus,
+  faMinus,
+  faGlobeAfrica
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
-import {
-  dataType,
-} from '../../helpers/Types/index';
+import { dataType } from '../../helpers/Types/index';
 import data from '../../data/world-50m.json';
+import { Button, ButtonGroup } from '@mui/material';
 
 const Highlight = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -39,7 +42,7 @@ const Highlight = (props) => {
     updateScore,
     handlePoints,
     handleOpen,
-    saved,
+    saved
   } = props;
 
   const proj = () => {
@@ -55,12 +58,20 @@ const Highlight = (props) => {
   };
 
   const getMapNations = () => {
-    const mapCountries = [...(document.getElementsByClassName('gameCountry'))];
-    const totalMapRegions = mapCountries.map((a) => a.dataset.subregion.replace(/;/g, ''));
-    let uniqueMapRegions = totalMapRegions.filter((v, i, a) => a.indexOf(v) === i);
+    const mapCountries = [...document.getElementsByClassName('gameCountry')];
+    const totalMapRegions = mapCountries.map((a) =>
+      a.dataset.subregion.replace(/;/g, '')
+    );
+    let uniqueMapRegions = totalMapRegions.filter(
+      (v, i, a) => a.indexOf(v) === i
+    );
     uniqueMapRegions = uniqueMapRegions.filter(Boolean);
-    const totalMapContinents = mapCountries.map((a) => a.dataset.continent.replace(/;/g, ''));
-    let uniqueMapContinents = totalMapContinents.filter((v, i, a) => a.indexOf(v) === i);
+    const totalMapContinents = mapCountries.map((a) =>
+      a.dataset.continent.replace(/;/g, '')
+    );
+    let uniqueMapContinents = totalMapContinents.filter(
+      (v, i, a) => a.indexOf(v) === i
+    );
     uniqueMapContinents = uniqueMapContinents.filter(Boolean);
     setCountries(mapCountries);
     setRegions(uniqueMapRegions);
@@ -68,13 +79,13 @@ const Highlight = (props) => {
   };
 
   const getRegion = (region) => {
-    const nodes = [...(document.getElementsByClassName('gameCountry'))];
+    const nodes = [...document.getElementsByClassName('gameCountry')];
     const match = nodes.filter((node) => node.dataset.subregion === region);
     return match;
   };
 
   const getContinent = (continent) => {
-    const nodes = [...(document.getElementsByClassName('gameCountry'))];
+    const nodes = [...document.getElementsByClassName('gameCountry')];
     const match = nodes.filter((node) => node.dataset.continent === continent);
     return match;
   };
@@ -91,7 +102,7 @@ const Highlight = (props) => {
             visible: 5,
             start: 0,
             countries: regions[region].countries,
-            open: false,
+            open: false
           };
         } else {
           getRegion(region);
@@ -99,7 +110,7 @@ const Highlight = (props) => {
             visible: 5,
             start: 0,
             countries: getRegion(region),
-            open: false,
+            open: false
           };
         }
       });
@@ -116,10 +127,16 @@ const Highlight = (props) => {
     if (conts.length > 0) {
       conts.forEach((continent) => {
         if (conts[continent] && conts[continent].countries[0]) {
-          continentsState[continent] = { id: continent, countries: conts[continent].countries };
+          continentsState[continent] = {
+            id: continent,
+            countries: conts[continent].countries
+          };
         } else {
           getContinent(continent);
-          continentsState[continent] = { id: continent, countries: getContinent(continent) };
+          continentsState[continent] = {
+            id: continent,
+            countries: getContinent(continent)
+          };
         }
       });
     }
@@ -138,7 +155,10 @@ const Highlight = (props) => {
     setZoom((prevZoom) => prevZoom / 2);
   };
   const handleText = (str) => {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z\s]/gi, '');
   };
   const handleMoveStart = (newCenter) => {
     setCenter(newCenter);
@@ -208,7 +228,7 @@ const Highlight = (props) => {
       fetchanswers.push({
         name: currentCountry.name.split(';')[0],
         id: 0,
-        correct: 2,
+        correct: 2
       });
     }
     for (let x = 0; x < 3; x += 1) {
@@ -223,7 +243,7 @@ const Highlight = (props) => {
       const capital = {
         name: newName,
         id: x + 1,
-        correct: 2,
+        correct: 2
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
@@ -236,12 +256,13 @@ const Highlight = (props) => {
     setQuestions(answerQuestions);
   };
   const getCountryInfo = (country) => {
-    let nodes = (document.getElementsByClassName('gameCountry'));
+    let nodes = document.getElementsByClassName('gameCountry');
     nodes = [...nodes];
     if (currentCountry && country) {
       nodes = nodes.filter(
-        (node) => handleText(country.name) === handleText(node.dataset.longname)
-        || handleText(country.name) === handleText(node.dataset.shortname),
+        (node) =>
+          handleText(country.name) === handleText(node.dataset.longname) ||
+          handleText(country.name) === handleText(node.dataset.shortname)
       );
     }
     // highVisibility = (nodes) => {
@@ -279,7 +300,7 @@ const Highlight = (props) => {
     if (questions && questions.length < 10) {
       getCountryInfo(country);
     }
-    const nodes = [...(document.getElementsByClassName('gameCountry'))];
+    const nodes = [...document.getElementsByClassName('gameCountry')];
     // console.log(filterNations)
     nodes.forEach((node) => {
       node.removeAttribute('style');
@@ -287,7 +308,7 @@ const Highlight = (props) => {
     if (questions && questions.length === 10) {
       handleOpen();
       // alert("Congrats! You've reached the end of the game. You answered " + correct + " questions correctly and " + incorrect + " incorrectly.\n Thanks for playing");
-      const nodes = [...(document.getElementsByClassName('gameCountry'))];
+      const nodes = [...document.getElementsByClassName('gameCountry')];
       // console.log(filterNations)
       nodes.forEach((node) => {
         node.removeAttribute('style');
@@ -300,9 +321,15 @@ const Highlight = (props) => {
       return;
     }
     const checkquestions = questions;
-    const checkquestion = checkquestions.find((question) => question.country === currentCountry.name);
+    const checkquestion = checkquestions.find(
+      (question) => question.country === currentCountry.name
+    );
     let checkguesses = guesses;
-    if ((country.name === currentCountry.name || country.name === currentCountry.name) || guesses === 4) {
+    if (
+      country.name === currentCountry.name ||
+      country.name === currentCountry.name ||
+      guesses === 4
+    ) {
       // give score of 2
       updateScore(3 - guesses);
       // set answer style
@@ -340,7 +367,6 @@ const Highlight = (props) => {
   useEffect(() => {
     setDynamicRegions(regions);
     setLocations(regions, continents);
-
   }, []);
 
   useEffect(() => {
@@ -354,14 +380,20 @@ const Highlight = (props) => {
   const directions = (
     <div className="directions">
       <h5>Directions</h5>
-      <p>The map will show a highlighted country. Select the correct answer from the choices below for the maximum number of points. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!</p>
-      <button
+      <p>
+        The map will show a highlighted country. Select the correct answer from
+        the choices below for the maximum number of points. Incorrect answers
+        will receive less points and make two incorrect choices will yield no
+        points. Select all incorrect answers and you will LOSE a point. Good
+        luck!
+      </p>
+      <Button
+        vairant="contained"
         className="btn btn-lg btn-success"
         onClick={() => takeTurn()}
-        type="button"
       >
         Start Game
-      </button>
+      </Button>
     </div>
   );
   let answerChoices;
@@ -377,7 +409,13 @@ const Highlight = (props) => {
           <li
             role="button"
             onClick={() => checkAnswer(answer)}
-            className={answer.correct === 2 ? navClass : (answer.correct === 1 ? incorrect : correct)}
+            className={
+              answer.correct === 2
+                ? navClass
+                : answer.correct === 1
+                ? incorrect
+                : correct
+            }
             value={answer.id}
             key={answer.id}
           >
@@ -392,68 +430,69 @@ const Highlight = (props) => {
       <div className="mr-3 mb-3">
         {!isStarted && directions}
         {isStarted && guesses && (
-        <div>
-          {`${guesses} ${(guesses === 1) ? ' guess' : ' guesses'}`}
-        </div>
+          <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
         )}
         {isStarted && guesses && (
-        <div>
-          {`For ${3 - guesses} ${(guesses === 2 || guesses === 4) ? ' point' : ' points'}`}
-        </div>
+          <div>
+            {`For ${3 - guesses} ${
+              guesses === 2 || guesses === 4 ? ' point' : ' points'
+            }`}
+          </div>
         )}
         <Breakpoint small up>
           <div className="d-flex justify-content-between">
-            <div className="btn-group d-inline">
-              <button
+            <ButtonGroup variant="contained">
+              <Button
+                variant="contained"
                 className="btn btn-info"
-                type="button"
                 onClick={() => handleZoomOut(zoom)}
               >
                 <FontAwesomeIcon icon={faMinus} />
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="contained"
                 className="btn btn-info"
                 onClick={() => handleZoomIn(zoom)}
               >
                 <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </div>
-            <button
-              type="button"
-              className="btn btn-info"
+              </Button>
+            </ButtonGroup>
+            <Button
+              variant="contained"
               onClick={() => changeMapView()}
+              startIcon={
+                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+              }
             >
-              <FontAwesomeIcon icon={faGlobeAfrica} />
-              { (mapVisible === 'Show') ? 'Hide' : 'Show'}
+              {mapVisible === 'Show' ? 'Hide ' : 'Show '}
               Map
-            </button>
+            </Button>
           </div>
         </Breakpoint>
         <hr />
-        {answers && answers.length > 0 && <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>}
-        {mapVisible === 'Show'
-          ? (
-            <div
-              onWheel={handleWheel}
+        {answers && answers.length > 0 && (
+          <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>
+        )}
+        {mapVisible === 'Show' ? (
+          <div onWheel={handleWheel}>
+            <ComposableMap
+              width={800}
+              height={400}
+              projection={proj}
+              style={{
+                width: '100%',
+                height: 'auto'
+              }}
             >
-              <ComposableMap
-                width={800}
-                height={400}
-                projection={proj}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
+              <ZoomableGroup
+                zoom={zoom}
+                center={center}
+                onMoveStart={handleMoveStart}
+                onMoveEnd={handleMoveEnd}
               >
-                <ZoomableGroup
-                  zoom={zoom}
-                  center={center}
-                  onMoveStart={handleMoveStart}
-                  onMoveEnd={handleMoveEnd}
-                >
-                  <Geographies geography={data}>
-                    {(geos, proj) => geos.map((geo, i) => (
+                <Geographies geography={data}>
+                  {(geos, proj) =>
+                    geos.map((geo, i) => (
                       <Geography
                         data-idkey={i}
                         data-longname={handleText(geo.properties.NAME_LONG)}
@@ -462,19 +501,21 @@ const Highlight = (props) => {
                         data-subregion={geo.properties.SUBREGION}
                         // onMouseEnter={(() => onRegionHover(geo))}
                         // onMouseLeave={(() => onRegionLeave(geo))}
-                        onClick={((e) => checkAnswer(e, geo.properties.NAME_LONG))}
+                        onClick={(e) =>
+                          checkAnswer(e, geo.properties.NAME_LONG)
+                        }
                         key={geo.properties.NAME}
                         geography={geo}
                         projection={proj}
                         className="gameCountry"
                       />
-                    ))}
-                  </Geographies>
-                </ZoomableGroup>
-              </ComposableMap>
-            </div>
-          )
-          : null }
+                    ))
+                  }
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+          </div>
+        ) : null}
         <ReactTooltip place="top" type="dark" effect="float" />
       </div>
     </BreakpointProvider>
@@ -491,7 +532,7 @@ Highlight.propTypes = {
   updateScore: PropTypes.func.isRequired,
   startGame: PropTypes.func.isRequired,
   mapVisible: PropTypes.string.isRequired,
-  changeMapView: PropTypes.func.isRequired,
+  changeMapView: PropTypes.func.isRequired
 };
 export default Highlight;
 // const BlockPageScroll = ({ children }) => {

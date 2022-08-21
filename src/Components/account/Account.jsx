@@ -155,6 +155,8 @@ const Account = (props) => {
       deleteDocument
     };
     dynamicProps.acctData = piece.data;
+
+    console.log(dynamicProps);
     acct.push(<AccountData {...dynamicProps} />);
   });
   return (

@@ -5,7 +5,7 @@ import {
   faAngleUp,
   faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge } from 'react-bootstrap';
+import { Badge, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
 import Favs from './Favs';
 import Scores from './Scores';
@@ -23,6 +23,7 @@ const AccountData = (props) => {
     boolean
   } = props;
 
+  console.log(acctData);
   return (
     <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
       <h5
@@ -31,13 +32,16 @@ const AccountData = (props) => {
         role="button"
       >
         {capitalize(name)}
-        <Badge variant="primary">
-          {loadingState ? (
-            <FontAwesomeIcon icon={faSpinner} spin />
-          ) : (
-            acctData && acctData.data.length > 0 && acctData.data.length
-          )}
-        </Badge>
+        <Chip
+          label={
+            loadingState ? (
+              <FontAwesomeIcon icon={faSpinner} spin />
+            ) : (
+              acctData && acctData.data.length > 0 && acctData.data.length
+            )
+          }
+          variant="contained"
+        />
         {acctData && (
           <FontAwesomeIcon
             className="align-text-top"

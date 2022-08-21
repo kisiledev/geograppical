@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -88,10 +88,10 @@ const PasswordReset = (props) => {
               />
             </div>
             <div className="col-12 d-flex justify-content-center mb-3">
-              <button
+              <Button
                 onClick={handleSubmit}
-                type="button"
-                className="btn-primary email-button"
+                variant="contained"
+                className="email-button"
               >
                 <span className="email-button__icon">
                   <img
@@ -101,7 +101,7 @@ const PasswordReset = (props) => {
                   />
                 </span>
                 <span className="email-button__text">Reset Password</span>
-              </button>
+              </Button>
             </div>
             <div className="col-12 d-flex justify-content-center">
               <p>

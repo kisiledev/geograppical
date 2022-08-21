@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import 'firebaseui';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
@@ -145,10 +145,10 @@ const SignUp = (props) => {
               />
             </div>
             <div className="col-12 d-flex justify-content-center mb-3">
-              <button
+              <Button
                 disabled={isInvalid}
                 type="submit"
-                className="btn-primary email-button"
+                className="email-button"
               >
                 <span className="email-button__icon">
                   <img
@@ -158,12 +158,12 @@ const SignUp = (props) => {
                   />
                 </span>
                 <span className="email-button__text">Sign Up with Email</span>
-              </button>
+              </Button>
             </div>
             <div className="col-12 d-flex justify-content-center mb-3">
-              <button
+              <Button
                 onClick={(e) => googleSignUp(e)}
-                type="button"
+                variant="contained"
                 className="google-button"
               >
                 <span className="google-button__icon">
@@ -174,7 +174,7 @@ const SignUp = (props) => {
                   />
                 </span>
                 <span className="google-button__text">Sign Up with Google</span>
-              </button>
+              </Button>
             </div>
           </form>
           <SignUpLink />

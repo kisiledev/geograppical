@@ -9,7 +9,7 @@ import {
   faArrowLeft,
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Modal } from '@mui/material';
+import { Alert, Button, Modal } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import {
@@ -329,18 +329,17 @@ const AccountEdit = (props) => {
                       return null;
                     })}
                   </div>
-                  <button
-                    type="button"
+                  <Button
                     onClick={() => unlinkProvider(data.providerId)}
-                    className="align-self-end btn btn-sm btn-danger"
+                    color="error"
+                    variant="contained"
+                    size="small"
+                    endIcon={
+                      <FontAwesomeIcon icon={faTrashAlt} color="white" />
+                    }
                   >
                     Unlink
-                    <FontAwesomeIcon
-                      className="align-self-center ml-1"
-                      icon={faTrashAlt}
-                      color="white"
-                    />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -352,24 +351,20 @@ const AccountEdit = (props) => {
                 key={provider.id}
                 className="col-12 d-flex w-100 justify-content-center mb-3"
               >
-                <button
+                <Button
                   onClick={provider.onClick}
-                  type="button"
+                  variant="contained"
                   className={`provider-button ${provider.name.toLowerCase()}-button`}
-                >
-                  <span
-                    className={`${provider.name.toLowerCase()}-button__icon`}
-                  >
+                  startIcon={
                     <img
                       src={provider.icon}
                       className={`${provider.name.toLowerCase()}icon`}
                       alt="google icon"
                     />
-                  </span>
-                  <span className="google-button__text">
-                    {`Link with ${provider.name}`}
-                  </span>
-                </button>
+                  }
+                >
+                  {`Link with ${provider.name}`}
+                </Button>
               </div>
             );
           }

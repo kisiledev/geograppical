@@ -29,6 +29,7 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { dataType } from '../../Helpers/Types/index';
 import data from '../../Data/world-50m.json';
+import { Button, ButtonGroup } from '@mui/material';
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
@@ -229,34 +230,35 @@ const Maps = (props) => {
         <div className="card mr-3 mb-3">
           <Breakpoint small up>
             <div className="d-flex justify-content-between pb-3">
-              <div className="btn-group">
-                <button
+              <ButtonGroup variant="contained">
+                <Button
                   type="button"
                   className="btn btn-info"
                   onClick={() => handleZoomOut(zoom)}
                 >
                   <FontAwesomeIcon icon={faMinus} />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   className="btn btn-info"
                   onClick={() => handleZoomIn(zoom)}
                 >
                   <FontAwesomeIcon icon={faPlus} />
-                </button>
-              </div>
+                </Button>
+              </ButtonGroup>
               <h2 className="text-center">
                 <strong>Capstone Geography</strong>
               </h2>
-              <button
-                type="button"
-                className="btn btn-info"
+              <Button
+                variant="contained"
                 onClick={() => changeMapView()}
+                startIcon={
+                  <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+                }
               >
-                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-                {mapVisible === 'Show' ? 'Hide' : 'Show'}
+                {mapVisible === 'Show' ? 'Hide ' : 'Show '}
                 Map
-              </button>
+              </Button>
             </div>
           </Breakpoint>
           {mapVisible === 'Show' ? (

@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { userType } from '../../Helpers/Types/index';
 import useSignUpForm from '../../Helpers/CustomHooks';
@@ -139,7 +139,8 @@ const LinkEmailModal = (props) => {
               />
             </div>
             <div className="mx-auto form-group">
-              <button
+              <Button
+                variant="contained"
                 disabled={isInvalid}
                 type="submit"
                 className="provider-button email-button"
@@ -148,13 +149,13 @@ const LinkEmailModal = (props) => {
                   <img src={svgImg} className="emailicon" alt="email icon" />
                 </span>
                 <span className="google-button__text">Link with Email</span>
-              </button>
+              </Button>
             </div>
             <div className="mx-auto form-group">
-              <button
+              <Button
                 disabled={isInvalid}
                 onClick={() => close()}
-                type="button"
+                variant="contained"
                 className="provider-button"
               >
                 <span className="google-button__text">
@@ -162,7 +163,7 @@ const LinkEmailModal = (props) => {
                     ? 'Close'
                     : 'Cancel'}
                 </span>
-              </button>
+              </Button>
             </div>
           </form>
         </div>

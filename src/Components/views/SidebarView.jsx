@@ -35,7 +35,7 @@ const SidebarView = (props) => {
       <nav className="sidebar card col-md-12 col-lg-12">
         <Breakpoint medium down>
           <button
-            type="button"
+            variant="contained"
             className="btn btn-sm btn-block btn-outline-secondary mb-3"
             onClick={() => viewSidebar()}
           >

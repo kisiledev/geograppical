@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -20,6 +19,13 @@ import Choice from './Choice';
 import Checkbox from '../../Elements/Checkbox';
 import Radio from '../../Elements/Radio';
 import * as ROUTES from '../../Constants/Routes';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+  DialogTitle
+} from '@mui/material';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -248,13 +254,13 @@ const Game = (props) => {
   };
 
   const back = !isStarted && (
-    <button
-      type="button"
+    <Button
+      variant="contained"
       className="btn btn-info mb-3"
       onClick={() => resetMode()}
     >
       Go Back
-    </button>
+    </Button>
   );
   let returnGameMode;
   if (gameMode === 'choice') {
@@ -348,16 +354,14 @@ const Game = (props) => {
 
   return (
     <>
-      <Modal
-        show={show}
+      <Dialog
+        open={show}
         onExit={() => resetMode()}
         onHide={() => handleModalClose()}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Game Over</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>
+        <DialogTitle>Game Over</DialogTitle>
+        <DialogContent>{modalBody}</DialogContent>
+        <DialogActions>
           <Button variant="secondary" onClick={() => handleModalClose()}>
             Close
           </Button>
@@ -372,12 +376,12 @@ const Game = (props) => {
               </Link>
             </Button>
           ) : (
-            <Button variant="primary" onClick={() => saveScore()}>
+            <Button variant="contained" onClick={() => saveScore()}>
               Save Score
             </Button>
           )}
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
       <Scoreboard
         timeChecked={timeChecked}
         isStarted={isStarted}
@@ -446,13 +450,13 @@ const Game = (props) => {
         )}
         {isStarted && (
           <div className="text-center mt-5 mb-3">
-            <button
-              type="button"
+            <Button
+              variant="contained"
               className="text-center btn bg-danger text-white"
               onClick={() => resetMode()}
             >
               End Game
-            </button>
+            </Button>
           </div>
         )}
       </div>
