@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
+import { Alert } from '@mui/material';
 import 'firebaseui';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
@@ -77,7 +77,7 @@ const SignUp = (props) => {
 
   return (
     <div className="mx-auto col-lg-4">
-      <Alert variant={message.style}>{message.content}</Alert>
+      <Alert severity={message.style}>{message.content}</Alert>
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Sign Up</h1>

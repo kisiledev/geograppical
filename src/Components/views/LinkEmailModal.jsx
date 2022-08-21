@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
+import { Alert } from '@mui/material';
 import PropTypes from 'prop-types';
 import { userType } from '../../Helpers/Types/index';
 import useSignUpForm from '../../Helpers/CustomHooks';

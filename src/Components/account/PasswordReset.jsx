@@ -1,16 +1,16 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from "react";
-import "firebaseui";
-import { Link, Redirect } from "react-router-dom";
-import Alert from "react-bootstrap/Alert";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import PropTypes from "prop-types";
-import { userType } from "../../helpers/Types/index";
-import useSignUpForm from "../../helpers/CustomHooks";
-import { auth } from "../../firebase/firebase";
+import React, { useState, useEffect } from 'react';
+import 'firebaseui';
+import { Link, Redirect } from 'react-router-dom';
+import { Alert } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import PropTypes from 'prop-types';
+import { userType } from '../../helpers/Types/index';
+import useSignUpForm from '../../helpers/CustomHooks';
+import { auth } from '../../firebase/firebase';
 
 const PasswordReset = (props) => {
   const [message, setMessage] = useState({});
@@ -21,12 +21,12 @@ const PasswordReset = (props) => {
       .sendPasswordResetEmail(inputs.email)
       .then(() => {
         setMessage({
-          style: "success",
-          content: `Password Reset Link sent to: ${inputs.email}`,
+          style: 'success',
+          content: `Password Reset Link sent to: ${inputs.email}`
         });
       })
       .catch((error) => {
-        setMessage({ style: "danger", content: `${error.message}` });
+        setMessage({ style: 'danger', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(reset);
@@ -64,7 +64,7 @@ const PasswordReset = (props) => {
     </div>
   ) : (
     <div className="mx-auto col-lg-4">
-      <Alert variant={message.style}>{message.content}</Alert>
+      <Alert severity={message.style}>{message.content}</Alert>
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Reset Password</h1>
@@ -77,7 +77,7 @@ const PasswordReset = (props) => {
             <div className="form-group col-12 mx-auto">
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input
-                value={inputs.email || ""}
+                value={inputs.email || ''}
                 onChange={handleInputChange}
                 type="email"
                 name="email"
@@ -131,13 +131,13 @@ const SignUpLink = () => (
   </div>
 );
 PasswordReset.defaultProps = {
-  user: null,
+  user: null
 };
 PasswordReset.propTypes = {
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired
   }).isRequired,
-  user: userType,
+  user: userType
 };
 export default PasswordReset;
 export { SignUpLink };

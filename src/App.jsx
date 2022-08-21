@@ -8,7 +8,14 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
-import { Modal, Button } from 'react-bootstrap';
+import {
+  Modal,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
 import axios from 'axios';
 import PropTypes, { shape } from 'prop-types';
 import ResultView from './Components/views/ResultView';
@@ -645,18 +652,16 @@ const App = (props) => {
             )}
           />
         </Switch>
-        <Modal show={showModal} onHide={() => handleClose()}>
-          <Modal.Header closeButton>
-            <Modal.Title>{modal.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{modal.body}</Modal.Body>
-          <Modal.Footer>
+        <Dialog open={showModal} onClose={() => handleClose()}>
+          <DialogTitle>{modal.title}</DialogTitle>
+          <DialogContent>{modal.body}</DialogContent>
+          <DialogActions>
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
             {modal.primaryButton}
-          </Modal.Footer>
-        </Modal>
+          </DialogActions>
+        </Dialog>
       </div>
     </BreakpointProvider>
   );

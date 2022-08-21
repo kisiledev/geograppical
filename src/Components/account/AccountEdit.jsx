@@ -9,7 +9,7 @@ import {
   faArrowLeft,
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Modal } from 'react-bootstrap';
+import { Alert, Modal } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import {
@@ -227,9 +227,9 @@ const AccountEdit = (props) => {
         />
       </Modal>
       <div className="col-sm-12 col-md-6 mx-auto">
-        <Alert show={show} variant={message.style}>
-          {message.content}
-        </Alert>
+        {message && show && (
+          <Alert severity={message.style}>{message.content}</Alert>
+        )}
         <div className="card col-lg-8 col-xl-8 mx-auto ">
           <div className="row">
             <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">

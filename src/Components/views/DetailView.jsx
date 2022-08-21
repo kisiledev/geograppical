@@ -5,7 +5,7 @@ import {
   faSpinner,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert } from 'react-bootstrap';
+import { Alert } from '@mui/material';
 import Flag from 'react-world-flags';
 import { withRouter, Link } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
@@ -184,14 +184,14 @@ const DetailView = (props) => {
         <div className="row">
           <div className="col-md-12 col-md-9">
             <div className="card my-3">
-              <Alert show={show} variant={message.style}>
-                {message.content}
-                {message && message.length > 0 && message.link && (
-                  <Alert.Link href={message.link && message.link}>
-                    {message.linkContent}
-                  </Alert.Link>
-                )}
-              </Alert>
+              {message?.length && show && (
+                <Alert
+                  severity={message.style}
+                  action={<Link to={message.link}>{message.linkContent}</Link>}
+                >
+                  {message.content}
+                </Alert>
+              )}
               <div className="row justify-content-between">
                 <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
                   <Link

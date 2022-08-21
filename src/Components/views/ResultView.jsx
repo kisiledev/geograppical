@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import { Breakpoint, BreakpointProvider } from 'react-socks';
-import { Alert } from 'react-bootstrap';
+import { Alert, Link } from '@mui/material';
 import PropTypes from 'prop-types';
 import { getFirestore, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { countryType, dataType, userType } from '../../Helpers/Types/index';
@@ -113,10 +113,12 @@ const ResultView = (props) => {
       <div className="row">
         <main className="col-md-9 col-lg-12 px-0">
           {countries[0] === undefined ? null : null}
-          {alert && (
-            <Alert show={show} variant={message.style}>
+          {alert && show && (
+            <Alert
+              severity={message.style}
+              action={<Link to={message.link}>{message.linkContent}</Link>}
+            >
               {message.content}
-              <Alert.Link href={message.link}>{message.linkContent}</Alert.Link>
             </Alert>
           )}
           <Breakpoint medium up>

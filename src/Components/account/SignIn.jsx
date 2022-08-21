@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link, Redirect } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
+import { Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -97,7 +97,7 @@ const SignIn = (props) => {
     </div>
   ) : (
     <div className="mx-auto col-lg-4">
-      <Alert variant={message.style}>{message.content}</Alert>
+      <Alert severity={message.style}>{message.content}</Alert>
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Sign In</h1>

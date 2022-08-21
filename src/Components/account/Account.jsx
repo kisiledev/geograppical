@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert } from '@mui/material';
 import PropTypes from 'prop-types';
 import {
   collection,
@@ -159,9 +159,7 @@ const Account = (props) => {
   });
   return (
     <div className="col-sm-12 col-md-8 mx-auto">
-      <Alert show={show} variant={message.style}>
-        {message.content}
-      </Alert>
+      {show && <Alert severity={message.style}>{message.content}</Alert>}
       <AcctHeader
         loadingState={loadingState}
         favorites={acctFavorites?.data}
