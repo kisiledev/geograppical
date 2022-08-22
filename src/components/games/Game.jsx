@@ -16,8 +16,6 @@ import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
-import Checkbox from '../../Elements/Checkbox';
-import Radio from '../../Elements/Radio';
 import * as ROUTES from '../../Constants/Routes';
 import {
   Dialog,
@@ -25,7 +23,14 @@ import {
   DialogContent,
   Button,
   DialogTitle,
-  Card
+  Card,
+  Checkbox,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  Radio,
+  List,
+  ListItem
 } from '@mui/material';
 
 const Game = (props) => {
@@ -72,6 +77,13 @@ const Game = (props) => {
 
   const intervalRef = useRef(null);
 
+  const styles = {
+    lists: {
+      '&:hover': {
+        backgroundColor: 'lightblue'
+      }
+    }
+  };
   const stop = useCallback(() => {
     if (intervalRef.current === null) {
       return;
@@ -334,22 +346,22 @@ const Game = (props) => {
   }
   const timeButtons = timeChecked && (
     <div className="col-12 d-flex justify-content-center flex-wrap">
-      <label>
-        <Radio
-          value="et"
-          checked={timeMode === 'et'}
-          onChange={(e) => toggleMode(e)}
-        />
-        <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
-      </label>
-      <label>
-        <Radio
-          value="cd"
-          checked={timeMode === 'cd'}
-          onChange={(e) => toggleMode(e)}
-        />
-        <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
-      </label>
+      <FormControl>
+        <RadioGroup name="timeMode" row onChange={toggleMode} value={timeMode}>
+          <FormControlLabel
+            value="et"
+            control={<Radio />}
+            label="Elapsed Time"
+            disableTypography
+          />
+          <FormControlLabel
+            value="cd"
+            control={<Radio />}
+            label="Countdown"
+            disableTypography
+          />
+        </RadioGroup>
+      </FormControl>
     </div>
   );
 
@@ -403,26 +415,29 @@ const Game = (props) => {
           <div>
             <div className="row">
               <div className="col-md-12 mx-auto">
-                <ul className="px-0 text-center">
-                  <li
-                    className="choice list-group-item text-dark btn-info"
+                <List className="px-0 text-center">
+                  <ListItem
+                    divider
+                    className={styles.lists}
                     onClick={() => setGameMode('choice')}
                   >
                     Questions
-                  </li>
-                  <li
-                    className="choice list-group-item text-dark btn-info"
+                  </ListItem>
+                  <ListItem
+                    divider
+                    className={styles.lists}
                     onClick={() => setGameMode('find')}
                   >
                     Find Country on Map
-                  </li>
-                  <li
-                    className="choice list-group-item text-dark btn-info"
+                  </ListItem>
+                  <ListItem
+                    divider
+                    className={styles.lists}
                     onClick={() => setGameMode('highlight')}
                   >
                     Select Highlighted Country
-                  </li>
-                </ul>
+                  </ListItem>
+                </List>
               </div>
             </div>
           </div>
