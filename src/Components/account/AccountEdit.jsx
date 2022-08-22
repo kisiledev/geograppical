@@ -230,7 +230,7 @@ const AccountEdit = (props) => {
         {message && show && (
           <Alert severity={message.style}>{message.content}</Alert>
         )}
-        <div className="card col-lg-8 col-xl-8 mx-auto ">
+        <Card className="card col-lg-8 col-xl-8 mx-auto ">
           <div className="row">
             <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
               <img
@@ -289,12 +289,12 @@ const AccountEdit = (props) => {
               </Link>
             </div>
           </div>
-        </div>
+        </Card>
         <h3 className="mt-5">Account Credentials</h3>
         <div className="d-flex">
           {providers &&
             providers.map((data) => (
-              <div key={data.uid} className="card mb-3">
+              <Card key={data.uid} className="card mb-3">
                 {providersArray.map((prov) => {
                   if (data.providerId === prov.provName) {
                     return (
@@ -341,7 +341,7 @@ const AccountEdit = (props) => {
                     Unlink
                   </Button>
                 </div>
-              </div>
+              </Card>
             ))}
         </div>
         {providersArray.map((provider) => {

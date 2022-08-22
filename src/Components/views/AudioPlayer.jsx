@@ -1,17 +1,21 @@
-import React from "react";
-import { countryType } from "../../helpers/Types";
+import { Card, CardMedia } from '@mui/material';
+import React from 'react';
+import { countryType } from '../../helpers/Types';
 
-const AudioPlayer = props => {
-	const { nation } = props;
-	return (
-		<div className='card align-self-start my-3'>
-			<p>{`${nation.name}'s National Anthem, ${nation.government.national_anthem.name}`}</p>
-			<audio src={nation.government.national_anthem.audio_url} controls />
-		</div>
-	);
+const AudioPlayer = (props) => {
+  const { nation } = props;
+  return (
+    <Card className="card align-self-start my-3">
+      <p>{`${nation.name}'s National Anthem, ${nation.government.national_anthem.name}`}</p>
+      <CardMedia
+        component="audio"
+        src={nation.government.national_anthem.audio_url}
+      />
+    </Card>
+  );
 };
 
 AudioPlayer.propTypes = {
-	nation: countryType.isRequired,
+  nation: countryType.isRequired
 };
 export default AudioPlayer;

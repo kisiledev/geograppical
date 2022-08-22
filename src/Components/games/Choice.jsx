@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { dataType } from '../../helpers/Types/index';
-import { Button } from '@mui/material';
+import { Button, List, ListItem, ListItemButton } from '@mui/material';
 
 const Choice = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -195,15 +195,17 @@ const Choice = (props) => {
           return correct;
         };
         return (
-          <li
-            role="button"
-            onClick={() => checkAnswer(answer)}
-            className={answerStyle(answer.correct)}
-            value={answer.id}
-            key={answer.id}
-          >
-            {answer.name}
-          </li>
+          <ListItem>
+            <ListItemButton
+              role="button"
+              onClick={() => checkAnswer(answer)}
+              className={answerStyle(answer.correct)}
+              value={answer.id}
+              key={answer.id}
+            >
+              {answer.name}
+            </ListItemButton>
+          </ListItem>
         );
       });
     }
@@ -236,9 +238,9 @@ const Choice = (props) => {
         )}
       </div>
       {answers && answers.length > 0 ? (
-        <ul className="px-0 d-flex justify-content-center flex-wrap">
+        <List className="px-0 d-flex justify-content-center flex-wrap">
           {answerChoices}
-        </ul>
+        </List>
       ) : (
         <></>
       )}

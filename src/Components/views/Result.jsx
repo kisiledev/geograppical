@@ -19,6 +19,7 @@ import '../../App.css';
 import { firebaseApp } from '../../Firebase/firebase';
 
 import * as ROUTES from '../../constants/Routes';
+import { Card } from '@mui/material';
 
 const Result = (props) => {
   const [favorite, setFavorite] = useState(false);
@@ -127,7 +128,7 @@ const Result = (props) => {
     }
   }, [filtered]);
   return (
-    <div className="mr-md-3 card mb-3">
+    <Card className="mr-md-3 card mb-3">
       <div className="result media">
         <div className="media-body">
           <h4 className="title">
@@ -171,7 +172,7 @@ const Result = (props) => {
           basePath="/img/flags"
         />
       </div>
-    </div>
+    </Card>
   );
 };
 

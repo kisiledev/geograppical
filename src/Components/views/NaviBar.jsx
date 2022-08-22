@@ -82,15 +82,17 @@ function NaviBar(props) {
   };
 
   const handleMenuClick = (name) => {
+    const selected = settings.filter((s) => s.name === name)[0];
     if (name === 'Logout') {
       logout();
     }
     if (name === 'Sign In') {
-      login();
+      history.push('/login');
     }
     if (name === 'Sign Up') {
       history.push('/signup');
     }
+    history.push(selected.link);
   };
 
   const searchMarkup = (

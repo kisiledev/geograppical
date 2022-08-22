@@ -5,7 +5,7 @@ import {
   faSpinner,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert } from '@mui/material';
+import { Alert, Card } from '@mui/material';
 import Flag from 'react-world-flags';
 import { withRouter, Link } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
@@ -183,7 +183,7 @@ const DetailView = (props) => {
       ) : (
         <div className="row">
           <div className="col-md-12 col-md-9">
-            <div className="card my-3">
+            <Card className="card my-3">
               {message?.length && show && (
                 <Alert
                   severity={message.style}
@@ -246,7 +246,7 @@ const DetailView = (props) => {
                 excludeBottomBorder={false}
                 rootProperty
               />
-            </div>
+            </Card>
           </div>
           <Breakpoint medium down>
             <SidebarView

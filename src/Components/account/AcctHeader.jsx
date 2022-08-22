@@ -18,7 +18,7 @@ import userImg from '../../img/user.png';
 const AcctHeader = (props) => {
   const { loadingState, favorites, scores, user } = props;
   return (
-    <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
+    <Card className="card col-lg-8 col-xl-6 mx-auto mb-3">
       <div className="row">
         <div className="col-12 text-center">
           <img
@@ -62,7 +62,7 @@ const AcctHeader = (props) => {
           </Link>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

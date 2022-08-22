@@ -5,7 +5,7 @@ import {
   faAngleUp,
   faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge, Chip } from '@mui/material';
+import { Badge, Card, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
 import Favs from './Favs';
 import Scores from './Scores';
@@ -25,7 +25,7 @@ const AccountData = (props) => {
 
   console.log(acctData);
   return (
-    <div className="col-sm-12 col-lg-5 card datacard mx-auto my-1">
+    <Card sx={{ padding: '5px', margin: '10px auto' }}>
       <h5
         className="list-group-item d-flex align-items-center"
         onClick={() => toggleData(name)}
@@ -61,7 +61,7 @@ const AccountData = (props) => {
           ) : (
             <Scores acctData={acctData} deleteDocument={deleteDocument} />
           ))}
-    </div>
+    </Card>
   );
 };
 AccountData.propTypes = {

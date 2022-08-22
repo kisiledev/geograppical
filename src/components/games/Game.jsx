@@ -24,7 +24,8 @@ import {
   DialogActions,
   DialogContent,
   Button,
-  DialogTitle
+  DialogTitle,
+  Card
 } from '@mui/material';
 
 const Game = (props) => {
@@ -392,7 +393,7 @@ const Game = (props) => {
         incorrect={incorrect}
         questions={questions}
       />
-      <div className="card mt-5 col-md-8 mx-auto">
+      <Card sx={{ padding: '15px', margin: '0 200px', marginTop: '3rem' }}>
         <h3 className="text-center">
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
@@ -459,7 +460,7 @@ const Game = (props) => {
             </Button>
           </div>
         )}
-      </div>
+      </Card>
     </>
   );
 };

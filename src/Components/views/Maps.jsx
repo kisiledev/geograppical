@@ -29,7 +29,7 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { dataType } from '../../Helpers/Types/index';
 import data from '../../Data/world-50m.json';
-import { Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup, Card } from '@mui/material';
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
@@ -227,19 +227,19 @@ const Maps = (props) => {
   return (
     <div className="pt-3 container-fluid">
       <BreakpointProvider>
-        <div className="card mr-3 mb-3">
+        <Card className="card mr-3 mb-3">
           <Breakpoint small up>
             <div className="d-flex justify-content-between pb-3">
               <ButtonGroup variant="contained">
                 <Button
-                  type="button"
+                  variant="contained"
                   className="btn btn-info"
                   onClick={() => handleZoomOut(zoom)}
                 >
                   <FontAwesomeIcon icon={faMinus} />
                 </Button>
                 <Button
-                  type="button"
+                  variant="contained"
                   className="btn btn-info"
                   onClick={() => handleZoomIn(zoom)}
                 >
@@ -317,7 +317,7 @@ const Maps = (props) => {
             effect="float"
             getContent={(dataTip) => handleContent(dataTip)}
           />
-        </div>
+        </Card>
       </BreakpointProvider>
     </div>
   );
