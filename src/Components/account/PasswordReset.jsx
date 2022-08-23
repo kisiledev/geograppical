@@ -3,19 +3,28 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
-import { Link, Redirect } from 'react-router-dom';
-import { Alert, Button } from '@mui/material';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Alert, Box, Button, TextField, Link } from '@mui/material';
+import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { userType } from '../../helpers/Types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  loginButtons: {
+    marginBottom: '10px'
+  }
+});
 
 const PasswordReset = (props) => {
   const [message, setMessage] = useState({});
   const [loadingState, setLoadingState] = useState(true);
 
+  const classes = useStyles();
   const reset = () => {
     auth
       .sendPasswordResetEmail(inputs.email)
@@ -63,62 +72,73 @@ const PasswordReset = (props) => {
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
     </div>
   ) : (
-    <div className="mx-auto col-lg-4">
-      <Alert severity={message.style}>{message.content}</Alert>
+    <Box
+      sx={{
+        maxWidth: '600px',
+        margin: '50px auto 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      {Object.keys(message)?.length > 0 && (
+        <Alert severity={message.style}>{message.content}</Alert>
+      )}
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Reset Password</h1>
         </div>
       </div>
-      <div className="row">
-        <div className="col-lg-12">
-          {/* <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} /> */}
-          <form>
-            <div className="form-group col-12 mx-auto">
-              <label htmlFor="exampleInputEmail1">Email address</label>
-              <input
-                value={inputs.email || ''}
-                onChange={handleInputChange}
-                type="email"
-                name="email"
-                className="form-control prefinput"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                placeholder="Enter email"
-              />
-            </div>
-            <div className="col-12 d-flex justify-content-center mb-3">
-              <Button
-                onClick={handleSubmit}
-                variant="contained"
-                className="email-button"
-              >
-                <span className="email-button__icon">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg"
-                    className="emailicon"
-                    alt="email icon"
-                  />
-                </span>
-                <span className="email-button__text">Reset Password</span>
-              </Button>
-            </div>
-            <div className="col-12 d-flex justify-content-center">
-              <p>
-                Don't have an account?
-                <Link to={`/signup`}>Sign Up</Link>
-              </p>
-            </div>
-            <div className="col-12 d-flex justify-content-center">
-              <p>
-                Already have an account?
-                <Link to={`/login`}>Sign In</Link>
-              </p>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+
+      <Box
+        component="form"
+        sx={{
+          margin: '10px',
+          display: 'flex',
+          width: '80%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          '& .MuiTextField-root': {
+            margin: 1,
+            width: '100%'
+          }
+        }}
+      >
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Email Address"
+          value={inputs.email || ''}
+          onChange={handleInputChange}
+          type="email"
+          name="email"
+          placeholder="Enter email"
+        />
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          fullWidth
+          className={classes.loginButtons}
+          startIcon={<EmailRounded />}
+        >
+          Send Password Reset
+        </Button>
+        <p>
+          Don&apos;t have an account?
+          <Link component={RouterLink} marginLeft="5px" to={`/signup`}>
+            Sign Up
+          </Link>
+        </p>
+        <p>
+          Want to Sign In Instead?
+          <Link component={RouterLink} marginLeft="5px" to={`/login`}>
+            Sign In
+          </Link>
+        </p>
+      </Box>
+    </Box>
   );
 };
 

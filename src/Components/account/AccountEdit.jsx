@@ -9,7 +9,15 @@ import {
   faArrowLeft,
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Box, Button, Card, Modal } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Dialog,
+  Modal,
+  Typography
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import {
@@ -225,13 +233,13 @@ const AccountEdit = (props) => {
   });
   return (
     <>
-      <Modal show={show}>
+      <Dialog open={show} onClose={() => setShow(false)}>
         <LinkEmailModal
           linkEmail={linkEmail}
           close={close}
           message={modalMessage}
         />
-      </Modal>
+      </Dialog>
       <div className="col-sm-12 col-md-6 mx-auto">
         {message && show && (
           <Alert severity={message.style}>{message.content}</Alert>
@@ -296,89 +304,104 @@ const AccountEdit = (props) => {
             </div>
           </div>
         </Card>
-        <h3 className="mt-5">Account Credentials</h3>
+
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
             alignItems: 'center'
           }}
         >
-          {providers &&
-            providers.map((data) => (
-              <Card raised key={data.uid} className="card mb-3">
-                {providersArray.map((prov) => {
-                  if (data.providerId === prov.provName) {
-                    return prov.icon;
-                  }
-                  return null;
-                })}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box sx={{ alignItems: 'flex-start' }}>
-                    <p>
-                      <strong>Name </strong>-{data.displayName}
-                    </p>
-                    {data.email && (
-                      <p>
-                        <strong>Email </strong>-{data.email}
-                      </p>
-                    )}
-                    {providersArray.map((prov) => {
-                      if (data.providerId === prov.provName) {
-                        return (
-                          <p key={prov.id}>
-                            <strong>Provider </strong>-{prov.name}
-                          </p>
-                        );
-                      }
-                      return null;
-                    })}
-                  </Box>
-                </Box>
-                <Button
-                  onClick={() => unlinkProvider(data.providerId)}
-                  color="error"
-                  variant="contained"
-                  size="small"
-                  endIcon={<FontAwesomeIcon icon={faTrashAlt} color="white" />}
-                >
-                  Unlink
-                </Button>
-              </Card>
-            ))}
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap'
-          }}
-        >
-          {providersArray.map((provider) => {
-            if (!userProvs.includes(provider.provName)) {
-              return (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '100%',
-                    margin: '10px'
-                  }}
-                >
-                  <Button
-                    onClick={provider.onClick}
-                    variant="contained"
-                    className={`provider-button ${provider.name.toLowerCase()}-button`}
-                    startIcon={provider.icon}
+          <Typography variant="h5" margin="30px">
+            Account Credentials
+          </Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            {providers &&
+              providers.map((data) => (
+                <Card raised key={data.uid} className="card mb-3">
+                  {providersArray.map((prov) => {
+                    if (data.providerId === prov.provName) {
+                      return prov.icon;
+                    }
+                    return null;
+                  })}
+                  <Box
+                    sx={{ display: 'flex', justifyContent: 'space-between' }}
                   >
-                    {`Link with ${provider.name}`}
+                    <Box sx={{ alignItems: 'flex-start' }}>
+                      <p>
+                        <strong>Name </strong>-{data.displayName}
+                      </p>
+                      {data.email && (
+                        <p>
+                          <strong>Email </strong>-{data.email}
+                        </p>
+                      )}
+                      {providersArray.map((prov) => {
+                        if (data.providerId === prov.provName) {
+                          return (
+                            <p key={prov.id}>
+                              <strong>Provider </strong>-{prov.name}
+                            </p>
+                          );
+                        }
+                        return null;
+                      })}
+                    </Box>
+                  </Box>
+                  <Button
+                    onClick={() => unlinkProvider(data.providerId)}
+                    color="error"
+                    variant="contained"
+                    size="small"
+                    endIcon={
+                      <FontAwesomeIcon icon={faTrashAlt} color="white" />
+                    }
+                  >
+                    Unlink
                   </Button>
-                </Box>
-              );
-            }
-            return null;
-          })}
+                </Card>
+              ))}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap'
+            }}
+          >
+            {providersArray.map((provider) => {
+              if (!userProvs.includes(provider.provName)) {
+                return (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '100%',
+                      margin: '10px'
+                    }}
+                  >
+                    <Button
+                      onClick={provider.onClick}
+                      variant="contained"
+                      className={`provider-button ${provider.name.toLowerCase()}-button`}
+                      startIcon={provider.icon}
+                    >
+                      {`Link with ${provider.name}`}
+                    </Button>
+                  </Box>
+                );
+              }
+              return null;
+            })}
+          </Box>
         </Box>
       </div>
     </>

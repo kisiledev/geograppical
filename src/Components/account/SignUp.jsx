@@ -1,18 +1,27 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { Alert, Button } from '@mui/material';
+import { Alert, Box, Button, TextField } from '@mui/material';
 import 'firebaseui';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
 import { auth, googleProvider } from '../../Firebase/firebase';
 import useSignUpForm from '../../Helpers/CustomHooks';
+import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  loginButtons: {
+    marginBottom: '10px'
+  }
+});
 
 const SignUp = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
   const [message, setMessage] = useState({});
 
+  const classes = useStyles();
   const signup = () => {
     createUserWithEmailAndPassword(auth, inputs.email, inputs.passwordOne)
       .then((u) => {
@@ -76,111 +85,106 @@ const SignUp = (props) => {
     inputs.username === '';
 
   return (
-    <div className="mx-auto col-lg-4">
-      <Alert severity={message.style}>{message.content}</Alert>
+    <Box
+      sx={{
+        maxWidth: '600px',
+        margin: '50px auto 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      {Object.keys(message)?.length > 0 && (
+        <Alert severity={message.style}>{message.content}</Alert>
+      )}
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Sign Up</h1>
         </div>
       </div>
-      <div className="row">
-        <div className="col-lg-12">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group col-12 mb-4 mx-auto">
-              <input
-                value={inputs.username || ''}
-                onChange={handleInputChange}
-                type="text"
-                name="username"
-                className="form-control prefinput"
-                placeholder="Full Name"
-              />
-            </div>
-            <div className="form-group col-12 mb-4 mx-auto">
-              <input
-                value={inputs.email || ''}
-                onChange={handleInputChange}
-                type="email"
-                name="email"
-                className={`form-control ${
-                  inputs.email === '' || !inputs.email
-                    ? 'prefinput'
-                    : isEmailValid
-                    ? 'form-success'
-                    : 'form-error'
-                }`}
-                placeholder="Enter email"
-              />
-            </div>
-            <div className="form-group col-12 mb-4 mx-auto">
-              <input
-                value={inputs.passwordOne || ''}
-                onChange={handleInputChange}
-                type="password"
-                name="passwordOne"
-                className={`form-control ${
-                  inputs.passwordOne === '' || !inputs.passwordOne
-                    ? 'prefinput'
-                    : isPWValid
-                    ? 'form-success'
-                    : 'form-error'
-                }`}
-                placeholder="Password"
-              />
-            </div>
-            <div className="form-group col-12 mb-4 mx-auto">
-              <input
-                value={inputs.passwordTwo || ''}
-                onChange={handleInputChange}
-                type="password"
-                name="passwordTwo"
-                className={`form-control ${
-                  inputs.passwordTwo === '' || !inputs.passwordTwo
-                    ? 'prefinput'
-                    : inputs.passwordTwo === inputs.passwordOne
-                    ? 'form-success'
-                    : 'form-error'
-                }`}
-                placeholder="Confirm Password"
-              />
-            </div>
-            <div className="col-12 d-flex justify-content-center mb-3">
-              <Button
-                disabled={isInvalid}
-                type="submit"
-                className="email-button"
-              >
-                <span className="email-button__icon">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg"
-                    className="emailicon"
-                    alt="email icon"
-                  />
-                </span>
-                <span className="email-button__text">Sign Up with Email</span>
-              </Button>
-            </div>
-            <div className="col-12 d-flex justify-content-center mb-3">
-              <Button
-                onClick={(e) => googleSignUp(e)}
-                variant="contained"
-                className="google-button"
-              >
-                <span className="google-button__icon">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                    className="emailicon"
-                    alt="google icon"
-                  />
-                </span>
-                <span className="google-button__text">Sign Up with Google</span>
-              </Button>
-            </div>
-          </form>
-          <SignUpLink />
-        </div>
-      </div>
-    </div>
+      <Box
+        component="form"
+        sx={{
+          margin: '10px',
+          display: 'flex',
+          width: '80%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          '& .MuiTextField-root': {
+            margin: 1,
+            width: '100%'
+          }
+        }}
+      >
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Full Name"
+          value={inputs.username || ''}
+          onChange={handleInputChange}
+          type="text"
+          name="username"
+          placeholder="Enter Full Name"
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Email Address"
+          value={inputs.email || ''}
+          onChange={handleInputChange}
+          type="email"
+          name="email"
+          placeholder="Enter email"
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Enter Password"
+          value={inputs.passwordOne || ''}
+          onChange={handleInputChange}
+          type="password"
+          name="passwordOne"
+          placeholder="Enter Password"
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Confirm Password"
+          error={
+            (inputs.passwordTwo && inputs.passwordTwo !== inputs.passwordOne) ||
+            inputs.passwordTwo === '' ||
+            !inputs.passwordTwo
+          }
+          value={inputs.passwordTwo || ''}
+          onChange={handleInputChange}
+          type="password"
+          name="passwordTwo"
+          placeholder="Confirm Password"
+        />
+        <Button
+          onClick={handleSubmit}
+          disabled={isInvalid}
+          variant="contained"
+          fullWidth
+          className={classes.loginButtons}
+          startIcon={<EmailRounded />}
+        >
+          Sign in with Email
+        </Button>
+        <Button
+          onClick={googleSignUp}
+          variant="contained"
+          fullWidth
+          className={classes.loginButtons}
+          startIcon={<Google />}
+        >
+          Sign in with Google
+        </Button>
+      </Box>
+      <SignUpLink />
+    </Box>
   );
 };
 

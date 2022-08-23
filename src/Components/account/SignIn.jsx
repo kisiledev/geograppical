@@ -4,8 +4,8 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
-import { Link, Redirect } from 'react-router-dom';
-import { Alert, Button } from '@mui/material';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Alert, Box, Button, TextField, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
@@ -13,12 +13,20 @@ import { fetchSignInMethodsForEmail, signInWithPopup } from 'firebase/auth';
 import { userType } from '../../Helpers/Types/index';
 import { auth, googleProvider } from '../../Firebase/firebase';
 import useSignUpForm from '../../Helpers/CustomHooks';
+import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
 
+const useStyles = makeStyles({
+  loginButtons: {
+    marginBottom: '10px'
+  }
+});
 const SignIn = (props) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [methods, setMethods] = useState(null);
   const [message, setMessage] = useState({});
 
+  const classes = useStyles();
   const login = () => {
     // console.log('reunning login');
     fetchSignInMethodsForEmail(auth, inputs.email)
@@ -96,96 +104,92 @@ const SignIn = (props) => {
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
     </div>
   ) : (
-    <div className="mx-auto col-lg-4">
-      <Alert severity={message.style}>{message.content}</Alert>
+    <Box
+      sx={{
+        maxWidth: '600px',
+        margin: '50px auto 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      {Object.keys(message)?.length > 0 && (
+        <Alert severity={message.style}>{message.content}</Alert>
+      )}
       <div className="row mb-3">
         <div className="col-lg-12 text-center">
           <h1 className="mt-3">Sign In</h1>
         </div>
       </div>
-      <div className="row">
-        <div className="col-lg-12">
-          <form>
-            <div className="form-group mx-auto">
-              <label htmlFor="exampleInputEmail1">Email address</label>
-              <input
-                value={inputs.email || ''}
-                onChange={handleInputChange}
-                type="email"
-                name="email"
-                className={`form-control ${
-                  inputs.email === '' || !inputs.email
-                    ? 'prefinput'
-                    : isEmailValid
-                    ? 'form-success'
-                    : 'form-error'
-                }`}
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                placeholder="Enter email"
-              />
-            </div>
-            <div className="form-group mx-auto mb-3">
-              <label htmlFor="exampleInputPassword1">Password</label>
-              <input
-                value={inputs.password || ''}
-                onChange={handleInputChange}
-                type="password"
-                name="password"
-                className="form-control prefinput"
-                id="exampleInputPassword1"
-                placeholder="Password"
-              />
-            </div>
-            <div className="col-12 d-flex justify-content-center mt-5 mb-3">
-              <Button
-                onClick={handleSubmit}
-                disabled={isInvalid}
-                variant="contained"
-                className="email-button"
-              >
-                <span className="email-button__icon">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/mail.svg"
-                    className="emailicon"
-                    alt="email icon"
-                  />
-                </span>
-                <span className="email-button__text">Sign in with Email</span>
-              </Button>
-            </div>
-            <div className="col-12 d-flex justify-content-center mb-3">
-              <Button
-                onClick={googleSignUp}
-                variant="contained"
-                className="google-button"
-              >
-                <span className="google-button__icon">
-                  <img
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                    className="emailicon"
-                    alt="google icon"
-                  />
-                </span>
-                <span className="google-button__text">Sign in with Google</span>
-              </Button>
-            </div>
-            <div className="col-12 d-flex justify-content-center">
-              <p>
-                Don&apos;t have an account?
-                <Link to={`/signup`}>Sign Up</Link>
-              </p>
-            </div>
-            <div className="col-12 d-flex justify-content-center">
-              <p>
-                Forgot Your Password?
-                <Link to={`/passwordreset`}>Reset It</Link>
-              </p>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+      <Box
+        component="form"
+        sx={{
+          margin: '10px',
+          display: 'flex',
+          width: '80%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          '& .MuiTextField-root': {
+            margin: 1,
+            width: '100%'
+          }
+        }}
+      >
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Email Address"
+          value={inputs.email || ''}
+          onChange={handleInputChange}
+          type="email"
+          name="email"
+          placeholder="Enter email"
+        />
+        <TextField
+          variant="outlined"
+          size="small"
+          label="Password"
+          value={inputs.password || ''}
+          onChange={handleInputChange}
+          type="password"
+          name="password"
+          placeholder="Password"
+        />
+        <Button
+          onClick={handleSubmit}
+          disabled={isInvalid}
+          variant="contained"
+          fullWidth
+          className={classes.loginButtons}
+          startIcon={<EmailRounded />}
+        >
+          Sign in with Email
+        </Button>
+        <Button
+          onClick={googleSignUp}
+          variant="contained"
+          fullWidth
+          className={classes.loginButtons}
+          startIcon={<Google />}
+        >
+          Sign in with Google
+        </Button>
+        <p>
+          Don&apos;t have an account?
+          <Link component={RouterLink} marginLeft="5px" to={`/signup`}>
+            Sign Up
+          </Link>
+        </p>
+        <p>
+          Forgot Your Password?
+          <Link component={RouterLink} marginLeft="5px" to={`/passwordreset`}>
+            Reset It
+          </Link>
+        </p>
+      </Box>
+    </Box>
   );
 };
 

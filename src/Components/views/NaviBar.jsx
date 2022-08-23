@@ -52,7 +52,7 @@ function NaviBar(props) {
   const settings = [
     { name: 'Profile', link: '/profile', loggedIn: true },
     { name: 'Favorites', link: '/favorites', loggedIn: true },
-    { name: 'Dashboard', link: '/dashboard', loggedIn: true },
+    { name: 'Dashboard', link: '/account', loggedIn: true },
     { name: 'Logout', link: '/logout', loggedIn: true },
     { name: 'Sign In', link: '/login', loggedIn: false },
     { name: 'Sign Up', link: '/signup', loggedIn: false }
@@ -79,11 +79,13 @@ function NaviBar(props) {
   const logout = () => {
     auth.signOut();
     history.push('/');
+    console.log('pushing to root');
   };
 
   const handleMenuClick = (name) => {
     const selected = settings.filter((s) => s.name === name)[0];
     if (name === 'Logout') {
+      console.log('logging out');
       logout();
     }
     if (name === 'Sign In') {
@@ -91,8 +93,9 @@ function NaviBar(props) {
     }
     if (name === 'Sign Up') {
       history.push('/signup');
+    } else {
+      history.push(selected.link);
     }
-    history.push(selected.link);
   };
 
   const searchMarkup = (
