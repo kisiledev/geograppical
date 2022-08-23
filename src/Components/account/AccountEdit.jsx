@@ -297,7 +297,13 @@ const AccountEdit = (props) => {
           </div>
         </Card>
         <h3 className="mt-5">Account Credentials</h3>
-        <div className="d-flex">
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
           {providers &&
             providers.map((data) => (
               <Card raised key={data.uid} className="card mb-3">
@@ -340,27 +346,40 @@ const AccountEdit = (props) => {
                 </Button>
               </Card>
             ))}
-        </div>
-        {providersArray.map((provider) => {
-          if (!userProvs.includes(provider.provName)) {
-            return (
-              <div
-                key={provider.id}
-                className="col-12 d-flex w-100 justify-content-center mb-3"
-              >
-                <Button
-                  onClick={provider.onClick}
-                  variant="contained"
-                  className={`provider-button ${provider.name.toLowerCase()}-button`}
-                  startIcon={provider.icon}
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap'
+          }}
+        >
+          {providersArray.map((provider) => {
+            if (!userProvs.includes(provider.provName)) {
+              return (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%',
+                    margin: '10px'
+                  }}
                 >
-                  {`Link with ${provider.name}`}
-                </Button>
-              </div>
-            );
-          }
-          return null;
-        })}
+                  <Button
+                    onClick={provider.onClick}
+                    variant="contained"
+                    className={`provider-button ${provider.name.toLowerCase()}-button`}
+                    startIcon={provider.icon}
+                  >
+                    {`Link with ${provider.name}`}
+                  </Button>
+                </Box>
+              );
+            }
+            return null;
+          })}
+        </Box>
       </div>
     </>
   );

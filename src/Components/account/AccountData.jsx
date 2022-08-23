@@ -10,6 +10,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Badge,
+  Box,
   Card,
   Chip,
   Typography
@@ -39,19 +40,34 @@ const AccountData = (props) => {
         sx={{ justifyContent: 'space-evenly' }}
         expandIcon={<ExpandMore />}
       >
-        <Typography component="h5">{capitalize(name)}</Typography>
-        <Chip
-          label={
-            loadingState ? (
-              <FontAwesomeIcon icon={faSpinner} spin />
-            ) : (
-              acctData && acctData.data.length > 0 && acctData.data.length
-            )
-          }
-          sx={{ margin: '0 10px' }}
-          variant="contained"
-          size="small"
-        />
+        <Typography variant="h6">{capitalize(name)}</Typography>
+        <Box
+          sx={{
+            margin: '0 10px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Chip
+            label={
+              loadingState ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                acctData && acctData.data.length > 0 && acctData.data.length
+              )
+            }
+            sx={{
+              margin: '0 10px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+            color="primary"
+            variant="contained"
+            size="small"
+          />
+        </Box>
       </AccordionSummary>
       <AccordionDetails>
         {loadingState
