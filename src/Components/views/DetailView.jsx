@@ -230,11 +230,7 @@ const DetailView = (props) => {
                         ? countryDetail.government.country_name.isoCode
                         : `_${countryDetail.name}`
                     }
-                    format="svg"
-                    pngSize={64}
-                    shiny={false}
                     alt={`${countryDetail.name}'s Flag`}
-                    basePath="/img/flags"
                   />
                 </div>
                 <AudioPlayer nation={countryDetail} />

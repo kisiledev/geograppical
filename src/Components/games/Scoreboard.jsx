@@ -17,7 +17,7 @@ const Scoreboard = (props) => {
   } = props;
 
   return (
-    <Card className="card flex-row row col-sm-4 mt-3 mx-auto">
+    <Card raised className="card flex-row row col-sm-4 mt-3 mx-auto">
       <Timer
         timeChecked={timeChecked}
         isStarted={isStarted}

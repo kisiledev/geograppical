@@ -6,6 +6,7 @@ import {
   Geography
 } from 'react-simple-maps';
 import { geoEqualEarth } from 'd3-geo';
+import * as d3 from 'd3';
 import ReactTooltip from 'react-tooltip';
 import {
   faPlus,
@@ -45,10 +46,10 @@ const Find = (props) => {
     mapVisible
   } = props;
 
-  const proj = () =>
-    geoEqualEarth()
-      .translate([800 / 2, 400 / 2])
-      .scale(150);
+  const proj = d3
+    .geoEqualEarth()
+    .translate([800 / 2, 400 / 2])
+    .scale(150);
 
   // const handleWheel = (event) => {
   //   console.log('scroll detected');
@@ -346,7 +347,7 @@ const Find = (props) => {
         incorrect answers and you will LOSE a point. Good luck!
       </p>
       <Button
-        vairant="contained"
+        variant="contained"
         className="btn btn-lg btn-success"
         onClick={() => takeTurn()}
       >
@@ -417,8 +418,8 @@ const Find = (props) => {
               onMoveEnd={handleMoveEnd}
             >
               <Geographies geography={data}>
-                {(geos, proj) =>
-                  geos.map((geo, i) => (
+                {({ geographies: geos }, proj) => {
+                  return geos.map((geo, i) => (
                     <Geography
                       data-idkey={i}
                       data-longname={handleText(geo.properties.NAME_LONG)}
@@ -431,8 +432,8 @@ const Find = (props) => {
                       projection={proj}
                       className="gameCountry"
                     />
-                  ))
-                }
+                  ));
+                }}
               </Geographies>
             </ZoomableGroup>
           </ComposableMap>

@@ -388,7 +388,7 @@ const Highlight = (props) => {
         luck!
       </p>
       <Button
-        vairant="contained"
+        variant="contained"
         className="btn btn-lg btn-success"
         onClick={() => takeTurn()}
       >

@@ -8,8 +8,9 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import userImg from '../../img/user.png';
+import { Button, Card } from '@mui/material';
 // import PropTypes from 'prop-types';
 // import {
 //   countryType,
@@ -18,7 +19,7 @@ import userImg from '../../img/user.png';
 const AcctHeader = (props) => {
   const { loadingState, favorites, scores, user } = props;
   return (
-    <Card className="card col-lg-8 col-xl-6 mx-auto mb-3">
+    <Card raised sx={{ marginBottom: '50px', padding: '20px' }}>
       <div className="row">
         <div className="col-12 text-center">
           <img
@@ -44,22 +45,27 @@ const AcctHeader = (props) => {
                 {favorites?.length === 0
                   ? 'No Favorites'
                   : `${favorites?.length} Favorite${
-                      favorites?.length === 1 && 's'
+                      favorites?.length > 1 && 's'
                     }`}
               </p>
               <p>
                 {scores?.length === 0
                   ? 'No Scores'
-                  : `${scores?.length} Score${scores?.length === 1 && 's'}`}
+                  : `${scores?.length} Score${scores?.length > 1 && 's'}`}
               </p>
             </>
           )}
         </div>
         <div className="col-12 text-center">
-          <Link className="btn btn-success" to="/account/edit">
+          <Button
+            LinkComponent={RouterLink}
+            variant="contained"
+            color="success"
+            to="/account/edit"
+          >
             <FontAwesomeIcon className="acctedit" icon={faPencilAlt} />
             Edit Account
-          </Link>
+          </Button>
         </div>
       </div>
     </Card>

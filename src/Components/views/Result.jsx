@@ -128,7 +128,7 @@ const Result = (props) => {
     }
   }, [filtered]);
   return (
-    <Card className="mr-md-3 card mb-3">
+    <Card raised className="mr-md-3 card mb-3">
       <div className="result media">
         <div className="media-body">
           <h4 className="title">
@@ -165,11 +165,7 @@ const Result = (props) => {
         <Flag
           className="img-thumbnail"
           code={flagCode || '_unknown'}
-          format="svg"
-          pngSize={64}
-          shiny={false}
           alt={`${name}'s Flag`}
-          basePath="/img/flags"
         />
       </div>
     </Card>

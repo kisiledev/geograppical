@@ -168,7 +168,7 @@ const Choice = (props) => {
         incorrect answers and you will LOSE a point. Good luck!`
       </p>
       <Button
-        vairant="contained"
+        variant="contained"
         className="btn btn-lg btn-success"
         onClick={() => takeTurn()}
       >

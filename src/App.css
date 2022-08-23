@@ -447,7 +447,7 @@ a:hover {
 .main {
   margin: 0 auto;
   padding: 10px;
-  margin-top: 64px;
+  margin-top: 75px;
 }
 .col-md-9 {
   padding: 0px;
@@ -694,7 +694,6 @@ ul .collapsing {
   .main {
     margin-left: 250px;
     padding: 0px;
-    overflow: hidden;
     margin-right: auto;
     width: auto;
   }

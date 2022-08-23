@@ -168,7 +168,7 @@ const Account = (props) => {
         scores={acctScores?.data}
         user={user}
       />
-      <div className="row">{acct}</div>
+      {acct}
     </div>
   );
 };

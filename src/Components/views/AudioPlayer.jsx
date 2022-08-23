@@ -5,7 +5,7 @@ import { countryType } from '../../helpers/Types';
 const AudioPlayer = (props) => {
   const { nation } = props;
   return (
-    <Card className="card align-self-start my-3">
+    <Card raised className="card align-self-start my-3">
       <p>{`${nation.name}'s National Anthem, ${nation.government.national_anthem.name}`}</p>
       <CardMedia
         component="audio"

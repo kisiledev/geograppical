@@ -405,7 +405,15 @@ const Game = (props) => {
         incorrect={incorrect}
         questions={questions}
       />
-      <Card sx={{ padding: '15px', margin: '0 200px', marginTop: '3rem' }}>
+      <Card
+        raised
+        sx={{
+          maxWidth: '600px',
+          padding: '15px',
+          margin: '0 auto',
+          marginTop: '3rem'
+        }}
+      >
         <h3 className="text-center">
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`

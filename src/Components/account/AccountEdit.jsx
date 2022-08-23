@@ -9,7 +9,7 @@ import {
   faArrowLeft,
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Button, Modal } from '@mui/material';
+import { Alert, Box, Button, Card, Modal } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import {
@@ -28,6 +28,12 @@ import userImg from '../../img/user.png';
 import facebookIcon from '../../img/facebook-icon-white.svg';
 import twitterIcon from '../../img/Twitter_Logo_WhiteOnBlue.svg';
 import emailIcon from '../../img/auth_service_email.svg';
+import {
+  EmailTwoTone,
+  FacebookTwoTone,
+  Google,
+  Twitter
+} from '@mui/icons-material';
 
 const AccountEdit = (props) => {
   const { user } = props;
@@ -181,28 +187,28 @@ const AccountEdit = (props) => {
       id: 1,
       name: 'Google',
       provName: 'google.com',
-      icon: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+      icon: <Google />,
       onClick: () => providerLink('Google')
     },
     {
       id: 2,
       name: 'Facebook',
       provName: 'facebook.com',
-      icon: facebookIcon,
+      icon: <FacebookTwoTone />,
       onClick: () => providerLink('Facebook')
     },
     {
       id: 3,
       name: 'Twitter',
       provName: 'twitter.com',
-      icon: twitterIcon,
+      icon: <Twitter />,
       onClick: () => providerLink('Twitter')
     },
     {
       id: 4,
       name: 'Email',
       provName: 'password',
-      icon: emailIcon,
+      icon: <EmailTwoTone />,
       onClick: () => setShow(true)
     }
   ];
@@ -230,7 +236,7 @@ const AccountEdit = (props) => {
         {message && show && (
           <Alert severity={message.style}>{message.content}</Alert>
         )}
-        <Card className="card col-lg-8 col-xl-8 mx-auto ">
+        <Card raised className="card col-lg-8 col-xl-8 mx-auto ">
           <div className="row">
             <div className="col-12 text-center d-flex align-items-center justify-content-center flex-column">
               <img
@@ -271,13 +277,13 @@ const AccountEdit = (props) => {
                     {favorites?.length === 0
                       ? 'No Favorites'
                       : `${favorites?.length} Favorite${
-                          favorites?.length === 1 && 's'
+                          favorites?.length > 1 && 's'
                         }`}
                   </p>
                   <p>
                     {scores?.length === 0
                       ? 'No Scores'
-                      : `${scores?.length} Score${scores?.length === 1 && 's'}`}
+                      : `${scores?.length} Score${scores?.length > 1 && 's'}`}
                   </p>
                 </>
               )}
@@ -294,22 +300,15 @@ const AccountEdit = (props) => {
         <div className="d-flex">
           {providers &&
             providers.map((data) => (
-              <Card key={data.uid} className="card mb-3">
+              <Card raised key={data.uid} className="card mb-3">
                 {providersArray.map((prov) => {
                   if (data.providerId === prov.provName) {
-                    return (
-                      <img
-                        src={prov.icon}
-                        key={prov.id}
-                        className="mb-3 providericon"
-                        alt={`${prov.name.toLowerCase()} icon`}
-                      />
-                    );
+                    return prov.icon;
                   }
                   return null;
                 })}
-                <div className="d-flex justify-content-between">
-                  <div className="align-items-start">
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Box sx={{ alignItems: 'flex-start' }}>
                     <p>
                       <strong>Name </strong>-{data.displayName}
                     </p>
@@ -328,19 +327,17 @@ const AccountEdit = (props) => {
                       }
                       return null;
                     })}
-                  </div>
-                  <Button
-                    onClick={() => unlinkProvider(data.providerId)}
-                    color="error"
-                    variant="contained"
-                    size="small"
-                    endIcon={
-                      <FontAwesomeIcon icon={faTrashAlt} color="white" />
-                    }
-                  >
-                    Unlink
-                  </Button>
-                </div>
+                  </Box>
+                </Box>
+                <Button
+                  onClick={() => unlinkProvider(data.providerId)}
+                  color="error"
+                  variant="contained"
+                  size="small"
+                  endIcon={<FontAwesomeIcon icon={faTrashAlt} color="white" />}
+                >
+                  Unlink
+                </Button>
               </Card>
             ))}
         </div>
@@ -355,13 +352,7 @@ const AccountEdit = (props) => {
                   onClick={provider.onClick}
                   variant="contained"
                   className={`provider-button ${provider.name.toLowerCase()}-button`}
-                  startIcon={
-                    <img
-                      src={provider.icon}
-                      className={`${provider.name.toLowerCase()}icon`}
-                      alt="google icon"
-                    />
-                  }
+                  startIcon={provider.icon}
                 >
                   {`Link with ${provider.name}`}
                 </Button>

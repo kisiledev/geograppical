@@ -201,11 +201,7 @@ const Maps = (props) => {
           code={
             (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
-          format="svg"
-          pngSize={64}
-          shiny={false}
           alt={`${obj.NAME}'s Flag`}
-          basePath="/img/flags"
         />
       </div>
     ) : null;

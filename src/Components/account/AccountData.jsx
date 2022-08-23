@@ -5,11 +5,20 @@ import {
   faAngleUp,
   faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
-import { Badge, Card, Chip } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Badge,
+  Card,
+  Chip,
+  Typography
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import Favs from './Favs';
 import Scores from './Scores';
 import { acctDataType } from '../../Helpers/Types/index';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 const AccountData = (props) => {
   const {
@@ -25,13 +34,12 @@ const AccountData = (props) => {
 
   console.log(acctData);
   return (
-    <Card sx={{ padding: '5px', margin: '10px auto' }}>
-      <h5
-        className="list-group-item d-flex align-items-center"
-        onClick={() => toggleData(name)}
-        role="button"
+    <Accordion onClick={() => toggleData(name)}>
+      <AccordionSummary
+        sx={{ justifyContent: 'space-evenly' }}
+        expandIcon={<ExpandMore />}
       >
-        {capitalize(name)}
+        <Typography component="h5">{capitalize(name)}</Typography>
         <Chip
           label={
             loadingState ? (
@@ -40,28 +48,26 @@ const AccountData = (props) => {
               acctData && acctData.data.length > 0 && acctData.data.length
             )
           }
+          sx={{ margin: '0 10px' }}
           variant="contained"
+          size="small"
         />
-        {acctData && (
-          <FontAwesomeIcon
-            className="align-text-top"
-            icon={boolean ? faAngleUp : faAngleDown}
-          />
-        )}
-      </h5>
-      {loadingState
-        ? null
-        : acctData &&
-          (name === 'favorites' ? (
-            <Favs
-              acctData={acctData}
-              simplifyString={simplifyString}
-              deleteDocument={deleteDocument}
-            />
-          ) : (
-            <Scores acctData={acctData} deleteDocument={deleteDocument} />
-          ))}
-    </Card>
+      </AccordionSummary>
+      <AccordionDetails>
+        {loadingState
+          ? null
+          : acctData &&
+            (name === 'favorites' ? (
+              <Favs
+                acctData={acctData}
+                simplifyString={simplifyString}
+                deleteDocument={deleteDocument}
+              />
+            ) : (
+              <Scores acctData={acctData} deleteDocument={deleteDocument} />
+            ))}
+      </AccordionDetails>
+    </Accordion>
   );
 };
 AccountData.propTypes = {
