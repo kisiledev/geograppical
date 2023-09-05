@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Box, Grid } from '@mui/material';
 import PropTypes from 'prop-types';
 import {
   collection,
@@ -158,18 +158,28 @@ const Account = (props) => {
     acct.push(<AccountData {...dynamicProps} />);
   });
   return (
-    <div className="col-sm-12 col-md-8 mx-auto">
-      <Alert show={show} variant={message.style}>
-        {message.content}
-      </Alert>
-      <AcctHeader
-        loadingState={loadingState}
-        favorites={acctFavorites?.data}
-        scores={acctScores?.data}
-        user={user}
-      />
-      <div className="row">{acct}</div>
-    </div>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 auto'
+      }}
+    >
+      {show && <Alert severity={message.style}>{message.content}</Alert>}
+      <Grid item md={8} xs={12}>
+        <AcctHeader
+          loadingState={loadingState}
+          favorites={acctFavorites?.data}
+          scores={acctScores?.data}
+          user={user}
+        />
+        {acct}
+      </Grid>
+    </Grid>
   );
 };
 

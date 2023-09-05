@@ -10,6 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import userImg from '../../img/user.png';
+import { Avatar, Button, Card, Grid } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 // import PropTypes from 'prop-types';
 // import {
 //   countryType,
@@ -18,20 +20,57 @@ import userImg from '../../img/user.png';
 const AcctHeader = (props) => {
   const { loadingState, favorites, scores, user } = props;
   return (
-    <div className="card col-lg-8 col-xl-6 mx-auto mb-3">
-      <div className="row">
-        <div className="col-12 text-center">
-          <img
-            className="avatar img-fluid"
+    <Card
+      raised
+      sx={{
+        marginBottom: '50px',
+        padding: '20px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        fontSize: 16
+      }}
+    >
+      <Grid
+        container
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Grid
+          item
+          sm={12}
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Avatar
+            sx={{ width: 96, height: 96 }}
             src={user ? user.photoURL : userImg}
-            alt=""
+            alt={user.name}
           />
-        </div>
-        <div className="col-12 text-center">
+        </Grid>
+        <Grid
+          item
+          sm={12}
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
           <h5 className="mt-3">{user.displayName}</h5>
           <p>
-            Account created
-            {new Date(user.metadata.creationTime).toLocaleDateString()}
+            {`Account created ${new Date(
+              user.metadata.creationTime
+            ).toLocaleDateString()}`}
           </p>
           <p>{user.email}</p>
           <p>{user.phoneNumber ? user.phoneNumber : 'No phone number added'}</p>
@@ -54,15 +93,20 @@ const AcctHeader = (props) => {
               </p>
             </>
           )}
-        </div>
-        <div className="col-12 text-center">
-          <Link className="btn btn-success" to="/account/edit">
-            <FontAwesomeIcon className="acctedit" icon={faPencilAlt} />
+        </Grid>
+        <Grid item sm={12}>
+          <Button
+            LinkComponent={RouterLink}
+            variant="contained"
+            color="success"
+            to="/account/edit"
+            startIcon={<Edit />}
+          >
             Edit Account
-          </Link>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Grid>
+      </Grid>
+    </Card>
   );
 };
 

@@ -19,7 +19,6 @@ import Scoreboard from './Scoreboard';
 import Choice from './Choice';
 import Checkbox from '../../Elements/Checkbox';
 import Radio from '../../Elements/Radio';
-import * as ROUTES from '../../Constants/Routes';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -248,13 +247,9 @@ const Game = (props) => {
   };
 
   const back = !isStarted && (
-    <button
-      type="button"
-      className="btn btn-info mb-3"
-      onClick={() => resetMode()}
-    >
+    <Button variant="contained" color="primary" onClick={() => resetMode()}>
       Go Back
-    </button>
+    </Button>
   );
   let returnGameMode;
   if (gameMode === 'choice') {
