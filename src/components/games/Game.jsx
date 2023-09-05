@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -16,22 +17,8 @@ import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
-import * as ROUTES from '../../Constants/Routes';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Button,
-  DialogTitle,
-  Card,
-  Checkbox,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  Radio,
-  List,
-  ListItem
-} from '@mui/material';
+import Checkbox from '../../Elements/Checkbox';
+import Radio from '../../Elements/Radio';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -77,13 +64,6 @@ const Game = (props) => {
 
   const intervalRef = useRef(null);
 
-  const styles = {
-    lists: {
-      '&:hover': {
-        backgroundColor: 'lightblue'
-      }
-    }
-  };
   const stop = useCallback(() => {
     if (intervalRef.current === null) {
       return;
@@ -267,11 +247,7 @@ const Game = (props) => {
   };
 
   const back = !isStarted && (
-    <Button
-      variant="contained"
-      className="btn btn-info mb-3"
-      onClick={() => resetMode()}
-    >
+    <Button variant="contained" color="primary" onClick={() => resetMode()}>
       Go Back
     </Button>
   );
@@ -346,35 +322,37 @@ const Game = (props) => {
   }
   const timeButtons = timeChecked && (
     <div className="col-12 d-flex justify-content-center flex-wrap">
-      <FormControl>
-        <RadioGroup name="timeMode" row onChange={toggleMode} value={timeMode}>
-          <FormControlLabel
-            value="et"
-            control={<Radio />}
-            label="Elapsed Time"
-            disableTypography
-          />
-          <FormControlLabel
-            value="cd"
-            control={<Radio />}
-            label="Countdown"
-            disableTypography
-          />
-        </RadioGroup>
-      </FormControl>
+      <label>
+        <Radio
+          value="et"
+          checked={timeMode === 'et'}
+          onChange={(e) => toggleMode(e)}
+        />
+        <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
+      </label>
+      <label>
+        <Radio
+          value="cd"
+          checked={timeMode === 'cd'}
+          onChange={(e) => toggleMode(e)}
+        />
+        <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
+      </label>
     </div>
   );
 
   return (
     <>
-      <Dialog
-        open={show}
+      <Modal
+        show={show}
         onExit={() => resetMode()}
         onHide={() => handleModalClose()}
       >
-        <DialogTitle>Game Over</DialogTitle>
-        <DialogContent>{modalBody}</DialogContent>
-        <DialogActions>
+        <Modal.Header closeButton>
+          <Modal.Title>Game Over</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalBody}</Modal.Body>
+        <Modal.Footer>
           <Button variant="secondary" onClick={() => handleModalClose()}>
             Close
           </Button>
@@ -389,12 +367,12 @@ const Game = (props) => {
               </Link>
             </Button>
           ) : (
-            <Button variant="contained" onClick={() => saveScore()}>
+            <Button variant="primary" onClick={() => saveScore()}>
               Save Score
             </Button>
           )}
-        </DialogActions>
-      </Dialog>
+        </Modal.Footer>
+      </Modal>
       <Scoreboard
         timeChecked={timeChecked}
         isStarted={isStarted}
@@ -405,15 +383,7 @@ const Game = (props) => {
         incorrect={incorrect}
         questions={questions}
       />
-      <Card
-        raised
-        sx={{
-          maxWidth: '600px',
-          padding: '15px',
-          margin: '0 auto',
-          marginTop: '3rem'
-        }}
-      >
+      <div className="card mt-5 col-md-8 mx-auto">
         <h3 className="text-center">
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
@@ -423,29 +393,26 @@ const Game = (props) => {
           <div>
             <div className="row">
               <div className="col-md-12 mx-auto">
-                <List className="px-0 text-center">
-                  <ListItem
-                    divider
-                    className={styles.lists}
+                <ul className="px-0 text-center">
+                  <li
+                    className="choice list-group-item text-dark btn-info"
                     onClick={() => setGameMode('choice')}
                   >
                     Questions
-                  </ListItem>
-                  <ListItem
-                    divider
-                    className={styles.lists}
+                  </li>
+                  <li
+                    className="choice list-group-item text-dark btn-info"
                     onClick={() => setGameMode('find')}
                   >
                     Find Country on Map
-                  </ListItem>
-                  <ListItem
-                    divider
-                    className={styles.lists}
+                  </li>
+                  <li
+                    className="choice list-group-item text-dark btn-info"
                     onClick={() => setGameMode('highlight')}
                   >
                     Select Highlighted Country
-                  </ListItem>
-                </List>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -474,16 +441,16 @@ const Game = (props) => {
         )}
         {isStarted && (
           <div className="text-center mt-5 mb-3">
-            <Button
-              variant="contained"
+            <button
+              type="button"
               className="text-center btn bg-danger text-white"
               onClick={() => resetMode()}
             >
               End Game
-            </Button>
+            </button>
           </div>
         )}
-      </Card>
+      </div>
     </>
   );
 };

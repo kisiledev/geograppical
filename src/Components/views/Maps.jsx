@@ -29,7 +29,7 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { dataType } from '../../Helpers/Types/index';
 import data from '../../Data/world-50m.json';
-import { Button, ButtonGroup, Card } from '@mui/material';
+import { Button, ButtonGroup, Card, Grid } from '@mui/material';
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
@@ -145,7 +145,7 @@ const Maps = (props) => {
   };
 
   const handleClick = (e) => {
-    console.log('getting info');
+    console.log(e)
     getCountryInfo(
       e.properties?.NAME_LONG.normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
@@ -201,7 +201,11 @@ const Maps = (props) => {
           code={
             (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
+          format="svg"
+          pngSize={64}
+          shiny={false}
           alt={`${obj.NAME}'s Flag`}
+          basePath="/img/flags"
         />
       </div>
     ) : null;
@@ -223,20 +227,43 @@ const Maps = (props) => {
   return (
     <div className="pt-3 container-fluid">
       <BreakpointProvider>
-        <Card className="card mr-3 mb-3">
+        <Card
+          sx={{
+            margin: 5,
+            padding: '15px',
+            boxShadow:
+              '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
+          }}
+          className="card mr-3 mb-3"
+        >
           <Breakpoint small up>
-            <div className="d-flex justify-content-between pb-3">
-              <ButtonGroup variant="contained">
+            <Grid
+              container
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: '20px',
+                flexDirection: 'row',
+                height: '100%'
+              }}
+            >
+              <ButtonGroup
+                variant="contained"
+                size="small"
+                sx={{ height: '48px' }}
+              >
                 <Button
                   variant="contained"
                   className="btn btn-info"
+                  size="small"
                   onClick={() => handleZoomOut(zoom)}
                 >
                   <FontAwesomeIcon icon={faMinus} />
                 </Button>
                 <Button
-                  variant="contained"
+                  type="button"
                   className="btn btn-info"
+                  size="small"
                   onClick={() => handleZoomIn(zoom)}
                 >
                   <FontAwesomeIcon icon={faPlus} />
@@ -247,15 +274,14 @@ const Maps = (props) => {
               </h2>
               <Button
                 variant="contained"
+                sx={{ height: '48px' }}
                 onClick={() => changeMapView()}
-                startIcon={
-                  <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-                }
               >
-                {mapVisible === 'Show' ? 'Hide ' : 'Show '}
+                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+                {mapVisible === 'Show' ? 'Hide' : 'Show'}
                 Map
               </Button>
-            </div>
+            </Grid>
           </Breakpoint>
           {mapVisible === 'Show' ? (
             <ComposableMap

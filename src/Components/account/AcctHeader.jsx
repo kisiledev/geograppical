@@ -8,9 +8,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import userImg from '../../img/user.png';
-import { Button, Card } from '@mui/material';
+import { Avatar, Button, Card, Grid } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 // import PropTypes from 'prop-types';
 // import {
 //   countryType,
@@ -19,20 +20,57 @@ import { Button, Card } from '@mui/material';
 const AcctHeader = (props) => {
   const { loadingState, favorites, scores, user } = props;
   return (
-    <Card raised sx={{ marginBottom: '50px', padding: '20px' }}>
-      <div className="row">
-        <div className="col-12 text-center">
-          <img
-            className="avatar img-fluid"
+    <Card
+      raised
+      sx={{
+        marginBottom: '50px',
+        padding: '20px',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        fontSize: 16
+      }}
+    >
+      <Grid
+        container
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Grid
+          item
+          sm={12}
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <Avatar
+            sx={{ width: 96, height: 96 }}
             src={user ? user.photoURL : userImg}
-            alt=""
+            alt={user.name}
           />
-        </div>
-        <div className="col-12 text-center">
+        </Grid>
+        <Grid
+          item
+          sm={12}
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
           <h5 className="mt-3">{user.displayName}</h5>
           <p>
-            Account created
-            {new Date(user.metadata.creationTime).toLocaleDateString()}
+            {`Account created ${new Date(
+              user.metadata.creationTime
+            ).toLocaleDateString()}`}
           </p>
           <p>{user.email}</p>
           <p>{user.phoneNumber ? user.phoneNumber : 'No phone number added'}</p>
@@ -45,29 +83,29 @@ const AcctHeader = (props) => {
                 {favorites?.length === 0
                   ? 'No Favorites'
                   : `${favorites?.length} Favorite${
-                      favorites?.length > 1 && 's'
+                      favorites?.length === 1 && 's'
                     }`}
               </p>
               <p>
                 {scores?.length === 0
                   ? 'No Scores'
-                  : `${scores?.length} Score${scores?.length > 1 && 's'}`}
+                  : `${scores?.length} Score${scores?.length === 1 && 's'}`}
               </p>
             </>
           )}
-        </div>
-        <div className="col-12 text-center">
+        </Grid>
+        <Grid item sm={12}>
           <Button
             LinkComponent={RouterLink}
             variant="contained"
             color="success"
             to="/account/edit"
+            startIcon={<Edit />}
           >
-            <FontAwesomeIcon className="acctedit" icon={faPencilAlt} />
             Edit Account
           </Button>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </Card>
   );
 };

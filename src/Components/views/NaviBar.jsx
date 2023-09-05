@@ -50,7 +50,7 @@ function NaviBar(props) {
   const { history, searchText, handleInput, user } = props;
 
   const settings = [
-    { name: 'Profile', link: '/profile', loggedIn: true },
+    { name: 'Profile', link: '/account', loggedIn: true },
     { name: 'Favorites', link: '/favorites', loggedIn: true },
     { name: 'Dashboard', link: '/account', loggedIn: true },
     { name: 'Logout', link: '/logout', loggedIn: true },

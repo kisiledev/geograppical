@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { loadWorldData, loadCodes } from "../../helpers/functions";
+import { loadWorldData, loadCodes } from "../../Helpers/functions";
 
 import isoData from '../../data/iso.json'
 
-const data = loadWorldData();
+const data = await loadWorldData();
 
 console.log(data);
-
+console.log(isoData)
 export const dataSlice = createSlice({
   name: "data",
-  initialState: [],
+  initialState: isoData,
   reducers: {
     loadData: (state, payload) => {
       state.data = data;

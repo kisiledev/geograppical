@@ -29,8 +29,7 @@ import AudioPlayer from './AudioPlayer';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../Firebase/firebase';
-
-import * as ROUTES from '../../Constants/Routes';
+import { count } from 'd3';
 
 function getOccurrence(array, value) {
   return array.filter((v) => v === value).length;
@@ -57,6 +56,7 @@ const DetailView = (props) => {
     hoverOffCountry
   } = props;
 
+  console.log(countryDetail)
   const db = getFirestore(firebaseApp);
   const numberWithCommas = (x) =>
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

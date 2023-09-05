@@ -260,9 +260,7 @@ const App = (props) => {
       node.removeAttribute('style');
     });
   };
-  const getCountryInfo = (e, name) => {
-    console.log(e);
-    e.stopPropagation();
+  const getCountryInfo = (name) => {
     const searchDB = Object.values(worldData);
     name = name
       .normalize('NFD')
