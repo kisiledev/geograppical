@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from '@mui/material';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -17,7 +17,6 @@ import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
-import Checkbox from '../../Elements/Checkbox';
 import Radio from '../../Elements/Radio';
 
 const Game = (props) => {

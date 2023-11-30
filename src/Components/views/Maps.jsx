@@ -144,14 +144,8 @@ const Maps = (props) => {
     setZoom((prevZoom) => prevZoom / 2);
   };
 
-  const handleClick = (e) => {
-    console.log(e)
-    getCountryInfo(
-      e.properties?.NAME_LONG.normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z\s]/gi, ''),
-      e.properties.ISO_A3
-    );
+  const handleClick = (e, country) => {
+    getCountryInfo(country);
   };
   // const handleText = (str) => {
   //   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
@@ -321,7 +315,7 @@ const Maps = (props) => {
                           data-continent={geo.properties.CONTINENT}
                           data-subregion={geo.properties.SUBREGION}
                           data-iso={geo.properties.ISO_A3}
-                          onClick={(e) => handleClick(e)}
+                          onClick={(e) => handleClick(e, geo.properties.ISO_A3)}
                           geography={geo}
                           // projection={projection}
                           className="country"
