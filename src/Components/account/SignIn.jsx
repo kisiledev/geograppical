@@ -10,9 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { fetchSignInMethodsForEmail, signInWithPopup } from 'firebase/auth';
-import { userType } from '../../Helpers/Types/index';
-import { auth, googleProvider } from '../../Firebase/firebase';
-import useSignUpForm from '../../Helpers/CustomHooks';
+import { userType } from '../../helpers/types/index';
+import { auth, googleProvider } from '../../firebase/firebase';
+import useSignUpForm from '../../helpers/CustomHooks';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 

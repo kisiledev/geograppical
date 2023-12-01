@@ -17,8 +17,8 @@ import {
   Typography
 } from '@mui/material';
 import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../../Firebase/firebase';
-import { userType } from '../../Helpers/Types/index';
+import { auth, googleProvider } from '../../firebase/firebase';
+import { userType } from '../../helpers/types/index';
 // import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
 

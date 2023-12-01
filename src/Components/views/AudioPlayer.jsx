@@ -1,6 +1,6 @@
 import { Card, CardMedia } from '@mui/material';
 import React from 'react';
-import { countryType } from '../../helpers/Types';
+import { countryType } from '../../helpers/types';
 
 const AudioPlayer = (props) => {
   const { nation } = props;

@@ -18,7 +18,7 @@ import {
 import PropTypes from 'prop-types';
 import Favs from './Favs';
 import Scores from './Scores';
-import { acctDataType } from '../../Helpers/Types/index';
+import { acctDataType } from '../../helpers/types/index';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 const AccountData = (props) => {

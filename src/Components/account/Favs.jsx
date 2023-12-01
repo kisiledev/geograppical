@@ -5,7 +5,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link as RouterLink } from 'react-router-dom';
 import { Collapse, IconButton, Link, List, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
-import { countryType, acctDataType } from '../../helpers/Types/index';
+import { countryType, acctDataType } from '../../helpers/types/index';
 import { Delete } from '@mui/icons-material';
 
 const Favs = (props) => {

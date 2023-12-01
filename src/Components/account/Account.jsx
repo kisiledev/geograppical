@@ -16,8 +16,8 @@ import {
   getFirestore
 } from 'firebase/firestore';
 import AccountData from './AccountData';
-import { firebaseApp } from '../../Firebase/firebase';
-import { userType } from '../../Helpers/Types/index';
+import { firebaseApp } from '../../firebase/firebase';
+import { userType } from '../../helpers/types/index';
 import AcctHeader from './AcctHeader';
 
 const Account = (props) => {

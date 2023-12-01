@@ -13,10 +13,10 @@ import {
   deleteDoc,
   setDoc
 } from 'firebase/firestore';
-import { countryType, userType, dataType } from '../../helpers/Types/index';
+import { countryType, userType, dataType } from '../../helpers/types/index';
 import '../../App.css';
 
-import { firebaseApp } from '../../Firebase/firebase';
+import { firebaseApp } from '../../firebase/firebase';
 
 import * as ROUTES from '../../constants/Routes';
 import { Card } from '@mui/material';

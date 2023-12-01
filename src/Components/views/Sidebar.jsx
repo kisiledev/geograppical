@@ -18,7 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
-import { dataType } from '../../Helpers/Types/index';
+import { dataType } from '../../helpers/types/index';
 
 const useStyles = makeStyles({
   region: {

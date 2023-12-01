@@ -18,19 +18,19 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import PropTypes, { shape } from 'prop-types';
-import ResultView from './Components/views/ResultView';
-import DetailView from './Components/views/DetailView';
-import NaviBar from './Components/views/NaviBar';
-import { auth, firebaseApp, googleProvider } from './Firebase/firebase';
-import Game from './Components/games/Game';
-import Account from './Components/account/Account';
-import SignIn from './Components/account/SignIn';
-import SignUp from './Components/account/SignUp';
-import PrivateRoute from './Components/account/PrivateRoutes';
-import PasswordReset from './Components/account/PasswordReset';
-import AccountEdit from './Components/account/AccountEdit';
-import SearchResults from './Components/views/SearchResults';
-import SideNaviBar from './Components/views/SideNaviBar';
+import ResultView from './components/views/ResultView';
+import DetailView from './components/views/DetailView';
+import NaviBar from './components/views/NaviBar';
+import { auth, firebaseApp, googleProvider } from './firebase/firebase';
+import Game from './components/games/Game';
+import Account from './components/account/Account';
+import SignIn from './components/account/SignIn';
+import SignUp from './components/account/SignUp';
+import PrivateRoute from './components/account/PrivateRoutes';
+import PasswordReset from './components/account/PasswordReset';
+import AccountEdit from './components/account/AccountEdit';
+import SearchResults from './components/views/SearchResults';
+import SideNaviBar from './components/views/SideNaviBar';
 import { loginUser, changeView, changeMap } from './redux-toolkit';
 import { loadData } from './redux/data/dataSlice';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
@@ -403,27 +403,16 @@ const App = (props) => {
             path="/search/:input"
             render={() => (
               <SearchResults
-                changeMapView={changeMapView}
                 searchText={searchText}
                 countries={filterNations}
                 handleSideBar={handleSideBar}
                 data={worldData}
                 getCountryInfo={getCountryInfo}
-                changeView={handleViews}
-                mapVisible={mapView}
-                hoverOnRegion={hoverOnRegion}
-                hoverOffRegion={hoverOffRegion}
-                filterCountryByName={filterCountryByName}
-                hoverOnCountry={hoverOnCountry}
-                hoverOffCountry={hoverOffCountry}
                 handleOpen={handleOpen}
                 handleClose={handleClose}
-                handleSubmit={handleSubmit}
                 user={user}
                 setStateModal={setStateModal}
                 login={login}
-                results={search}
-                getResults={getResults}
                 handleRefresh={handleRefresh}
               />
             )}
@@ -557,7 +546,6 @@ const App = (props) => {
                 handleSubmit={handleSubmit}
                 setStateModal={setStateModal}
                 login={login}
-                loadCodes={loadCodes}
                 loadingState={loadingState}
               />
             )}

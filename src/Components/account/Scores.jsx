@@ -7,7 +7,7 @@ import {
   countryType,
   acctDataType,
   scoreType
-} from '../../helpers/Types/index';
+} from '../../helpers/types/index';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 

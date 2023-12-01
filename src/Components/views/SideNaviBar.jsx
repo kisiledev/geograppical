@@ -10,9 +10,9 @@ import {
   Collapse
 } from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
-import { dataType, userType } from '../../Helpers/Types/index';
+import { dataType, userType } from '../../helpers/types/index';
 import SideCountry from './SideCountry';
-import * as ROUTES from '../../Constants/Routes';
+import * as ROUTES from '../../constants/Routes';
 
 const SideNaviBar = (props) => {
   const [uniqueRegions, setUniqueRegions] = useState([]);

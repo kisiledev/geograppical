@@ -11,7 +11,7 @@ import {
   dataType,
   userType,
   matchType
-} from '../../helpers/Types/index';
+} from '../../helpers/types/index';
 import * as ROUTES from '../../constants/Routes';
 import Result from './Result';
 import { db } from '../../firebase/firebase';

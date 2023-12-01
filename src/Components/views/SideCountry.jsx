@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { Box, Button, List } from '@mui/material';
 import { useTheme } from '@mui/styles';
-import { dataType } from '../../Helpers/Types/index';
+import { dataType } from '../../helpers/types/index';
 import Sidebar from './Sidebar';
 // import '../../App.css';
 

@@ -22,13 +22,13 @@ import {
   dataType,
   userType,
   matchType
-} from '../../Helpers/Types/index';
+} from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
 // import '../../App.css';
 
 import SidebarView from './SidebarView';
-import { firebaseApp } from '../../Firebase/firebase';
+import { firebaseApp } from '../../firebase/firebase';
 import { count } from 'd3';
 
 function getOccurrence(array, value) {
@@ -56,7 +56,7 @@ const DetailView = (props) => {
     hoverOffCountry
   } = props;
 
-  console.log(countryDetail)
+  console.log(countryDetail);
   const db = getFirestore(firebaseApp);
   const numberWithCommas = (x) =>
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');

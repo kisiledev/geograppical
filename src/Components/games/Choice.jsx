@@ -5,7 +5,7 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { dataType } from '../../helpers/Types/index';
+import { dataType } from '../../helpers/types/index';
 import { Button, List, ListItem, ListItemButton } from '@mui/material';
 
 const Choice = (props) => {

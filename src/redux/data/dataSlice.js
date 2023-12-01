@@ -1,15 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { loadWorldData, loadCodes } from "../../Helpers/functions";
+import { loadWorldData, loadCodes } from '../../helpers/functions';
 
-import isoData from '../../data/iso.json'
+import isoData from '../../data/iso.json';
 
 const data = await loadWorldData();
 
 console.log(data);
-console.log(isoData)
+console.log(isoData);
 export const dataSlice = createSlice({
-  name: "data",
+  name: 'data',
   initialState: isoData,
   reducers: {
     loadData: (state, payload) => {
@@ -18,9 +18,6 @@ export const dataSlice = createSlice({
   }
 });
 
+export const { loadData } = dataSlice.actions;
 
-export const {loadData} = dataSlice.actions;
-
-export default dataSlice.reducer
-
-
+export default dataSlice.reducer;

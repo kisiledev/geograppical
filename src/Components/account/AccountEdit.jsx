@@ -29,9 +29,9 @@ import {
   TwitterAuthProvider,
   unlink
 } from 'firebase/auth';
-import { auth, firebaseApp } from '../../Firebase/firebase';
+import { auth, firebaseApp } from '../../firebase/firebase';
 import LinkEmailModal from '../views/LinkEmailModal';
-import { userType } from '../../Helpers/Types';
+import { userType } from '../../helpers/types';
 import userImg from '../../img/user.png';
 import facebookIcon from '../../img/facebook-icon-white.svg';
 import twitterIcon from '../../img/Twitter_Logo_WhiteOnBlue.svg';

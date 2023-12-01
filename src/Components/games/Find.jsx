@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
-import { dataType } from '../../helpers/Types/index';
+import { dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import { Button, ButtonGroup } from '@mui/material';
 

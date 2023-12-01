@@ -4,15 +4,15 @@ import { Breakpoint, BreakpointProvider } from 'react-socks';
 import { Alert, Link } from '@mui/material';
 import PropTypes from 'prop-types';
 import { getFirestore, doc, deleteDoc, setDoc } from 'firebase/firestore';
-import { countryType, dataType, userType } from '../../Helpers/Types/index';
+import { countryType, dataType, userType } from '../../helpers/types/index';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../../App.css';
 import SidebarView from './SidebarView';
 import Maps from './Maps';
 import Result from './Result';
-import * as ROUTES from '../../Constants/Routes';
-import { firebaseApp } from '../../Firebase/firebase';
+import * as ROUTES from '../../constants/Routes';
+import { firebaseApp } from '../../firebase/firebase';
 
 const ResultView = (props) => {
   const [show, setShow] = useState(false);
@@ -126,14 +126,7 @@ const ResultView = (props) => {
               mapVisible={mapVisible}
               changeMapView={changeMapView}
               worldData={data}
-              countries={countries}
-              changeView={changeView}
               getCountryInfo={getCountryInfo}
-              hoverOnRegion={hoverOnRegion}
-              hoverOffRegion={hoverOffRegion}
-              totalRegions={totalRegions}
-              uniqueRegions={uniqueRegions}
-              getOccurrence={getOccurrence}
             />
           </Breakpoint>
           {countries[0] &&
