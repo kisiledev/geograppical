@@ -21,7 +21,7 @@ import PropTypes, { shape } from 'prop-types';
 import ResultView from './Components/views/ResultView';
 import DetailView from './Components/views/DetailView';
 import NaviBar from './Components/views/NaviBar';
-import { auth, googleProvider } from './Firebase/firebase';
+import { auth, firebaseApp, googleProvider } from './Firebase/firebase';
 import Game from './Components/games/Game';
 import Account from './Components/account/Account';
 import SignIn from './Components/account/SignIn';
@@ -33,6 +33,7 @@ import SearchResults from './Components/views/SearchResults';
 import SideNaviBar from './Components/views/SideNaviBar';
 import { loginUser, changeView, changeMap } from './redux-toolkit';
 import { loadData } from './redux/data/dataSlice';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -52,111 +53,29 @@ const App = (props) => {
   const [countryDetail, setCountryDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({});
-  const [iso, setIso] = useState(null);
   const [search, setSearch] = useState('');
 
   const { history, location } = props;
 
+  const db = getFirestore(firebaseApp);
   const handleViews = (selectedView) => {
     dispatch(changeView(selectedView));
   };
-  const removeIsoNull = (array) =>
-    array.filter(
-      (item) =>
-        item.government.capital !== undefined &&
-        item.government.country_name !== undefined &&
-        item.government.country_name.isoCode !== undefined &&
-        item.name
-    );
 
-  const removeNull = (array) => {
-    if (array !== undefined) {
-      return array
-        .filter(
-          (item) =>
-            item.government.capital !== undefined &&
-            item.government.country_name !== undefined &&
-            item.name
-        )
-        .map((item) => (Array.isArray(item) ? removeNull(item) : item));
-    }
-    return null;
-  };
-  const loadCodes = () => {
-    axios.get('../iso.json').then((res) => {
-      const codes = res.data;
-      const isoCodes = codes.map((code) => {
-        const container = {};
-        container.name = code['CLDR display name'];
-        container.shortName = code['UNTERM English Short'];
-        container.isoCode = code['ISO3166-1-Alpha-3'];
-        container.capital = code.Capital;
-        return container;
-      });
-      setIso(isoCodes);
-    });
-  };
-  const loadWorldData = () => {
+  const loadWorldData = async () => {
     try {
-      axios.get('../factbook.json').then((res) => {
-        let Data = res && res.data.countries;
-        Data = Object.values(Data).map((country) => country.data) || [];
-        const newData = removeNull(Object.values(Data));
-        if (newData.length > 0) {
-          newData.forEach((element, index, nd) => {
-            nd[index].geography.map_references = newData[
-              index
-            ].geography.map_references.replace(/;/g, '');
-            if (nd[index].geography.map_references === 'AsiaEurope') {
-              nd[index].geography.map_references = 'Europe';
-            }
-            if (nd[index].geography.map_references === 'Middle East') {
-              nd[index].geography.map_references = 'Southwest Asia';
-            }
-          });
-        }
-        let loadediso;
-        if (iso) {
-          loadediso = iso;
-        }
-        let countries = {};
-        countries = newData;
-        for (let i = 0, len = countries.length; i < len; i += 1) {
-          countries[countries[i].name] = countries[i];
-        }
-        let codes = {};
-        if (codes === undefined) {
-          return console.log('unable to load');
-        }
-        codes = loadediso;
-        if (codes && codes.length > 0) {
-          for (let i = 0, len = codes.length; i < len; i += 1) {
-            if (codes[i]) {
-              codes[codes[i].name] = codes[i];
-            }
-          }
-          let i = 0;
-          const len = codes.length;
-          for (i; i < len; i += 1) {
-            if (countries[codes[i].name]) {
-              countries[codes[i].name].government.country_name.isoCode =
-                codes[i].isoCode;
-            } else if (countries[codes[i].shortName]) {
-              countries[codes[i].shortName].government.country_name.isoCode =
-                codes[i].isoCode;
-            }
-          }
-        }
-        const x = removeIsoNull(countries);
-        setWorldData(x || []);
-        setLoadingState(false);
-        return x;
+      const querySnapshot = await getDocs(
+        collection(db, ...`countries`.split('/'))
+      );
+      const data = [];
+      querySnapshot.forEach((doc) => {
+        data.push(doc.data());
       });
-    } catch (err) {
-      setError(err);
+      setWorldData(data);
+    } catch (error) {
+      console.log(error);
     }
   };
-
   const simplifyString = (string) =>
     string
       .normalize('NFD')
@@ -410,7 +329,6 @@ const App = (props) => {
     }
   };
   useEffect(() => {
-    loadCodes();
     auth.onAuthStateChanged((u) => {
       if (u) {
         setUser(u);
@@ -426,10 +344,6 @@ const App = (props) => {
       setAuthenticated(true);
     }
   }, [user]);
-
-  useEffect(() => {
-    loadWorldData();
-  }, [iso]);
 
   if (error) {
     return <h1>{error}</h1>;
@@ -643,7 +557,6 @@ const App = (props) => {
                 handleSubmit={handleSubmit}
                 setStateModal={setStateModal}
                 login={login}
-                loadWorldData={loadWorldData}
                 loadCodes={loadCodes}
                 loadingState={loadingState}
               />
