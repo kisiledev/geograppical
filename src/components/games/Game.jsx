@@ -42,7 +42,6 @@ const Game = (props) => {
   // const [gameId, setGameId] = useState(null)
 
   const {
-    simplifyString,
     changeMapView,
     mapVisible,
     data,
@@ -276,7 +275,6 @@ const Game = (props) => {
       <div>
         {back}
         <Find
-          simplifyString={simplifyString}
           isStarted={isStarted}
           gameOver={gameOver}
           correct={correct}
@@ -298,7 +296,6 @@ const Game = (props) => {
       <div>
         {back}
         <Highlight
-          simplifyString={simplifyString}
           isStarted={isStarted}
           gameOver={gameOver}
           correct={correct}
@@ -457,7 +454,6 @@ Game.defaultProps = {
   user: null
 };
 Game.propTypes = {
-  simplifyString: PropTypes.func.isRequired,
   changeMapView: PropTypes.func.isRequired,
   mapVisible: PropTypes.string.isRequired,
   data: dataType.isRequired,

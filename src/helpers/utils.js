@@ -1,9 +1,7 @@
 import axios from 'axios';
-import { useState } from 'react';
-import { changeViewActionCreator } from '../redux-og';
 import isoData from '../data/iso.json';
 
-const simplifyString = (string) => {
+export const simplifyString = (string) => {
   return string
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')

@@ -18,7 +18,11 @@ import {
   Typography
 } from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
+import { dispatch } from 'd3';
+import { changeView } from 'redux-toolkit';
+import { useSelector } from 'react-redux';
 import { dataType } from '../../helpers/types/index';
+import { simplifyString } from '../../helpers/utils';
 
 const useStyles = makeStyles({
   region: {
@@ -55,21 +59,91 @@ const useStyles = makeStyles({
 console.log('running second');
 const Sidebar = (props) => {
   const [regions, setRegions] = useState('');
-
-  const {
-    data,
-    getCountryInfo,
-    totalRegions,
-    uniqueRegions,
-    getOccurrence,
-    hoverOffRegion,
-    hoverOnRegion,
-    hoverOnCountry,
-    hoverOffCountry
-  } = props;
+  const view = useSelector((state) => state.view.value);
+  const { data, getCountryInfo, totalRegions, uniqueRegions, getOccurrence } =
+    props;
 
   const theme = useTheme();
   const classes = useStyles();
+
+  const hoverOnCountry = (e, region, country) => {
+    e.stopPropagation();
+    if (view === 'detail') {
+      dispatch(changeView('default'));
+    }
+    let nodes = document.getElementsByClassName('country');
+    nodes = [...nodes];
+    nodes = nodes.filter(
+      (y) =>
+        simplifyString(country) === simplifyString(y.dataset.longname) ||
+        simplifyString(country) === simplifyString(y.dataset.shortname)
+    );
+    nodes.forEach((node) => {
+      node.style.fill = '#ee0a43';
+      node.style.stroke = '#111';
+      node.style.strokeWidth = 0.1;
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
+    });
+  };
+  const hoverOffCountry = (e, region, country) => {
+    e.stopPropagation();
+    let nodes = document.getElementsByClassName('country');
+    nodes = [...nodes];
+    nodes = nodes.filter(
+      (y) =>
+        simplifyString(country) === simplifyString(y.dataset.longname) ||
+        simplifyString(country) === simplifyString(y.dataset.shortname)
+    );
+    nodes.forEach((node) => {
+      node.removeAttribute('style');
+      node.style.fill = '#024e1b';
+      node.style.stroke = '#111';
+      node.style.strokeWidth = 0.1;
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
+    });
+  };
+  const hoverOnRegion = (e, region) => {
+    let svgs = [];
+    e.stopPropagation();
+    const countries = region && Object.values(region)[2];
+    if (typeof countries === 'object') {
+      svgs = countries.map((country) => simplifyString(country.name));
+    }
+    let nodes = document.getElementsByClassName('country');
+    nodes = [...nodes];
+    nodes = nodes.filter(
+      (y) =>
+        svgs.includes(simplifyString(y.dataset.longname)) ||
+        svgs.includes(simplifyString(y.dataset.shortname))
+    );
+    nodes.forEach((node) => {
+      node.style.fill = '#024e1b';
+      node.style.stroke = '#111';
+      node.style.strokeWidth = 0.1;
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
+    });
+  };
+  const hoverOffRegion = (e, region) => {
+    let svgs = [];
+    e.stopPropagation();
+    const countries = Object.values(region)[2];
+    if (typeof countries === 'object') {
+      svgs = countries.map((country) => simplifyString(country.name));
+    }
+    let nodes = document.getElementsByClassName('country');
+    nodes = [...nodes];
+    nodes = nodes.filter(
+      (y) =>
+        svgs.includes(simplifyString(y.dataset.longname)) ||
+        svgs.includes(simplifyString(y.dataset.shortname))
+    );
+    nodes.forEach((node) => {
+      node.removeAttribute('style');
+    });
+  };
   const removeNull = (array) => {
     array
       .filter(
@@ -311,10 +385,6 @@ Sidebar.propTypes = {
   getCountryInfo: PropTypes.func.isRequired,
   totalRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
   uniqueRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  getOccurrence: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired
+  getOccurrence: PropTypes.func.isRequired
 };
 export default Sidebar;

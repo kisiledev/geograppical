@@ -9,15 +9,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import {
-  Modal,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions
 } from '@mui/material';
-import axios from 'axios';
 import PropTypes, { shape } from 'prop-types';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import ResultView from './components/views/ResultView';
 import DetailView from './components/views/DetailView';
 import NaviBar from './components/views/NaviBar';
@@ -31,16 +30,11 @@ import PasswordReset from './components/account/PasswordReset';
 import AccountEdit from './components/account/AccountEdit';
 import SearchResults from './components/views/SearchResults';
 import SideNaviBar from './components/views/SideNaviBar';
-import { loginUser, changeView, changeMap } from './redux-toolkit';
-import { loadData } from './redux/data/dataSlice';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { changeView, changeMap } from './redux-toolkit';
 
 const App = (props) => {
   const dispatch = useDispatch();
   const mapView = useSelector((state) => state.mapView.value);
-  const view = useSelector((state) => state.view.value);
-  const toggleSidebar = useSelector((state) => state.toggleSidebar);
-  const mode = useSelector((state) => state.mode.value);
   const [user, setUser] = useState(null);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
@@ -53,7 +47,6 @@ const App = (props) => {
   const [countryDetail, setCountryDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState({});
-  const [search, setSearch] = useState('');
 
   const { history, location } = props;
 
@@ -65,15 +58,16 @@ const App = (props) => {
   const loadWorldData = async () => {
     try {
       const querySnapshot = await getDocs(
-        collection(db, ...`countries`.split('/'))
+        collection(db, ...'countries'.split('/'))
       );
       const data = [];
       querySnapshot.forEach((doc) => {
         data.push(doc.data());
       });
       setWorldData(data);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      setError(err);
+      console.log(err);
     }
   };
   const simplifyString = (string) =>
@@ -100,85 +94,6 @@ const App = (props) => {
       console.log(err);
     }
   };
-
-  const hoverOnCountry = (e, region, country) => {
-    e.stopPropagation();
-    if (view === 'detail') {
-      dispatch(changeView('default'));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        simplifyString(country) === simplifyString(y.dataset.longname) ||
-        simplifyString(country) === simplifyString(y.dataset.shortname)
-    );
-    nodes.forEach((node) => {
-      node.style.fill = '#ee0a43';
-      node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
-    });
-  };
-  const hoverOffCountry = (e, region, country) => {
-    e.stopPropagation();
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        simplifyString(country) === simplifyString(y.dataset.longname) ||
-        simplifyString(country) === simplifyString(y.dataset.shortname)
-    );
-    nodes.forEach((node) => {
-      node.removeAttribute('style');
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
-    });
-  };
-  const hoverOnRegion = (e, region) => {
-    let svgs = [];
-    e.stopPropagation();
-    const countries = region && Object.values(region)[2];
-    if (typeof countries === 'object') {
-      svgs = countries.map((country) => simplifyString(country.name));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        svgs.includes(simplifyString(y.dataset.longname)) ||
-        svgs.includes(simplifyString(y.dataset.shortname))
-    );
-    nodes.forEach((node) => {
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
-    });
-  };
-  const hoverOffRegion = (e, region) => {
-    let svgs = [];
-    e.stopPropagation();
-    const countries = Object.values(region)[2];
-    if (typeof countries === 'object') {
-      svgs = countries.map((country) => simplifyString(country.name));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        svgs.includes(simplifyString(y.dataset.longname)) ||
-        svgs.includes(simplifyString(y.dataset.shortname))
-    );
-    nodes.forEach((node) => {
-      node.removeAttribute('style');
-    });
-  };
   const getCountryInfo = (name) => {
     const searchDB = Object.values(worldData);
     name = name
@@ -197,17 +112,7 @@ const App = (props) => {
     setCountryDetail(match[0]);
     handleViews('detail');
   };
-  const getResults = (results, e) => {
-    if (!searchText) {
-      setSearchText(results);
-      history.goBack();
-    } else {
-      e.preventDefault();
-      setSearch(searchText);
-      handleViews('default');
-      history.push(`/search/${searchText}`);
-    }
-  };
+
   const filterCountryByName = (string) => {
     const searchDB = Object.values(worldData);
     const match = searchDB.filter(
@@ -352,50 +257,19 @@ const App = (props) => {
     <BreakpointProvider>
       <Breakpoint large up>
         <SideNaviBar
-          view={view}
           loadingState={loadingState}
-          searchText={searchText}
-          handleInput={handleInput}
           changeView={handleViews}
           getCountryInfo={getCountryInfo}
-          getResults={getResults}
-          filterNations={filterNations}
-          user={user}
-          handleOpen={handleOpen}
-          handleClose={handleClose}
-          handleSubmit={handleSubmit}
-          setStateModal={setStateModal}
-          login={login}
-          changeMapView={changeMapView}
-          countries={filterNations}
           handleSideBar={handleSideBar}
           data={worldData}
-          mapVisible={mapView}
-          hoverOnRegion={hoverOnRegion}
-          hoverOffRegion={hoverOffRegion}
           filterCountryByName={filterCountryByName}
-          hoverOnCountry={hoverOnCountry}
-          hoverOffCountry={hoverOffCountry}
-          favorites={favorites}
-          scores={scores}
-          handleData={handleData}
         />
       </Breakpoint>
       <div className="main container-fluid">
         <NaviBar
-          view={view}
           searchText={searchText}
           handleInput={handleInput}
-          changeView={handleViews}
-          getCountryInfo={getCountryInfo}
-          getResults={getResults}
-          filterNations={filterNations}
           user={user}
-          handleOpen={handleOpen}
-          handleClose={handleClose}
-          handleSubmit={handleSubmit}
-          setStateModal={setStateModal}
-          login={login}
         />
         <Switch>
           <Route
@@ -408,10 +282,7 @@ const App = (props) => {
                 handleSideBar={handleSideBar}
                 data={worldData}
                 getCountryInfo={getCountryInfo}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
                 user={user}
-                setStateModal={setStateModal}
                 login={login}
                 handleRefresh={handleRefresh}
               />
@@ -422,14 +293,12 @@ const App = (props) => {
             path="/play"
             render={() => (
               <Game
-                simplifyString={simplifyString}
                 changeMapView={changeMapView}
                 mapVisible={mapView}
                 data={worldData}
                 getCountryInfo={getCountryInfo}
                 user={user}
                 handleOpen={handleOpen}
-                handleClose={handleClose}
                 handleSubmit={handleSubmit}
                 setStateModal={setStateModal}
                 login={login}
@@ -463,10 +332,7 @@ const App = (props) => {
               <SignIn
                 loadingState={loadingState}
                 user={user}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
                 handleSubmit={handleSubmit}
-                setStateModal={setStateModal}
                 login={login}
               />
             )}
@@ -477,10 +343,7 @@ const App = (props) => {
             render={() => (
               <PasswordReset
                 user={user}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
                 handleSubmit={handleSubmit}
-                setStateModal={setStateModal}
                 login={login}
               />
             )}
@@ -489,14 +352,7 @@ const App = (props) => {
             exact
             path="/signup"
             render={() => (
-              <SignUp
-                user={user}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
-                handleSubmit={handleSubmit}
-                setStateModal={setStateModal}
-                login={login}
-              />
+              <SignUp user={user} handleSubmit={handleSubmit} login={login} />
             )}
           />
           <Route
@@ -511,16 +367,9 @@ const App = (props) => {
                 getCountryInfo={getCountryInfo}
                 changeView={handleViews}
                 mapVisible={mapView}
-                hoverOnRegion={hoverOnRegion}
-                hoverOffRegion={hoverOffRegion}
                 filterCountryByName={filterCountryByName}
-                hoverOnCountry={hoverOnCountry}
-                hoverOffCountry={hoverOffCountry}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
                 handleSubmit={handleSubmit}
                 user={user}
-                setStateModal={setStateModal}
                 login={login}
               />
             )}
@@ -529,23 +378,13 @@ const App = (props) => {
             path="/:country"
             render={() => (
               <DetailView
-                countries={filterNations}
                 handleSideBar={handleSideBar}
                 data={worldData}
                 changeView={handleViews}
                 countryDetail={countryDetail}
                 getCountryInfo={getCountryInfo}
-                hoverOnRegion={hoverOnRegion}
-                hoverOffRegion={hoverOffRegion}
                 filterCountryByName={filterCountryByName}
-                hoverOnCountry={hoverOnCountry}
-                hoverOffCountry={hoverOffCountry}
                 user={user}
-                handleOpen={handleOpen}
-                handleClose={handleClose}
-                handleSubmit={handleSubmit}
-                setStateModal={setStateModal}
-                login={login}
                 loadingState={loadingState}
               />
             )}

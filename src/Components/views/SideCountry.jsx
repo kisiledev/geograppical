@@ -29,10 +29,6 @@ const SideCountry = (props) => {
     getOccurrence,
     getCountryInfo,
     handleSideBar,
-    hoverOffCountry,
-    hoverOffRegion,
-    hoverOnCountry,
-    hoverOnRegion,
     filterCountryByName
   } = props;
 
@@ -72,11 +68,7 @@ const SideCountry = (props) => {
               getOccurrence={getOccurrence}
               getCountryInfo={getCountryInfo}
               handleSideBar={handleSideBar}
-              hoverOffRegion={hoverOffRegion}
-              hoverOnRegion={hoverOnRegion}
               filterCountryByName={filterCountryByName}
-              hoverOnCountry={hoverOnCountry}
-              hoverOffCountry={hoverOffCountry}
             />
           )
         ) : null}
@@ -94,10 +86,6 @@ SideCountry.propTypes = {
   uniqueRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleSideBar: PropTypes.func.isRequired,
   getOccurrence: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired
+  filterCountryByName: PropTypes.func.isRequired
 };
 export default SideCountry;

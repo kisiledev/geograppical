@@ -23,10 +23,6 @@ const SideNaviBar = (props) => {
     changeView,
     getCountryInfo,
     handleSideBar,
-    hoverOffCountry,
-    hoverOffRegion,
-    hoverOnCountry,
-    hoverOnRegion,
     filterCountryByName
   } = props;
 
@@ -115,11 +111,7 @@ const SideNaviBar = (props) => {
         getOccurrence={getOccurrence}
         getCountryInfo={getCountryInfo}
         handleSideBar={handleSideBar}
-        hoverOffRegion={hoverOffRegion}
-        hoverOnRegion={hoverOnRegion}
         filterCountryByName={filterCountryByName}
-        hoverOnCountry={hoverOnCountry}
-        hoverOffCountry={hoverOffCountry}
       />
     </Drawer>
   );
@@ -135,11 +127,7 @@ SideNaviBar.propTypes = {
   changeView: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,
   handleData: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired
+  filterCountryByName: PropTypes.func.isRequired
 };
 
 export default withRouter(SideNaviBar);

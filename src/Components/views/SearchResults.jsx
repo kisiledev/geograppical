@@ -33,9 +33,7 @@ const SearchResults = (props) => {
     changeView,
     getCountryInfo,
     handleOpen,
-    handleClose,
     handleRefresh,
-    setStateModal,
     login
   } = props;
 
@@ -147,9 +145,7 @@ const SearchResults = (props) => {
                 country={country}
                 code={country.alpha3Code}
                 handleOpen={handleOpen}
-                handleClose={handleClose}
                 user={user}
-                setStateModal={setStateModal}
                 login={login}
               />
             ))}
@@ -170,8 +166,6 @@ SearchResults.propTypes = {
   changeView: PropTypes.func.isRequired,
   handleRefresh: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  setStateModal: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired
 };

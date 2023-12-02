@@ -49,11 +49,7 @@ const DetailView = (props) => {
     history,
     changeView,
     handleSideBar,
-    hoverOffRegion,
-    hoverOnRegion,
-    filterCountryByName,
-    hoverOnCountry,
-    hoverOffCountry
+    filterCountryByName
   } = props;
 
   console.log(countryDetail);
@@ -253,11 +249,7 @@ const DetailView = (props) => {
               getOccurrence={getOccurrence}
               getCountryInfo={getCountryInfo}
               handleSideBar={handleSideBar}
-              hoverOffRegion={hoverOffRegion}
-              hoverOnRegion={hoverOnRegion}
               filterCountryByName={filterCountryByName}
-              hoverOnCountry={hoverOnCountry}
-              hoverOffCountry={hoverOffCountry}
             />
           </Breakpoint>
         </div>

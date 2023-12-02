@@ -1,18 +1,31 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
-import { loadWorldData, loadCodes } from '../../helpers/functions';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { firebaseApp } from '../../firebase/firebase';
 
-import isoData from '../../data/iso.json';
-
+const db = getFirestore(firebaseApp);
+const loadWorldData = async () => {
+  const data = [];
+  try {
+    const querySnapshot = await getDocs(
+      collection(db, ...'countries'.split('/'))
+    );
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data());
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return data;
+};
 const data = await loadWorldData();
 
-console.log(data);
-console.log(isoData);
 export const dataSlice = createSlice({
   name: 'data',
-  initialState: isoData,
+  initialState: [],
   reducers: {
-    loadData: (state, payload) => {
+    loadData: (state) => {
       state.data = data;
     }
   }

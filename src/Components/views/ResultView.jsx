@@ -28,14 +28,8 @@ const ResultView = (props) => {
     changeMapView,
     changeView,
     getCountryInfo,
-    hoverOnRegion,
-    hoverOffRegion,
-    hoverOnCountry,
-    hoverOffCountry,
     handleOpen,
-    handleClose,
     handleSideBar,
-    setStateModal,
     filterCountryByName,
     login
   } = props;
@@ -148,9 +142,7 @@ const ResultView = (props) => {
                 country={country}
                 code={country.alpha3Code}
                 handleOpen={handleOpen}
-                handleClose={handleClose}
                 user={user}
-                setStateModal={setStateModal}
                 login={login}
                 show={show}
                 setShow={setShow}
@@ -160,8 +152,6 @@ const ResultView = (props) => {
         </main>
         <Breakpoint medium down>
           <SidebarView
-            hoverOnRegion={hoverOnRegion}
-            hoverOffRegion={hoverOffRegion}
             changeView={changeView}
             handleSideBar={handleSideBar}
             data={data}
@@ -170,8 +160,6 @@ const ResultView = (props) => {
             getOccurrence={getOccurrence}
             getCountryInfo={getCountryInfo}
             filterCountryByName={filterCountryByName}
-            hoverOnCountry={hoverOnCountry}
-            hoverOffCountry={hoverOffCountry}
           />
         </Breakpoint>
       </div>
@@ -189,14 +177,8 @@ ResultView.propTypes = {
   getCountryInfo: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   changeMapView: PropTypes.func.isRequired,
-  hoverOffRegion: PropTypes.func.isRequired,
-  hoverOnRegion: PropTypes.func.isRequired,
   handleOpen: PropTypes.func.isRequired,
-  handleClose: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,
-  hoverOnCountry: PropTypes.func.isRequired,
-  hoverOffCountry: PropTypes.func.isRequired,
-  setStateModal: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired
 };

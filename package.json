@@ -44,6 +44,7 @@
     "react-world-flags": "^1.5.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
+    "redux-toolkit": "^1.1.2",
     "styled-components": "^5.3.5",
     "topojson-client": "^3.1.0",
     "vite-plugin-svgr": "^2.2.1",
