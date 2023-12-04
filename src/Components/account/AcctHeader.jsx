@@ -96,7 +96,7 @@ const AcctHeader = (props) => {
         </Grid>
         <Grid item sm={12}>
           <Button
-            LinkComponent={RouterLink}
+            LinkComponent={Link}
             variant="contained"
             color="success"
             to="/account/edit"

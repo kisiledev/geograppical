@@ -164,7 +164,6 @@ NaviBar.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired
   }).isRequired,
-  getResults: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
   handleInput: PropTypes.func.isRequired,
   user: userType

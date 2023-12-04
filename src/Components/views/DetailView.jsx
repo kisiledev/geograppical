@@ -5,7 +5,7 @@ import {
   faSpinner,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Card } from '@mui/material';
+import { Alert, Button, Card, Grid, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
 import { withRouter, Link } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
@@ -17,6 +17,7 @@ import {
   deleteDoc,
   setDoc
 } from 'firebase/firestore';
+import { count } from 'd3';
 import {
   countryType,
   dataType,
@@ -25,11 +26,11 @@ import {
 } from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
+import * as ROUTES from '../../constants/Routes';
 // import '../../App.css';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../firebase/firebase';
-import { count } from 'd3';
 
 function getOccurrence(array, value) {
   return array.filter((v) => v === value).length;
@@ -44,6 +45,7 @@ const DetailView = (props) => {
     data,
     user,
     loadingState,
+    freezeLoad,
     getCountryInfo,
     match,
     history,
@@ -52,7 +54,6 @@ const DetailView = (props) => {
     filterCountryByName
   } = props;
 
-  console.log(countryDetail);
   const db = getFirestore(firebaseApp);
   const numberWithCommas = (x) =>
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -137,13 +138,13 @@ const DetailView = (props) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (!loadingState) {
+  //     freezeLoad(true);
+  //   }
+  // }, [loadingState]);
+
   useEffect(() => {
-    if (
-      countryDetail &&
-      (countryDetail.length !== 0 || countryDetail === undefined)
-    ) {
-      console.log(countryDetail);
-    }
     if (!loadingState) {
       getCountryInfo(match.params.country);
     }
@@ -153,8 +154,6 @@ const DetailView = (props) => {
     if (user && countryDetail && !favorite) {
       checkFavorite(countryDetail.name);
     }
-    // console.log('reloading')
-    // console.log(match.params.country)
     getCountryInfo(match.params.country);
   }, [data]);
 
@@ -169,18 +168,39 @@ const DetailView = (props) => {
   );
   uniqueRegions = uniqueRegions.filter(Boolean);
   return loadingState || !countryDetail ? (
-    <div className="my-5 text-center mx-auto">
+    <Grid
+      container
+      sx={{ paddingTop: '50px', justifyContent: 'center' }}
+      xs={12}
+    >
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-    </div>
+    </Grid>
   ) : (
     <BreakpointProvider>
       {countryDetail === 'error' || countryDetail === undefined ? (
         errorMsg
       ) : (
-        <div className="row">
-          <div className="col-md-12 col-md-9">
-            <Card className="card my-3">
-              {message?.length && show && (
+        <Grid
+          container
+          sx={{
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}
+        >
+          <Grid item xs={12} md={9}>
+            <Button
+              LinkComponent={Link}
+              variant="contained"
+              to="/"
+              className="btn btn-primary justify-content"
+              onClick={() => history.goBack()}
+              sx={{ margin: '20px auto' }}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
+              Back
+            </Button>
+            <Card elevation={5} sx={{ padding: '10px' }}>
+              {message?.length > 0 && show && (
                 <Alert
                   severity={message.style}
                   action={<Link to={message.link}>{message.linkContent}</Link>}
@@ -188,33 +208,34 @@ const DetailView = (props) => {
                   {message.content}
                 </Alert>
               )}
-              <div className="row justify-content-between">
-                <div className="col-md-12 col-lg-12 flex-md-nowrap d-flex justify-content-between align-items-center">
-                  <Link
-                    to="/"
-                    className="btn btn-primary justify-content"
-                    onClick={() => history.goBack()}
-                  >
-                    <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
-                    Back
-                  </Link>
+              <Grid container sx={{ justifyContent: 'space-between' }}>
+                <Grid
+                  xs={12}
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
                   <Breakpoint medium up>
-                    <div className="col-lg-12">
-                      <h5>
+                    <Grid lg={12}>
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        {countryDetail.name}
+                      </Typography>
+                      <Typography variant="p" sx={{ fontWeight: 600 }}>
+                        {countryDetail.government.capital.name}
+                      </Typography>
+                      <Typography component="h5">
                         {`Population: 
                             ${numberWithCommas(
                               countryDetail.people.population.total
                             )}
                              (${countryDetail.people.population.global_rank})`}
-                      </h5>
-                    </div>
+                      </Typography>
+                    </Grid>
                   </Breakpoint>
-                  <FontAwesomeIcon
-                    onClick={(e) => makeFavorite(e, countryDetail)}
-                    size="2x"
-                    color={favorite ? 'gold' : 'gray'}
-                    icon={faStar}
-                  />
+
                   <Flag
                     className="detailFlag order-lg-12 align-self-end text-right img-thumbnail"
                     code={
@@ -228,9 +249,26 @@ const DetailView = (props) => {
                     }
                     alt={`${countryDetail.name}'s Flag`}
                   />
-                </div>
+                </Grid>
+                <Grid item={12} sx={{ padding: '15px 0px' }}>
+                  <Button
+                    sx={{ margin: '0 auto', textAlign: 'center' }}
+                    onClick={(e) => makeFavorite(e, countryDetail)}
+                    endIcon={
+                      <FontAwesomeIcon
+                        size="2x"
+                        color={favorite ? 'gold' : 'gray'}
+                        icon={faStar}
+                      />
+                    }
+                    variant="contained"
+                    color={favorite ? 'error' : 'success'}
+                  >
+                    {`${favorite ? 'Remove' : 'Make'} Favorite`}
+                  </Button>
+                </Grid>
                 <AudioPlayer nation={countryDetail} />
-              </div>
+              </Grid>
               <RecursiveProperty
                 property={countryDetail}
                 expanded={Boolean}
@@ -239,7 +277,7 @@ const DetailView = (props) => {
                 rootProperty
               />
             </Card>
-          </div>
+          </Grid>
           <Breakpoint medium down>
             <SidebarView
               data={data}
@@ -252,27 +290,24 @@ const DetailView = (props) => {
               filterCountryByName={filterCountryByName}
             />
           </Breakpoint>
-        </div>
+        </Grid>
       )}
     </BreakpointProvider>
   );
 };
-// DetailView.propTypes = {
-//   countryDetail: countryType.isRequired,
-//   data: dataType.isRequired,
-//   user: userType.isRequired,
-//   loadingState: PropTypes.bool.isRequired,
-//   getCountryInfo: PropTypes.func.isRequired,
-//   changeView: PropTypes.func.isRequired,
-//   handleSideBar: PropTypes.func.isRequired,
-//   hoverOffRegion: PropTypes.func.isRequired,
-//   hoverOnRegion: PropTypes.func.isRequired,
-//   filterCountryByName: PropTypes.func.isRequired,
-//   hoverOnCountry: PropTypes.func.isRequired,
-//   hoverOffCountry: PropTypes.func.isRequired,
-//   match: matchType.isRequired,
-//   history: shape({
-//     goBack: PropTypes.func.isRequired
-//   }).isRequired
-// };
+DetailView.propTypes = {
+  freezeLoad: PropTypes.func.isRequired,
+  countryDetail: countryType.isRequired,
+  data: dataType.isRequired,
+  user: userType.isRequired,
+  loadingState: PropTypes.bool.isRequired,
+  getCountryInfo: PropTypes.func.isRequired,
+  changeView: PropTypes.func.isRequired,
+  handleSideBar: PropTypes.func.isRequired,
+  filterCountryByName: PropTypes.func.isRequired,
+  match: matchType.isRequired,
+  history: shape({
+    goBack: PropTypes.func.isRequired
+  }).isRequired
+};
 export default withRouter(DetailView);

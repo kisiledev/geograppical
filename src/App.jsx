@@ -86,6 +86,10 @@ const App = (props) => {
   const setStateModal = (modalsetting) => {
     setModal(modalsetting);
   };
+  const freezeLoad = (loadState) => {
+    console.log('running freezeLoad');
+    setLoadingState(loadState);
+  };
   const login = async () => {
     try {
       const loggedInUser = await auth.signInWithPopup(googleProvider);
@@ -109,6 +113,7 @@ const App = (props) => {
     if (!match || match.length === 0) {
       setCountryDetail('error');
     }
+    console.log(match[0]);
     setCountryDetail(match[0]);
     handleViews('detail');
   };
@@ -381,6 +386,7 @@ const App = (props) => {
                 handleSideBar={handleSideBar}
                 data={worldData}
                 changeView={handleViews}
+                freezeLoad={freezeLoad}
                 countryDetail={countryDetail}
                 getCountryInfo={getCountryInfo}
                 filterCountryByName={filterCountryByName}

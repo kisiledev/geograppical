@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/destructuring-assignment */
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import ExpandableProperty from "./ExpandableProperty";
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import ExpandableProperty from './ExpandableProperty';
 
 const camelCaseToNormal = (str) =>
   str
-    .split("_")
-    .join(" ")
-    .replace(/([A-Z])/g, " $1")
+    .split('_')
+    .join(' ')
+    .replace(/([A-Z])/g, ' $1')
     .replace(/^./, (str2) => str2.toUpperCase());
 
 const RecursivePropertyContainer = styled.div`
@@ -18,7 +18,7 @@ const RecursivePropertyContainer = styled.div`
   padding-left: 3px;
   margin-left: 10px;
   ${(props) =>
-    props.excludeBottomBorder ? "" : "border-bottom: 2px solid #eeeeee;"}
+    props.excludeBottomBorder ? '' : 'border-bottom: 2px solid #eeeeee;'}
   color: #666;
   font-size: 16px;
 `;
@@ -34,9 +34,9 @@ export const PropertyName = styled.span`
 const RecursiveProperty = (props) => (
   <RecursivePropertyContainer excludeBottomBorder={props.excludeBottomBorder}>
     {props.property ? (
-      typeof props.property === "number" ||
-      typeof props.property === "string" ||
-      typeof props.property === "boolean" ? (
+      typeof props.property === 'number' ||
+      typeof props.property === 'string' ||
+      typeof props.property === 'boolean' ? (
         <>
           <PropertyName>
             {`${camelCaseToNormal(props.propertyName)}: `}
@@ -62,29 +62,29 @@ const RecursiveProperty = (props) => (
         </ExpandableProperty>
       )
     ) : (
-      "Property is empty"
+      'Property is empty'
     )}
   </RecursivePropertyContainer>
 );
 
 RecursiveProperty.propTypes = {
   property: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    introduction: PropTypes.string.isRequired,
-    geography: PropTypes.string.isRequired,
-    people: PropTypes.string.isRequired,
-    government: PropTypes.string.isRequired,
-    economy: PropTypes.string.isRequired,
-    energy: PropTypes.string.isRequired,
-    communications: PropTypes.string.isRequired,
-    transportation: PropTypes.string.isRequired,
-    military_and_security: PropTypes.string.isRequired,
-    terrorism: PropTypes.string.isRequired,
-    transnational_issues: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    introduction: PropTypes.string,
+    geography: PropTypes.string,
+    people: PropTypes.string,
+    government: PropTypes.string,
+    economy: PropTypes.string,
+    energy: PropTypes.string,
+    communications: PropTypes.string,
+    transportation: PropTypes.string,
+    military_and_security: PropTypes.string,
+    terrorism: PropTypes.string,
+    transnational_issues: PropTypes.string
   }).isRequired,
   propertyName: PropTypes.string.isRequired,
   excludeBottomBorder: PropTypes.bool.isRequired,
-  rootProperty: PropTypes.bool.isRequired,
+  rootProperty: PropTypes.bool.isRequired
 };
 
 export default RecursiveProperty;

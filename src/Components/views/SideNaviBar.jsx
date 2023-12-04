@@ -116,17 +116,12 @@ const SideNaviBar = (props) => {
     </Drawer>
   );
 };
-SideNaviBar.defaultProps = {
-  user: null
-};
 SideNaviBar.propTypes = {
   loadingState: PropTypes.bool.isRequired,
   data: dataType.isRequired,
-  user: userType,
   getCountryInfo: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,
-  handleData: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired
 };
 

@@ -28,13 +28,18 @@ const ResultView = (props) => {
     changeMapView,
     changeView,
     getCountryInfo,
-    handleOpen,
     handleSideBar,
     filterCountryByName,
     login
   } = props;
 
   const db = getFirestore(firebaseApp);
+  const showFunc = () => {
+    setShow(true);
+    setTimeout(() => {
+      setShow(false);
+    }, 4000);
+  };
   const makeFavorite = async (e, country) => {
     e.persist();
     console.log('adding');
@@ -141,7 +146,6 @@ const ResultView = (props) => {
                 key={country.alpha3Code}
                 country={country}
                 code={country.alpha3Code}
-                handleOpen={handleOpen}
                 user={user}
                 login={login}
                 show={show}

@@ -267,10 +267,11 @@ const Maps = (props) => {
                 variant="contained"
                 sx={{ height: '48px' }}
                 onClick={() => changeMapView()}
+                startIcon={
+                  <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+                }
               >
-                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-                {mapVisible === 'Show' ? 'Hide' : 'Show'}
-                Map
+                {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
               </Button>
             </Grid>
           </Breakpoint>
