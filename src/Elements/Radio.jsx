@@ -12,8 +12,8 @@ const Radio = ({ className, checked, ...props }) => (
   </RadioContainer>
 );
 const RadioContainer = styled.div`
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 `;
 const Icon = styled.svg`
   fill: none;
@@ -21,16 +21,16 @@ const Icon = styled.svg`
   stroke-width: 2px;
 `;
 const HiddenRadio = styled.input.attrs({ type: 'radio' })`
-    border: 0;
-    clip: rect (0 0 0 0);
-    clippath: inset(50%);
-    height: 1px;
-    margin: 1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
+  border: 0;
+  clip: rect (0 0 0 0);
+  clippath: inset(50%);
+  height: 1px;
+  margin: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 `;
 const StyledRadio = styled.div`
     display: inline-block;
@@ -46,6 +46,5 @@ const StyledRadio = styled.div`
         visibility: ${(props) => (props.checked ? 'visible' : 'hidden')}
     }
 `;
-
 
 export default Radio;

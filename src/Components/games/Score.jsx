@@ -1,23 +1,31 @@
+import { Grid, Typography } from '@mui/material';
 import React from 'react';
 
-const Score = (props) => {
-    let score = <>
-    <div className="col text-center">Score
-        <div className="col">
-            {props.score}
-        </div>
-    </div>
-    <div className="col text-center">Correct
-        <div className="col text-success">{props.correct}</div>
-    </div>
-    <div className="col text-center">Incorrect
-        <div className="col text-danger">{props.incorrect}</div>
-    </div>
-    </>
-    let noScore = null
-    return(
-        <>{props.score !== null ? score : noScore}</>
-    )
-}
+const Score = ({ score, correct, incorrect }) => {
+  const calculatedScore = (
+    <Grid container justifyContent="space-between" spacing={2}>
+      <Grid item>
+        Score
+        <Typography variant="h5" fontWeight={600}>
+          {score}
+        </Typography>
+      </Grid>
+      <Grid item>
+        Correct
+        <Typography variant="h5" sx={{ color: 'green' }}>
+          {correct}
+        </Typography>
+      </Grid>
+      <Grid item>
+        Incorrect
+        <Typography variant="h5" sx={{ color: 'red' }}>
+          {incorrect}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+  const noScore = null;
+  return score !== null ? calculatedScore : noScore;
+};
 
 export default Score;

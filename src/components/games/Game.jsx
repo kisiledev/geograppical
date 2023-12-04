@@ -1,7 +1,21 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, Button, Checkbox } from '@mui/material';
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  Typography,
+  DialogContent,
+  DialogActions,
+  Stack,
+  ButtonGroup,
+  Grid,
+  FormControlLabel,
+  Radio,
+  Card
+} from '@mui/material';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -17,7 +31,6 @@ import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
-import Radio from '../../elements/Radio';
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -317,38 +330,45 @@ const Game = (props) => {
     returnGameMode = <div />;
   }
   const timeButtons = timeChecked && (
-    <div className="col-12 d-flex justify-content-center flex-wrap">
-      <label>
-        <Radio
-          value="et"
-          checked={timeMode === 'et'}
-          onChange={(e) => toggleMode(e)}
-        />
-        <span style={{ marginLeft: 8, marginRight: 8 }}>Elapsed Time</span>
-      </label>
-      <label>
-        <Radio
-          value="cd"
-          checked={timeMode === 'cd'}
-          onChange={(e) => toggleMode(e)}
-        />
-        <span style={{ marginLeft: 8, marginRight: 8 }}>Countdown</span>
-      </label>
-    </div>
+    <Grid
+      sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+      xs={12}
+    >
+      <FormControlLabel
+        control={
+          <Radio
+            value="et"
+            checked={timeMode === 'et'}
+            onChange={(e) => toggleMode(e)}
+          />
+        }
+        label="Elapsed Time"
+      />
+      <FormControlLabel
+        control={
+          <Radio
+            value="cd"
+            checked={timeMode === 'cd'}
+            onChange={(e) => toggleMode(e)}
+          />
+        }
+        label="Countdown"
+      />
+    </Grid>
   );
 
   return (
     <>
-      <Modal
+      <Dialog
         show={show}
         onExit={() => resetMode()}
         onHide={() => handleModalClose()}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Game Over</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>
+        <DialogTitle closeButton>
+          <Typography>Game Over</Typography>
+        </DialogTitle>
+        <DialogContent>{modalBody}</DialogContent>
+        <DialogActions>
           <Button variant="secondary" onClick={() => handleModalClose()}>
             Close
           </Button>
@@ -367,8 +387,8 @@ const Game = (props) => {
               Save Score
             </Button>
           )}
-        </Modal.Footer>
-      </Modal>
+        </DialogActions>
+      </Dialog>
       <Scoreboard
         timeChecked={timeChecked}
         isStarted={isStarted}
@@ -379,61 +399,75 @@ const Game = (props) => {
         incorrect={incorrect}
         questions={questions}
       />
-      <div className="card mt-5 col-md-8 mx-auto">
-        <h3 className="text-center">
+      <Card sx={{ margin: '20px', padding: '20px' }} elevation={4}>
+        <Typography
+          sx={{ textAlign: 'center', fontWeight: 600 }}
+          textAlign="center"
+          variant="h6"
+        >
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
             : 'Choose a Game Mode'}
-        </h3>
+        </Typography>
         {!gameMode && (
-          <div>
-            <div className="row">
-              <div className="col-md-12 mx-auto">
-                <ul className="px-0 text-center">
-                  <li
-                    className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode('choice')}
-                  >
-                    Questions
-                  </li>
-                  <li
-                    className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode('find')}
-                  >
-                    Find Country on Map
-                  </li>
-                  <li
-                    className="choice list-group-item text-dark btn-info"
-                    onClick={() => setGameMode('highlight')}
-                  >
-                    Select Highlighted Country
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <Stack
+            sx={{ width: '800px', alignItems: 'center', margin: '0 auto' }}
+          >
+            <ButtonGroup orientation="vertical" className="px-0 text-center">
+              <Button variant="outlined" onClick={() => setGameMode('choice')}>
+                Questions
+              </Button>
+              <Button variant="outlined" onClick={() => setGameMode('find')}>
+                Find Country on Map
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setGameMode('highlight')}
+              >
+                Select Highlighted Country
+              </Button>
+            </ButtonGroup>
+          </Stack>
         )}
-        <div className="text-center col-md-8 col-lg-12 px-0 mx-auto">
+        <Grid md={8} lg={12} sx={{ textAlign: 'center' }}>
           {returnGameMode}
-        </div>
+        </Grid>
         {!isStarted && (
-          <div className="col-12 d-flex justify-content-center flex-wrap">
-            <label>
-              <Checkbox
-                checked={timeChecked}
-                onChange={(e) => handleTimeCheck(e)}
+          <Stack
+            sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+            xs={6}
+          >
+            <Grid
+              sx={{
+                justifyContent: 'center',
+                display: 'flex',
+                flexWrap: 'wrap'
+              }}
+              xs={12}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    id="timeCheck"
+                    checked={timeChecked}
+                    onChange={(e) => handleTimeCheck(e)}
+                  />
+                }
+                label="Keep Time"
               />
-              <span style={{ marginLeft: 8, marginRight: 8 }}>Keep Time</span>
-            </label>
-            <label>
-              <Checkbox
-                checked={scoreChecked}
-                onChange={(e) => handleScoreCheck(e)}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    id="scoreCheck"
+                    checked={scoreChecked}
+                    onChange={(e) => handleScoreCheck(e)}
+                  />
+                }
+                label="Keep Score"
               />
-              <span style={{ marginLeft: 8 }}>Keep Score</span>
-            </label>
+            </Grid>
             {timeChecked && timeButtons}
-          </div>
+          </Stack>
         )}
         {isStarted && (
           <div className="text-center mt-5 mb-3">
@@ -446,7 +480,7 @@ const Game = (props) => {
             </button>
           </div>
         )}
-      </div>
+      </Card>
     </>
   );
 };

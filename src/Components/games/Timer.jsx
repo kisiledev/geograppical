@@ -23,7 +23,7 @@ const Timer = (props) => {
   let time;
   if (timeChecked) {
     time = (
-      <Grid>
+      <Grid item>
         Time
         <Grid>
           <Box>
