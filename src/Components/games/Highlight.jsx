@@ -15,9 +15,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
+import { Button, ButtonGroup } from '@mui/material';
 import { dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
-import { Button, ButtonGroup } from '@mui/material';
 
 const Highlight = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -45,11 +45,10 @@ const Highlight = (props) => {
     saved
   } = props;
 
-  const proj = () => {
-    return geoEqualEarth()
+  const proj = () =>
+    geoEqualEarth()
       .translate([800 / 2, 400 / 2])
       .scale(150);
-  };
 
   const endGame = () => {
     setQuestions([]);
@@ -491,7 +490,7 @@ const Highlight = (props) => {
                 onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
-                  {(geos, proj) =>
+                  {(geos, projection) =>
                     geos.map((geo, i) => (
                       <Geography
                         data-idkey={i}
@@ -506,7 +505,7 @@ const Highlight = (props) => {
                         }
                         key={geo.properties.NAME}
                         geography={geo}
-                        projection={proj}
+                        projection={projection}
                         className="gameCountry"
                       />
                     ))

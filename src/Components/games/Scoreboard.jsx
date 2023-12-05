@@ -24,7 +24,6 @@ const Scoreboard = (props) => {
         minHeight: '100px',
         alignItems: 'center'
       }}
-      container
       sm={12}
       spacing={2}
     >

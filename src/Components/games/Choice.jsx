@@ -5,8 +5,8 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Button, Card, List, ListItem, ListItemButton } from '@mui/material';
 import { dataType } from '../../helpers/types/index';
-import { Button, List, ListItem, ListItemButton } from '@mui/material';
 
 const Choice = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -139,7 +139,7 @@ const Choice = (props) => {
         checkquestion.correct = true;
       }
       checkguesses = null;
-      setTimeout(() => takeTurn(), 300);
+      setTimeout(() => takeTurn(), 1000);
     } else {
       answer.correct = 1;
       checkquestion.correct = false;
@@ -182,30 +182,23 @@ const Choice = (props) => {
       answerChoices = [];
     } else {
       answerChoices = answers.map((answer) => {
-        const navClass = 'possible card mx-1 mt-3';
-        const correct = 'bg-success possible card mx-1 mt-3';
-        const incorrect = 'bg-danger possible card mx-1 mt-3 disabled';
-        const answerStyle = (int) => {
-          if (int === 2) {
-            return navClass;
-          }
-          if (int === 1) {
-            return incorrect;
-          }
-          return correct;
-        };
         return (
-          <ListItem>
-            <ListItemButton
-              role="button"
-              onClick={() => checkAnswer(answer)}
-              className={answerStyle(answer.correct)}
-              value={answer.id}
-              key={answer.id}
-            >
-              {answer.name}
-            </ListItemButton>
-          </ListItem>
+          <ListItemButton
+            onClick={() => checkAnswer(answer)}
+            value={answer.id}
+            key={answer.id}
+            sx={{
+              marginTop: '10px',
+              margin: '10px 8px none',
+              padding: '10px',
+              borderRadius: '3px',
+              backgroundColor: answer.correct === 0 ? 'green' : 'blue'
+            }}
+            component={Card}
+            disabled={answer.correct === 1}
+          >
+            {answer.name}
+          </ListItemButton>
         );
       });
     }
@@ -241,9 +234,7 @@ const Choice = (props) => {
         <List className="px-0 d-flex justify-content-center flex-wrap">
           {answerChoices}
         </List>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </div>
   );
 };

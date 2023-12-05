@@ -14,7 +14,8 @@ import {
   Grid,
   FormControlLabel,
   Radio,
-  Card
+  Card,
+  Box
 } from '@mui/material';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -470,15 +471,17 @@ const Game = (props) => {
           </Stack>
         )}
         {isStarted && (
-          <div className="text-center mt-5 mb-3">
-            <button
+          <Box sx={{ margin: '15px auto 9px', textAlign: 'center' }}>
+            <Button
               type="button"
-              className="text-center btn bg-danger text-white"
+              variant="contained"
+              color="error"
+              sx={{ justifyContent: 'center' }}
               onClick={() => resetMode()}
             >
               End Game
-            </button>
-          </div>
+            </Button>
+          </Box>
         )}
       </Card>
     </>
