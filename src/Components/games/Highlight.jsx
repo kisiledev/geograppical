@@ -490,7 +490,7 @@ const Highlight = (props) => {
                 onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
-                  {(geographies, projection) =>
+                  {({ geographies, projection }) =>
                     geographies.map((geo, i) => (
                       <Geography
                         data-idkey={i}
