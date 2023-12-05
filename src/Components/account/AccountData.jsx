@@ -16,10 +16,10 @@ import {
   Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Favs from './Favs';
 import Scores from './Scores';
 import { acctDataType } from '../../helpers/types/index';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 const AccountData = (props) => {
   const {

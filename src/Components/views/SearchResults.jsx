@@ -144,7 +144,7 @@ const SearchResults = (props) => {
                 key={country.alpha3Code}
                 country={country}
                 code={country.alpha3Code}
-                handleOpen={handleOpen}
+                
                 user={user}
                 login={login}
               />

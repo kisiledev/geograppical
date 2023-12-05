@@ -16,9 +16,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
+import { Button, ButtonGroup } from '@mui/material';
 import { dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
-import { Button, ButtonGroup } from '@mui/material';
 
 const Find = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);

@@ -5,7 +5,6 @@ import {
   Geographies,
   Geography
 } from 'react-simple-maps';
-import { geoEqualEarth } from 'd3-geo';
 import ReactTooltip from 'react-tooltip';
 import {
   faPlus,
@@ -16,6 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { Button, ButtonGroup } from '@mui/material';
+import * as d3 from 'd3';
 import { dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 
@@ -45,10 +45,10 @@ const Highlight = (props) => {
     saved
   } = props;
 
-  const proj = () =>
-    geoEqualEarth()
-      .translate([800 / 2, 400 / 2])
-      .scale(150);
+  const proj = d3
+    .geoEqualEarth()
+    .translate([800 / 2, 400 / 2])
+    .scale(150);
 
   const endGame = () => {
     setQuestions([]);
@@ -490,8 +490,8 @@ const Highlight = (props) => {
                 onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
-                  {(geos, projection) =>
-                    geos.map((geo, i) => (
+                  {(geographies, projection) =>
+                    geographies.map((geo, i) => (
                       <Geography
                         data-idkey={i}
                         data-longname={handleText(geo.properties.NAME_LONG)}
