@@ -33,6 +33,22 @@ import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
 
+const GameMode = ({ gameMode, props }) => {
+  switch (gameMode) {
+    case 'choice': {
+      return <Choice {...props} mode={gameMode} />;
+    }
+    case 'find': {
+      return <Find {...props} mode={gameMode} />;
+    }
+    case 'highlight': {
+      return <Highlight {...props} mode={gameMode} />;
+    }
+    default:
+      return null;
+  }
+};
+
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
   const [questions, setQuestions] = useState(null);
@@ -258,78 +274,27 @@ const Game = (props) => {
     }
   };
 
-  const back = !isStarted && (
+  const bundledProps = {
+    isStarted,
+    gameOver,
+    correct,
+    incorrect,
+    mapVisible,
+    changeMapView,
+    getCountryInfo,
+    startGame,
+    endGame,
+    updateScore,
+    saved,
+    handlePoints: handlePointsQuestions,
+    handleOpen: handleGameOpen,
+    data
+  };
+  const back = !isStarted && gameMode !== null && (
     <Button variant="contained" color="primary" onClick={() => resetMode()}>
       Go Back
     </Button>
   );
-  let returnGameMode;
-  if (gameMode === 'choice') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Choice
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          data={data}
-          getCountryInfo={getCountryInfo}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else if (gameMode === 'find') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Find
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          mapVisible={mapVisible}
-          changeMapView={changeMapView}
-          worldData={data}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else if (gameMode === 'highlight') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Highlight
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          mapVisible={mapVisible}
-          changeMapView={changeMapView}
-          worldData={data}
-          getCountryInfo={getCountryInfo}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else {
-    returnGameMode = <div />;
-  }
   const timeButtons = timeChecked && (
     <Grid
       sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
@@ -401,10 +366,11 @@ const Game = (props) => {
         questions={questions}
       />
       <Card sx={{ margin: '20px', padding: '20px' }} elevation={4}>
+        {back}
         <Typography
           sx={{ textAlign: 'center', fontWeight: 600 }}
           textAlign="center"
-          variant="h6"
+          variant="h4"
         >
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
@@ -431,7 +397,7 @@ const Game = (props) => {
           </Stack>
         )}
         <Grid md={8} lg={12} sx={{ textAlign: 'center' }}>
-          {returnGameMode}
+          <GameMode props={bundledProps} gameMode={gameMode} />
         </Grid>
         {!isStarted && (
           <Stack

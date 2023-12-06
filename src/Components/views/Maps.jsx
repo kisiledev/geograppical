@@ -150,13 +150,13 @@ const Maps = (props) => {
   // const handleText = (str) => {
   //   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
   // };
-  const handleMoveStart = (newCenter) => {
-    setCenter(newCenter);
+  const handleMoveStart = ({ coordinates }) => {
+    setCenter(coordinates);
     // setBypassClick(true);
   };
 
-  const handleMoveEnd = (newCenter) => {
-    setCenter(newCenter);
+  const handleMoveEnd = ({ coordinates }) => {
+    setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
   const handleWheel = (event) => {
@@ -169,6 +169,7 @@ const Maps = (props) => {
     if (newZoom > 10 || newZoom < 1) {
       return null;
     }
+    setZoom(newZoom);
     // const cursor = getCursorLocation(event);
     // const oldCenter = center;
 
@@ -289,8 +290,8 @@ const Maps = (props) => {
                 onWheel={handleWheel}
                 zoom={zoom}
                 center={center}
-                // onMoveStart={handleMoveStart}
-                // onMoveEnd={handleMoveEnd}
+                onMoveStart={handleMoveStart}
+                onMoveEnd={handleMoveEnd}
               >
                 <Geographies geography={data}>
                   {({ geographies, projection }) =>

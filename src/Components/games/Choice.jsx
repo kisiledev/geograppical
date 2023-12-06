@@ -5,8 +5,17 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Card, List, ListItem, ListItemButton } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  List,
+  ListItem,
+  ListItemButton,
+  Typography
+} from '@mui/material';
 import { dataType } from '../../helpers/types/index';
+import gameModes from '../../constants/GameContent';
 
 const Choice = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -25,7 +34,8 @@ const Choice = (props) => {
     isStarted,
     endGame,
     startGame,
-    updateScore
+    updateScore,
+    mode
   } = props;
   // const [ran, setRan] = useState(null)
 
@@ -159,22 +169,15 @@ const Choice = (props) => {
   }, [saved, gameOver]);
 
   const directions = (
-    <div className="directions">
-      <h5>Directions</h5>
-      <p>
-        `A statement will be shown with four choices. Select the correct answer
-        for the maximum number of points. Incorrect answers will receive less
-        points and make two incorrect choices will yield no points. Select all
-        incorrect answers and you will LOSE a point. Good luck!`
-      </p>
-      <Button
-        variant="contained"
-        className="btn btn-lg btn-success"
-        onClick={() => takeTurn()}
-      >
-        Start Game
-      </Button>
-    </div>
+    <Box className="directions">
+      <Typography variant="h5">Directions</Typography>
+      <Typography variant="p">{gameModes[mode].directions}</Typography>
+      <Box sx={{ margin: '10px' }}>
+        <Button variant="contained" color="success" onClick={() => takeTurn()}>
+          Start Game
+        </Button>
+      </Box>
+    </Box>
   );
   let answerChoices;
   if (answers && answers.length > 0) {

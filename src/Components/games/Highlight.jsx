@@ -14,10 +14,11 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
-import { Button, ButtonGroup } from '@mui/material';
+import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import * as d3 from 'd3';
 import { dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
+import gameModes from '../../constants/GameContent';
 
 const Highlight = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
@@ -32,19 +33,22 @@ const Highlight = (props) => {
   // const [bypassClick, setBypassClick] = useState(false);
   const [answers, setAnswers] = useState(null);
 
+  console.log(props);
   const {
     isStarted,
     gameOver,
     mapVisible,
     changeMapView,
-    worldData,
+    data: worldData,
     startGame,
     updateScore,
     handlePoints,
     handleOpen,
-    saved
+    saved,
+    mode
   } = props;
 
+  console.log(gameModes, mode);
   const proj = d3
     .geoEqualEarth()
     .translate([800 / 2, 400 / 2])
@@ -159,13 +163,14 @@ const Highlight = (props) => {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z\s]/gi, '');
   };
-  const handleMoveStart = (newCenter) => {
-    setCenter(newCenter);
+  const handleMoveStart = ({ coordinates }) => {
+    console.log(coordinates);
+    setCenter(coordinates);
     // setBypassClick(true);
   };
 
-  const handleMoveEnd = (newCenter) => {
-    setCenter(newCenter);
+  const handleMoveEnd = ({ coordinates }) => {
+    setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
   const handleWheel = (event) => {
@@ -377,23 +382,15 @@ const Highlight = (props) => {
   }, [saved, gameOver]);
 
   const directions = (
-    <div className="directions">
-      <h5>Directions</h5>
-      <p>
-        The map will show a highlighted country. Select the correct answer from
-        the choices below for the maximum number of points. Incorrect answers
-        will receive less points and make two incorrect choices will yield no
-        points. Select all incorrect answers and you will LOSE a point. Good
-        luck!
-      </p>
-      <Button
-        variant="contained"
-        className="btn btn-lg btn-success"
-        onClick={() => takeTurn()}
-      >
-        Start Game
-      </Button>
-    </div>
+    <Box className="directions">
+      <Typography variant="h5">Directions</Typography>
+      <Typography variant="p">{gameModes[mode].directions}</Typography>
+      <Box sx={{ margin: '10px' }}>
+        <Button variant="contained" color="success" onClick={() => takeTurn()}>
+          Start Game
+        </Button>
+      </Box>
+    </Box>
   );
   let answerChoices;
   if (answers && answers.length > 0) {
@@ -426,7 +423,7 @@ const Highlight = (props) => {
   }
   return (
     <BreakpointProvider>
-      <div className="mr-3 mb-3">
+      <Box sx={{ marginBottom: '5px', marginRight: '5px' }}>
         {!isStarted && directions}
         {isStarted && guesses && (
           <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
@@ -439,7 +436,13 @@ const Highlight = (props) => {
           </div>
         )}
         <Breakpoint small up>
-          <div className="d-flex justify-content-between">
+          <Box
+            sx={{
+              justifyContent: 'space-between',
+              display: 'flex',
+              margin: '10px 0px'
+            }}
+          >
             <ButtonGroup variant="contained">
               <Button
                 variant="contained"
@@ -466,7 +469,7 @@ const Highlight = (props) => {
               {mapVisible === 'Show' ? 'Hide ' : 'Show '}
               Map
             </Button>
-          </div>
+          </Box>
         </Breakpoint>
         <hr />
         {answers && answers.length > 0 && (
@@ -516,13 +519,13 @@ const Highlight = (props) => {
           </div>
         ) : null}
         <ReactTooltip place="top" type="dark" effect="float" />
-      </div>
+      </Box>
     </BreakpointProvider>
   );
 };
 
 Highlight.propTypes = {
-  worldData: dataType.isRequired,
+  data: dataType.isRequired,
   isStarted: PropTypes.bool.isRequired,
   saved: PropTypes.bool.isRequired,
   gameOver: PropTypes.bool.isRequired,
