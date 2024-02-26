@@ -3,7 +3,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -17,11 +17,37 @@ import {
 import { dataType } from '../../helpers/types/index';
 import gameModes from '../../constants/GameContent';
 
+const CustomAnswer = ({ answers, checkAnswer, options }) => (
+  <List
+    sx={{
+      padding: '5px',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap'
+    }}
+  >
+    {answers.map((answer) => (
+      <List sx={{ width: '100%' }} key={answer.id}>
+        <ListItemButton
+          role="button"
+          tabIndex={0}
+          onClick={() => checkAnswer(answer)}
+          value={answer.id}
+          key={answer.id}
+          component={Card}
+          style={options[answer.correct]}
+        >
+          {answer.name}
+        </ListItemButton>
+      </List>
+    ))}
+  </List>
+);
 const Choice = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
   const [currentCountryId, setCurrentCountryId] = useState(null);
   const [guesses, setGuesses] = useState(null);
-  const [answers, setAnswers] = useState(null);
+  const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [usedCountry, setUsedCountry] = useState([]);
 
@@ -39,6 +65,32 @@ const Choice = (props) => {
   } = props;
   // const [ran, setRan] = useState(null)
 
+  const options = {
+    0: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'green'
+    },
+    1: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'red'
+    },
+    2: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'initial'
+    }
+  };
   const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -144,12 +196,14 @@ const Choice = (props) => {
       updateScore(3 - guesses);
       //  set answer style
       answer.correct = 0;
+      // alert('your answer is correct');
       //  initialize correct counter for game
       if (guesses === 1) {
         checkquestion.correct = true;
       }
       checkguesses = null;
-      setTimeout(() => takeTurn(), 1000);
+      console.log(options[answer.correct]);
+      setTimeout(() => takeTurn(), 1500);
     } else {
       answer.correct = 1;
       checkquestion.correct = false;
@@ -173,39 +227,25 @@ const Choice = (props) => {
       <Typography variant="h5">Directions</Typography>
       <Typography variant="p">{gameModes[mode].directions}</Typography>
       <Box sx={{ margin: '10px' }}>
-        <Button variant="contained" color="success" onClick={() => takeTurn()}>
+        <Button
+          disabled={!data?.length > 0}
+          variant="contained"
+          color="success"
+          onClick={() => takeTurn()}
+        >
           Start Game
         </Button>
       </Box>
     </Box>
   );
-  let answerChoices;
-  if (answers && answers.length > 0) {
-    if (questions < 0) {
-      answerChoices = [];
-    } else {
-      answerChoices = answers.map((answer) => {
-        return (
-          <ListItemButton
-            onClick={() => checkAnswer(answer)}
-            value={answer.id}
-            key={answer.id}
-            sx={{
-              marginTop: '10px',
-              margin: '10px 8px none',
-              padding: '10px',
-              borderRadius: '3px',
-              backgroundColor: answer.correct === 0 ? 'green' : 'blue'
-            }}
-            component={Card}
-            disabled={answer.correct === 1}
-          >
-            {answer.name}
-          </ListItemButton>
-        );
-      });
-    }
-  }
+  // let answerChoices;
+  // if (answers && answers.length > 0) {
+  //   if (questions < 0) {
+  //     answerChoices = [];
+  //   } else {
+  //     answerChoices =
+  //   }
+  // }
   return (
     <div>
       {!isStarted && directions}
@@ -233,11 +273,13 @@ const Choice = (props) => {
           </div>
         )}
       </div>
-      {answers && answers.length > 0 ? (
-        <List className="px-0 d-flex justify-content-center flex-wrap">
-          {answerChoices}
-        </List>
-      ) : null}
+      {answers && answers.length > 0 && (
+        <CustomAnswer
+          answers={answers}
+          options={options}
+          checkAnswer={checkAnswer}
+        />
+      )}
     </div>
   );
 };

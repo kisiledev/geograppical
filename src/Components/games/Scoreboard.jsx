@@ -24,12 +24,10 @@ const Scoreboard = (props) => {
         minHeight: '100px',
         alignItems: 'center'
       }}
-      sm={12}
       spacing={2}
     >
       <Grid
         container
-        sm={6}
         sx={{ margin: '0 auto', justifyContent: 'space-between' }}
       >
         <Grid item>

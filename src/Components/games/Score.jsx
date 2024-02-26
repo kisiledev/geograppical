@@ -5,12 +5,6 @@ const Score = ({ score, correct, incorrect }) => {
   const calculatedScore = (
     <Grid container justifyContent="space-between" spacing={2}>
       <Grid item>
-        Score
-        <Typography variant="h5" fontWeight={600}>
-          {score}
-        </Typography>
-      </Grid>
-      <Grid item>
         Correct
         <Typography variant="h5" sx={{ color: 'green' }}>
           {correct}
@@ -20,6 +14,12 @@ const Score = ({ score, correct, incorrect }) => {
         Incorrect
         <Typography variant="h5" sx={{ color: 'red' }}>
           {incorrect}
+        </Typography>
+      </Grid>
+      <Grid item>
+        Score
+        <Typography variant="h5" fontWeight={600}>
+          {score}
         </Typography>
       </Grid>
     </Grid>

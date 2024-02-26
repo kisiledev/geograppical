@@ -27,6 +27,7 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { firebaseApp } from '../../firebase/firebase';
+import * as ROUTES from '../../constants/Routes';
 import { dataType, userType } from '../../helpers/types/index';
 import Highlight from './Highlight';
 import Find from './Find';
@@ -68,8 +69,6 @@ const Game = (props) => {
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
   const [modalBody, setModalBody] = useState('');
-  // const [intId, setIntId] = useState(null)
-  // const [gameId, setGameId] = useState(null)
 
   const {
     changeMapView,
@@ -102,10 +101,8 @@ const Game = (props) => {
 
   const start = useCallback(() => {
     if (intervalRef.current !== null) {
-      console.log('null');
       return;
     }
-    console.log('starting');
     if (timeChecked) {
       intervalRef.current = setInterval(() => tick(), 1000);
     }
@@ -298,6 +295,7 @@ const Game = (props) => {
   const timeButtons = timeChecked && (
     <Grid
       sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+      item
       xs={12}
     >
       <FormControlLabel
@@ -326,11 +324,13 @@ const Game = (props) => {
   return (
     <>
       <Dialog
-        show={show}
-        onExit={() => resetMode()}
-        onHide={() => handleModalClose()}
+        open={show}
+        onClose={() => {
+          resetMode();
+          handleModalClose();
+        }}
       >
-        <DialogTitle closeButton>
+        <DialogTitle>
           <Typography>Game Over</Typography>
         </DialogTitle>
         <DialogContent>{modalBody}</DialogContent>
@@ -396,7 +396,7 @@ const Game = (props) => {
             </ButtonGroup>
           </Stack>
         )}
-        <Grid md={8} lg={12} sx={{ textAlign: 'center' }}>
+        <Grid item md={8} lg={12} sx={{ textAlign: 'center' }}>
           <GameMode props={bundledProps} gameMode={gameMode} />
         </Grid>
         {!isStarted && (
@@ -410,6 +410,7 @@ const Game = (props) => {
                 display: 'flex',
                 flexWrap: 'wrap'
               }}
+              item
               xs={12}
             >
               <FormControlLabel
