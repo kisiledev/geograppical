@@ -16,8 +16,10 @@ import {
 } from '@mui/material';
 import { dataType } from '../../helpers/types/index';
 import gameModes from '../../constants/GameContent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-const CustomAnswer = ({ answers, checkAnswer, options }) => (
+const CustomAnswer = ({ answers, checkAnswer, options, loading }) => (
   <List
     sx={{
       padding: '5px',
@@ -26,21 +28,22 @@ const CustomAnswer = ({ answers, checkAnswer, options }) => (
       flexWrap: 'wrap'
     }}
   >
-    {answers.map((answer) => (
-      <List sx={{ width: '100%' }} key={answer.id}>
-        <ListItemButton
-          role="button"
-          tabIndex={0}
-          onClick={() => checkAnswer(answer)}
-          value={answer.id}
-          key={answer.id}
-          component={Card}
-          style={options[answer.correct]}
-        >
-          {answer.name}
-        </ListItemButton>
-      </List>
-    ))}
+    {loading && <FontAwesomeIcon icon={faSpinner} />}
+    {!loading &&
+      answers.map((answer) => (
+        <List sx={{ width: '45%', padding: '20px' }} key={answer.id}>
+          <ListItemButton
+            role="button"
+            tabIndex={0}
+            onClick={() => checkAnswer(answer)}
+            value={answer.id}
+            component={Card}
+            style={options[answer.correct]}
+          >
+            {answer.name}
+          </ListItemButton>
+        </List>
+      ))}
   </List>
 );
 const Choice = (props) => {
@@ -50,6 +53,7 @@ const Choice = (props) => {
   const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [usedCountry, setUsedCountry] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     handlePoints,
@@ -138,6 +142,7 @@ const Choice = (props) => {
         id: 0,
         correct: 2
       });
+      console.log(fetchanswers[0]);
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, data.length - 1, currentCountryId);
@@ -163,8 +168,9 @@ const Choice = (props) => {
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
-      setAnswers(fetchanswers);
     }
+
+    setAnswers(fetchanswers);
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
@@ -174,6 +180,7 @@ const Choice = (props) => {
     if (!isStarted) {
       startGame();
     }
+    setLoading(false);
     const country = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
@@ -202,8 +209,10 @@ const Choice = (props) => {
         checkquestion.correct = true;
       }
       checkguesses = null;
-      console.log(options[answer.correct]);
-      setTimeout(() => takeTurn(), 1500);
+      setTimeout(() => {
+        setLoading(true);
+        takeTurn();
+      }, 1500);
     } else {
       answer.correct = 1;
       checkquestion.correct = false;
@@ -278,6 +287,7 @@ const Choice = (props) => {
           answers={answers}
           options={options}
           checkAnswer={checkAnswer}
+          loading={loading}
         />
       )}
     </div>

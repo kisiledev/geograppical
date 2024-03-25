@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { withRouter } from 'react-router-dom';
 import { BreakpointProvider } from 'react-socks';
-import { Alert } from '@mui/material';
+import { Alert, Link } from '@mui/material';
 import PropTypes from 'prop-types';
 import {
   countryType,
@@ -144,7 +144,6 @@ const SearchResults = (props) => {
                 key={country.alpha3Code}
                 country={country}
                 code={country.alpha3Code}
-                
                 user={user}
                 login={login}
               />

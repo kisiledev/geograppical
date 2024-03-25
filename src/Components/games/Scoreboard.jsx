@@ -28,7 +28,10 @@ const Scoreboard = (props) => {
     >
       <Grid
         container
-        sx={{ margin: '0 auto', justifyContent: 'space-between' }}
+        sx={{
+          margin: '0 auto',
+          justifyContent: 'space-around'
+        }}
       >
         <Grid item>
           <Timer
