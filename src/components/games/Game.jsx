@@ -122,6 +122,7 @@ const Game = (props) => {
 
   const startGame = () => {
     setIsStarted(true);
+    setGameOver(false);
     if (timeChecked) {
       start();
     }
@@ -131,15 +132,18 @@ const Game = (props) => {
       stop();
       reset();
     }
-    if (!gameOver) return;
     setIsStarted(false);
-    setGameOver(true);
-    setQuestions(null);
     setScore(0);
     setCorrect(0);
     setIncorrect(0);
     setSaved(false);
     setCurrentCount(60);
+    setQuestions(null);
+    setScore(0);
+    setCorrect(0);
+    setGameOver(true);
+    stop();
+    reset();
   };
   const endGameModal = () => {
     if (isStarted && currentCount === 0) setShow(true);
@@ -265,6 +269,7 @@ const Game = (props) => {
         setSaved(true);
         setIsStarted(false);
         setLoadingState(false);
+        setGameOver(true);
       } catch (error) {
         console.error(error);
       }
@@ -444,7 +449,7 @@ const Game = (props) => {
               variant="contained"
               color="error"
               sx={{ justifyContent: 'center' }}
-              onClick={() => resetMode()}
+              onClick={() => endGame()}
             >
               End Game
             </Button>

@@ -67,7 +67,6 @@ const Choice = (props) => {
     updateScore,
     mode
   } = props;
-  // const [ran, setRan] = useState(null)
 
   const options = {
     0: {
@@ -108,7 +107,10 @@ const Choice = (props) => {
     return Math.floor(Math.random() * (maxFloor - minCeil)) + minCeil;
   };
   const getRandomCountry = () => {
-    const int = getRandomInt(0, data.length);
+    let int;
+    do {
+      int = getRandomInt(0, data.length);
+    } while (usedCountry.includes(int));
     setCurrentCountryId(int);
     const country = data[int];
     const usedArray = usedCountry;
@@ -142,7 +144,6 @@ const Choice = (props) => {
         id: 0,
         correct: 2
       });
-      console.log(fetchanswers[0]);
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, data.length - 1, currentCountryId);
@@ -153,6 +154,7 @@ const Choice = (props) => {
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
         [newName] = data[ran].government.capital.name.split(';');
+        usedCaps.push(ran);
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
         if (usedCaps.includes(ran) || usedCaps.includes(currentCountryId)) {
@@ -185,6 +187,8 @@ const Choice = (props) => {
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
     getAnswers(country);
+    const usedCountries = [];
+    usedCountries.push();
     if (questions && questions.length === 10) {
       handleOpen();
       // setState({questions: [], answers: [], guesses: null})
@@ -212,7 +216,7 @@ const Choice = (props) => {
       setTimeout(() => {
         setLoading(true);
         takeTurn();
-      }, 1500);
+      }, 500);
     } else {
       answer.correct = 1;
       checkquestion.correct = false;
@@ -226,9 +230,12 @@ const Choice = (props) => {
   });
 
   useEffect(() => {
-    setAnswers([]);
-    setQuestions([]);
-    endGame();
+    if (gameOver) {
+      setAnswers([]);
+      setQuestions([]);
+      setUsedCountry([]);
+      endGame();
+    }
   }, [saved, gameOver]);
 
   const directions = (
@@ -282,7 +289,7 @@ const Choice = (props) => {
           </div>
         )}
       </div>
-      {answers && answers.length > 0 && (
+      {answers && !gameOver && answers.length > 0 && (
         <CustomAnswer
           answers={answers}
           options={options}

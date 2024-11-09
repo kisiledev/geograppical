@@ -20,9 +20,10 @@ const Scoreboard = (props) => {
     <Card
       sx={{
         display: 'flex',
-        margin: '20px',
+        margin: '0 auto',
         minHeight: '100px',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '50%'
       }}
       spacing={2}
     >
