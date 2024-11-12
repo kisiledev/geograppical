@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import userImg from '../../img/user.png';
-import { Avatar, Button, Card, Grid } from '@mui/material';
+import { Avatar, Button, Card, Grid, Typography } from '@mui/material';
 import { Edit } from '@mui/icons-material';
 // import PropTypes from 'prop-types';
 // import {
@@ -21,7 +21,6 @@ const AcctHeader = (props) => {
   const { loadingState, favorites, scores, user } = props;
   return (
     <Card
-      raised
       sx={{
         marginBottom: '50px',
         padding: '20px',
@@ -51,7 +50,7 @@ const AcctHeader = (props) => {
           }}
         >
           <Avatar
-            sx={{ width: 96, height: 96 }}
+            sx={{ width: 96, height: 96, border: '2px solid #000' }}
             src={user ? user.photoURL : userImg}
             alt={user.name}
           />
@@ -66,31 +65,43 @@ const AcctHeader = (props) => {
             flexDirection: 'column'
           }}
         >
-          <h5 className="mt-3">{user.displayName}</h5>
-          <p>
-            {`Account created ${new Date(
+          <Typography component="h5" variant="h5" sx={{ marginTop: '5px' }}>
+            {user.displayName}
+          </Typography>
+          <Typography component="p" variant="p">
+            {`User since ${new Date(
               user.metadata.creationTime
             ).toLocaleDateString()}`}
-          </p>
-          <p>{user.email}</p>
-          <p>{user.phoneNumber ? user.phoneNumber : 'No phone number added'}</p>
+          </Typography>
+          <Typography component="p" variant="p" sx={{ fontWeight: 600 }}>
+            {user.email}
+          </Typography>
+          <Typography component="p" variant="p">
+            {user.phoneNumber ? user.phoneNumber : 'No phone number added'}
+          </Typography>
           {loadingState ? (
             <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x" />
           ) : (
             <>
-              <h6>Stats</h6>
-              <p>
+              <Typography
+                component="h6"
+                variant="h6"
+                sx={{ marginTop: '25px', fontWeight: 600 }}
+              >
+                Stats
+              </Typography>
+              <Typography>
                 {favorites?.length === 0
                   ? 'No Favorites'
                   : `${favorites?.length} Favorite${
-                      favorites?.length === 1 && 's'
+                      favorites?.length > 1 && 's'
                     }`}
-              </p>
-              <p>
+              </Typography>
+              <Typography>
                 {scores?.length === 0
                   ? 'No Scores'
-                  : `${scores?.length} Score${scores?.length === 1 && 's'}`}
-              </p>
+                  : `${scores?.length} Score${scores?.length > 1 && 's'}`}
+              </Typography>
             </>
           )}
         </Grid>
@@ -101,6 +112,7 @@ const AcctHeader = (props) => {
             color="success"
             to="/account/edit"
             startIcon={<Edit />}
+            sx={{ marginTop: '20px' }}
           >
             Edit Account
           </Button>

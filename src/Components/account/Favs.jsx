@@ -3,7 +3,15 @@ import Flag from 'react-world-flags';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link as RouterLink } from 'react-router-dom';
-import { Collapse, IconButton, Link, List, ListItem } from '@mui/material';
+import {
+  Collapse,
+  Grid,
+  IconButton,
+  Link,
+  List,
+  ListItem,
+  Typography
+} from '@mui/material';
 import PropTypes from 'prop-types';
 import { countryType, acctDataType } from '../../helpers/types/index';
 import { Delete } from '@mui/icons-material';
@@ -21,7 +29,7 @@ const Favs = (props) => {
                 <Link
                   component={RouterLink}
                   sx={{ marginRight: '20px' }}
-                  to={`/${simplifyString(favorite.id.toLowerCase())}`}
+                  to={`/${simplifyString(favorite.id).toLowerCase()}`}
                 >
                   <Flag
                     className="favFlag img-thumbnail"
@@ -39,12 +47,13 @@ const Favs = (props) => {
                     shiny={false}
                   />
                 </Link>
-                <h5>
-                  {favorite.id}-
-                  <small>
+                <Grid>
+                  <Typography fontWeight={600}>{favorite.id}</Typography>
+                  <Typography>
                     {favorite.data.government.capital.name.split(';')[0]}
-                  </small>
-                </h5>
+                  </Typography>
+                </Grid>
+
                 <IconButton
                   sx={{ marginLeft: 'auto' }}
                   color="error"

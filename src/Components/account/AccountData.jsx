@@ -9,9 +9,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Badge,
   Box,
-  Card,
   Chip,
   Typography
 } from '@mui/material';

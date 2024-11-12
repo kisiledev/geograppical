@@ -224,7 +224,7 @@ const DetailView = (props) => {
                         {countryDetail.name}
                       </Typography>
                       <Typography variant="p" sx={{ fontWeight: 600 }}>
-                        {countryDetail.government.capital.name}
+                        {countryDetail?.government?.capital.name}
                       </Typography>
                       <Typography component="h5">
                         {`Population: 
