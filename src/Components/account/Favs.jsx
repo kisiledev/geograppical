@@ -1,10 +1,7 @@
 import React from 'react';
 import Flag from 'react-world-flags';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link as RouterLink } from 'react-router-dom';
 import {
-  Collapse,
   Grid,
   IconButton,
   Link,
@@ -13,8 +10,8 @@ import {
   Typography
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import { countryType, acctDataType } from '../../helpers/types/index';
 import { Delete } from '@mui/icons-material';
+import { countryType, acctDataType } from '../../helpers/types/index';
 
 const Favs = (props) => {
   const { acctData, simplifyString, deleteDocument } = props;

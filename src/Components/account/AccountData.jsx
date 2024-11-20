@@ -31,7 +31,6 @@ const AccountData = (props) => {
     boolean
   } = props;
 
-  console.log(acctData);
   return (
     <Accordion onClick={() => toggleData(name)}>
       <AccordionSummary

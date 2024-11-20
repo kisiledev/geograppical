@@ -192,7 +192,7 @@ const Choice = (props) => {
               margin: '10px 8px none',
               padding: '10px',
               borderRadius: '3px',
-              backgroundColor: answer.correct === 0 ? 'green' : 'blue'
+              backgroundColor: answer.correct === 0 ? 'green' : 'white'
             }}
             component={Card}
             disabled={answer.correct === 1}

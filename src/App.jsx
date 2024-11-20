@@ -322,14 +322,6 @@ const App = (props) => {
             handleData={handleData}
             authenticated={authenticated}
           />
-          <PrivateRoute
-            exact
-            path="/account/edit"
-            user={user}
-            component={AccountEdit}
-            loadingState={loadingState}
-            authenticated={authenticated}
-          />
           <Route
             exact
             path="/login"

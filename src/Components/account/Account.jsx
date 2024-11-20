@@ -19,6 +19,7 @@ import AccountData from './AccountData';
 import { firebaseApp } from '../../firebase/firebase';
 import { userType } from '../../helpers/types/index';
 import AcctHeader from './AcctHeader';
+import AccountEdit from './AccountEdit';
 
 const Account = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -26,8 +27,9 @@ const Account = (props) => {
   const [acctScores, setAcctScores] = useState('');
   const [message, setMessage] = useState('');
   const [show, setShow] = useState(false);
+  const [edit, setEdit] = useState(false);
 
-  const { user, scores, favorites, simplifyString } = props;
+  const { user, scores = [], favorites = [], simplifyString = null } = props;
 
   const db = getFirestore(firebaseApp);
   const deleteDocument = async (id, type) => {
@@ -143,6 +145,7 @@ const Account = (props) => {
     if (typeof s !== 'string') return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
+  console.log(data);
   data.forEach((piece) => {
     const dynamicProps = {
       key: piece.name,
@@ -155,8 +158,6 @@ const Account = (props) => {
       deleteDocument
     };
     dynamicProps.acctData = piece.data;
-
-    console.log(dynamicProps);
     acct.push(<AccountData {...dynamicProps} />);
   });
   return (
@@ -174,12 +175,15 @@ const Account = (props) => {
       {show && <Alert severity={message.style}>{message.content}</Alert>}
       <Grid item md={8} xs={12}>
         <AcctHeader
+          edit={edit}
+          setEdit={setEdit}
           loadingState={loadingState}
           favorites={acctFavorites?.data}
           scores={acctScores?.data}
           user={user}
         />
-        {acct}
+        {!edit && acct}
+        {edit && <AccountEdit user={user} />}
       </Grid>
     </Grid>
   );

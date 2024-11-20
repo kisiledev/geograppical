@@ -5,20 +5,23 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-console */
 /* eslint-disable global-require */
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  Avatar,
+  Button,
+  Card,
+  Grid,
+  IconButton,
+  Typography
+} from '@mui/material';
+import { ArrowBack, Edit } from '@mui/icons-material';
 import userImg from '../../img/user.png';
-import { Avatar, Button, Card, Grid, Typography } from '@mui/material';
-import { Edit } from '@mui/icons-material';
-// import PropTypes from 'prop-types';
-// import {
-//   countryType,
-// } from '../../helpers/Types/index';
 
 const AcctHeader = (props) => {
-  const { loadingState, favorites, scores, user } = props;
+  const { loadingState, favorites, scores, user, edit, setEdit } = props;
+  const [hover, setHover] = useState(false);
   return (
     <Card
       sx={{
@@ -46,14 +49,36 @@ const AcctHeader = (props) => {
             justifyContent: 'center',
             alignItems: 'center',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            position: 'relative'
           }}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         >
           <Avatar
-            sx={{ width: 96, height: 96, border: '2px solid #000' }}
+            sx={{
+              width: 96,
+              height: 96,
+              border: '2px solid #000',
+              opacity: edit && hover ? 0.5 : 1,
+              backgroundColor: '#000'
+            }}
             src={user ? user.photoURL : userImg}
             alt={user.name}
           />
+          {edit && hover && (
+            <IconButton
+              sx={{
+                position: 'absolute',
+                margin: '0 auto',
+                padding: '40%'
+              }}
+              component="label"
+            >
+              <Edit color="#f4a" titleAccess="Click to edit" />
+              <input type="file" id="upload-img" hidden />
+            </IconButton>
+          )}
         </Grid>
         <Grid
           item
@@ -107,14 +132,13 @@ const AcctHeader = (props) => {
         </Grid>
         <Grid item sm={12}>
           <Button
-            LinkComponent={Link}
             variant="contained"
             color="success"
-            to="/account/edit"
-            startIcon={<Edit />}
+            onClick={() => setEdit(!edit)}
+            startIcon={!edit ? <Edit /> : <ArrowBack />}
             sx={{ marginTop: '20px' }}
           >
-            Edit Account
+            {edit ? 'Back to Account' : 'Edit Account'}
           </Button>
         </Grid>
       </Grid>
