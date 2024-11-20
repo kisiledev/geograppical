@@ -27,11 +27,28 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { firebaseApp } from '../../firebase/firebase';
+import * as ROUTES from '../../constants/Routes';
 import { dataType, userType } from '../../helpers/types/index';
 import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
+
+const GameMode = ({ gameMode, props }) => {
+  switch (gameMode) {
+    case 'choice': {
+      return <Choice {...props} mode={gameMode} />;
+    }
+    case 'find': {
+      return <Find {...props} mode={gameMode} />;
+    }
+    case 'highlight': {
+      return <Highlight {...props} mode={gameMode} />;
+    }
+    default:
+      return null;
+  }
+};
 
 const Game = (props) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -52,8 +69,6 @@ const Game = (props) => {
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
   const [modalBody, setModalBody] = useState('');
-  // const [intId, setIntId] = useState(null)
-  // const [gameId, setGameId] = useState(null)
 
   const {
     changeMapView,
@@ -86,10 +101,8 @@ const Game = (props) => {
 
   const start = useCallback(() => {
     if (intervalRef.current !== null) {
-      console.log('null');
       return;
     }
-    console.log('starting');
     if (timeChecked) {
       intervalRef.current = setInterval(() => tick(), 1000);
     }
@@ -109,6 +122,7 @@ const Game = (props) => {
 
   const startGame = () => {
     setIsStarted(true);
+    setGameOver(false);
     if (timeChecked) {
       start();
     }
@@ -118,15 +132,18 @@ const Game = (props) => {
       stop();
       reset();
     }
-    if (!gameOver) return;
     setIsStarted(false);
-    setGameOver(true);
-    setQuestions(null);
     setScore(0);
     setCorrect(0);
     setIncorrect(0);
     setSaved(false);
     setCurrentCount(60);
+    setQuestions(null);
+    setScore(0);
+    setCorrect(0);
+    setGameOver(true);
+    stop();
+    reset();
   };
   const endGameModal = () => {
     if (isStarted && currentCount === 0) setShow(true);
@@ -252,87 +269,38 @@ const Game = (props) => {
         setSaved(true);
         setIsStarted(false);
         setLoadingState(false);
+        setGameOver(true);
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  const back = !isStarted && (
+  const bundledProps = {
+    isStarted,
+    gameOver,
+    correct,
+    incorrect,
+    mapVisible,
+    changeMapView,
+    getCountryInfo,
+    startGame,
+    endGame,
+    updateScore,
+    saved,
+    handlePoints: handlePointsQuestions,
+    handleOpen: handleGameOpen,
+    data
+  };
+  const back = !isStarted && gameMode !== null && (
     <Button variant="contained" color="primary" onClick={() => resetMode()}>
       Go Back
     </Button>
   );
-  let returnGameMode;
-  if (gameMode === 'choice') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Choice
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          data={data}
-          getCountryInfo={getCountryInfo}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else if (gameMode === 'find') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Find
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          mapVisible={mapVisible}
-          changeMapView={changeMapView}
-          worldData={data}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else if (gameMode === 'highlight') {
-    returnGameMode = (
-      <div>
-        {back}
-        <Highlight
-          isStarted={isStarted}
-          gameOver={gameOver}
-          correct={correct}
-          incorrect={incorrect}
-          mapVisible={mapVisible}
-          changeMapView={changeMapView}
-          worldData={data}
-          getCountryInfo={getCountryInfo}
-          startGame={startGame}
-          endGame={endGame}
-          updateScore={updateScore}
-          handlePoints={handlePointsQuestions}
-          handleOpen={handleGameOpen}
-          saved={saved}
-        />
-      </div>
-    );
-  } else {
-    returnGameMode = <div />;
-  }
   const timeButtons = timeChecked && (
     <Grid
       sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+      item
       xs={12}
     >
       <FormControlLabel
@@ -361,11 +329,13 @@ const Game = (props) => {
   return (
     <>
       <Dialog
-        show={show}
-        onExit={() => resetMode()}
-        onHide={() => handleModalClose()}
+        open={show}
+        onClose={() => {
+          resetMode();
+          handleModalClose();
+        }}
       >
-        <DialogTitle closeButton>
+        <DialogTitle>
           <Typography>Game Over</Typography>
         </DialogTitle>
         <DialogContent>{modalBody}</DialogContent>
@@ -401,10 +371,11 @@ const Game = (props) => {
         questions={questions}
       />
       <Card sx={{ margin: '20px', padding: '20px' }} elevation={4}>
+        {back}
         <Typography
           sx={{ textAlign: 'center', fontWeight: 600 }}
           textAlign="center"
-          variant="h6"
+          variant="h4"
         >
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
@@ -430,8 +401,8 @@ const Game = (props) => {
             </ButtonGroup>
           </Stack>
         )}
-        <Grid md={8} lg={12} sx={{ textAlign: 'center' }}>
-          {returnGameMode}
+        <Grid item md={8} lg={12} sx={{ textAlign: 'center' }}>
+          <GameMode props={bundledProps} gameMode={gameMode} />
         </Grid>
         {!isStarted && (
           <Stack
@@ -444,6 +415,7 @@ const Game = (props) => {
                 display: 'flex',
                 flexWrap: 'wrap'
               }}
+              item
               xs={12}
             >
               <FormControlLabel
@@ -477,7 +449,7 @@ const Game = (props) => {
               variant="contained"
               color="error"
               sx={{ justifyContent: 'center' }}
-              onClick={() => resetMode()}
+              onClick={() => endGame()}
             >
               End Game
             </Button>

@@ -20,17 +20,19 @@ const Scoreboard = (props) => {
     <Card
       sx={{
         display: 'flex',
-        margin: '20px',
+        margin: '0 auto',
         minHeight: '100px',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '50%'
       }}
-      sm={12}
       spacing={2}
     >
       <Grid
         container
-        sm={6}
-        sx={{ margin: '0 auto', justifyContent: 'space-between' }}
+        sx={{
+          margin: '0 auto',
+          justifyContent: 'space-around'
+        }}
       >
         <Grid item>
           <Timer

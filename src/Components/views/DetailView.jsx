@@ -151,7 +151,7 @@ const DetailView = (props) => {
   }, []);
 
   useEffect(() => {
-    if (user && countryDetail && !favorite) {
+    if (user && countryDetail) {
       checkFavorite(countryDetail.name);
     }
     getCountryInfo(match.params.country);

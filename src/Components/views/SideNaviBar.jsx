@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import {
-  Link as RouterLink,
-  Drawer,
-  Typography,
-  Collapse
-} from '@mui/material';
-import { makeStyles, useTheme } from '@mui/styles';
-import { dataType, userType } from '../../helpers/types/index';
+import { Link as RouterLink, Drawer, Typography } from '@mui/material';
+import { useTheme } from '@mui/styles';
+import { dataType } from '../../helpers/types/index';
 import SideCountry from './SideCountry';
 import * as ROUTES from '../../constants/Routes';
 
@@ -93,13 +86,13 @@ const SideNaviBar = (props) => {
       >
         Geograppical
       </Typography>
-      <RouterLink sx={navLinks} href="/" underline="none">
+      <RouterLink sx={navLinks} href={ROUTES.HOME} underline="none">
         Learn
       </RouterLink>
-      <RouterLink sx={navLinks} href="/play" underline="none">
+      <RouterLink sx={navLinks} href={ROUTES.PLAY} underline="none">
         Play
       </RouterLink>
-      <RouterLink href={ROUTES.ACCOUNT} underline="none" sx={navLinks}>
+      <RouterLink sx={navLinks} href={ROUTES.ACCOUNT} underline="none">
         Account
       </RouterLink>
       <SideCountry

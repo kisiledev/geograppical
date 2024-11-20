@@ -3,18 +3,57 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Card, List, ListItem, ListItemButton } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  List,
+  ListItem,
+  ListItemButton,
+  Typography
+} from '@mui/material';
 import { dataType } from '../../helpers/types/index';
+import gameModes from '../../constants/GameContent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
+const CustomAnswer = ({ answers, checkAnswer, options, loading }) => (
+  <List
+    sx={{
+      padding: '5px',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap'
+    }}
+  >
+    {loading && <FontAwesomeIcon icon={faSpinner} />}
+    {!loading &&
+      answers.map((answer) => (
+        <List sx={{ width: '45%', padding: '20px' }} key={answer.id}>
+          <ListItemButton
+            role="button"
+            tabIndex={0}
+            onClick={() => checkAnswer(answer)}
+            value={answer.id}
+            component={Card}
+            style={options[answer.correct]}
+          >
+            {answer.name}
+          </ListItemButton>
+        </List>
+      ))}
+  </List>
+);
 const Choice = (props) => {
   const [currentCountry, setCurrentCountry] = useState(null);
   const [currentCountryId, setCurrentCountryId] = useState(null);
   const [guesses, setGuesses] = useState(null);
-  const [answers, setAnswers] = useState(null);
+  const [answers, setAnswers] = useState([]);
   const [questions, setQuestions] = useState([]);
   const [usedCountry, setUsedCountry] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     handlePoints,
@@ -25,10 +64,36 @@ const Choice = (props) => {
     isStarted,
     endGame,
     startGame,
-    updateScore
+    updateScore,
+    mode
   } = props;
-  // const [ran, setRan] = useState(null)
 
+  const options = {
+    0: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'green'
+    },
+    1: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'red'
+    },
+    2: {
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'initial'
+    }
+  };
   const shuffle = (a) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -42,7 +107,10 @@ const Choice = (props) => {
     return Math.floor(Math.random() * (maxFloor - minCeil)) + minCeil;
   };
   const getRandomCountry = () => {
-    const int = getRandomInt(0, data.length);
+    let int;
+    do {
+      int = getRandomInt(0, data.length);
+    } while (usedCountry.includes(int));
     setCurrentCountryId(int);
     const country = data[int];
     const usedArray = usedCountry;
@@ -86,6 +154,7 @@ const Choice = (props) => {
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
         [newName] = data[ran].government.capital.name.split(';');
+        usedCaps.push(ran);
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
         if (usedCaps.includes(ran) || usedCaps.includes(currentCountryId)) {
@@ -101,8 +170,9 @@ const Choice = (props) => {
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
-      setAnswers(fetchanswers);
     }
+
+    setAnswers(fetchanswers);
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
@@ -112,10 +182,13 @@ const Choice = (props) => {
     if (!isStarted) {
       startGame();
     }
+    setLoading(false);
     const country = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
     getAnswers(country);
+    const usedCountries = [];
+    usedCountries.push();
     if (questions && questions.length === 10) {
       handleOpen();
       // setState({questions: [], answers: [], guesses: null})
@@ -134,12 +207,16 @@ const Choice = (props) => {
       updateScore(3 - guesses);
       //  set answer style
       answer.correct = 0;
+      // alert('your answer is correct');
       //  initialize correct counter for game
       if (guesses === 1) {
         checkquestion.correct = true;
       }
       checkguesses = null;
-      setTimeout(() => takeTurn(), 1000);
+      setTimeout(() => {
+        setLoading(true);
+        takeTurn();
+      }, 500);
     } else {
       answer.correct = 1;
       checkquestion.correct = false;
@@ -153,56 +230,38 @@ const Choice = (props) => {
   });
 
   useEffect(() => {
-    setAnswers([]);
-    setQuestions([]);
-    endGame();
+    if (gameOver) {
+      setAnswers([]);
+      setQuestions([]);
+      setUsedCountry([]);
+      endGame();
+    }
   }, [saved, gameOver]);
 
   const directions = (
-    <div className="directions">
-      <h5>Directions</h5>
-      <p>
-        `A statement will be shown with four choices. Select the correct answer
-        for the maximum number of points. Incorrect answers will receive less
-        points and make two incorrect choices will yield no points. Select all
-        incorrect answers and you will LOSE a point. Good luck!`
-      </p>
-      <Button
-        variant="contained"
-        className="btn btn-lg btn-success"
-        onClick={() => takeTurn()}
-      >
-        Start Game
-      </Button>
-    </div>
+    <Box className="directions">
+      <Typography variant="h5">Directions</Typography>
+      <Typography variant="p">{gameModes[mode].directions}</Typography>
+      <Box sx={{ margin: '10px' }}>
+        <Button
+          disabled={!data?.length > 0}
+          variant="contained"
+          color="success"
+          onClick={() => takeTurn()}
+        >
+          Start Game
+        </Button>
+      </Box>
+    </Box>
   );
-  let answerChoices;
-  if (answers && answers.length > 0) {
-    if (questions < 0) {
-      answerChoices = [];
-    } else {
-      answerChoices = answers.map((answer) => {
-        return (
-          <ListItemButton
-            onClick={() => checkAnswer(answer)}
-            value={answer.id}
-            key={answer.id}
-            sx={{
-              marginTop: '10px',
-              margin: '10px 8px none',
-              padding: '10px',
-              borderRadius: '3px',
-              backgroundColor: answer.correct === 0 ? 'green' : 'white'
-            }}
-            component={Card}
-            disabled={answer.correct === 1}
-          >
-            {answer.name}
-          </ListItemButton>
-        );
-      });
-    }
-  }
+  // let answerChoices;
+  // if (answers && answers.length > 0) {
+  //   if (questions < 0) {
+  //     answerChoices = [];
+  //   } else {
+  //     answerChoices =
+  //   }
+  // }
   return (
     <div>
       {!isStarted && directions}
@@ -230,11 +289,14 @@ const Choice = (props) => {
           </div>
         )}
       </div>
-      {answers && answers.length > 0 ? (
-        <List className="px-0 d-flex justify-content-center flex-wrap">
-          {answerChoices}
-        </List>
-      ) : null}
+      {answers && !gameOver && answers.length > 0 && (
+        <CustomAnswer
+          answers={answers}
+          options={options}
+          checkAnswer={checkAnswer}
+          loading={loading}
+        />
+      )}
     </div>
   );
 };
