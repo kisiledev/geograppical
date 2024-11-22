@@ -1,5 +1,4 @@
-import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import { ThemeProvider } from '@mui/material/styles';
@@ -9,15 +8,16 @@ import App from './App';
 import toolkitStore from './redux-toolkit';
 import * as serviceWorker from './serviceWorker';
 
-render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
   <BrowserRouter>
     <Provider store={toolkitStore}>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
     </Provider>
-  </BrowserRouter>,
-  document.getElementById('root')
+  </BrowserRouter>
 );
 
 // if (module.hot) {
