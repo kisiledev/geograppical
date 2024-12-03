@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
-import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Alert, Box, Button, TextField, Link } from '@mui/material';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -64,7 +64,7 @@ const PasswordReset = (props) => {
 
   const { user } = props;
   if (user && user.uid) {
-    return <Redirect to="/account" />;
+    return <Route path="/account" />;
   }
 
   return loadingState ? (

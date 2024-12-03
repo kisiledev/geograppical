@@ -4,7 +4,7 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
-import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { Link as RouterLink, Route } from 'react-router-dom';
 import { Alert, Box, Button, TextField, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -90,7 +90,7 @@ const SignIn = (props) => {
 
   const { user, loadingState } = props;
   if (user && user.uid) {
-    return <Redirect to="/account" />;
+    return <Route path="/account" />;
   }
 
   const isInvalid =

@@ -85,6 +85,7 @@ const viewSlice = createSlice({
   initialState: { value: 'Default' },
   reducers: {
     changeView: (state: SliceStates, action: PayloadAction<SliceStates>) => {
+      console.log(action);
       const { payload } = action;
       console.log(payload);
       state.value = payload.value;

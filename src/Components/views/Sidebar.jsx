@@ -8,7 +8,6 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
 import {
   Button,
   ButtonGroup,
@@ -21,7 +20,6 @@ import { makeStyles, useTheme } from '@mui/styles';
 import { dispatch } from 'd3';
 import { changeView } from 'redux-toolkit';
 import { useSelector } from 'react-redux';
-import { dataType } from '../../helpers/types/index';
 import { simplifyString } from '../../helpers/utils';
 
 const useStyles = makeStyles({
@@ -378,13 +376,5 @@ const Sidebar = (props) => {
         ))}
     </List>
   );
-};
-
-Sidebar.propTypes = {
-  data: dataType.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  totalRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  uniqueRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  getOccurrence: PropTypes.func.isRequired
 };
 export default Sidebar;

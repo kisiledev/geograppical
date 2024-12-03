@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Button, Card, Grid, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
-import { withRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import PropTypes, { shape } from 'prop-types';
 import {
@@ -31,6 +31,7 @@ import * as ROUTES from '../../constants/Routes';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../firebase/firebase';
+import { withRouter } from '../../helpers/WithRouter';
 
 function getOccurrence(array, value) {
   return array.filter((v) => v === value).length;

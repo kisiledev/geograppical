@@ -6,7 +6,8 @@
 /* eslint-disable no-mixed-operators */
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Routes } from 'react-router';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import {
   Button,
@@ -27,50 +28,82 @@ import SignIn from './components/account/SignIn';
 import SignUp from './components/account/SignUp';
 import PrivateRoute from './components/account/PrivateRoutes';
 import PasswordReset from './components/account/PasswordReset';
-import AccountEdit from './components/account/AccountEdit';
 import SearchResults from './components/views/SearchResults';
 import SideNaviBar from './components/views/SideNaviBar';
 import { changeView, changeMap } from './redux-toolkit';
+import { Country, DataType, SliceStates } from './helpers/types';
+import { CountryType } from './helpers/types/CountryType';
+import { User } from 'firebase/auth';
 
-const App = (props) => {
+interface AppProps {
+  location: {
+    pathname: string;
+    search: string;
+    hash: string;
+    key: string;
+  };
+  history: {
+    goBack: () => void;
+  };
+}
+
+import {} from 'react-router-dom';
+
+function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    let location = useLocation();
+    let navigate = useNavigate();
+    let params = useParams();
+    return <Component {...props} router={{ location, navigate, params }} />;
+  }
+
+  return ComponentWithRouterProp;
+}
+
+const App = (props: AppProps) => {
   const dispatch = useDispatch();
   const mapView = useSelector((state) => state.mapView.value);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
-  const [filterNations, setFilterNations] = useState([]);
+  const [filterNations, setFilterNations] = useState<CountryType[]>([]);
   const [searchText, setSearchText] = useState('');
-  const [worldData, setWorldData] = useState([]);
+  const [worldData, setWorldData] = useState<DataType>([]);
   const [countryDetail, setCountryDetail] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modal, setModal] = useState({});
+  const [modal, setModal] = useState({
+    title: '',
+    body: '',
+    primaryButton: ''
+  });
 
   const { history, location } = props;
 
   const db = getFirestore(firebaseApp);
-  const handleViews = (selectedView) => {
+  const handleViews = (selectedView: SliceStates) => {
+    console.log(selectedView);
     dispatch(changeView(selectedView));
   };
 
   const loadWorldData = async () => {
     try {
-      const querySnapshot = await getDocs(
-        collection(db, ...'countries'.split('/'))
-      );
-      const data = [];
+      const querySnapshot = await getDocs(collection(db, 'countries'));
+      const data: DataType = [];
       querySnapshot.forEach((doc) => {
-        data.push(doc.data());
+        const country = doc.data() as CountryType;
+        data.push(country);
       });
+      console.log(data);
       setWorldData(data);
     } catch (err) {
-      setError(err);
+      setError(err as Error);
       console.log(err);
     }
   };
-  const simplifyString = (string) =>
+  const simplifyString = (string: string) =>
     string
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -83,10 +116,10 @@ const App = (props) => {
   const handleOpen = () => {
     setShowModal(true);
   };
-  const setStateModal = (modalsetting) => {
+  const setStateModal = (modalsetting: SliceStates) => {
     setModal(modalsetting);
   };
-  const freezeLoad = (loadState) => {
+  const freezeLoad = (loadState: boolean) => {
     console.log('running freezeLoad');
     setLoadingState(loadState);
   };
@@ -98,7 +131,7 @@ const App = (props) => {
       console.log(err);
     }
   };
-  const getCountryInfo = (name) => {
+  const getCountryInfo = (name: string) => {
     const searchDB = Object.values(worldData);
     name = name
       .normalize('NFD')
@@ -118,7 +151,7 @@ const App = (props) => {
     handleViews('detail');
   };
 
-  const filterCountryByName = (string) => {
+  const filterCountryByName = (string: string) => {
     const searchDB = Object.values(worldData);
     const match = searchDB.filter(
       (country) =>
@@ -139,6 +172,7 @@ const App = (props) => {
   };
 
   useEffect(() => {
+    console.log('loading world dta');
     loadWorldData();
   }, []);
   const changeMapView = () => {
@@ -170,6 +204,7 @@ const App = (props) => {
     }
   };
   const handleInput = (e) => {
+    console.log(e, typeof e);
     e.persist();
     // console.log('changing')
     const { value } = e.target;
@@ -239,7 +274,7 @@ const App = (props) => {
     }
   };
   useEffect(() => {
-    auth.onAuthStateChanged((u) => {
+    auth.onAuthStateChanged((u: User | null) => {
       if (u) {
         setUser(u);
         setAuthenticated(true);
@@ -276,11 +311,10 @@ const App = (props) => {
           handleInput={handleInput}
           user={user}
         />
-        <Switch>
+        <Routes>
           <Route
-            exact
             path="/search/:input"
-            render={() => (
+            children={() => (
               <SearchResults
                 searchText={searchText}
                 countries={filterNations}
@@ -294,9 +328,8 @@ const App = (props) => {
             )}
           />
           <Route
-            exact
             path="/play"
-            render={() => (
+            children={() => (
               <Game
                 changeMapView={changeMapView}
                 mapVisible={mapView}
@@ -311,7 +344,6 @@ const App = (props) => {
             )}
           />
           <PrivateRoute
-            exact
             path="/account"
             user={user}
             simplifyString={simplifyString}
@@ -323,9 +355,8 @@ const App = (props) => {
             authenticated={authenticated}
           />
           <Route
-            exact
             path="/login"
-            render={() => (
+            children={() => (
               <SignIn
                 loadingState={loadingState}
                 user={user}
@@ -335,9 +366,8 @@ const App = (props) => {
             )}
           />
           <Route
-            exact
             path="/passwordreset"
-            render={() => (
+            children={() => (
               <PasswordReset
                 user={user}
                 handleSubmit={handleSubmit}
@@ -346,16 +376,14 @@ const App = (props) => {
             )}
           />
           <Route
-            exact
             path="/signup"
-            render={() => (
+            children={() => (
               <SignUp user={user} handleSubmit={handleSubmit} login={login} />
             )}
           />
           <Route
-            exact
             path="/"
-            render={() => (
+            children={() => (
               <ResultView
                 changeMapView={changeMapView}
                 countries={filterNations}
@@ -373,7 +401,7 @@ const App = (props) => {
           />
           <Route
             path="/:country"
-            render={() => (
+            children={() => (
               <DetailView
                 handleSideBar={handleSideBar}
                 data={worldData}
@@ -387,12 +415,12 @@ const App = (props) => {
               />
             )}
           />
-        </Switch>
+        </Routes>
         <Dialog open={showModal} onClose={() => handleClose()}>
           <DialogTitle>{modal.title}</DialogTitle>
           <DialogContent>{modal.body}</DialogContent>
           <DialogActions>
-            <Button variant="secondary" onClick={() => handleClose()}>
+            <Button variant="contained" onClick={() => handleClose()}>
               Close
             </Button>
             {modal.primaryButton}
@@ -403,15 +431,4 @@ const App = (props) => {
   );
 };
 
-App.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-    hash: PropTypes.string,
-    key: PropTypes.string
-  }).isRequired,
-  history: shape({
-    goBack: PropTypes.func.isRequired
-  }).isRequired
-};
 export default withRouter(App);

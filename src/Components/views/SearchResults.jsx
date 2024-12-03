@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { withRouter } from 'react-router-dom';
 import { BreakpointProvider } from 'react-socks';
 import { Alert, Link } from '@mui/material';
 import PropTypes from 'prop-types';

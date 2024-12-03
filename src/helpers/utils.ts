@@ -1,7 +1,15 @@
 import axios from 'axios';
 import isoData from '../data/iso.json';
+import {
+  Country,
+  DataType,
+  FactbookData,
+  IsoData,
+  IsoDataContainer
+} from './types';
+import { CountryType } from './types/CountryType';
 
-export const simplifyString = (string) => {
+export const simplifyString = (string: string) => {
   return string
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -9,7 +17,7 @@ export const simplifyString = (string) => {
     .toUpperCase();
 };
 
-const removeIsoNull = (array) =>
+const removeIsoNull = (array: DataType) =>
   array.filter(
     (item) =>
       item.government.capital !== undefined &&
@@ -18,8 +26,18 @@ const removeIsoNull = (array) =>
       item.name
   );
 
-const removeNull = (array) => {
+const removeNull = (array: DataType): CountryType | undefined => {
   if (array !== undefined) {
+    console.log(
+      array
+        .filter(
+          (item) =>
+            item.government.capital !== undefined &&
+            item.government.country_name !== undefined &&
+            item.name
+        )
+        .map((item) => (Array.isArray(item) ? removeNull(item) : item))
+    );
     return array
       .filter(
         (item) =>
@@ -29,95 +47,23 @@ const removeNull = (array) => {
       )
       .map((item) => (Array.isArray(item) ? removeNull(item) : item));
   }
+  return undefined;
 };
-const loadCodes = (isoData) => {
+const loadCodes = (isoData: IsoData[]) => {
   const codes = isoData;
   const isoCodes = codes.map((code) => {
-    const container = {};
-    container.name = code['CLDR display name'];
-    container.shortName = code['UNTERM English Short'];
-    container.isoCode = code['ISO3166-1-Alpha-3'];
-    container.capital = code.Capital;
+    const container: IsoDataContainer = {
+      name: code['CLDR display name'],
+      shortName: code['UNTERM English Short'],
+      isoCode: code['ISO3166-1-Alpha-3'],
+      capital: code.Capital
+    };
+
     return container;
   });
   return isoCodes;
 };
-const loadWorldData = () => {
-  try {
-    axios.get('../factbook.json').then((res) => {
-      let Data = res && res.data.countries;
-      // console.log(Data);
-      Data = Object.values(Data).map((country) => country.data) || [];
-      const newData = removeNull(Object.values(Data));
-      if (newData.length > 0) {
-        newData.forEach((element, index, nd) => {
-          nd[index].geography.map_references = newData[
-            index
-          ].geography.map_references.replace(/;/g, '');
-          if (nd[index].geography.map_references === 'AsiaEurope') {
-            nd[index].geography.map_references = 'Europe';
-          }
-          if (nd[index].geography.map_references === 'Middle East') {
-            nd[index].geography.map_references = 'Southwest Asia';
-          }
-        });
-      }
-      let loadediso = loadCodes(isoData);
-      let countries = {};
-      countries = newData;
-      for (let i = 0, len = countries.length; i < len; i += 1) {
-        countries[countries[i].name] = countries[i];
-      }
-      let codes = {};
-      if (codes === undefined) {
-        return console.log('unable to load');
-      }
-      codes = loadediso;
-      if (codes && codes.length > 0) {
-        for (let i = 0, len = codes.length; i < len; i += 1) {
-          if (codes[i]) {
-            codes[codes[i].name] = codes[i];
-          }
-        }
-        let i = 0;
-        const len = codes.length;
-        for (i; i < len; i += 1) {
-          if (countries[codes[i].name]) {
-            countries[codes[i].name].government.country_name.isoCode =
-              codes[i].isoCode;
-          } else if (countries[codes[i].shortName]) {
-            countries[codes[i].shortName].government.country_name.isoCode =
-              codes[i].isoCode;
-          }
-        }
-      }
-      const x = removeIsoNull(countries);
-      return x;
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-const hoverOnCountry = (e, region, country) => {
-  e.stopPropagation();
-  let nodes = document.getElementsByClassName('country');
-  nodes = [...nodes];
-  nodes = nodes.filter(
-    (y) =>
-      simplifyString(country) === simplifyString(y.dataset.longname) ||
-      simplifyString(country) === simplifyString(y.dataset.shortname)
-  );
-  console.log(nodes);
-  console.log(country);
-  nodes.forEach((node) => {
-    node.style.fill = '#ee0a43';
-    node.style.stroke = '#111';
-    node.style.strokeWidth = 0.1;
-    node.style.outline = 'none';
-    node.style.willChange = 'all';
-  });
-};
 const hoverOffCountry = (e, region, country) => {
   e.stopPropagation();
   let nodes = document.getElementsByClassName('country');

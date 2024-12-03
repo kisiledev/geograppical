@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import { Search } from '@mui/icons-material';
@@ -168,4 +167,4 @@ NaviBar.propTypes = {
   handleInput: PropTypes.func.isRequired,
   user: userType
 };
-export default withRouter(NaviBar);
+export default withRoute(NaviBar);

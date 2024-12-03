@@ -27,9 +27,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
-import { dataType } from '../../helpers/types/index';
-import data from '../../Data/world-50m.json';
 import { Button, ButtonGroup, Card, Grid } from '@mui/material';
+import data from '../../data/world-50m.json';
 
 const Maps = (props) => {
   const [center, setCenter] = useState([0, 0]);
@@ -336,13 +335,6 @@ const Maps = (props) => {
       </BreakpointProvider>
     </div>
   );
-};
-
-Maps.propTypes = {
-  worldData: dataType.isRequired,
-  mapVisible: PropTypes.string.isRequired,
-  changeMapView: PropTypes.func.isRequired,
-  getCountryInfo: PropTypes.func.isRequired
 };
 export default Maps;
 // const BlockPageScroll = ({ children }) => {

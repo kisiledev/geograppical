@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import 'firebaseui';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -75,7 +75,7 @@ const SignUp = (props) => {
 
   const { user } = props;
   if (user && user.uid) {
-    return <Redirect to="/account" />;
+    return <Route path="/account" />;
   }
 
   const isInvalid =

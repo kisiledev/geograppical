@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebaseui';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { userType } from '../../helpers/types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
@@ -66,7 +66,7 @@ const LinkEmailModal = (props) => {
   };
 
   if (user && user.uid) {
-    return <Redirect to="/account" />;
+    return <Route path="/account" />;
   }
 
   const isInvalid =
