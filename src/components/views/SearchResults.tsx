@@ -167,4 +167,4 @@ SearchResults.propTypes = {
   login: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired
 };
-export default withRouter(SearchResults);
+export default SearchResults;

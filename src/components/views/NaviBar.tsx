@@ -20,6 +20,7 @@ import { auth, googleProvider } from '../../firebase/firebase';
 import { userType } from '../../helpers/types/index';
 // import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles({
   appbar: {
@@ -46,7 +47,7 @@ const useStyles = makeStyles({
 });
 
 function NaviBar(props) {
-  const { history, searchText, handleInput, user } = props;
+  const { searchText, handleInput, user = null } = props;
 
   const settings = [
     { name: 'Profile', link: '/account', loggedIn: true },
@@ -58,6 +59,7 @@ function NaviBar(props) {
   ];
   const classes = useStyles();
 
+  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -77,7 +79,7 @@ function NaviBar(props) {
   };
   const logout = () => {
     auth.signOut();
-    history.push('/');
+    navigate('/');
     console.log('pushing to root');
   };
 
@@ -88,12 +90,12 @@ function NaviBar(props) {
       logout();
     }
     if (name === 'Sign In') {
-      history.push('/login');
+      navigate('/login');
     }
     if (name === 'Sign Up') {
-      history.push('/signup');
+      navigate('/signup');
     } else {
-      history.push(selected.link);
+      navigate(selected.link);
     }
   };
 
@@ -156,15 +158,9 @@ function NaviBar(props) {
     </AppBar>
   );
 }
-NaviBar.defaultProps = {
-  user: null
-};
 NaviBar.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired,
   searchText: PropTypes.string.isRequired,
   handleInput: PropTypes.func.isRequired,
   user: userType
 };
-export default withRoute(NaviBar);
+export default NaviBar;

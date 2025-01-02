@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Alert, Button, Card, Grid, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import PropTypes, { shape } from 'prop-types';
 import {
@@ -31,7 +31,6 @@ import * as ROUTES from '../../constants/Routes';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../firebase/firebase';
-import { withRouter } from '../../helpers/WithRouter';
 
 function getOccurrence(array, value) {
   return array.filter((v) => v === value).length;
@@ -41,6 +40,7 @@ const DetailView = (props) => {
   const [favorite, setFavorite] = useState(false);
   const [message, setMessage] = useState('');
 
+  const navigate = useNavigate();
   const {
     countryDetail,
     data,
@@ -49,7 +49,6 @@ const DetailView = (props) => {
     freezeLoad,
     getCountryInfo,
     match,
-    history,
     changeView,
     handleSideBar,
     filterCountryByName
@@ -194,7 +193,7 @@ const DetailView = (props) => {
               variant="contained"
               to="/"
               className="btn btn-primary justify-content"
-              onClick={() => history.goBack()}
+              onClick={() => navigate(-1)}
               sx={{ margin: '20px auto' }}
             >
               <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
@@ -306,9 +305,6 @@ DetailView.propTypes = {
   changeView: PropTypes.func.isRequired,
   handleSideBar: PropTypes.func.isRequired,
   filterCountryByName: PropTypes.func.isRequired,
-  match: matchType.isRequired,
-  history: shape({
-    goBack: PropTypes.func.isRequired
-  }).isRequired
+  match: matchType.isRequired
 };
-export default withRouter(DetailView);
+export default DetailView;

@@ -1,12 +1,6 @@
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable no-alert */
-/* eslint-disable max-len */
-/* eslint-disable no-console */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-mixed-operators */
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Route, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from 'react-router';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
 import {
@@ -28,7 +22,7 @@ import SignIn from './components/account/SignIn';
 import SignUp from './components/account/SignUp';
 import PrivateRoute from './components/account/PrivateRoutes';
 import PasswordReset from './components/account/PasswordReset';
-import SearchResults from './components/views/SearchResults';
+import SearchResults from './components/views/SearchResults.tsx';
 import SideNaviBar from './components/views/SideNaviBar';
 import { changeView, changeMap } from './redux-toolkit';
 import { Country, DataType, SliceStates } from './helpers/types';
@@ -45,19 +39,6 @@ interface AppProps {
   history: {
     goBack: () => void;
   };
-}
-
-import {} from 'react-router-dom';
-
-function withRouter(Component) {
-  function ComponentWithRouterProp(props) {
-    let location = useLocation();
-    let navigate = useNavigate();
-    let params = useParams();
-    return <Component {...props} router={{ location, navigate, params }} />;
-  }
-
-  return ComponentWithRouterProp;
 }
 
 const App = (props: AppProps) => {
@@ -80,7 +61,8 @@ const App = (props: AppProps) => {
     primaryButton: ''
   });
 
-  const { history, location } = props;
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const db = getFirestore(firebaseApp);
   const handleViews = (selectedView: SliceStates) => {
@@ -190,12 +172,12 @@ const App = (props: AppProps) => {
     alert('clicked');
     e.preventDefault();
     console.log('handling submit');
-    history.push(e.target.value);
+    navigate(e.target.value);
   };
   const handleData = (type) => {
     if (location.pathname !== '/account') {
       console.log('not on account page');
-      history.push('/account');
+      navigate('/account');
     }
     if (type === 'favorites') {
       setFavorites(!favorites);
@@ -343,17 +325,23 @@ const App = (props: AppProps) => {
               />
             )}
           />
-          <PrivateRoute
+          <Route
             path="/account"
-            user={user}
-            simplifyString={simplifyString}
-            component={Account}
-            loadingState={loadingState}
-            favorites={favorites}
-            scores={scores}
-            handleData={handleData}
-            authenticated={authenticated}
+            children={() => (
+              <PrivateRoute
+                path="/account"
+                user={user}
+                simplifyString={simplifyString}
+                component={Account}
+                loadingState={loadingState}
+                favorites={favorites}
+                scores={scores}
+                handleData={handleData}
+                authenticated={authenticated}
+              />
+            )}
           />
+
           <Route
             path="/login"
             children={() => (
@@ -431,4 +419,4 @@ const App = (props: AppProps) => {
   );
 };
 
-export default withRouter(App);
+export default App;

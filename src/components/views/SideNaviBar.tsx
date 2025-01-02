@@ -118,4 +118,4 @@ SideNaviBar.propTypes = {
   filterCountryByName: PropTypes.func.isRequired
 };
 
-export default withRouter(SideNaviBar);
+export default SideNaviBar;

@@ -1,16 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Navigate, Outlet, Route, RouterProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
-const PrivateRoute = ({
-  component: Component,
-  authenticated,
-  loadingState,
-  ...rest
-}) => {
+interface PrivateRouteProps extends RouterProps {
+  component: any;
+  authenticated: boolean;
+  loadingState: boolean;
+}
+const PrivateRoute = (props: PrivateRouteProps) => {
+  const { component: Component, authenticated, loadingState, ...rest } = props;
   if (loadingState) {
     return (
       <div className="mt-5 mx-auto text-center">
@@ -21,20 +22,10 @@ const PrivateRoute = ({
   return (
     <Route
       {...rest}
-      render={(props) =>
-        authenticated ? (
-          <Component {...props} {...rest} />
-        ) : (
-          <Route path="/login" />
-        )
+      element={(props: PrivateRouteProps) =>
+        authenticated ? <Outlet /> : <Navigate to="/login" />
       }
     />
   );
-};
-
-PrivateRoute.propTypes = {
-  component: PropTypes.func.isRequired,
-  authenticated: PropTypes.bool.isRequired,
-  loadingState: PropTypes.bool.isRequired
 };
 export default PrivateRoute;
