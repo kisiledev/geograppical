@@ -902,6 +902,8 @@ interface TransnationalIssues {
 }
 
 export interface CountryType {
+  alpha3Code: string;
+  excerpt: string;
   name: string;
   introduction: {
     background: string;

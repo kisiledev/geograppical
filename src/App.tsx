@@ -22,7 +22,7 @@ import SignIn from './components/account/SignIn';
 import SignUp from './components/account/SignUp';
 import PrivateRoute from './components/account/PrivateRoutes';
 import PasswordReset from './components/account/PasswordReset';
-import SearchResults from './components/views/SearchResults.tsx';
+import SearchResults from './components/views/SearchResults';
 import SideNaviBar from './components/views/SideNaviBar';
 import { changeView, changeMap } from './redux-toolkit';
 import { Country, DataType, SliceStates } from './helpers/types';
@@ -300,7 +300,6 @@ const App = (props: AppProps) => {
               <SearchResults
                 searchText={searchText}
                 countries={filterNations}
-                handleSideBar={handleSideBar}
                 data={worldData}
                 getCountryInfo={getCountryInfo}
                 user={user}
@@ -381,7 +380,6 @@ const App = (props: AppProps) => {
                 changeView={handleViews}
                 mapVisible={mapView}
                 filterCountryByName={filterCountryByName}
-                handleSubmit={handleSubmit}
                 user={user}
                 login={login}
               />
