@@ -1,6 +1,11 @@
 /* eslint-disable prefer-destructuring */
 import firebase from 'firebase/compat/app';
-import { getFirestore } from 'firebase/firestore';
+import {
+  collection,
+  CollectionReference,
+  DocumentData,
+  getFirestore
+} from 'firebase/firestore';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -8,6 +13,7 @@ import {
   EmailAuthProvider,
   TwitterAuthProvider
 } from 'firebase/auth';
+import { CountryType } from '../helpers/types/CountryType';
 
 const { initializeApp } = firebase;
 const firebaseApp = initializeApp({
@@ -27,7 +33,11 @@ const facebookProvider = new FacebookAuthProvider();
 const emailProvider = new EmailAuthProvider();
 const twitterProvider = new TwitterAuthProvider();
 const firestore = firebase.firestore;
-
+const firestoreGet = getFirestore();
+const createCollection = <T = DocumentData>(collectionName: string) => {
+  return collection(firestoreGet, collectionName) as CollectionReference<T>;
+};
+export const favoritesCollection = createCollection<CountryType>('favorites');
 export {
   db,
   auth,

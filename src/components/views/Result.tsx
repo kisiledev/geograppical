@@ -13,15 +13,42 @@ import {
   deleteDoc,
   setDoc
 } from 'firebase/firestore';
-import { countryType, userType, dataType } from '../../helpers/types/index';
+import {
+  countryType,
+  userType,
+  dataType,
+  UserType,
+  DataType
+} from '../../helpers/types/index';
 import '../../App.css';
 
-import { firebaseApp } from '../../firebase/firebase';
+import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 
 import * as ROUTES from '../../constants/Routes';
-import { Card } from '@mui/material';
+import { AlertColor, Card } from '@mui/material';
+import { CountryType } from '../../helpers/types/CountryType';
 
-const Result = (props) => {
+type Message = {
+  link: string;
+  linkContent: string;
+  content: string;
+  style: AlertColor;
+};
+interface ResultProps {
+  getCountryInfo: (country: string, capital: string) => void;
+  filtered: CountryType;
+  user: UserType;
+  country: CountryType;
+  name: string;
+  subregion: string;
+  capital: string;
+  population: number;
+  flagCode: string;
+  setShow: (show: boolean) => void;
+  setMessage: (message: Message) => void;
+  message: Message;
+}
+const Result = (props: ResultProps) => {
   const [favorite, setFavorite] = useState(false);
 
   const {
@@ -35,7 +62,8 @@ const Result = (props) => {
     population,
     flagCode,
     setShow,
-    setMessage
+    setMessage,
+    message
   } = props;
 
   const db = getFirestore(firebaseApp);
@@ -46,12 +74,15 @@ const Result = (props) => {
       setShow(false);
     }, 4000);
   };
-  const checkFavorite = async (coun) => {
-    const docRef = doc(db, ...`users/${user.uid}/favorites/${coun}`.split('/'));
+  const checkFavorite = async (coun: string) => {
+    const docRef = doc(
+      favoritesCollection,
+      ...`users/${user.uid}/favorites/${coun}`.split('/')
+    );
 
     try {
       const countryDoc = await getDoc(docRef);
-      if (countryDoc.exists) {
+      if (countryDoc.exists()) {
         setFavorite(true);
       } else {
         setFavorite(false);
@@ -60,8 +91,7 @@ const Result = (props) => {
       console.log('Error getting document:', error);
     }
   };
-  const makeFavorite = async (e, coun) => {
-    e.persist();
+  const makeFavorite = async (e: React.MouseEvent, coun: CountryType) => {
     console.log('adding');
     if (!user) {
       setMessage({
@@ -73,13 +103,14 @@ const Result = (props) => {
     }
     if (!favorite) {
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {
-        await setDoc(docRef, { coun });
+        await setDoc(docRef, coun);
         setMessage({
+          ...message,
           style: 'success',
           content: `Added ${coun.name} to favorites`
         });
@@ -88,20 +119,22 @@ const Result = (props) => {
         showFunc();
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${coun.name} to favorites, ${error}`
         });
         showFunc();
       }
     } else {
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {
         await deleteDoc(docRef);
         setMessage({
+          ...message,
           style: 'warning',
           content: `Removed ${coun.name} from favorites`
         });
@@ -109,7 +142,8 @@ const Result = (props) => {
         showFunc();
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${coun.name} to favorites, ${error}`
         });
         showFunc();
@@ -119,12 +153,12 @@ const Result = (props) => {
 
   useEffect(() => {
     if (user) {
-      checkFavorite(country);
+      checkFavorite(country.name);
     }
   }, []);
   useEffect(() => {
     if (user) {
-      checkFavorite(country);
+      checkFavorite(country.name);
     }
   }, [filtered]);
   return (
@@ -156,7 +190,6 @@ const Result = (props) => {
             <FontAwesomeIcon
               onClick={(e) => makeFavorite(e, country)}
               size="2x"
-              value={country}
               color={favorite ? 'gold' : 'gray'}
               icon={faStar}
             />
@@ -172,17 +205,17 @@ const Result = (props) => {
   );
 };
 
-Result.propTypes = {
-  getCountryInfo: PropTypes.func.isRequired,
-  filtered: dataType.isRequired,
-  user: userType.isRequired,
-  country: countryType.isRequired,
-  name: PropTypes.string.isRequired,
-  subregion: PropTypes.string.isRequired,
-  capital: PropTypes.string.isRequired,
-  population: PropTypes.number.isRequired,
-  flagCode: PropTypes.string.isRequired,
-  setShow: PropTypes.func.isRequired,
-  setMessage: PropTypes.func.isRequired
-};
+// Result.propTypes = {
+//   getCountryInfo: PropTypes.func.isRequired,
+//   filtered: dataType.isRequired,
+//   user: userType.isRequired,
+//   country: countryType.isRequired,
+//   name: PropTypes.string.isRequired,
+//   subregion: PropTypes.string.isRequired,
+//   capital: PropTypes.string.isRequired,
+//   population: PropTypes.number.isRequired,
+//   flagCode: PropTypes.string.isRequired,
+//   setShow: PropTypes.func.isRequired,
+//   setMessage: PropTypes.func.isRequired
+// };
 export default Result;
