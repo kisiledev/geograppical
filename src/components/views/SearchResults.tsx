@@ -9,14 +9,30 @@ import {
   countryType,
   dataType,
   userType,
-  matchType
+  matchType,
+  DataType,
+  UserType,
+  MatchType
 } from '../../helpers/types/index';
 import * as ROUTES from '../../constants/Routes';
 import Result from './Result';
 import { db } from '../../firebase/firebase';
 import '../../App.css';
+import { CountryType } from '../../helpers/types/CountryType';
 
-const SearchResults = (props) => {
+interface SearchResultsProps {
+  countries: CountryType[];
+  data: DataType;
+  user: UserType;
+  match: MatchType;
+  getCountryInfo: Function;
+  changeView: Function;
+  handleRefresh: Function;
+  handleOpen: Function;
+  login: Function;
+  searchText: string;
+}
+const SearchResults = (props: SearchResultsProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [favorite, setFavorite] = useState(false);
   const [message, setMessage] = useState('');

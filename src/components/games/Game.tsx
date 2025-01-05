@@ -241,7 +241,7 @@ const Game = (props) => {
         title: 'Not Logged In',
         body: 'You need to sign in to favorite countries',
         primaryButton: (
-          <Button variant="primary" onClick={login}>
+          <Button variant="contained" onClick={login}>
             Sign In/ Sign Up
           </Button>
         )

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { Route, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from 'react-router';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
@@ -27,7 +27,7 @@ import SideNaviBar from './components/views/SideNaviBar';
 import { changeView, changeMap } from './redux-toolkit';
 import { Country, DataType, SliceStates } from './helpers/types';
 import { CountryType } from './helpers/types/CountryType';
-import { User } from 'firebase/auth';
+import { signInWithPopup, User } from 'firebase/auth';
 
 interface AppProps {
   location: {
@@ -41,21 +41,30 @@ interface AppProps {
   };
 }
 
+type CountryDetail = CountryType | string;
+type Modal = {
+  title: string;
+  body: string;
+  primaryButton: string;
+};
 const App = (props: AppProps) => {
   const dispatch = useDispatch();
-  const mapView = useSelector((state) => state.mapView.value);
+  const mapView = useSelector((state: RootStateOrAny) => {
+    console.log(state);
+    return state.mapView.value;
+  });
   const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState(false);
   const [scores, setScores] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
-  const [filterNations, setFilterNations] = useState<CountryType[]>([]);
+  const [filterNations, setFilterNations] = useState<CountryType[] | null>([]);
   const [searchText, setSearchText] = useState('');
   const [worldData, setWorldData] = useState<DataType>([]);
-  const [countryDetail, setCountryDetail] = useState([]);
+  const [countryDetail, setCountryDetail] = useState<CountryDetail>('');
   const [showModal, setShowModal] = useState(false);
-  const [modal, setModal] = useState({
+  const [modal, setModal] = useState<Modal>({
     title: '',
     body: '',
     primaryButton: ''
@@ -65,9 +74,9 @@ const App = (props: AppProps) => {
   const navigate = useNavigate();
 
   const db = getFirestore(firebaseApp);
-  const handleViews = (selectedView: SliceStates) => {
+  const handleViews = (selectedView: string) => {
     console.log(selectedView);
-    dispatch(changeView(selectedView));
+    dispatch(changeView({ value: selectedView }));
   };
 
   const loadWorldData = async () => {
@@ -98,7 +107,7 @@ const App = (props: AppProps) => {
   const handleOpen = () => {
     setShowModal(true);
   };
-  const setStateModal = (modalsetting: SliceStates) => {
+  const setStateModal = (modalsetting: Modal) => {
     setModal(modalsetting);
   };
   const freezeLoad = (loadState: boolean) => {
@@ -107,8 +116,8 @@ const App = (props: AppProps) => {
   };
   const login = async () => {
     try {
-      const loggedInUser = await auth.signInWithPopup(googleProvider);
-      setUser(loggedInUser);
+      const loggedInUser = await signInWithPopup(auth, googleProvider);
+      setUser(loggedInUser.user);
     } catch (err) {
       console.log(err);
     }
@@ -159,22 +168,23 @@ const App = (props: AppProps) => {
   }, []);
   const changeMapView = () => {
     if (mapView === 'Show') {
-      dispatch(changeMap('Hide'));
+      dispatch(changeMap({ value: 'Hide' }));
     } else {
-      dispatch(changeMap('Show'));
+      dispatch(changeMap({ value: 'Show' }));
     }
   };
-  const handleSideBar = (string) => {
+  const handleSideBar = (string: string) => {
     alert('handling sidebar');
     setFilterNations(filterCountryByName(string));
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.MouseEvent) => {
     alert('clicked');
     e.preventDefault();
+    const { value } = e.target as HTMLInputElement;
     console.log('handling submit');
-    navigate(e.target.value);
+    navigate(value);
   };
-  const handleData = (type) => {
+  const handleData = (type: string) => {
     if (location.pathname !== '/account') {
       console.log('not on account page');
       navigate('/account');
@@ -185,30 +195,40 @@ const App = (props: AppProps) => {
       setScores(!scores);
     }
   };
-  const handleInput = (e) => {
+  const handleInput = (e: React.KeyboardEvent) => {
     console.log(e, typeof e);
     e.persist();
     // console.log('changing')
-    const { value } = e.target;
+    const { value } = e.target as HTMLInputElement;
     if (value != null && value.trim() !== '') {
       setSearchText(value);
       filterCountryByName(value);
-      let nodes = [...document.getElementsByClassName('country')];
+      let nodes = [
+        ...(document.getElementsByClassName(
+          'country'
+        ) as HTMLCollectionOf<HTMLElement>)
+      ];
       nodes.forEach((node) => {
         node.style.fill = '#60c080 ';
         node.style.stroke = '#111';
-        node.style.strokeWidth = 0.1;
+        node.style.strokeWidth = '0.1';
         node.style.outline = 'none';
         node.style.willChange = 'all';
       });
-      const filtered = filterCountryByName(value).map(
-        (country) => country.name
-      );
-      nodes = nodes.filter((y) => filtered.includes(y.dataset.shortname));
+      let filtered = null;
+      const filteredCountry = filterCountryByName(value);
+      if (filteredCountry) {
+        filtered = filteredCountry.map((country, i) => country.name);
+      }
+      nodes = nodes.filter((y) => {
+        if (filtered && y.dataset.shortname) {
+          filtered.includes(y.dataset.shortname);
+        }
+      });
       nodes.forEach((node) => {
         node.style.fill = '#024e1b';
         node.style.stroke = '#111';
-        node.style.strokeWidth = 0.1;
+        node.style.strokeWidth = '0.1';
         node.style.outline = 'none';
         node.style.willChange = 'all';
       });
@@ -222,7 +242,7 @@ const App = (props: AppProps) => {
       });
     }
   };
-  const handleRefresh = (value) => {
+  const handleRefresh = (value: string) => {
     if (worldData) {
       if (value != null && value.trim() !== '') {
         setSearchText(value);
