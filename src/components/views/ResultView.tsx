@@ -1,10 +1,27 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { Breakpoint, BreakpointProvider } from 'react-socks';
-import { Alert, Link } from '@mui/material';
+import {
+  Alert,
+  AlertColor,
+  AlertPropsColorOverrides,
+  Link
+} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { getFirestore, doc, deleteDoc, setDoc } from 'firebase/firestore';
-import { countryType, dataType, userType } from '../../helpers/types/index';
+import {
+  getFirestore,
+  doc,
+  deleteDoc,
+  setDoc,
+  collection
+} from 'firebase/firestore';
+import {
+  countryType,
+  DataType,
+  dataType,
+  UserType,
+  userType
+} from '../../helpers/types/index';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../../App.css';
@@ -12,12 +29,38 @@ import SidebarView from './SidebarView';
 import Maps from './Maps';
 import Result from './Result';
 import * as ROUTES from '../../constants/Routes';
-import { firebaseApp } from '../../firebase/firebase';
+import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
+import { CountryType } from '../../helpers/types/CountryType';
+import { m } from 'react-router/dist/production/fog-of-war-CbNQuoo8';
 
-const ResultView = (props) => {
+interface ResultViewProps {
+  user: UserType;
+  data: DataType;
+  countries: CountryType[];
+  mapVisible: boolean;
+  changeMapView: () => void;
+  changeView: (view: string) => void;
+  getCountryInfo: (country: string) => void;
+  handleSideBar: () => void;
+  filterCountryByName: (name: string) => void;
+  login: () => void;
+}
+
+type Message = {
+  link: string;
+  linkContent: string;
+  content: string;
+  style: AlertColor;
+};
+const ResultView = (props: ResultViewProps) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<Message>({
+    link: '',
+    linkContent: '',
+    content: '',
+    style: 'info'
+  });
   const [alert, setAlert] = useState(false);
 
   const {
@@ -40,8 +83,7 @@ const ResultView = (props) => {
       setShow(false);
     }, 4000);
   };
-  const makeFavorite = async (e, country) => {
-    e.persist();
+  const makeFavorite = async (e: Event, country: CountryType) => {
     console.log('adding');
     if (!user) {
       setAlert(true);
@@ -54,14 +96,15 @@ const ResultView = (props) => {
     }
     if (!favorite) {
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
-        await setDoc(docRef, { country });
+        await setDoc(docRef, country);
         setAlert(true);
         setMessage({
+          ...message,
           style: 'success',
           content: `Added ${country.name} to favorites`
         });
@@ -70,19 +113,21 @@ const ResultView = (props) => {
         setShow(true);
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${country.name} to favorites, ${error}`
         });
       }
     } else {
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
         await deleteDoc(docRef);
         setMessage({
+          ...message,
           style: 'warning',
           content: `Removed ${country.name} from favorites`
         });
@@ -90,7 +135,8 @@ const ResultView = (props) => {
         showFunc();
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${country.name} to favorites, ${error}`
         });
         showFunc();
@@ -101,7 +147,7 @@ const ResultView = (props) => {
   const totalRegions = data.map((a) =>
     a.geography.map_references.replace(/;/g, '')
   );
-  function getOccurrence(array, value) {
+  function getOccurrence(array: string[], value: string) {
     return array.filter((v) => v === value).length;
   }
   let uniqueRegions = totalRegions.filter((v, i, a) => a.indexOf(v) === i);
@@ -110,12 +156,17 @@ const ResultView = (props) => {
   return (
     <BreakpointProvider>
       <div className="row">
+        aHello world
         <main className="col-md-9 col-lg-12 px-0">
           {countries[0] === undefined ? null : null}
           {alert && show && (
             <Alert
-              severity={message.style}
-              action={<Link to={message.link}>{message.linkContent}</Link>}
+              severity={message.style || 'warning'}
+              action={
+                <Link to={message.link} component={RouterLink}>
+                  {message.linkContent}
+                </Link>
+              }
             >
               {message.content}
             </Alert>
@@ -132,25 +183,18 @@ const ResultView = (props) => {
             countries.map((country) => (
               <Result
                 filtered={countries[0]}
-                worldData={data}
-                makeFavorite={makeFavorite}
-                changeView={changeView}
                 getCountryInfo={getCountryInfo}
                 name={country.name}
-                region={country.geography.map_references}
                 subregion={country.geography.location}
                 capital={country.government.capital.name}
-                excerpt={country.excerpt}
                 population={country.people.population.total}
                 flagCode={country.government.country_name.isoCode}
                 key={country.alpha3Code}
                 country={country}
-                code={country.alpha3Code}
                 user={user}
-                login={login}
-                show={show}
                 setShow={setShow}
                 setMessage={setMessage}
+                message={message}
               />
             ))}
         </main>
@@ -172,18 +216,5 @@ const ResultView = (props) => {
 };
 ResultView.defaultProps = {
   user: null
-};
-ResultView.propTypes = {
-  countries: PropTypes.arrayOf(countryType).isRequired,
-  data: dataType.isRequired,
-  user: userType,
-  mapVisible: PropTypes.string.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired,
-  changeMapView: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired
 };
 export default ResultView;
