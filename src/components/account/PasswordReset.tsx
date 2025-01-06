@@ -150,14 +150,5 @@ const SignUpLink = () => (
     </p>
   </div>
 );
-PasswordReset.defaultProps = {
-  user: null
-};
-PasswordReset.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired,
-  user: userType
-};
 export default PasswordReset;
 export { SignUpLink };

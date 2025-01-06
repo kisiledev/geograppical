@@ -28,12 +28,23 @@ import {
 } from 'firebase/firestore';
 import { firebaseApp } from '../../firebase/firebase';
 import * as ROUTES from '../../constants/Routes';
-import { dataType, userType } from '../../helpers/types/index';
+import { DataType, dataType, userType } from '../../helpers/types/index';
 import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
 import Choice from './Choice';
+import { User } from 'firebase/auth';
 
+interface GameProps {
+  changeMapView: () => void;
+  mapVisible: string;
+  data: DataType;
+  getCountryInfo: (country: string) => void;
+  user: User | null;
+  handleOpen: () => void;
+  setStateModal: (modal: any) => void;
+  login: () => void;
+}
 const GameMode = ({ gameMode, props }) => {
   switch (gameMode) {
     case 'choice': {

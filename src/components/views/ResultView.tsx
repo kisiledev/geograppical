@@ -32,16 +32,17 @@ import * as ROUTES from '../../constants/Routes';
 import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { m } from 'react-router/dist/production/fog-of-war-CbNQuoo8';
+import { User } from 'firebase/auth';
 
 interface ResultViewProps {
-  user: UserType;
+  user: User | null;
   data: DataType;
   countries: CountryType[];
   mapVisible: boolean;
   changeMapView: () => void;
   changeView: (view: string) => void;
   getCountryInfo: (country: string) => void;
-  handleSideBar: () => void;
+  handleSideBar: (string: string) => void;
   filterCountryByName: (name: string) => void;
   login: () => void;
 }

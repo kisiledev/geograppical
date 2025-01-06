@@ -28,6 +28,7 @@ import { changeView, changeMap } from './redux-toolkit';
 import { Country, DataType, SliceStates } from './helpers/types';
 import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
+import { filter } from 'd3';
 
 interface AppProps {
   location: {
@@ -316,17 +317,21 @@ const App = (props: AppProps) => {
         <Routes>
           <Route
             path="/search/:input"
-            children={() => (
-              <SearchResults
-                searchText={searchText}
-                countries={filterNations}
-                data={worldData}
-                getCountryInfo={getCountryInfo}
-                user={user}
-                login={login}
-                handleRefresh={handleRefresh}
-              />
-            )}
+            children={() =>
+              filterNations && (
+                <SearchResults
+                  searchText={searchText}
+                  countries={filterNations}
+                  data={worldData}
+                  getCountryInfo={getCountryInfo}
+                  user={user}
+                  login={login}
+                  handleRefresh={handleRefresh}
+                  handleOpen={handleOpen}
+                  changeView={handleViews}
+                />
+              )
+            }
           />
           <Route
             path="/play"
@@ -338,7 +343,6 @@ const App = (props: AppProps) => {
                 getCountryInfo={getCountryInfo}
                 user={user}
                 handleOpen={handleOpen}
-                handleSubmit={handleSubmit}
                 setStateModal={setStateModal}
                 login={login}
               />
@@ -363,47 +367,31 @@ const App = (props: AppProps) => {
 
           <Route
             path="/login"
-            children={() => (
-              <SignIn
-                loadingState={loadingState}
-                user={user}
-                handleSubmit={handleSubmit}
-                login={login}
-              />
-            )}
+            children={() => <SignIn loadingState={loadingState} user={user} />}
           />
           <Route
             path="/passwordreset"
-            children={() => (
-              <PasswordReset
-                user={user}
-                handleSubmit={handleSubmit}
-                login={login}
-              />
-            )}
+            children={() => <PasswordReset user={user} />}
           />
-          <Route
-            path="/signup"
-            children={() => (
-              <SignUp user={user} handleSubmit={handleSubmit} login={login} />
-            )}
-          />
+          <Route path="/signup" children={() => <SignUp user={user} />} />
           <Route
             path="/"
-            children={() => (
-              <ResultView
-                changeMapView={changeMapView}
-                countries={filterNations}
-                handleSideBar={handleSideBar}
-                data={worldData}
-                getCountryInfo={getCountryInfo}
-                changeView={handleViews}
-                mapVisible={mapView}
-                filterCountryByName={filterCountryByName}
-                user={user}
-                login={login}
-              />
-            )}
+            children={() =>
+              filterNations && (
+                <ResultView
+                  changeMapView={changeMapView}
+                  countries={filterNations}
+                  handleSideBar={handleSideBar}
+                  data={worldData}
+                  getCountryInfo={getCountryInfo}
+                  changeView={handleViews}
+                  mapVisible={mapView}
+                  filterCountryByName={filterCountryByName}
+                  user={user}
+                  login={login}
+                />
+              )
+            }
           />
           <Route
             path="/:country"

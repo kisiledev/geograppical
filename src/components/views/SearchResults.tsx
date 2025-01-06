@@ -19,12 +19,13 @@ import Result from './Result';
 import { db } from '../../firebase/firebase';
 import '../../App.css';
 import { CountryType } from '../../helpers/types/CountryType';
+import { User } from 'firebase/auth';
+import { useParams } from 'react-router';
 
 interface SearchResultsProps {
   countries: CountryType[];
   data: DataType;
-  user: UserType;
-  match: MatchType;
+  user: User | null;
   getCountryInfo: Function;
   changeView: Function;
   handleRefresh: Function;
@@ -39,9 +40,10 @@ const SearchResults = (props: SearchResultsProps) => {
   const [alert, setAlert] = useState(false);
   const [show, setShow] = useState(false);
 
+  const { match } = useParams();
+
   const {
     searchText,
-    match,
     user,
     data,
     countries,
@@ -167,20 +169,5 @@ const SearchResults = (props: SearchResultsProps) => {
       </div>
     </BreakpointProvider>
   );
-};
-SearchResults.defaultProps = {
-  user: null
-};
-SearchResults.propTypes = {
-  countries: PropTypes.arrayOf(countryType).isRequired,
-  data: dataType.isRequired,
-  user: userType,
-  match: matchType.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired,
-  handleRefresh: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired,
-  searchText: PropTypes.string.isRequired
 };
 export default SearchResults;

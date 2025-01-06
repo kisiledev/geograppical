@@ -22,7 +22,8 @@ import {
   countryType,
   dataType,
   userType,
-  matchType
+  matchType,
+  DataType
 } from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
@@ -31,9 +32,24 @@ import * as ROUTES from '../../constants/Routes';
 
 import SidebarView from './SidebarView';
 import { firebaseApp } from '../../firebase/firebase';
+import { CountryType } from '../../helpers/types/CountryType';
+import { User } from 'firebase/auth';
+import { useParams } from 'react-router';
 
 function getOccurrence(array, value) {
   return array.filter((v) => v === value).length;
+}
+
+interface DetailViewProps {
+  freezeLoad: (loadState: boolean) => void;
+  countryDetail: CountryType;
+  data: DataType;
+  user: User | null;
+  loadingState: boolean;
+  getCountryInfo: (country: string) => void;
+  changeView: (view: string) => void;
+  handleSideBar: (string: string) => void;
+  filterCountryByName: (name: string) => void;
 }
 const DetailView = (props) => {
   const [show, setShow] = useState(false);
@@ -48,13 +64,14 @@ const DetailView = (props) => {
     loadingState,
     freezeLoad,
     getCountryInfo,
-    match,
     changeView,
     handleSideBar,
     filterCountryByName
   } = props;
 
   const db = getFirestore(firebaseApp);
+
+  const params = useParams();
   const numberWithCommas = (x) =>
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
@@ -146,7 +163,7 @@ const DetailView = (props) => {
 
   useEffect(() => {
     if (!loadingState) {
-      getCountryInfo(match.params.country);
+      getCountryInfo(params.country);
     }
   }, []);
 
@@ -154,7 +171,7 @@ const DetailView = (props) => {
     if (user && countryDetail) {
       checkFavorite(countryDetail.name);
     }
-    getCountryInfo(match.params.country);
+    getCountryInfo(params.country);
   }, [data]);
 
   const totalRegions = data.map((a) => a.geography.map_references);
@@ -294,17 +311,5 @@ const DetailView = (props) => {
       )}
     </BreakpointProvider>
   );
-};
-DetailView.propTypes = {
-  freezeLoad: PropTypes.func.isRequired,
-  countryDetail: countryType.isRequired,
-  data: dataType.isRequired,
-  user: userType.isRequired,
-  loadingState: PropTypes.bool.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired,
-  match: matchType.isRequired
 };
 export default DetailView;

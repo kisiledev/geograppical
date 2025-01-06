@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
 import { Alert, Box, Button, TextField } from '@mui/material';
 import 'firebaseui';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, User } from 'firebase/auth';
 import { userType } from '../../helpers/types/index';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
@@ -16,7 +16,10 @@ const useStyles = makeStyles({
   }
 });
 
-const SignUp = (props) => {
+interface SignUpProps {
+  user: User | null;
+}
+const SignUp = (props: SignUpProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
   const [message, setMessage] = useState({});
@@ -195,9 +198,5 @@ const SignUpLink = () => (
     </p>
   </div>
 );
-
-SignUp.propTypes = {
-  user: userType.isRequired
-};
 export default SignUp;
 export { SignUpLink };
