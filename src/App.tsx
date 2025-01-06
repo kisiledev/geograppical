@@ -351,17 +351,14 @@ const App = (props: AppProps) => {
           <Route
             path="/account"
             children={() => (
-              <PrivateRoute
-                path="/account"
-                user={user}
-                simplifyString={simplifyString}
-                component={Account}
-                loadingState={loadingState}
-                favorites={favorites}
-                scores={scores}
-                handleData={handleData}
-                authenticated={authenticated}
-              />
+              <PrivateRoute>
+                <Account
+                  user={user}
+                  simplifyString={simplifyString}
+                  favorites={favorites}
+                  scores={scores}
+                />
+              </PrivateRoute>
             )}
           />
 

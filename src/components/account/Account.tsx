@@ -20,8 +20,15 @@ import { firebaseApp } from '../../firebase/firebase';
 import { userType } from '../../helpers/types/index';
 import AcctHeader from './AcctHeader';
 import AccountEdit from './AccountEdit';
+import { User } from 'firebase/auth';
 
-const Account = (props) => {
+interface AccountProps {
+  user: User | null;
+  scores: boolean;
+  favorites: boolean;
+  simplifyString: (string: string) => string;
+}
+const Account = (props: AccountProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [acctFavorites, setAcctFavorites] = useState('');
   const [acctScores, setAcctScores] = useState('');
@@ -187,12 +194,5 @@ const Account = (props) => {
       </Grid>
     </Grid>
   );
-};
-
-Account.propTypes = {
-  user: userType.isRequired,
-  favorites: PropTypes.bool.isRequired,
-  scores: PropTypes.bool.isRequired,
-  simplifyString: PropTypes.func.isRequired
 };
 export default Account;

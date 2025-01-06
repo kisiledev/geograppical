@@ -9,9 +9,8 @@ interface PrivateRouteProps extends RouterProps {
   component: any;
   authenticated: boolean;
   loadingState: boolean;
-  path: string;
 }
-const PrivateRoute = (props: PrivateRouteProps) => {
+const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { component: Component, authenticated, loadingState, ...rest } = props;
   if (loadingState) {
     return (
@@ -24,7 +23,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
     <Route
       {...rest}
       element={(props: PrivateRouteProps) =>
-        authenticated ? <Route element={Component} /> : <Navigate to="/login" />
+        authenticated ? <Route {...props} children /> : <Navigate to="/login" />
       }
     />
   );
