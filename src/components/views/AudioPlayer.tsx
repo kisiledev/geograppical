@@ -10,7 +10,8 @@ const AudioPlayer = ({ nation }) => {
     name
   } = nation;
   const [active, setActive] = useState(false);
-  useEffect(async () => {
+
+  const getResponse = async () => {
     const response = await fetch(audioUrl, { mode: 'no-cors' });
     if (response.status === 200 && audioUrl !== undefined) {
       setActive(true);
@@ -19,6 +20,9 @@ const AudioPlayer = ({ nation }) => {
       // The url does not exist
       setActive(false);
     }
+  };
+  useEffect(() => {
+    getResponse();
   }, [nation]);
 
   return active ? (

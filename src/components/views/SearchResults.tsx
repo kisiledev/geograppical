@@ -23,7 +23,7 @@ import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
 
 interface SearchResultsProps {
-  countries: CountryType[];
+  countries: CountryType[] | null;
   data: DataType;
   user: User | null;
   getCountryInfo: Function;
@@ -40,7 +40,7 @@ const SearchResults = (props: SearchResultsProps) => {
   const [alert, setAlert] = useState(false);
   const [show, setShow] = useState(false);
 
-  const { match } = useParams();
+  const params = useParams();
 
   const {
     searchText,
@@ -55,7 +55,7 @@ const SearchResults = (props: SearchResultsProps) => {
   } = props;
 
   useEffect(() => {
-    handleRefresh(match.params.input);
+    handleRefresh(params.input);
     setLoadingState(false);
   }, [data]);
 

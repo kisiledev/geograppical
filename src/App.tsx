@@ -317,25 +317,23 @@ const App = (props: AppProps) => {
         <Routes>
           <Route
             path="/search/:input"
-            children={() =>
-              filterNations && (
-                <SearchResults
-                  searchText={searchText}
-                  countries={filterNations}
-                  data={worldData}
-                  getCountryInfo={getCountryInfo}
-                  user={user}
-                  login={login}
-                  handleRefresh={handleRefresh}
-                  handleOpen={handleOpen}
-                  changeView={handleViews}
-                />
-              )
+            element={
+              <SearchResults
+                searchText={searchText}
+                countries={filterNations}
+                data={worldData}
+                getCountryInfo={getCountryInfo}
+                user={user}
+                login={login}
+                handleRefresh={handleRefresh}
+                handleOpen={handleOpen}
+                changeView={handleViews}
+              />
             }
           />
           <Route
             path="/play"
-            children={() => (
+            element={
               <Game
                 changeMapView={changeMapView}
                 mapVisible={mapView}
@@ -346,11 +344,11 @@ const App = (props: AppProps) => {
                 setStateModal={setStateModal}
                 login={login}
               />
-            )}
+            }
           />
           <Route
             path="/account"
-            children={() => (
+            element={() => (
               <PrivateRoute>
                 <Account
                   user={user}
@@ -364,35 +362,33 @@ const App = (props: AppProps) => {
 
           <Route
             path="/login"
-            children={() => <SignIn loadingState={loadingState} user={user} />}
+            element={<SignIn loadingState={loadingState} user={user} />}
           />
           <Route
             path="/passwordreset"
-            children={() => <PasswordReset user={user} />}
+            element={<PasswordReset user={user} />}
           />
-          <Route path="/signup" children={() => <SignUp user={user} />} />
+          <Route path="/signup" element={<SignUp user={user} />} />
           <Route
             path="/"
-            children={() =>
-              filterNations && (
-                <ResultView
-                  changeMapView={changeMapView}
-                  countries={filterNations}
-                  handleSideBar={handleSideBar}
-                  data={worldData}
-                  getCountryInfo={getCountryInfo}
-                  changeView={handleViews}
-                  mapVisible={mapView}
-                  filterCountryByName={filterCountryByName}
-                  user={user}
-                  login={login}
-                />
-              )
+            element={
+              <ResultView
+                changeMapView={changeMapView}
+                countries={filterNations}
+                handleSideBar={handleSideBar}
+                data={worldData}
+                getCountryInfo={getCountryInfo}
+                changeView={handleViews}
+                mapVisible={mapView}
+                filterCountryByName={filterCountryByName}
+                user={user}
+                login={login}
+              />
             }
           />
           <Route
             path="/:country"
-            children={() => (
+            element={
               <DetailView
                 handleSideBar={handleSideBar}
                 data={worldData}
@@ -404,7 +400,7 @@ const App = (props: AppProps) => {
                 user={user}
                 loadingState={loadingState}
               />
-            )}
+            }
           />
         </Routes>
         <Dialog open={showModal} onClose={() => handleClose()}>
