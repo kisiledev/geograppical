@@ -76,16 +76,4 @@ const SideCountry = (props) => {
     </BreakpointProvider>
   );
 };
-
-SideCountry.propTypes = {
-  data: dataType.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  loadingState: PropTypes.bool.isRequired,
-  changeView: PropTypes.func.isRequired,
-  totalRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  uniqueRegions: PropTypes.arrayOf(PropTypes.string).isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  getOccurrence: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired
-};
 export default SideCountry;

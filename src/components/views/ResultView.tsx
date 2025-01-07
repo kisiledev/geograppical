@@ -31,13 +31,12 @@ import Result from './Result';
 import * as ROUTES from '../../constants/Routes';
 import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
-import { m } from 'react-router/dist/production/fog-of-war-CbNQuoo8';
 import { User } from 'firebase/auth';
 
 interface ResultViewProps {
   user: User | null;
   data: DataType;
-  countries: CountryType[];
+  countries: CountryType[] | null;
   mapVisible: boolean;
   changeMapView: () => void;
   changeView: (view: string) => void;
@@ -157,7 +156,6 @@ const ResultView = (props: ResultViewProps) => {
   return (
     <BreakpointProvider>
       <div className="row">
-        aHello world
         <main className="col-md-9 col-lg-12 px-0">
           {countries[0] === undefined ? null : null}
           {alert && show && (
