@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link as RouterLink } from 'react-router-dom';
-import { Alert, Box, Button, TextField, Link } from '@mui/material';
+import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,8 @@ import { userType } from '../../helpers/types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
 import { makeStyles } from '@mui/styles';
+import { sendPasswordResetEmail, User } from 'firebase/auth';
+import { Route } from 'react-router';
 
 const useStyles = makeStyles({
   loginButtons: {
@@ -20,14 +22,23 @@ const useStyles = makeStyles({
   }
 });
 
-const PasswordReset = (props) => {
-  const [message, setMessage] = useState({});
+interface PasswordResetProps {
+  user: User | null;
+}
+
+const PasswordReset = (props: PasswordResetProps) => {
+  const [message, setMessage] = useState<{
+    style: AlertColor;
+    content: string;
+  }>({
+    style: 'info',
+    content: ''
+  });
   const [loadingState, setLoadingState] = useState(true);
 
   const classes = useStyles();
   const reset = () => {
-    auth
-      .sendPasswordResetEmail(inputs.email)
+    sendPasswordResetEmail(auth, inputs.email)
       .then(() => {
         setMessage({
           style: 'success',
@@ -35,7 +46,7 @@ const PasswordReset = (props) => {
         });
       })
       .catch((error) => {
-        setMessage({ style: 'danger', content: `${error.message}` });
+        setMessage({ style: 'error', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(reset);
@@ -146,7 +157,9 @@ const SignUpLink = () => (
   <div className="col-12 d-flex justify-content-center">
     <p>
       Already have an account?
-      <Link to={`/login`}>Sign In</Link>
+      <Link component={RouterLink} to={`/login`}>
+        Sign In
+      </Link>
     </p>
   </div>
 );

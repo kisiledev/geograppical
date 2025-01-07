@@ -9,7 +9,11 @@ import { Alert, Box, Button, TextField, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import { fetchSignInMethodsForEmail, signInWithPopup } from 'firebase/auth';
+import {
+  fetchSignInMethodsForEmail,
+  signInWithPopup,
+  User
+} from 'firebase/auth';
 import { userType } from '../../helpers/types/index';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
@@ -21,7 +25,12 @@ const useStyles = makeStyles({
     marginBottom: '10px'
   }
 });
-const SignIn = (props) => {
+
+interface SignInProps {
+  user: User | null;
+  loadingState: boolean;
+}
+const SignIn = (props: SignInProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [methods, setMethods] = useState(null);
   const [message, setMessage] = useState({});
@@ -31,7 +40,7 @@ const SignIn = (props) => {
     // console.log('reunning login');
     fetchSignInMethodsForEmail(auth, inputs.email)
       .then((u) => {
-        // console.log(u);
+        console.log(u);
         setMethods(u);
         if (u.length === 0 || u.includes('password')) {
           console.log('no methods');
@@ -197,16 +206,11 @@ const SignUpLink = () => (
   <div className="col-12 d-flex justify-content-center">
     <p>
       Already have an account?
-      <Link to={`/login`}>Sign In</Link>
+      <Link component={RouterLink} to={`/login`}>
+        Sign In
+      </Link>
     </p>
   </div>
 );
-SignIn.defaultProps = {
-  user: null
-};
-SignIn.propTypes = {
-  user: userType,
-  loadingState: PropTypes.bool.isRequired
-};
 export default SignIn;
 export { SignUpLink };
