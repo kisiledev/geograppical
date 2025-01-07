@@ -5,6 +5,7 @@
 /* eslint-disable indent */
 /* eslint-disable linebreak-style */
 
+import { AlertColor } from '@mui/material';
 import { CountryType } from './CountryType';
 
 interface DateCreated {
@@ -146,6 +147,7 @@ export interface Question {
 export interface IsoData {
   [key: string]: number | string;
 }
+export type AccountDataType = 'favorites' | 'scores';
 export interface ScoreData {
   correct: number;
   dateCreated: {
@@ -159,6 +161,13 @@ export interface ScoreData {
   time?: number;
   userId: string;
 }
+
+export type Message = {
+  link: string;
+  linkContent: string;
+  content: string;
+  style: AlertColor;
+};
 
 export interface ScoreState {
   isOpen: boolean;

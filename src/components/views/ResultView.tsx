@@ -19,6 +19,7 @@ import {
   countryType,
   DataType,
   dataType,
+  Message,
   UserType,
   userType
 } from '../../helpers/types/index';
@@ -47,12 +48,6 @@ interface ResultViewProps {
   login: () => void;
 }
 
-type Message = {
-  link: string;
-  linkContent: string;
-  content: string;
-  style: AlertColor;
-};
 const ResultView = (props: ResultViewProps) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);

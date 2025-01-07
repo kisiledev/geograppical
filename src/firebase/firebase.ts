@@ -14,6 +14,7 @@ import {
   TwitterAuthProvider
 } from 'firebase/auth';
 import { CountryType } from '../helpers/types/CountryType';
+import { ScoreData } from '../helpers/types';
 
 const { initializeApp } = firebase;
 const firebaseApp = initializeApp({
@@ -38,6 +39,7 @@ const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(firestoreGet, collectionName) as CollectionReference<T>;
 };
 export const favoritesCollection = createCollection<CountryType>('favorites');
+export const scoresCollection = createCollection<ScoreData>('scores');
 export {
   db,
   auth,

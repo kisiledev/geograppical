@@ -16,8 +16,19 @@ import {
   getFirestore
 } from 'firebase/firestore';
 import AccountData from './AccountData';
-import { firebaseApp } from '../../firebase/firebase';
-import { userType } from '../../helpers/types/index';
+import {
+  favoritesCollection,
+  firebaseApp,
+  scoresCollection
+} from '../../firebase/firebase';
+import {
+  AccountDataType,
+  FavoritePayload,
+  FavoritePayloadData,
+  Message,
+  ScorePayload,
+  userType
+} from '../../helpers/types/index';
 import AcctHeader from './AcctHeader';
 import AccountEdit from './AccountEdit';
 import { User } from 'firebase/auth';
@@ -30,33 +41,63 @@ interface AccountProps {
 }
 const Account = (props: AccountProps) => {
   const [loadingState, setLoadingState] = useState(false);
-  const [acctFavorites, setAcctFavorites] = useState('');
-  const [acctScores, setAcctScores] = useState('');
-  const [message, setMessage] = useState('');
+  const [acctFavorites, setAcctFavorites] = useState<FavoritePayload>({
+    isOpen: false,
+    data: []
+  });
+  const [acctScores, setAcctScores] = useState<ScorePayload>({
+    isOpen: false,
+    data: {
+      id: '',
+      data: []
+    }
+  });
+  const [message, setMessage] = useState<Message>({
+    link: '',
+    linkContent: '',
+    content: '',
+    style: 'info'
+  });
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
   const { user, scores = [], favorites = [], simplifyString = null } = props;
 
   const db = getFirestore(firebaseApp);
-  const deleteDocument = async (id, type) => {
-    const docRef = doc(db, ...`users/${user.uid}/${type}/${id}`.split('/'));
+  const deleteDocument = async (id: string, type: string) => {
+    if (!user) {
+      return;
+    }
+    let docRef;
+    if (type === 'favorites') {
+      docRef = doc(
+        favoritesCollection,
+        ...`users/${user.uid}/${type}/${id}`.split('/')
+      );
+    } else {
+      docRef = doc(
+        scoresCollection,
+        ...`users/${user.uid}/${type}/${id}`.split('/')
+      );
+    }
     try {
       await deleteDoc(docRef);
       setShow(true);
       setMessage({
+        ...message,
         style: 'warning',
         content: `Removed ${id} from ${type}`
       });
     } catch (error) {
       setMessage({
-        style: 'danger',
+        ...message,
+        style: 'error',
         content: `Error removing ${id} from ${type}, ${error}`
       });
     }
   };
 
-  const toggleData = (type) => {
+  const toggleData = (type: AccountDataType) => {
     if (type === 'favorites') {
       if (acctFavorites.isOpen) {
         const oldFav = { ...acctFavorites };
@@ -89,7 +130,7 @@ const Account = (props: AccountProps) => {
         const querySnapshot = await getDocs(
           collection(db, ...`users/${user.uid}/favorites`.split('/'))
         );
-        const data = [];
+        const data: FavoritePayloadData = [];
         querySnapshot.forEach((favoriteDoc) => {
           const info = {
             id: favoriteDoc.id,
@@ -108,6 +149,9 @@ const Account = (props: AccountProps) => {
     };
 
     const getScoresData = async () => {
+      if (!user) {
+        return;
+      }
       try {
         const querySnapshot = await getDocs(
           collection(db, ...`users/${user.uid}/scores`.split('/'))
