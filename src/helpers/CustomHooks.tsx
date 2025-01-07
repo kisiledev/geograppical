@@ -8,6 +8,7 @@ interface Inputs {
   passwordOne: string;
   passwordTwo: string;
   username: string;
+  password: string;
 }
 
 interface UseSignUpFormReturn {
@@ -21,7 +22,8 @@ const useSignUpForm = (callback: () => void): UseSignUpFormReturn => {
     email: '',
     passwordOne: '',
     passwordTwo: '',
-    username: ''
+    username: '',
+    password: ''
   });
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -5,12 +5,13 @@
 import React, { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link as RouterLink, Route, Navigate } from 'react-router-dom';
-import { Alert, Box, Button, TextField, Link } from '@mui/material';
+import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import {
   fetchSignInMethodsForEmail,
+  signInWithEmailAndPassword,
   signInWithPopup,
   User
 } from 'firebase/auth';
@@ -32,8 +33,14 @@ interface SignInProps {
 }
 const SignIn = (props: SignInProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [methods, setMethods] = useState(null);
-  const [message, setMessage] = useState({});
+  const [methods, setMethods] = useState<string[]>([]);
+  const [message, setMessage] = useState<{
+    style: AlertColor;
+    content: string;
+  }>({
+    style: 'info',
+    content: ''
+  });
 
   const classes = useStyles();
   const login = () => {
@@ -44,8 +51,7 @@ const SignIn = (props: SignInProps) => {
         setMethods(u);
         if (u.length === 0 || u.includes('password')) {
           console.log('no methods');
-          auth
-            .signInWithEmailAndPassword(inputs.email, inputs.password)
+          signInWithEmailAndPassword(auth, inputs.email, inputs.password)
             .then((us) => {
               // console.log(us);
               setMessage({
@@ -57,7 +63,7 @@ const SignIn = (props: SignInProps) => {
               // console.log(error);
               // console.log(error.message);
               setMessage({
-                style: 'danger',
+                style: 'error',
                 content: `${error.message} Sign up using the link below`
               });
             });
@@ -73,7 +79,7 @@ const SignIn = (props: SignInProps) => {
       .catch((error) => {
         console.log(error);
         console.log(error.message);
-        setMessage({ style: 'danger', content: `${error.message}` });
+        setMessage({ style: 'error', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
@@ -82,7 +88,7 @@ const SignIn = (props: SignInProps) => {
     checkEmail(inputs.email);
   }, [inputs.email]);
 
-  const checkEmail = (value) => {
+  const checkEmail = (value: string) => {
     const regex =
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const checkValidity = regex.test(value);
@@ -93,7 +99,6 @@ const SignIn = (props: SignInProps) => {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error(error);
-      const { credential } = error.credential;
     }
   };
 

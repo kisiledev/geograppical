@@ -1,9 +1,13 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
-import { Alert, Box, Button, TextField } from '@mui/material';
+import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
 import 'firebaseui';
-import { createUserWithEmailAndPassword, User } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  User
+} from 'firebase/auth';
 import { userType } from '../../helpers/types/index';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
@@ -22,7 +26,13 @@ interface SignUpProps {
 const SignUp = (props: SignUpProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState<{
+    style: AlertColor;
+    content: string;
+  }>({
+    style: 'info',
+    content: ''
+  });
 
   const classes = useStyles();
   const signup = () => {
@@ -34,29 +44,28 @@ const SignUp = (props: SignUpProps) => {
         });
       })
       .catch((error) => {
-        setMessage({ style: 'danger', content: `${error.message}` });
+        setMessage({ style: 'error', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(signup);
 
   console.log(inputs.passwordOne);
 
-  const checkEmail = (value) => {
+  const checkEmail = (value: string) => {
     const regex =
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const isEMV = regex.test(value);
     console.log(isEmailValid);
     setIsEmailValid(isEMV);
   };
-  const checkPWValue = (value) => {
+  const checkPWValue = (value: string) => {
     const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
     const isPWV = !re2.test(value);
     console.log(isPWValid);
     setIsPWValid(isPWV);
   };
   const googleSignUp = () => {
-    auth
-      .signInWithPopup(googleProvider)
+    signInWithPopup(auth, googleProvider)
       .then((result) => {
         console.log(result);
       })
