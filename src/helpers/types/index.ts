@@ -13,7 +13,7 @@ interface DateCreated {
   nanoseconds: number;
 }
 
-interface GameData {
+export interface GameData {
   correct: number;
   dateCreated: DateCreated;
   gameMode: string;
@@ -106,31 +106,45 @@ export interface InitialGameState {
   timeMode: string;
 }
 
-export interface Country {
-  name: string;
-  capital: string;
-  region: string;
-  subregion: string;
-  population: number;
-  area: number;
-  flag: string;
-  languages: string[];
-  currencies: string[];
-  borders: string[];
-  timezones: string[];
-  latlng: number[];
-  alpha2Code: string;
-  alpha3Code: string;
-}
-
 export interface FavoriteState {
   isOpen: boolean;
-  data: Country[];
+  data: {
+    id: string;
+    data: CountryType[];
+  }[];
 }
 
 export interface FavoritePayload {
   isOpen: boolean;
-  data: Country;
+  data: {
+    id: string;
+    data: CountryType[];
+  }[];
+}
+
+export type FavoriteData = {
+  id: string;
+  data: CountryType[];
+}[];
+
+export type ScoreData = {
+  id: string;
+  data: GameData;
+}[];
+
+export interface ScorePayload {
+  isOpen: boolean;
+  data: {
+    id: string;
+    data: GameData;
+  }[];
+}
+export interface ScoreState {
+  isOpen: boolean;
+  data: {
+    id: string;
+    data: GameData;
+  }[];
 }
 export interface Answer {
   correct: number;
@@ -148,19 +162,6 @@ export interface IsoData {
   [key: string]: number | string;
 }
 export type AccountDataType = 'favorites' | 'scores';
-export interface ScoreData {
-  correct: number;
-  dateCreated: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  gameMode?: string;
-  incorrect?: number;
-  questions: Question[];
-  score?: number;
-  time?: number;
-  userId: string;
-}
 
 export type Message = {
   link: string;
@@ -168,14 +169,6 @@ export type Message = {
   content: string;
   style: AlertColor;
 };
-
-export interface ScoreState {
-  isOpen: boolean;
-  data: {
-    id: string;
-    data: ScoreData;
-  }[];
-}
 
 export interface ProviderData {
   uid?: string;
@@ -214,14 +207,6 @@ export interface UserType {
 
 export interface UserState {
   user: UserType | null;
-}
-
-export interface ScorePayload {
-  isOpen: boolean;
-  data: {
-    id: string;
-    data: ScoreData;
-  };
 }
 
 export interface IsoDataContainer {

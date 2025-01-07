@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
-import { Alert, Box, Grid } from '@mui/material';
+import { Alert, Grid2 } from '@mui/material';
 import PropTypes from 'prop-types';
 import {
   collection,
@@ -23,8 +23,11 @@ import {
 } from '../../firebase/firebase';
 import {
   AccountDataType,
+  FavoriteData,
   FavoritePayload,
+  GameData,
   Message,
+  ScoreData,
   ScorePayload,
   userType
 } from '../../helpers/types/index';
@@ -46,10 +49,7 @@ const Account = (props: AccountProps) => {
   });
   const [acctScores, setAcctScores] = useState<ScorePayload>({
     isOpen: false,
-    data: {
-      id: '',
-      data: []
-    }
+    data: []
   });
   const [message, setMessage] = useState<Message>({
     link: '',
@@ -127,17 +127,19 @@ const Account = (props: AccountProps) => {
     let isSubscribed = true;
     const getFavoritesData = async () => {
       try {
+        if (!user) {
+          return;
+        }
         const querySnapshot = await getDocs(
-          collection(db, ...`users/${user.uid}/favorites`.split('/'))
+          collection(db, `users/${user.uid}/favorites`)
         );
-        const data = [];
+        const data: FavoriteData = [];
         querySnapshot.forEach((favoriteDoc) => {
           const info = {
             id: favoriteDoc.id,
             data: favoriteDoc.data().country
           };
           data.push(info);
-          data.isOpen = true;
         });
         if (isSubscribed) {
           setAcctFavorites({ isOpen: false, data });
@@ -149,21 +151,20 @@ const Account = (props: AccountProps) => {
     };
 
     const getScoresData = async () => {
-      if (!user) {
+      if (!user?.uid) {
         return;
       }
       try {
         const querySnapshot = await getDocs(
-          collection(db, ...`users/${user.uid}/scores`.split('/'))
+          collection(db, `users/${user.uid}/scores`)
         );
-        const data = [];
+        const data: ScoreData = [];
         querySnapshot.forEach((scoreDoc) => {
           const info = {
             id: scoreDoc.id,
-            data: scoreDoc.data()
+            data: scoreDoc.data() as GameData
           };
           data.push(info);
-          data.isOpen = true;
         });
         if (isSubscribed) {
           setAcctScores({ isOpen: false, data });
@@ -176,7 +177,9 @@ const Account = (props: AccountProps) => {
     getFavoritesData();
     getScoresData();
     // eslint-disable-next-line no-return-assign
-    return () => (isSubscribed = false);
+    return () => {
+      isSubscribed = false;
+    };
   }, [user, favorites, scores]);
 
   const data = [
@@ -191,12 +194,11 @@ const Account = (props: AccountProps) => {
       boolean: scores
     }
   ];
-  const acct = [];
-  const capitalize = (s) => {
+  const acct: JSX.Element[] = [];
+  const capitalize = (s: string) => {
     if (typeof s !== 'string') return '';
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
-  console.log(data);
   data.forEach((piece) => {
     const dynamicProps = {
       key: piece.name,
@@ -206,13 +208,13 @@ const Account = (props: AccountProps) => {
       boolean: piece.boolean,
       simplifyString,
       capitalize,
-      deleteDocument
+      deleteDocument,
+      acctData: piece.data
     };
-    dynamicProps.acctData = piece.data;
     acct.push(<AccountData {...dynamicProps} />);
   });
   return (
-    <Grid
+    <Grid2
       container
       spacing={2}
       sx={{
@@ -224,7 +226,7 @@ const Account = (props: AccountProps) => {
       }}
     >
       {show && <Alert severity={message.style}>{message.content}</Alert>}
-      <Grid item md={8} xs={12}>
+      <Grid2 size={{ md: 8, xs: 12 }}>
         <AcctHeader
           edit={edit}
           setEdit={setEdit}
@@ -235,8 +237,8 @@ const Account = (props: AccountProps) => {
         />
         {!edit && acct}
         {edit && <AccountEdit user={user} />}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 export default Account;

@@ -17,9 +17,25 @@ import PropTypes from 'prop-types';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Favs from './Favs';
 import Scores from './Scores';
-import { acctDataType } from '../../helpers/types/index';
+import {
+  acctDataType,
+  FavoriteData,
+  FavoritePayload,
+  ScoreData,
+  ScorePayload
+} from '../../helpers/types/index';
 
-const AccountData = (props) => {
+interface AccountDataProps {
+  boolean: boolean;
+  acctData: ScorePayload | FavoritePayload;
+  deleteDocument: Function;
+  simplifyString: Function;
+  capitalize: Function;
+  name: string;
+  toggleData: Function;
+  loadingState: boolean;
+}
+const AccountData = (props: AccountDataProps) => {
   const {
     capitalize,
     simplifyString,
@@ -61,7 +77,7 @@ const AccountData = (props) => {
               alignItems: 'center'
             }}
             color="primary"
-            variant="contained"
+            variant="filled"
             size="small"
           />
         </Box>
@@ -72,12 +88,15 @@ const AccountData = (props) => {
           : acctData &&
             (name === 'favorites' ? (
               <Favs
-                acctData={acctData}
+                acctData={acctData as FavoritePayload}
                 simplifyString={simplifyString}
                 deleteDocument={deleteDocument}
               />
             ) : (
-              <Scores acctData={acctData} deleteDocument={deleteDocument} />
+              <Scores
+                acctData={acctData as ScorePayload}
+                deleteDocument={deleteDocument}
+              />
             ))}
       </AccordionDetails>
     </Accordion>

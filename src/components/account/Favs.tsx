@@ -11,9 +11,15 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Delete } from '@mui/icons-material';
-import { countryType, acctDataType } from '../../helpers/types/index';
+import { FavoritePayload } from '../../helpers/types';
 
-const Favs = (props) => {
+interface FavsProps {
+  acctData: FavoritePayload;
+  simplifyString: Function;
+  deleteDocument: Function;
+}
+
+const Favs = (props: FavsProps) => {
   const { acctData, simplifyString, deleteDocument } = props;
   return (
     <List>
@@ -66,20 +72,5 @@ const Favs = (props) => {
       )}
     </List>
   );
-};
-
-Favs.propTypes = {
-  acctData: PropTypes.arrayOf([
-    PropTypes.oneOfType([
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        data: countryType.isRequired,
-        isOpen: PropTypes.bool.isRequired
-      }).isRequired,
-      acctDataType.isRequired
-    ]).isRequired
-  ]).isRequired,
-  deleteDocument: PropTypes.func.isRequired,
-  simplifyString: PropTypes.func.isRequired
 };
 export default Favs;

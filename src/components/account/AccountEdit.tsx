@@ -20,7 +20,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   TwitterAuthProvider,
-  unlink
+  unlink,
+  User
 } from 'firebase/auth';
 import {
   EmailTwoTone,
@@ -33,10 +34,13 @@ import { auth, firebaseApp } from '../../firebase/firebase';
 import LinkEmailModal from '../views/LinkEmailModal';
 import { userType } from '../../helpers/types';
 
-const AccountEdit = (props) => {
+interface AccountEditProps {
+  user: User | null;
+}
+const AccountEdit = (props: AccountEditProps) => {
   const { user } = props;
 
-  const [providers, setProviders] = useState(user.providerData);
+  const [providers, setProviders] = useState(user ? user.providerData : []);
   const [message, setMessage] = useState('');
   const [modalMessage, setModalMessage] = useState('');
   const [show, setShow] = useState(false);
@@ -294,10 +298,6 @@ const AccountEdit = (props) => {
       </Box>
     </>
   );
-};
-
-AccountEdit.propTypes = {
-  user: userType.isRequired
 };
 
 export default AccountEdit;

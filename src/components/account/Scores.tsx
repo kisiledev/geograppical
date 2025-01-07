@@ -4,12 +4,18 @@ import PropTypes from 'prop-types';
 import {
   countryType,
   acctDataType,
-  scoreType
+  scoreType,
+  ScorePayload,
+  ScoreData
 } from '../../helpers/types/index';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
-const Scores = (props) => {
+interface ScoresProps {
+  acctData: ScoreData;
+  deleteDocument: Function;
+}
+const Scores = (props: ScoresProps) => {
   const { acctData, deleteDocument } = props;
   return (
     <ul className="list-group list-group-flush">
@@ -55,10 +61,5 @@ const Scores = (props) => {
       )}
     </ul>
   );
-};
-
-Scores.propTypes = {
-  acctData: scoreType.isRequired,
-  deleteDocument: PropTypes.func.isRequired
 };
 export default Scores;
