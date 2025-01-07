@@ -6,12 +6,18 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 
 interface PrivateRouteProps extends RouterProps {
-  component: any;
   authenticated: boolean;
   loadingState: boolean;
 }
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const { component: Component, authenticated, loadingState, ...rest } = props;
+const PrivateRoute = ({
+  children,
+  authenticated,
+  loadingState
+}: {
+  children: JSX.Element;
+  authenticated: boolean;
+  loadingState: boolean;
+}) => {
   if (loadingState) {
     return (
       <div className="mt-5 mx-auto text-center">
@@ -19,13 +25,6 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
       </div>
     );
   }
-  return (
-    <Route
-      {...rest}
-      element={(props: PrivateRouteProps) =>
-        authenticated ? <Route {...props} children /> : <Navigate to="/login" />
-      }
-    />
-  );
+  return authenticated ? children : <Navigate to="/login" />;
 };
 export default PrivateRoute;

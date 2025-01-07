@@ -24,7 +24,6 @@ import {
 import {
   AccountDataType,
   FavoritePayload,
-  FavoritePayloadData,
   Message,
   ScorePayload,
   userType
@@ -61,6 +60,7 @@ const Account = (props: AccountProps) => {
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
+  console.log(acctScores, acctFavorites);
   const { user, scores = [], favorites = [], simplifyString = null } = props;
 
   const db = getFirestore(firebaseApp);
@@ -130,7 +130,7 @@ const Account = (props: AccountProps) => {
         const querySnapshot = await getDocs(
           collection(db, ...`users/${user.uid}/favorites`.split('/'))
         );
-        const data: FavoritePayloadData = [];
+        const data = [];
         querySnapshot.forEach((favoriteDoc) => {
           const info = {
             id: favoriteDoc.id,

@@ -348,8 +348,11 @@ const App = (props: AppProps) => {
           />
           <Route
             path="/account"
-            element={() => (
-              <PrivateRoute>
+            element={
+              <PrivateRoute
+                loadingState={loadingState}
+                authenticated={authenticated}
+              >
                 <Account
                   user={user}
                   simplifyString={simplifyString}
@@ -357,7 +360,7 @@ const App = (props: AppProps) => {
                   scores={scores}
                 />
               </PrivateRoute>
-            )}
+            }
           />
 
           <Route
