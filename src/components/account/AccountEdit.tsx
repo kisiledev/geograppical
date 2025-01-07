@@ -15,9 +15,11 @@ import {
 } from '@mui/material';
 import { getFirestore } from 'firebase/firestore';
 import {
+  AuthProvider,
   FacebookAuthProvider,
   getRedirectResult,
   GoogleAuthProvider,
+  linkWithCredential,
   signInWithPopup,
   TwitterAuthProvider,
   unlink,
@@ -32,7 +34,7 @@ import {
 import X from '@mui/icons-material/X';
 import { auth, firebaseApp } from '../../firebase/firebase';
 import LinkEmailModal from '../views/LinkEmailModal';
-import { userType } from '../../helpers/types';
+import { Message, userType } from '../../helpers/types';
 
 interface AccountEditProps {
   user: User | null;
@@ -41,17 +43,29 @@ const AccountEdit = (props: AccountEditProps) => {
   const { user } = props;
 
   const [providers, setProviders] = useState(user ? user.providerData : []);
-  const [message, setMessage] = useState('');
-  const [modalMessage, setModalMessage] = useState('');
+  const [message, setMessage] = useState<Message>({
+    link: '',
+    linkContent: '',
+    content: '',
+    style: 'info'
+  });
+  const [modalMessage, setModalMessage] = useState({
+    content: '',
+    style: 'info'
+  });
   const [show, setShow] = useState(false);
 
   const db = getFirestore(firebaseApp);
-  const unlinkProvider = async (provider) => {
+  const unlinkProvider = async (provider: string) => {
+    if (!auth.currentUser || !user) {
+      return;
+    }
     try {
       console.log('provider', provider);
       await unlink(auth.currentUser, provider);
       setMessage({
-        style: 'danger',
+        ...message,
+        style: 'error',
         content: `Unlinked provider ${provider}`
       });
       setProviders(user.providerData);
@@ -61,15 +75,20 @@ const AccountEdit = (props: AccountEditProps) => {
   };
   const close = () => {
     setShow(false);
+    if (!user) {
+      return;
+    }
     setProviders(user.providerData);
   };
-  const linkEmail = (email, password) => {
+  const linkEmail = (email: string, password: string) => {
     const credential = firebase.auth.EmailAuthProvider.credential(
       email,
       password
     );
-    auth.currentUser
-      .linkWithCredential(credential)
+    if (!auth.currentUser) {
+      return;
+    }
+    linkWithCredential(auth.currentUser, credential)
       .then((usercred) => {
         const funcuser = usercred.user;
         setModalMessage({
@@ -83,33 +102,36 @@ const AccountEdit = (props: AccountEditProps) => {
         setModalMessage({ style: 'danger', content: error.message });
       });
   };
-  const providerLink = async (provider) => {
+  const providerLink = async (provider: string) => {
     let providerSource;
     switch (provider) {
       case 'Twitter':
-        providerSource = new TwitterAuthProvider();
+        providerSource = TwitterAuthProvider;
         break;
       case 'Facebook':
-        providerSource = new FacebookAuthProvider();
+        providerSource = FacebookAuthProvider;
         break;
       case 'Google':
-        providerSource = new GoogleAuthProvider();
+        providerSource = GoogleAuthProvider;
         break;
       default:
         return providerSource;
     }
     try {
-      const result = await signInWithPopup(auth, providerSource);
+      const result = await signInWithPopup(auth, new providerSource());
       const redirectResult = await getRedirectResult(auth);
 
       if (redirectResult) {
         const credential = providerSource.credentialFromResult(redirectResult);
+        if (!credential || !user) {
+          return;
+        }
         const token = credential.accessToken;
         console.log(credential, token);
         setProviders(user.providerData);
         console.log(user.providerData);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       const { credential } = error;
       console.log(credential);
@@ -161,13 +183,19 @@ const AccountEdit = (props: AccountEditProps) => {
       onClick: () => setShow(true)
     }
   ];
-  const userProvs = [];
+  interface Providers {
+    providerId: string;
+    uid: string;
+    displayName: string;
+    email: string;
+  }
+  const userProvs: string[] = [];
   if (providers) {
     providers.map((data) => userProvs.push(data.providerId));
   }
   const provIcons = [];
   providersArray.map((prov) => {
-    const provider = {};
+    const provider = { name: '', icon: <Icon /> };
     provider.name = prov.provName;
     provider.icon = prov.icon;
     return provIcons.push(provider);

@@ -12,7 +12,7 @@ import { Box, Collapse, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
 interface ScoresProps {
-  acctData: ScoreData;
+  acctData: ScorePayload;
   deleteDocument: Function;
 }
 const Scores = (props: ScoresProps) => {
@@ -23,7 +23,7 @@ const Scores = (props: ScoresProps) => {
         acctData.data.map((score) => {
           const milliseconds = score.data.dateCreated.seconds * 1000;
           const currentDate = new Date(milliseconds);
-          const dateTime = currentDate.toGMTString();
+          const dateTime = currentDate.toUTCString();
           return (
             <li className="list-group-item" key={score.id}>
               <Box

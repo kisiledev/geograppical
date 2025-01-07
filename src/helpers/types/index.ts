@@ -110,7 +110,7 @@ export interface FavoriteState {
   isOpen: boolean;
   data: {
     id: string;
-    data: CountryType[];
+    data: CountryType;
   }[];
 }
 
@@ -118,13 +118,13 @@ export interface FavoritePayload {
   isOpen: boolean;
   data: {
     id: string;
-    data: CountryType[];
+    data: CountryType;
   }[];
 }
 
 export type FavoriteData = {
   id: string;
-  data: CountryType[];
+  data: CountryType;
 }[];
 
 export type ScoreData = {
