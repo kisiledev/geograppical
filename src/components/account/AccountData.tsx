@@ -26,10 +26,9 @@ import {
 } from '../../helpers/types/index';
 
 interface AccountDataProps {
-  boolean: boolean;
   acctData: ScorePayload | FavoritePayload;
   deleteDocument: Function;
-  simplifyString: Function;
+  simplifyString: (string: string) => string;
   capitalize: Function;
   name: string;
   toggleData: Function;
@@ -43,8 +42,7 @@ const AccountData = (props: AccountDataProps) => {
     name,
     toggleData,
     loadingState,
-    acctData,
-    boolean
+    acctData
   } = props;
 
   return (

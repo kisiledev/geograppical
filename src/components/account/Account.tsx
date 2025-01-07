@@ -61,7 +61,7 @@ const Account = (props: AccountProps) => {
   const [edit, setEdit] = useState(false);
 
   console.log(acctScores, acctFavorites);
-  const { user, scores = [], favorites = [], simplifyString = null } = props;
+  const { user, scores = [], favorites = [], simplifyString } = props;
 
   const db = getFirestore(firebaseApp);
   const deleteDocument = async (id: string, type: string) => {
@@ -205,7 +205,6 @@ const Account = (props: AccountProps) => {
       name: piece.name,
       toggleData,
       loadingState,
-      boolean: piece.boolean,
       simplifyString,
       capitalize,
       deleteDocument,

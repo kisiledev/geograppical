@@ -25,7 +25,7 @@ import PasswordReset from './components/account/PasswordReset';
 import SearchResults from './components/views/SearchResults';
 import SideNaviBar from './components/views/SideNaviBar';
 import { changeView, changeMap } from './redux-toolkit';
-import { Country, DataType, SliceStates } from './helpers/types';
+import { DataType } from './helpers/types';
 import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
 import { filter } from 'd3';
