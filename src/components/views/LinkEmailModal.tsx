@@ -9,17 +9,29 @@ import PropTypes from 'prop-types';
 import { userType } from '../../helpers/types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
-import svgImg from '../../img/auth_service_email.svg';
-import { Alert, Box, Button, TextField } from '@mui/material';
+import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
+import { linkWithCredential, User } from 'firebase/auth';
+import { Route } from 'react-router';
 
 const useStyles = makeStyles({
   loginButtons: {
     marginBottom: '10px'
   }
 });
-const LinkEmailModal = (props) => {
+
+interface LinkEmailModalProps {
+  user: User | null;
+  linkEmail: (email: string, password: string) => void;
+  message: {
+    style: AlertColor;
+    content: string;
+  };
+  close: () => void;
+  show: boolean;
+}
+const LinkEmailModal = (props: LinkEmailModalProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
 
@@ -31,8 +43,10 @@ const LinkEmailModal = (props) => {
       inputs.email,
       inputs.passwordOne
     );
-    auth.currentUser
-      .linkWithCredential(credential)
+    if (!auth.currentUser) {
+      return;
+    }
+    linkWithCredential(auth.currentUser, credential)
       .then((usercred) => {
         const u = usercred.user;
         // setModalMessage({style: "success", content: "Linked email credentials to account"})
@@ -53,16 +67,16 @@ const LinkEmailModal = (props) => {
     checkPWValue(inputs.passwordOne);
   }, [inputs.passwordOne]);
 
-  const checkEmail = (value) => {
+  const checkEmail = (value: string) => {
     const regex =
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const iEV = regex.test(value);
-    setIsEmailValid(iEV);
+    const isEmailValid = regex.test(value);
+    setIsEmailValid(isEmailValid);
   };
-  const checkPWValue = (value) => {
+  const checkPWValue = (value: string) => {
     const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
-    const iPWV = !re2.test(value);
-    setIsPWValid(iPWV);
+    const isPasswordValueValid = !re2.test(value);
+    setIsPWValid(isPasswordValueValid);
   };
 
   if (user && user.uid) {
@@ -87,7 +101,7 @@ const LinkEmailModal = (props) => {
       }}
     >
       {Object.keys(message)?.length > 0 && (
-        <Alert className="mt-3" show={show} variant={message.style}>
+        <Alert className="mt-3" color={message.style}>
           {message.content}
         </Alert>
       )}
@@ -189,17 +203,5 @@ const SignUpLink = () => (
     </p>
   </div>
 );
-LinkEmailModal.defaultProps = {
-  user: null
-};
-LinkEmailModal.propTypes = {
-  user: userType,
-  message: PropTypes.shape({
-    style: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired
-  }).isRequired,
-  show: PropTypes.bool.isRequired,
-  close: PropTypes.bool.isRequired
-};
 export default LinkEmailModal;
 export { SignUpLink };

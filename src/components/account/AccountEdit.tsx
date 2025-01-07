@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import firebase from 'firebase/compat/app';
 import {
   Alert,
+  AlertColor,
   Box,
   Button,
   Card,
@@ -49,7 +50,10 @@ const AccountEdit = (props: AccountEditProps) => {
     content: '',
     style: 'info'
   });
-  const [modalMessage, setModalMessage] = useState({
+  const [modalMessage, setModalMessage] = useState<{
+    style: AlertColor;
+    content: string;
+  }>({
     content: '',
     style: 'info'
   });
@@ -99,7 +103,7 @@ const AccountEdit = (props: AccountEditProps) => {
       })
       .catch((error) => {
         console.log(error);
-        setModalMessage({ style: 'danger', content: error.message });
+        setModalMessage({ style: 'error', content: error.message });
       });
   };
   const providerLink = async (provider: string) => {
@@ -204,9 +208,11 @@ const AccountEdit = (props: AccountEditProps) => {
     <>
       <Dialog open={show} onClose={() => setShow(false)}>
         <LinkEmailModal
+          user={user}
           linkEmail={linkEmail}
           close={close}
           message={modalMessage}
+          show={show}
         />
       </Dialog>
       {message && show && (
@@ -312,9 +318,9 @@ const AccountEdit = (props: AccountEditProps) => {
             if (!userProvs.includes(provider.provName)) {
               return (
                 <IconButton
+                  key={provider.id}
                   title={provider.name}
                   onClick={provider.onClick}
-                  variant="contained"
                 >
                   {provider.icon}
                 </IconButton>
