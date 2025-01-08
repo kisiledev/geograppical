@@ -17,11 +17,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
-import { dataType } from '../../helpers/types/index';
+import { DataType, dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 
-const Find = (props) => {
+interface FindProps {
+  isStarted: boolean;
+  data: DataType;
+  startGame: Function;
+  handleOpen: Function;
+  changeMapView: Function;
+  updateScore: Function;
+  handlePoints: Function;
+  gameOver: boolean;
+  saved: boolean;
+  mapVisible: string;
+  mode: string;
+}
+const Find = (props: FindProps) => {
   const [currentCountry, setCurrentCountry] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [guesses, setGuesses] = useState(null);
@@ -444,27 +457,5 @@ const Find = (props) => {
     </BreakpointProvider>
   );
 };
-Find.propTypes = {
-  mapVisible: PropTypes.string.isRequired,
-  worldData: dataType.isRequired,
-  isStarted: PropTypes.bool.isRequired,
-  saved: PropTypes.bool.isRequired,
-  gameOver: PropTypes.bool.isRequired,
-  handlePoints: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  updateScore: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired,
-  changeMapView: PropTypes.func.isRequired
-};
 
 export default Find;
-// const BlockPageScroll = ({ children }) => {
-//   const scrollRef = useRef(null);
-//   useEffect(() => {
-//     const scrollEl = scrollRef.current;
-//     scrollEl.addEventListener("wheel", stopScroll);
-//     return () => scrollEl.removeEventListener("wheel", stopScroll);
-//   }, []);
-//   const stopScroll = e => e.preventDefault();
-//   return <div ref={scrollRef}>{children}</div>;
-// };

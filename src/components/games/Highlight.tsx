@@ -16,11 +16,24 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import * as d3 from 'd3';
-import { dataType } from '../../helpers/types/index';
+import { DataType, dataType } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 
-const Highlight = (props) => {
+interface HighlightProps {
+  data: DataType;
+  isStarted: boolean;
+  saved: boolean;
+  gameOver: boolean;
+  handlePoints: Function;
+  handleOpen: Function;
+  updateScore: Function;
+  startGame: Function;
+  mapVisible: string;
+  changeMapView: Function;
+  mode: string;
+}
+const Highlight = (props: HighlightProps) => {
   const [currentCountry, setCurrentCountry] = useState(null);
   const [currentCountryId, setCurrentCountryId] = useState(null);
   const [guesses, setGuesses] = useState(null);

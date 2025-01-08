@@ -154,7 +154,7 @@ export interface Answer {
 
 export interface Question {
   answers: Answer[];
-  correct: boolean;
+  correct: boolean | null;
   country: string;
 }
 

@@ -14,12 +14,30 @@ import {
   ListItemButton,
   Typography
 } from '@mui/material';
-import { dataType } from '../../helpers/types/index';
+import {
+  Answer,
+  DataType,
+  dataType,
+  Question
+} from '../../helpers/types/index';
 import gameModes from '../../constants/GameContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { CountryType } from '../../helpers/types/CountryType';
 
-const CustomAnswer = ({ answers, checkAnswer, options, loading }) => (
+interface CustomAnswerProps {
+  answers: { id: number; name: string; correct: number }[];
+  checkAnswer: (answer: { id: number; name: string; correct: number }) => void;
+  options: { [key: number]: React.CSSProperties };
+  loading: boolean;
+}
+
+const CustomAnswer = ({
+  answers,
+  checkAnswer,
+  options,
+  loading
+}: CustomAnswerProps) => (
   <List
     sx={{
       padding: '5px',
@@ -36,7 +54,6 @@ const CustomAnswer = ({ answers, checkAnswer, options, loading }) => (
             role="button"
             tabIndex={0}
             onClick={() => checkAnswer(answer)}
-            value={answer.id}
             component={Card}
             style={options[answer.correct]}
           >
@@ -46,13 +63,29 @@ const CustomAnswer = ({ answers, checkAnswer, options, loading }) => (
       ))}
   </List>
 );
-const Choice = (props) => {
-  const [currentCountry, setCurrentCountry] = useState(null);
-  const [currentCountryId, setCurrentCountryId] = useState(null);
-  const [guesses, setGuesses] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  const [questions, setQuestions] = useState([]);
-  const [usedCountry, setUsedCountry] = useState([]);
+
+interface ChoiceProps {
+  data: DataType;
+  isStarted: boolean;
+  saved: boolean;
+  gameOver: boolean;
+  handlePoints: Function;
+  handleOpen: Function;
+  endGame: Function;
+  updateScore: Function;
+  startGame: Function;
+  mode: keyof typeof gameModes;
+}
+const Choice = (props: ChoiceProps) => {
+  console.log(props);
+  const [currentCountry, setCurrentCountry] = useState<CountryType | null>(
+    null
+  );
+  const [currentCountryId, setCurrentCountryId] = useState<number | null>(null);
+  const [guesses, setGuesses] = useState<number>(0);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [usedCountry, setUsedCountry] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -94,14 +127,14 @@ const Choice = (props) => {
       backgroundColor: 'initial'
     }
   };
-  const shuffle = (a) => {
+  const shuffle = (a: Answer[]) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   };
-  const getRandomInt = (min, max) => {
+  const getRandomInt = (min: number, max: number) => {
     const minCeil = Math.ceil(min);
     const maxFloor = Math.floor(max);
     return Math.floor(Math.random() * (maxFloor - minCeil)) + minCeil;
@@ -118,7 +151,7 @@ const Choice = (props) => {
     setUsedCountry(usedArray);
     return country;
   };
-  const randomExcluded = (min, max, excluded) => {
+  const randomExcluded = (min: number, max: number, excluded: number) => {
     let n = Math.floor(Math.random() * (max - min) + min);
     if (n >= excluded) {
       n += 1;
@@ -126,16 +159,20 @@ const Choice = (props) => {
     return n;
   };
 
-  const getAnswers = (country) => {
-    let answerQuestions;
+  const getAnswers = (country: CountryType) => {
+    let answerQuestions: Question[] = [];
     if (questions) {
       answerQuestions = [...questions];
     }
-    const question = {};
+    const question: Question = {
+      country: '',
+      answers: [],
+      correct: null
+    };
     question.country = country.name;
     question.correct = null;
     const fetchanswers = [];
-    const usedCaps = [];
+    const usedCaps: number[] = [];
     if (country) {
       fetchanswers.push({
         name: country.government.capital.name
@@ -144,6 +181,9 @@ const Choice = (props) => {
         id: 0,
         correct: 2
       });
+    }
+    if (!currentCountryId) {
+      return;
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, data.length - 1, currentCountryId);
@@ -184,7 +224,7 @@ const Choice = (props) => {
     }
     setLoading(false);
     const country = getRandomCountry();
-    setGuesses((prevGuess) => prevGuess + 1);
+    setGuesses((prevGuess) => (prevGuess !== null ? prevGuess + 1 : 1));
     setCurrentCountry(country);
     getAnswers(country);
     const usedCountries = [];
@@ -195,12 +235,19 @@ const Choice = (props) => {
     }
   };
 
-  const checkAnswer = (answer) => {
+  const checkAnswer = (answer: Answer) => {
+    if (!currentCountry) {
+      return;
+    }
     //  if answer is correct answer (all correct answers have ID of 0)
     const checkquestions = questions;
     const checkquestion = checkquestions.find(
       (question) => question.country === currentCountry.name
     );
+
+    if (!checkquestion) {
+      return;
+    }
     let checkguesses = guesses;
     if (answer.id === 0) {
       //  give score of 2
@@ -212,7 +259,7 @@ const Choice = (props) => {
       if (guesses === 1) {
         checkquestion.correct = true;
       }
-      checkguesses = null;
+      checkguesses = 0;
       setTimeout(() => {
         setLoading(true);
         takeTurn();
@@ -241,10 +288,10 @@ const Choice = (props) => {
   const directions = (
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
-      <Typography variant="p">{gameModes[mode].directions}</Typography>
+      <Typography variant="body1">{gameModes[mode].directions}</Typography>
       <Box sx={{ margin: '10px' }}>
         <Button
-          disabled={!data?.length > 0}
+          disabled={data?.length === 0}
           variant="contained"
           color="success"
           onClick={() => takeTurn()}
@@ -299,18 +346,6 @@ const Choice = (props) => {
       )}
     </div>
   );
-};
-
-Choice.propTypes = {
-  data: dataType.isRequired,
-  isStarted: PropTypes.bool.isRequired,
-  saved: PropTypes.bool.isRequired,
-  gameOver: PropTypes.bool.isRequired,
-  handlePoints: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  endGame: PropTypes.func.isRequired,
-  updateScore: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired
 };
 
 export default Choice;
