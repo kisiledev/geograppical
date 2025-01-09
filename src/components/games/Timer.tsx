@@ -1,13 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid2, Typography } from '@mui/material';
 
-const Timer = (props) => {
+interface TimerProps {
+  timeChecked: boolean;
+  isStarted: boolean;
+  currentCount: number;
+}
+
+type Result = number | string;
+const Timer = (props: TimerProps) => {
   const { timeChecked, isStarted, currentCount } = props;
 
   // decrement timer method
 
-  const SecondsToHHMMSS = (totalSeconds) => {
+  const SecondsToHHMMSS = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
     let seconds = totalSeconds - hours * 3600 - minutes * 60;
@@ -15,17 +22,18 @@ const Timer = (props) => {
     // round seconds
     seconds = Math.round(seconds * 100) / 100;
 
-    let result = minutes < 10 ? minutes : minutes;
-    result += `:${seconds < 10 ? `0${seconds}` : seconds}`;
-    return result;
+    let result: Result = minutes < 10 ? minutes : minutes;
+
+    let finalResult = `${result}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    return finalResult;
   };
   // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().
   let time;
   if (timeChecked) {
     time = (
-      <Grid item>
+      <Grid2>
         Time
-        <Grid>
+        <Grid2>
           <Box>
             <Typography
               variant="h6"
@@ -37,20 +45,12 @@ const Timer = (props) => {
             </Typography>
             <div />
           </Box>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   }
 
   const noTime = <div />;
   return <div>{timeChecked && time !== null ? time : noTime}</div>;
-};
-Timer.defaultProps = {
-  currentCount: null
-};
-Timer.propTypes = {
-  timeChecked: PropTypes.bool.isRequired,
-  isStarted: PropTypes.bool.isRequired,
-  currentCount: PropTypes.number
 };
 export default Timer;

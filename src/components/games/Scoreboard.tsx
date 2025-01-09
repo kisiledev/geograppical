@@ -48,7 +48,6 @@ const Scoreboard = (props: ScoreboardProps) => {
             timeChecked={timeChecked}
             isStarted={isStarted}
             currentCount={currentCount}
-            timeMode={timeMode}
           />
         </Grid2>
         <Grid2>
