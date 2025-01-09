@@ -16,9 +16,15 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import * as d3 from 'd3';
-import { DataType, dataType } from '../../helpers/types/index';
+import {
+  Answer,
+  DataType,
+  dataType,
+  Question
+} from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
+import { CountryType } from '../../helpers/types/CountryType';
 
 interface HighlightProps {
   data: DataType;
@@ -31,20 +37,18 @@ interface HighlightProps {
   startGame: Function;
   mapVisible: string;
   changeMapView: Function;
-  mode: string;
+  mode: keyof typeof gameModes;
 }
 const Highlight = (props: HighlightProps) => {
-  const [currentCountry, setCurrentCountry] = useState(null);
-  const [currentCountryId, setCurrentCountryId] = useState(null);
-  const [guesses, setGuesses] = useState(null);
-  const [questions, setQuestions] = useState([]);
-  const [center, setCenter] = useState([0, 0]);
+  const [currentCountry, setCurrentCountry] = useState<CountryType | null>(
+    null
+  );
+  const [currentCountryId, setCurrentCountryId] = useState<number | null>(null);
+  const [guesses, setGuesses] = useState(0);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
-  const [regions, setRegions] = useState('');
-  const [continents, setContinents] = useState('');
-  const [countries, setCountries] = useState('');
-  // const [bypassClick, setBypassClick] = useState(false);
-  const [answers, setAnswers] = useState(null);
+  const [answers, setAnswers] = useState<Answer[] | null>(null);
 
   console.log(props);
   const {
@@ -69,124 +73,41 @@ const Highlight = (props: HighlightProps) => {
 
   const endGame = () => {
     setQuestions([]);
-    setGuesses(null);
+    setGuesses(0);
     setCurrentCountry(null);
   };
 
-  const getMapNations = () => {
-    const mapCountries = [...document.getElementsByClassName('gameCountry')];
-    const totalMapRegions = mapCountries.map((a) =>
-      a.dataset.subregion.replace(/;/g, '')
-    );
-    let uniqueMapRegions = totalMapRegions.filter(
-      (v, i, a) => a.indexOf(v) === i
-    );
-    uniqueMapRegions = uniqueMapRegions.filter(Boolean);
-    const totalMapContinents = mapCountries.map((a) =>
-      a.dataset.continent.replace(/;/g, '')
-    );
-    let uniqueMapContinents = totalMapContinents.filter(
-      (v, i, a) => a.indexOf(v) === i
-    );
-    uniqueMapContinents = uniqueMapContinents.filter(Boolean);
-    setCountries(mapCountries);
-    setRegions(uniqueMapRegions);
-    setContinents(uniqueMapContinents);
-  };
-
-  const getRegion = (region) => {
-    const nodes = [...document.getElementsByClassName('gameCountry')];
-    const match = nodes.filter((node) => node.dataset.subregion === region);
-    return match;
-  };
-
-  const getContinent = (continent) => {
-    const nodes = [...document.getElementsByClassName('gameCountry')];
-    const match = nodes.filter((node) => node.dataset.continent === continent);
-    return match;
-  };
-
-  const setDynamicRegions = (regs) => {
-    if (!regs) {
-      return;
-    }
-    const regionsState = {};
-    if (regions.length > 0) {
-      regions.forEach((region) => {
-        if (regions[region] && regions[region].countries[0]) {
-          regionsState[region] = {
-            visible: 5,
-            start: 0,
-            countries: regions[region].countries,
-            open: false
-          };
-        } else {
-          getRegion(region);
-          regionsState[region] = {
-            visible: 5,
-            start: 0,
-            countries: getRegion(region),
-            open: false
-          };
-        }
-      });
-    }
-    setRegions({ ...regionsState });
-  };
-
-  const setDynamicContinents = (conts) => {
-    if (!conts) {
-      return;
-    }
-
-    const continentsState = {};
-    if (conts.length > 0) {
-      conts.forEach((continent) => {
-        if (conts[continent] && conts[continent].countries[0]) {
-          continentsState[continent] = {
-            id: continent,
-            countries: conts[continent].countries
-          };
-        } else {
-          getContinent(continent);
-          continentsState[continent] = {
-            id: continent,
-            countries: getContinent(continent)
-          };
-        }
-      });
-    }
-    // set state here outside the foreach function
-    setContinents({ ...continentsState });
-    //  setState({continents: {...continentsState}})
-  };
-  const setLocations = (regs, conts) => {
-    setDynamicContinents(conts);
-    setDynamicRegions(regs);
-  };
   const handleZoomIn = () => {
     setZoom((prevZoom) => prevZoom * 2);
   };
   const handleZoomOut = () => {
     setZoom((prevZoom) => prevZoom / 2);
   };
-  const handleText = (str) => {
+  const handleText = (str: string) => {
     return str
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z\s]/gi, '');
   };
-  const handleMoveStart = ({ coordinates }) => {
+  const handleMoveStart = ({
+    coordinates
+  }: {
+    coordinates: [number, number];
+  }) => {
     console.log(coordinates);
     setCenter(coordinates);
     // setBypassClick(true);
   };
 
-  const handleMoveEnd = ({ coordinates }) => {
+  const handleMoveEnd = ({
+    coordinates
+  }: {
+    coordinates: [number, number];
+  }) => {
     setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
-  const handleWheel = (event) => {
+  const handleWheel = (event: React.WheelEvent) => {
     const oldZoom = zoom;
     const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
 
@@ -208,14 +129,14 @@ const Highlight = (props: HighlightProps) => {
     // setState({zoom: newZoom, center: newCenter})
   };
 
-  const shuffle = (a) => {
+  const shuffle = (a: Answer[]) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   };
-  const getRandomInt = (min, max) => {
+  const getRandomInt = (min: number, max: number) => {
     const minCeil = Math.ceil(min);
     const maxFloor = Math.floor(max);
     return Math.floor(Math.random() * (maxFloor - minCeil)) + minCeil;
@@ -226,18 +147,22 @@ const Highlight = (props: HighlightProps) => {
     setCurrentCountryId(int);
     return country;
   };
-  const randomExcluded = (min, max, excluded) => {
+  const randomExcluded = (min: number, max: number, excluded: number) => {
     let n = Math.floor(Math.random() * (max - min) + min);
     if (n >= excluded) n += 1;
     return n;
   };
 
-  const getAnswers = (currentCountry) => {
-    let answerQuestions;
+  const getAnswers = (currentCountry: CountryType) => {
+    let answerQuestions: Question[] = [];
     if (questions) {
       answerQuestions = [...questions];
     }
-    const question = {};
+    const question: Question = {
+      country: '',
+      answers: [],
+      correct: null
+    };
     question.country = currentCountry.name;
     question.correct = null;
     const fetchanswers = [];
@@ -247,6 +172,9 @@ const Highlight = (props: HighlightProps) => {
         id: 0,
         correct: 2
       });
+    }
+    if (!currentCountryId) {
+      return;
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, worldData.length - 1, currentCountryId);
@@ -272,15 +200,19 @@ const Highlight = (props: HighlightProps) => {
     }
     setQuestions(answerQuestions);
   };
-  const getCountryInfo = (country) => {
-    let nodes = document.getElementsByClassName('gameCountry');
-    nodes = [...nodes];
+  const getCountryInfo = (country: CountryType) => {
+    let nodes = [
+      ...(document.getElementsByClassName(
+        'gameCountry'
+      ) as HTMLCollectionOf<HTMLElement>)
+    ];
     if (currentCountry && country) {
-      nodes = nodes.filter(
-        (node) =>
+      nodes = nodes.filter((node) => {
+        if (node.dataset.shortname && node.dataset.longname) {
           handleText(country.name) === handleText(node.dataset.longname) ||
-          handleText(country.name) === handleText(node.dataset.shortname)
-      );
+            handleText(country.name) === handleText(node.dataset.shortname);
+        }
+      });
     }
     // highVisibility = (nodes) => {
     //   const highViz = country.name;
@@ -290,11 +222,11 @@ const Highlight = (props: HighlightProps) => {
     //     node.style.outlineOffset = '10px';
     //   });
     // };
-    const changeStyle = (nodes) => {
+    const changeStyle = (nodes: HTMLElement[]) => {
       nodes.forEach((node) => {
         node.style.fill = '#FF0000';
         node.style.stroke = '#111';
-        node.style.strokeWidth = 0.1;
+        node.style.strokeWidth = '0.1';
         node.style.outline = 'solid red';
         node.style.outlineOffset = '10px';
         node.style.boxShadow = '0 0 10px #9ecaed';
@@ -333,14 +265,20 @@ const Highlight = (props: HighlightProps) => {
     }
   };
 
-  const checkAnswer = (country) => {
+  const checkAnswer = (country: Answer) => {
     if (!isStarted) {
+      return;
+    }
+    if (!currentCountry) {
       return;
     }
     const checkquestions = questions;
     const checkquestion = checkquestions.find(
       (question) => question.country === currentCountry.name
     );
+    if (!checkquestion) {
+      return;
+    }
     let checkguesses = guesses;
     if (
       country.name === currentCountry.name ||
@@ -349,13 +287,17 @@ const Highlight = (props: HighlightProps) => {
     ) {
       // give score of 2
       updateScore(3 - guesses);
+
+      if (!checkquestion) {
+        return;
+      }
       // set answer style
       country.correct = 0;
       // initialize correct counter for game
       if (guesses === 1) {
         checkquestion.correct = true;
       }
-      checkguesses = null;
+      checkguesses = 0;
       setTimeout(() => takeTurn(), 300);
     } else {
       country.correct = 1;
@@ -371,9 +313,6 @@ const Highlight = (props: HighlightProps) => {
   useEffect(() => {
     endGame();
   }, [saved, gameOver]);
-  useEffect(() => {
-    getMapNations();
-  }, []);
 
   useEffect(() => {
     if (currentCountry) {
@@ -382,22 +321,13 @@ const Highlight = (props: HighlightProps) => {
   }, [currentCountry]);
 
   useEffect(() => {
-    setDynamicRegions(regions);
-    setLocations(regions, continents);
-  }, []);
-
-  useEffect(() => {
-    setLocations(regions, continents);
-  }, [countries]);
-
-  useEffect(() => {
     endGame();
   }, [saved, gameOver]);
 
   const directions = (
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
-      <Typography variant="p">{gameModes[mode].directions}</Typography>
+      <Typography variant="body1">{gameModes[mode].directions}</Typography>
       <Box sx={{ margin: '10px' }}>
         <Button variant="contained" color="success" onClick={() => takeTurn()}>
           Start Game
@@ -407,7 +337,7 @@ const Highlight = (props: HighlightProps) => {
   );
   let answerChoices;
   if (answers && answers.length > 0) {
-    if (questions < 0) {
+    if (questions.length < 0) {
       answerChoices = [];
     } else {
       answerChoices = answers.map((answer) => {
@@ -460,14 +390,14 @@ const Highlight = (props: HighlightProps) => {
               <Button
                 variant="contained"
                 className="btn btn-info"
-                onClick={() => handleZoomOut(zoom)}
+                onClick={() => handleZoomOut()}
               >
                 <FontAwesomeIcon icon={faMinus} />
               </Button>
               <Button
                 variant="contained"
                 className="btn btn-info"
-                onClick={() => handleZoomIn(zoom)}
+                onClick={() => handleZoomIn()}
               >
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
@@ -493,7 +423,7 @@ const Highlight = (props: HighlightProps) => {
             <ComposableMap
               width={800}
               height={400}
-              projection={proj}
+              projection="geoEqualEarth"
               style={{
                 width: '100%',
                 height: 'auto'
@@ -516,12 +446,9 @@ const Highlight = (props: HighlightProps) => {
                         data-subregion={geo.properties.SUBREGION}
                         // onMouseEnter={(() => onRegionHover(geo))}
                         // onMouseLeave={(() => onRegionLeave(geo))}
-                        onClick={(e) =>
-                          checkAnswer(e, geo.properties.NAME_LONG)
-                        }
+                        onClick={() => checkAnswer(geo.properties.NAME_LONG)}
                         key={geo.properties.NAME}
                         geography={geo}
-                        projection={projection}
                         className="gameCountry"
                       />
                     ))
