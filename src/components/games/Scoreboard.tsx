@@ -1,10 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Grid } from '@mui/material';
+import { Card, Grid2 } from '@mui/material';
 import Timer from './Timer';
 import Score from './Score';
 
-const Scoreboard = (props) => {
+interface ScoreboardProps {
+  timeChecked: boolean;
+  isStarted: boolean;
+  timeMode: string;
+  currentCount: number;
+  score: number;
+  correct: number;
+  incorrect: number;
+  questions: number;
+}
+const Scoreboard = (props: ScoreboardProps) => {
   const {
     timeChecked,
     isStarted,
@@ -25,46 +35,31 @@ const Scoreboard = (props) => {
         alignItems: 'center',
         width: '50%'
       }}
-      spacing={2}
     >
-      <Grid
+      <Grid2
         container
         sx={{
           margin: '0 auto',
           justifyContent: 'space-around'
         }}
       >
-        <Grid item>
+        <Grid2>
           <Timer
             timeChecked={timeChecked}
             isStarted={isStarted}
             currentCount={currentCount}
             timeMode={timeMode}
           />
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           <Score score={score} correct={correct} incorrect={incorrect} />
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           Questions
           <div className="col text-danger">{questions}</div>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Card>
   );
-};
-Scoreboard.defaultProps = {
-  questions: 0,
-  currentCount: null
-};
-Scoreboard.propTypes = {
-  timeChecked: PropTypes.bool.isRequired,
-  isStarted: PropTypes.bool.isRequired,
-  timeMode: PropTypes.string.isRequired,
-  currentCount: PropTypes.number,
-  score: PropTypes.number.isRequired,
-  correct: PropTypes.number.isRequired,
-  incorrect: PropTypes.number.isRequired,
-  questions: PropTypes.number
 };
 export default Scoreboard;

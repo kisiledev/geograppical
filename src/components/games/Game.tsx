@@ -69,11 +69,10 @@ interface BundledPropsType {
   data: DataType;
 }
 interface GameModeProps {
-  gameMode: 'choice' | 'find' | 'highlight';
+  gameMode: 'choice' | 'find' | 'highlight' | null;
   props: BundledPropsType;
 }
 const GameMode = ({ gameMode, props }: GameModeProps) => {
-  console.log('GameModeProps', props);
   switch (gameMode) {
     case 'choice': {
       return <Choice {...props} mode={gameMode} />;
@@ -93,15 +92,17 @@ const Game = (props: GameProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [questions, setQuestions] = useState(0);
   const [questionsSet, setQuestionsSet] = useState<Question[]>([]);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<number>(0);
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
-  const [gameMode, setGameMode] = useState(null);
+  const [gameMode, setGameMode] = useState<
+    'choice' | 'find' | 'highlight' | null
+  >(null);
   const [isStarted, setIsStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [scoreChecked, setScoreChecked] = useState(true);
   const [timeChecked, setTimeChecked] = useState(true);
-  const [currentCount, setCurrentCount] = useState(60);
+  const [currentCount, setCurrentCount] = useState<number>(60);
   const [gameComplete, setGameComplete] = useState(false);
   // const [isRunning, setIsRunning] = useState(false)
   const [timeMode, setTimeMode] = useState('cd');
@@ -124,8 +125,11 @@ const Game = (props: GameProps) => {
 
   const tick = () => {
     if (gameOver || !timeChecked) return;
-    if (timeMode === 'cd' && currentCount === 0) setGameOver(true);
-    else setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+    if (timeMode === 'cd' && currentCount === 0) {
+      setGameOver(true);
+    } else {
+      setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+    }
   };
 
   const intervalRef = useRef<NodeJS.Timer | null>(null);
@@ -214,11 +218,11 @@ const Game = (props: GameProps) => {
     }
     setShow(true);
   };
-  const updateScore = (int) => {
+  const updateScore = (int: number) => {
     setScore(score + int);
   };
 
-  const titleCase = (oldString) =>
+  const titleCase = (oldString: string) =>
     oldString
       .replace(
         /([a-z])([A-Z])/g,
@@ -231,7 +235,7 @@ const Game = (props: GameProps) => {
           (firstMatch ? ' ' : '') + secondMatch.toUpperCase()
       );
   const resetMode = () => {
-    setQuestions(null);
+    setQuestions(0);
     setScore(0);
     setCorrect(0);
     setGameOver(false);
@@ -245,30 +249,32 @@ const Game = (props: GameProps) => {
     stop();
     reset();
   };
-  const toggleMode = (e) => {
+  const toggleMode = (e: React.ChangeEvent) => {
     e.persist();
     if (timeChecked) {
-      setTimeMode(e.target.value);
+      setTimeMode((e.target as HTMLInputElement).value);
     }
   };
-  const handleTimeCheck = (e) => {
-    setCurrentCount(!timeChecked ? 60 : null);
-    setTimeChecked(e.target.checked);
+  const handleTimeCheck = (e: React.ChangeEvent) => {
+    const isChecked = (e.target as HTMLInputElement).checked;
+    setCurrentCount(!timeChecked ? 60 : 0);
+    setTimeChecked(isChecked);
   };
   const handleModalUse = () => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
     const timeExpired = 'Sorry, time expired! Try again';
     setModalBody(gameComplete ? ModalText : timeExpired);
   };
-  const handleScoreCheck = (e) => {
+  const handleScoreCheck = (e: React.ChangeEvent) => {
     if (score === null) {
       setScore(0);
       setCorrect(0);
       setIncorrect(0);
     } else {
-      setScore(null);
+      setScore(0);
     }
-    setScoreChecked(e.target.checked);
+    const isChecked = (e.target as HTMLInputElement).checked;
+    setScoreChecked(isChecked);
   };
 
   useEffect(() => {
@@ -301,7 +307,7 @@ const Game = (props: GameProps) => {
       };
       try {
         const docRef = await addDoc(
-          collection(db, ...`users/${user.uid}/scores`.split('/')),
+          collection(db, `users/${user.uid}/scores`),
           newData
         );
         console.log('Data written successfully', docRef, docRef.id);
@@ -395,11 +401,11 @@ const Game = (props: GameProps) => {
         </DialogTitle>
         <DialogContent>{modalBody}</DialogContent>
         <DialogActions>
-          <Button variant="secondary" onClick={() => handleModalClose()}>
+          <Button variant="contained" onClick={() => handleModalClose()}>
             Close
           </Button>
           {saved ? (
-            <Button variant="success">
+            <Button color="success">
               <Link to={ROUTES.ACCOUNT}>
                 {loadingState ? (
                   <FontAwesomeIcon icon={faSpinner} spin size="3x" />
@@ -409,7 +415,7 @@ const Game = (props: GameProps) => {
               </Link>
             </Button>
           ) : (
-            <Button variant="primary" onClick={() => saveScore()}>
+            <Button color="primary" onClick={() => saveScore()}>
               Save Score
             </Button>
           )}
@@ -456,22 +462,20 @@ const Game = (props: GameProps) => {
             </ButtonGroup>
           </Stack>
         )}
-        <Grid2 md={8} lg={12} sx={{ textAlign: 'center' }}>
+        <Grid2 size={{ md: 8, lg: 12 }} sx={{ textAlign: 'center' }}>
           <GameMode props={bundledProps} gameMode={gameMode} />
         </Grid2>
         {!isStarted && (
           <Stack
             sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
-            xs={6}
           >
-            <Grid
+            <Grid2
               sx={{
                 justifyContent: 'center',
                 display: 'flex',
                 flexWrap: 'wrap'
               }}
-              item
-              xs={12}
+              size={{ xs: 12 }}
             >
               <FormControlLabel
                 control={
@@ -493,7 +497,7 @@ const Game = (props: GameProps) => {
                 }
                 label="Keep Score"
               />
-            </Grid>
+            </Grid2>
             {timeChecked && timeButtons}
           </Stack>
         )}
