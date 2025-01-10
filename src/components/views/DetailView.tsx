@@ -5,7 +5,7 @@ import {
   faSpinner,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Button, Card, Grid, Typography } from '@mui/material';
+import { Alert, Button, Card, Grid2, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
 import { Link, useNavigate } from 'react-router-dom';
 import { BreakpointProvider, Breakpoint } from 'react-socks';
@@ -23,7 +23,8 @@ import {
   dataType,
   userType,
   matchType,
-  DataType
+  DataType,
+  Message
 } from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
@@ -31,12 +32,12 @@ import * as ROUTES from '../../constants/Routes';
 // import '../../App.css';
 
 import SidebarView from './SidebarView';
-import { firebaseApp } from '../../firebase/firebase';
+import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
 
-function getOccurrence(array, value) {
+function getOccurrence(array: string[], value: string) {
   return array.filter((v) => v === value).length;
 }
 
@@ -51,10 +52,15 @@ interface DetailViewProps {
   handleSideBar: (string: string) => void;
   filterCountryByName: (name: string) => void;
 }
-const DetailView = (props) => {
+const DetailView = (props: DetailViewProps) => {
   const [show, setShow] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<Message>({
+    style: 'info',
+    content: '',
+    link: '',
+    linkContent: ''
+  });
 
   const navigate = useNavigate();
   const {
@@ -72,7 +78,8 @@ const DetailView = (props) => {
   const db = getFirestore(firebaseApp);
 
   const params = useParams();
-  const numberWithCommas = (x) =>
+  const { country = '' } = params;
+  const numberWithCommas = (x: number) =>
     x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   const showFunc = () => {
@@ -81,15 +88,18 @@ const DetailView = (props) => {
       setShow(false);
     }, 4000);
   };
-  const checkFavorite = async (country) => {
+  const checkFavorite = async (country: string) => {
+    if (!user) {
+      return;
+    }
     const docRef = doc(
-      db,
+      favoritesCollection,
       ...`users/${user.uid}/favorites/${country}`.split('/')
     );
 
     try {
       const countryDoc = await getDoc(docRef);
-      if (countryDoc.exists) {
+      if (countryDoc.exists()) {
         setFavorite(true);
       } else {
         setFavorite(false);
@@ -98,7 +108,7 @@ const DetailView = (props) => {
       console.log('Error getting document:', error);
     }
   };
-  const makeFavorite = async (e, country) => {
+  const makeFavorite = async (e: React.MouseEvent, country: CountryType) => {
     e.persist();
     console.log('adding');
     if (!user) {
@@ -110,14 +120,18 @@ const DetailView = (props) => {
       });
     }
     if (!favorite) {
+      if (!user) {
+        return;
+      }
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
-        await setDoc(docRef, { country });
+        await setDoc(docRef, country);
         setMessage({
+          ...message,
           style: 'success',
           content: `Added ${country.name} to favorites`
         });
@@ -126,20 +140,25 @@ const DetailView = (props) => {
         showFunc();
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${country.name} to favorites, ${error}`
         });
         showFunc();
       }
     } else {
+      if (!user) {
+        return;
+      }
       const docRef = doc(
-        db,
+        favoritesCollection,
         ...`users/${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
         await deleteDoc(docRef);
         setMessage({
+          ...message,
           style: 'warning',
           content: `Removed ${country.name} from favorites`
         });
@@ -147,7 +166,8 @@ const DetailView = (props) => {
         showFunc();
       } catch (error) {
         setMessage({
-          style: 'danger',
+          ...message,
+          style: 'error',
           content: `Error adding ${country.name} to favorites, ${error}`
         });
         showFunc();
@@ -163,7 +183,7 @@ const DetailView = (props) => {
 
   useEffect(() => {
     if (!loadingState) {
-      getCountryInfo(params.country);
+      getCountryInfo(country);
     }
   }, []);
 
@@ -171,7 +191,7 @@ const DetailView = (props) => {
     if (user && countryDetail) {
       checkFavorite(countryDetail.name);
     }
-    getCountryInfo(params.country);
+    getCountryInfo(country);
   }, [data]);
 
   const totalRegions = data.map((a) => a.geography.map_references);
@@ -185,30 +205,29 @@ const DetailView = (props) => {
   );
   uniqueRegions = uniqueRegions.filter(Boolean);
   return loadingState || !countryDetail ? (
-    <Grid
+    <Grid2
       container
       sx={{ paddingTop: '50px', justifyContent: 'center' }}
-      xs={12}
+      size={{ xs: 12 }}
     >
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-    </Grid>
+    </Grid2>
   ) : (
     <BreakpointProvider>
-      {countryDetail === 'error' || countryDetail === undefined ? (
+      {countryDetail === undefined ? (
         errorMsg
       ) : (
-        <Grid
+        <Grid2
           container
           sx={{
             margin: '0 auto',
             justifyContent: 'center'
           }}
         >
-          <Grid item xs={12} md={9}>
+          <Grid2 size={{ xs: 12, md: 9 }}>
             <Button
               LinkComponent={Link}
               variant="contained"
-              to="/"
               className="btn btn-primary justify-content"
               onClick={() => navigate(-1)}
               sx={{ margin: '20px auto' }}
@@ -217,7 +236,7 @@ const DetailView = (props) => {
               Back
             </Button>
             <Card elevation={5} sx={{ padding: '10px' }}>
-              {message?.length > 0 && show && (
+              {message?.linkContent && show && (
                 <Alert
                   severity={message.style}
                   action={<Link to={message.link}>{message.linkContent}</Link>}
@@ -225,9 +244,9 @@ const DetailView = (props) => {
                   {message.content}
                 </Alert>
               )}
-              <Grid container sx={{ justifyContent: 'space-between' }}>
-                <Grid
-                  xs={12}
+              <Grid2 container sx={{ justifyContent: 'space-between' }}>
+                <Grid2
+                  size={{ xs: 12, lg: 6 }}
                   sx={{
                     display: 'flex',
                     flexWrap: 'nowrap',
@@ -236,11 +255,11 @@ const DetailView = (props) => {
                   }}
                 >
                   <Breakpoint medium up>
-                    <Grid lg={12}>
+                    <Grid2 size={{ lg: 12 }}>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
                         {countryDetail.name}
                       </Typography>
-                      <Typography variant="p" sx={{ fontWeight: 600 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
                         {countryDetail?.government?.capital.name}
                       </Typography>
                       <Typography component="h5">
@@ -250,7 +269,7 @@ const DetailView = (props) => {
                             )}
                              (${countryDetail.people.population.global_rank})`}
                       </Typography>
-                    </Grid>
+                    </Grid2>
                   </Breakpoint>
 
                   <Flag
@@ -266,8 +285,8 @@ const DetailView = (props) => {
                     }
                     alt={`${countryDetail.name}'s Flag`}
                   />
-                </Grid>
-                <Grid item={12} sx={{ padding: '15px 0px' }}>
+                </Grid2>
+                <Grid2 sx={{ padding: '15px 0px' }}>
                   <Button
                     sx={{ margin: '0 auto', textAlign: 'center' }}
                     onClick={(e) => makeFavorite(e, countryDetail)}
@@ -283,18 +302,18 @@ const DetailView = (props) => {
                   >
                     {`${favorite ? 'Remove' : 'Make'} Favorite`}
                   </Button>
-                </Grid>
+                </Grid2>
                 <AudioPlayer nation={countryDetail} />
-              </Grid>
+              </Grid2>
               <RecursiveProperty
                 property={countryDetail}
-                expanded={Boolean}
+                expanded={false}
                 propertyName={countryDetail.name}
                 excludeBottomBorder={false}
                 rootProperty
               />
             </Card>
-          </Grid>
+          </Grid2>
           <Breakpoint medium down>
             <SidebarView
               data={data}
@@ -307,7 +326,7 @@ const DetailView = (props) => {
               filterCountryByName={filterCountryByName}
             />
           </Breakpoint>
-        </Grid>
+        </Grid2>
       )}
     </BreakpointProvider>
   );

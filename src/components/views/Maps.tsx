@@ -29,13 +29,17 @@ import Breakpoint, { BreakpointProvider } from 'react-socks';
 import PropTypes from 'prop-types';
 import { Button, ButtonGroup, Card, Grid } from '@mui/material';
 import data from '../../data/world-50m.json';
+import { DataType } from '../../helpers/types';
 
-const Maps = (props) => {
-  const [center, setCenter] = useState([0, 0]);
+interface MapsProps {
+  mapVisible: string;
+  changeMapView: () => void;
+  worldData: DataType;
+  getCountryInfo: (country: string) => void;
+}
+const Maps = (props: MapsProps) => {
+  const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
-  const [regions, setRegions] = useState('');
-  const [continents, setContinents] = useState('');
-  const [countries, setCountries] = useState('');
   // const [bypassClick, setBypassClick] = useState(false);
 
   const { mapVisible, changeMapView, worldData, getCountryInfo } = props;
@@ -45,97 +49,6 @@ const Maps = (props) => {
     .translate([800 / 2, 400 / 2])
     .scale(150);
 
-  const getMapNations = () => {
-    const mapCountries = [...document.getElementsByClassName('country')];
-    const totalMapRegions = mapCountries.map((a) =>
-      a.dataset.subregion.replace(/;/g, '')
-    );
-    let uniqueMapRegions = totalMapRegions.filter(
-      (v, i, a) => a.indexOf(v) === i
-    );
-    uniqueMapRegions = uniqueMapRegions.filter(Boolean);
-    const totalMapContinents = mapCountries.map((a) =>
-      a.dataset.continent.replace(/;/g, '')
-    );
-    let uniqueMapContinents = totalMapContinents.filter(
-      (v, i, a) => a.indexOf(v) === i
-    );
-    uniqueMapContinents = uniqueMapContinents.filter(Boolean);
-    setCountries(mapCountries);
-    setRegions(uniqueMapRegions);
-    setContinents(uniqueMapContinents);
-  };
-
-  const getRegion = (region) => {
-    const nodes = [...document.getElementsByClassName('country')];
-    const match = nodes.filter((node) => node.dataset.subregion === region);
-    return match;
-  };
-
-  const getContinent = (continent) => {
-    const nodes = [...document.getElementsByClassName('country')];
-    const match = nodes.filter((node) => node.dataset.continent === continent);
-    return match;
-  };
-
-  const setDynamicRegions = (regs) => {
-    if (!regs) {
-      return;
-    }
-    const regionsState = {};
-    if (regions.length > 0) {
-      regions.forEach((region) => {
-        if (regions[region] && regions[region].countries[0]) {
-          regionsState[region] = {
-            visible: 5,
-            start: 0,
-            countries: regions[region].countries,
-            open: false
-          };
-        } else {
-          getRegion(region);
-          regionsState[region] = {
-            visible: 5,
-            start: 0,
-            countries: getRegion(region),
-            open: false
-          };
-        }
-      });
-    }
-    setRegions({ ...regionsState });
-  };
-
-  const setDynamicContinents = (conts) => {
-    if (!conts) {
-      return;
-    }
-
-    const continentsState = {};
-    if (conts.length > 0) {
-      conts.forEach((continent) => {
-        if (conts[continent] && conts[continent].countries[0]) {
-          continentsState[continent] = {
-            id: continent,
-            countries: conts[continent].countries
-          };
-        } else {
-          getContinent(continent);
-          continentsState[continent] = {
-            id: continent,
-            countries: getContinent(continent)
-          };
-        }
-      });
-    }
-    // set state here outside the foreach function
-    setContinents({ ...continentsState });
-    //  setState({continents: {...continentsState}})
-  };
-  const setLocations = (regs, conts) => {
-    setDynamicContinents(conts);
-    setDynamicRegions(regs);
-  };
   const handleZoomIn = () => {
     setZoom((prevZoom) => prevZoom * 2);
   };
@@ -143,22 +56,26 @@ const Maps = (props) => {
     setZoom((prevZoom) => prevZoom / 2);
   };
 
-  const handleClick = (e, country) => {
+  const handleClick = (e: React.MouseEvent, country: string) => {
     getCountryInfo(country);
   };
-  // const handleText = (str) => {
-  //   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z\s]/ig, '');
-  // };
-  const handleMoveStart = ({ coordinates }) => {
+  const handleMoveStart = ({
+    coordinates
+  }: {
+    coordinates: [number, number];
+  }) => {
     setCenter(coordinates);
-    // setBypassClick(true);
   };
 
-  const handleMoveEnd = ({ coordinates }) => {
+  const handleMoveEnd = ({
+    coordinates
+  }: {
+    coordinates: [number, number];
+  }) => {
     setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
-  const handleWheel = (event) => {
+  const handleWheel = (event: React.WheelEvent) => {
     const oldZoom = zoom;
     const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
 
@@ -180,7 +97,7 @@ const Maps = (props) => {
     // ];
     // setState({zoom: newZoom, center: newCenter})
   };
-  const handleContent = (dataTip) => {
+  const handleContent = (dataTip: string) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
       return '';
@@ -195,25 +112,11 @@ const Maps = (props) => {
           code={
             (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
-          format="svg"
           alt={`${obj.NAME}'s Flag`}
         />
       </div>
     ) : null;
   };
-
-  useEffect(() => {
-    setDynamicRegions(regions);
-    setLocations(regions, continents);
-  }, []);
-
-  useEffect(() => {
-    getMapNations();
-  }, [worldData]);
-
-  useEffect(() => {
-    setLocations(regions, continents);
-  }, [countries]);
 
   return (
     <div className="pt-3 container-fluid">
@@ -247,7 +150,7 @@ const Maps = (props) => {
                   variant="contained"
                   className="btn btn-info"
                   size="small"
-                  onClick={() => handleZoomOut(zoom)}
+                  onClick={() => handleZoomOut()}
                 >
                   <FontAwesomeIcon icon={faMinus} />
                 </Button>
@@ -255,7 +158,7 @@ const Maps = (props) => {
                   type="button"
                   className="btn btn-info"
                   size="small"
-                  onClick={() => handleZoomIn(zoom)}
+                  onClick={() => handleZoomIn()}
                 >
                   <FontAwesomeIcon icon={faPlus} />
                 </Button>
@@ -277,7 +180,7 @@ const Maps = (props) => {
           </Breakpoint>
           {mapVisible === 'Show' ? (
             <ComposableMap
-              projection={proj}
+              projection="geoEqualEarth"
               width={800}
               height={400}
               style={{

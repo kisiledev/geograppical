@@ -4,7 +4,12 @@ import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export const PropertyName = styled.div`
+export const PropertyName = styled.div.attrs({
+  role: 'button'
+})<{
+  onClick?: () => void;
+  children?: React.ReactNode;
+}>`
   font-weight: bold;
   cursor: pointer;
   padding: 5px 0;
@@ -16,9 +21,10 @@ interface ExpandablePropertyProps {
   title: string;
   expanded?: boolean;
   country?: any;
+  children?: React.ReactNode;
 }
 
-const ExpandableProperty = (props) => {
+const ExpandableProperty = (props: ExpandablePropertyProps) => {
   console.log(props.country);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,7 +42,7 @@ const ExpandableProperty = (props) => {
   };
   return (
     <React.Fragment>
-      <PropertyName onClick={() => setTrue(!isOpen)}>
+      <PropertyName onClick={() => setTrue()}>
         {props.title}
         {isOpen ? (
           <FontAwesomeIcon icon={faAngleUp} />
