@@ -25,11 +25,12 @@ import {
   faGlobeAfrica
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Breakpoint, { BreakpointProvider } from 'react-socks';
+
 import PropTypes from 'prop-types';
-import { Button, ButtonGroup, Card, Grid } from '@mui/material';
+import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
 import data from '../../data/world-50m.json';
 import { DataType } from '../../helpers/types';
+import MediaQuery from 'react-responsive';
 
 interface MapsProps {
   mapVisible: string;
@@ -120,122 +121,118 @@ const Maps = (props: MapsProps) => {
 
   return (
     <div className="pt-3 container-fluid">
-      <BreakpointProvider>
-        <Card
-          sx={{
-            margin: 5,
-            padding: '15px',
-            boxShadow:
-              '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
-          }}
-          className="card mr-3 mb-3"
-        >
-          <Breakpoint small up>
-            <Grid
-              container
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '20px',
-                flexDirection: 'row',
-                height: '100%'
-              }}
+      <Card
+        sx={{
+          margin: 5,
+          padding: '15px',
+          boxShadow:
+            '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
+        }}
+        className="card mr-3 mb-3"
+      >
+        <MediaQuery minWidth={576}>
+          <Grid2
+            container
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '20px',
+              flexDirection: 'row',
+              height: '100%'
+            }}
+          >
+            <ButtonGroup
+              variant="contained"
+              size="small"
+              sx={{ height: '48px' }}
             >
-              <ButtonGroup
-                variant="contained"
-                size="small"
-                sx={{ height: '48px' }}
-              >
-                <Button
-                  variant="contained"
-                  className="btn btn-info"
-                  size="small"
-                  onClick={() => handleZoomOut()}
-                >
-                  <FontAwesomeIcon icon={faMinus} />
-                </Button>
-                <Button
-                  type="button"
-                  className="btn btn-info"
-                  size="small"
-                  onClick={() => handleZoomIn()}
-                >
-                  <FontAwesomeIcon icon={faPlus} />
-                </Button>
-              </ButtonGroup>
-              <h2 className="text-center">
-                <strong>Capstone Geography</strong>
-              </h2>
               <Button
                 variant="contained"
-                sx={{ height: '48px' }}
-                onClick={() => changeMapView()}
-                startIcon={
-                  <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-                }
+                className="btn btn-info"
+                size="small"
+                onClick={() => handleZoomOut()}
               >
-                {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
+                <FontAwesomeIcon icon={faMinus} />
               </Button>
-            </Grid>
-          </Breakpoint>
-          {mapVisible === 'Show' ? (
-            <ComposableMap
-              projection="geoEqualEarth"
-              width={800}
-              height={400}
-              style={{
-                width: '100%',
-                height: 'auto'
-              }}
-            >
-              <ZoomableGroup
-                onWheel={handleWheel}
-                zoom={zoom}
-                center={center}
-                onMoveStart={handleMoveStart}
-                onMoveEnd={handleMoveEnd}
+              <Button
+                type="button"
+                className="btn btn-info"
+                size="small"
+                onClick={() => handleZoomIn()}
               >
-                <Geographies geography={data}>
-                  {({ geographies, projection }) =>
-                    geographies &&
-                    geographies.map((geo) => (
-                      <Link
+                <FontAwesomeIcon icon={faPlus} />
+              </Button>
+            </ButtonGroup>
+            <h2 className="text-center">
+              <strong>Capstone Geography</strong>
+            </h2>
+            <Button
+              variant="contained"
+              sx={{ height: '48px' }}
+              onClick={() => changeMapView()}
+              startIcon={
+                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+              }
+            >
+              {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
+            </Button>
+          </Grid2>
+        </MediaQuery>
+        {mapVisible === 'Show' ? (
+          <ComposableMap
+            projection="geoEqualEarth"
+            width={800}
+            height={400}
+            style={{
+              width: '100%',
+              height: 'auto'
+            }}
+          >
+            <ZoomableGroup
+              onWheel={handleWheel}
+              zoom={zoom}
+              center={center}
+              onMoveStart={handleMoveStart}
+              onMoveEnd={handleMoveEnd}
+            >
+              <Geographies geography={data}>
+                {({ geographies, projection }) =>
+                  geographies &&
+                  geographies.map((geo) => (
+                    <Link
+                      key={geo.properties.NAME}
+                      to={`/${geo.properties.NAME_LONG.toLowerCase()}`}
+                    >
+                      <Geography
                         key={geo.properties.NAME}
-                        to={`/${geo.properties.NAME_LONG.toLowerCase()}`}
-                      >
-                        <Geography
-                          key={geo.properties.NAME}
-                          onWheel={(e) => handleWheel(e)}
-                          data-longname={geo.properties.NAME_LONG.normalize(
-                            'NFD'
-                          )
-                            .replace(/[\u0300-\u036f]/g, '')
-                            .replace(/[^a-z\s]/gi, '')}
-                          data-tip={JSON.stringify(geo.properties)}
-                          data-shortname={geo.properties.NAME}
-                          data-continent={geo.properties.CONTINENT}
-                          data-subregion={geo.properties.SUBREGION}
-                          data-iso={geo.properties.ISO_A3}
-                          onClick={(e) => handleClick(e, geo.properties.ISO_A3)}
-                          geography={geo}
-                          // projection={projection}
-                          className="country"
-                        />
-                      </Link>
-                    ))
-                  }
-                </Geographies>
-              </ZoomableGroup>
-            </ComposableMap>
-          ) : null}
-          <ReactTooltip
-            place="top"
-            type="dark"
-            effect="float"
-            getContent={(dataTip) => handleContent(dataTip)}
-          />
-        </Card>
-      </BreakpointProvider>
+                        onWheel={(e) => handleWheel(e)}
+                        data-longname={geo.properties.NAME_LONG.normalize('NFD')
+                          .replace(/[\u0300-\u036f]/g, '')
+                          .replace(/[^a-z\s]/gi, '')}
+                        data-tip={JSON.stringify(geo.properties)}
+                        data-shortname={geo.properties.NAME}
+                        data-continent={geo.properties.CONTINENT}
+                        data-subregion={geo.properties.SUBREGION}
+                        data-iso={geo.properties.ISO_A3}
+                        onClick={(e) => handleClick(e, geo.properties.ISO_A3)}
+                        geography={geo}
+                        // projection={projection}
+                        className="country"
+                      />
+                    </Link>
+                  ))
+                }
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+        ) : null}
+        <ReactTooltip
+          place="top"
+          type="dark"
+          effect="float"
+          getContent={(dataTip) => handleContent(dataTip)}
+        />
+      </Card>
     </div>
   );
 };

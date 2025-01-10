@@ -33,6 +33,7 @@ import * as ROUTES from '../../constants/Routes';
 import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
+import MediaQuery from 'react-responsive';
 
 interface ResultViewProps {
   user: User | null;
@@ -149,63 +150,61 @@ const ResultView = (props: ResultViewProps) => {
   uniqueRegions = uniqueRegions.filter(Boolean);
 
   return (
-    <BreakpointProvider>
-      <div className="row">
-        <main className="col-md-9 col-lg-12 px-0">
-          {countries[0] === undefined ? null : null}
-          {alert && show && (
-            <Alert
-              severity={message.style || 'warning'}
-              action={
-                <Link to={message.link} component={RouterLink}>
-                  {message.linkContent}
-                </Link>
-              }
-            >
-              {message.content}
-            </Alert>
-          )}
-          <Breakpoint medium up>
-            <Maps
-              mapVisible={mapVisible}
-              changeMapView={changeMapView}
-              worldData={data}
-              getCountryInfo={getCountryInfo}
-            />
-          </Breakpoint>
-          {countries[0] &&
-            countries.map((country) => (
-              <Result
-                filtered={countries[0]}
-                getCountryInfo={getCountryInfo}
-                name={country.name}
-                subregion={country.geography.location}
-                capital={country.government.capital.name}
-                population={country.people.population.total}
-                flagCode={country.government.country_name.isoCode}
-                key={country.alpha3Code}
-                country={country}
-                user={user}
-                setShow={setShow}
-                setMessage={setMessage}
-                message={message}
-              />
-            ))}
-        </main>
-        <Breakpoint medium down>
-          <SidebarView
-            changeView={changeView}
-            handleSideBar={handleSideBar}
-            data={data}
-            totalRegions={totalRegions}
-            uniqueRegions={uniqueRegions}
-            getOccurrence={getOccurrence}
+    <div className="row">
+      <main className="col-md-9 col-lg-12 px-0">
+        {countries[0] === undefined ? null : null}
+        {alert && show && (
+          <Alert
+            severity={message.style || 'warning'}
+            action={
+              <Link to={message.link} component={RouterLink}>
+                {message.linkContent}
+              </Link>
+            }
+          >
+            {message.content}
+          </Alert>
+        )}
+        <MediaQuery minWidth={768}>
+          <Maps
+            mapVisible={mapVisible}
+            changeMapView={changeMapView}
+            worldData={data}
             getCountryInfo={getCountryInfo}
-            filterCountryByName={filterCountryByName}
           />
-        </Breakpoint>
-      </div>
-    </BreakpointProvider>
+        </MediaQuery>
+        {countries[0] &&
+          countries.map((country) => (
+            <Result
+              filtered={countries[0]}
+              getCountryInfo={getCountryInfo}
+              name={country.name}
+              subregion={country.geography.location}
+              capital={country.government.capital.name}
+              population={country.people.population.total}
+              flagCode={country.government.country_name.isoCode}
+              key={country.alpha3Code}
+              country={country}
+              user={user}
+              setShow={setShow}
+              setMessage={setMessage}
+              message={message}
+            />
+          ))}
+      </main>
+      <MediaQuery maxWidth={768}>
+        <SidebarView
+          changeView={changeView}
+          handleSideBar={handleSideBar}
+          data={data}
+          totalRegions={totalRegions}
+          uniqueRegions={uniqueRegions}
+          getOccurrence={getOccurrence}
+          getCountryInfo={getCountryInfo}
+          filterCountryByName={filterCountryByName}
+        />
+      </MediaQuery>
+    </div>
   );
 };
 ResultView.defaultProps = {

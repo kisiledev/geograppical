@@ -113,61 +113,54 @@ const SearchResults = (props: SearchResultsProps) => {
     }
   };
   return (
-    <BreakpointProvider>
-      <div className="row">
-        <main className="col-md-9 px-5">
-          {countries[0] === undefined ? null : null}
-          {alert && show && (
-            <Alert
-              severity={message.style}
-              action={<Link to={message.link}>{message.linkContent}</Link>}
-            >
-              {message.content}
-            </Alert>
+    <div className="row">
+      <main className="col-md-9 px-5">
+        {countries[0] === undefined ? null : null}
+        {alert && show && (
+          <Alert
+            severity={message.style}
+            action={<Link to={message.link}>{message.linkContent}</Link>}
+          >
+            {message.content}
+          </Alert>
+        )}
+        <div className="col-12 text-center">
+          {loadingState ? (
+            <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" />
+          ) : searchText === '' ? (
+            <h4 className="my-3">No search terms are entered</h4>
+          ) : (
+            <h4 className="my-3">
+              Search Results for {data ? searchText : match.params.input}
+            </h4>
           )}
-          <div className="col-12 text-center">
-            {loadingState ? (
-              <FontAwesomeIcon
-                className="my-5"
-                icon={faSpinner}
-                spin
-                size="3x"
-              />
-            ) : searchText === '' ? (
-              <h4 className="my-3">No search terms are entered</h4>
-            ) : (
-              <h4 className="my-3">
-                Search Results for {data ? searchText : match.params.input}
-              </h4>
-            )}
-          </div>
-          {countries[0] &&
-            countries.map((country) => (
-              <Result
-                filtered={countries[0]}
-                worldData={data}
-                makeFavorite={makeFavorite}
-                changeView={changeView}
-                getCountryInfo={getCountryInfo}
-                name={country.name}
-                region={country.geography.map_references}
-                subregion={country.geography.location}
-                capital={country.government.capital.name}
-                excerpt={country.excerpt}
-                population={country.people.population.total}
-                flag={country.flag}
-                flagCode={country.government.country_name.isoCode}
-                imgalt={`${country.name}'s flag`}
-                key={country.alpha3Code}
-                country={country}
-                code={country.alpha3Code}
-                user={user}
-                login={login}
-              />
-            ))}
-        </main>
-      </div>
-    </BreakpointProvider>
+        </div>
+        {countries[0] &&
+          countries.map((country) => (
+            <Result
+              filtered={countries[0]}
+              worldData={data}
+              makeFavorite={makeFavorite}
+              changeView={changeView}
+              getCountryInfo={getCountryInfo}
+              name={country.name}
+              region={country.geography.map_references}
+              subregion={country.geography.location}
+              capital={country.government.capital.name}
+              excerpt={country.excerpt}
+              population={country.people.population.total}
+              flag={country.flag}
+              flagCode={country.government.country_name.isoCode}
+              imgalt={`${country.name}'s flag`}
+              key={country.alpha3Code}
+              country={country}
+              code={country.alpha3Code}
+              user={user}
+              login={login}
+            />
+          ))}
+      </main>
+    </div>
   );
 };
 export default SearchResults;

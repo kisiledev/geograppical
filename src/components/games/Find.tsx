@@ -14,13 +14,14 @@ import {
   faGlobeAfrica
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Breakpoint, { BreakpointProvider } from 'react-socks';
+
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import { DataType, dataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
+import MediaQuery from 'react-responsive';
 
 interface FindProps {
   isStarted: boolean;
@@ -261,103 +262,101 @@ const Find = (props: FindProps) => {
     </Box>
   );
   return (
-    <BreakpointProvider>
-      <div className="mr-3 mb-3">
-        {!isStarted && directions}
-        {isStarted && guesses && (
-          <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
-        )}
-        {isStarted && guesses && (
-          <div>
-            {`For ${3 - guesses} ${
-              guesses === 2 || guesses === 4 ? ' point' : ' points'
-            }`}
-          </div>
-        )}
-        <Breakpoint small up>
-          <Box
-            sx={{
-              justifyContent: 'space-between',
-              display: 'flex',
-              margin: '10px 0px'
-            }}
-          >
-            <ButtonGroup variant="contained">
-              <Button
-                variant="contained"
-                className="btn btn-info"
-                onClick={() => handleZoomOut()}
-              >
-                <FontAwesomeIcon icon={faMinus} />
-              </Button>
-              <Button
-                variant="contained"
-                className="btn btn-info"
-                onClick={() => handleZoomIn()}
-              >
-                <FontAwesomeIcon icon={faPlus} />
-              </Button>
-            </ButtonGroup>
+    <div className="mr-3 mb-3">
+      {!isStarted && directions}
+      {isStarted && guesses && (
+        <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
+      )}
+      {isStarted && guesses && (
+        <div>
+          {`For ${3 - guesses} ${
+            guesses === 2 || guesses === 4 ? ' point' : ' points'
+          }`}
+        </div>
+      )}
+      <MediaQuery minWidth={576}>
+        <Box
+          sx={{
+            justifyContent: 'space-between',
+            display: 'flex',
+            margin: '10px 0px'
+          }}
+        >
+          <ButtonGroup variant="contained">
             <Button
               variant="contained"
-              onClick={() => changeMapView()}
-              startIcon={
-                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-              }
+              className="btn btn-info"
+              onClick={() => handleZoomOut()}
             >
-              {mapVisible === 'Show' ? 'Hide ' : 'Show '}
-              Map
+              <FontAwesomeIcon icon={faMinus} />
             </Button>
-          </Box>
-        </Breakpoint>
-        <hr />
-        {currentCountry && <div>{`Find ${currentCountry.name}`}</div>}
-        {mapVisible === 'Show' ? (
-          <ComposableMap
-            width={800}
-            height={400}
-            projection={'geoEqualEarth'}
-            style={{
-              width: '100%',
-              height: 'auto'
-            }}
-          >
-            <ZoomableGroup
-              zoom={zoom}
-              center={center}
-              onMoveStart={handleMoveStart}
-              onMoveEnd={handleMoveEnd}
+            <Button
+              variant="contained"
+              className="btn btn-info"
+              onClick={() => handleZoomIn()}
             >
-              <Geographies
-                geography={data}
-                parseGeographies={(geos) => {
-                  return geos.map((g) => {
-                    return g;
-                  });
-                }}
-              >
-                {({ geographies: geos, projection: proj }) => {
-                  return geos.map((geo, i) => (
-                    <Geography
-                      data-idkey={i}
-                      data-longname={handleText(geo.properties.NAME_LONG)}
-                      data-shortname={geo.properties.NAME}
-                      data-continent={geo.properties.CONTINENT}
-                      data-subregion={geo.properties.SUBREGION}
-                      onClick={() => handleClick(geo.properties.NAME_LONG)}
-                      key={geo.properties.NAME}
-                      geography={geo}
-                      className="gameCountry"
-                    />
-                  ));
-                }}
-              </Geographies>
-            </ZoomableGroup>
-          </ComposableMap>
-        ) : null}
-        <ReactTooltip place="top" type="dark" effect="float" />
-      </div>
-    </BreakpointProvider>
+              <FontAwesomeIcon icon={faPlus} />
+            </Button>
+          </ButtonGroup>
+          <Button
+            variant="contained"
+            onClick={() => changeMapView()}
+            startIcon={
+              <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
+            }
+          >
+            {mapVisible === 'Show' ? 'Hide ' : 'Show '}
+            Map
+          </Button>
+        </Box>
+      </MediaQuery>
+      <hr />
+      {currentCountry && <div>{`Find ${currentCountry.name}`}</div>}
+      {mapVisible === 'Show' ? (
+        <ComposableMap
+          width={800}
+          height={400}
+          projection={'geoEqualEarth'}
+          style={{
+            width: '100%',
+            height: 'auto'
+          }}
+        >
+          <ZoomableGroup
+            zoom={zoom}
+            center={center}
+            onMoveStart={handleMoveStart}
+            onMoveEnd={handleMoveEnd}
+          >
+            <Geographies
+              geography={data}
+              parseGeographies={(geos) => {
+                return geos.map((g) => {
+                  return g;
+                });
+              }}
+            >
+              {({ geographies: geos, projection: proj }) => {
+                return geos.map((geo, i) => (
+                  <Geography
+                    data-idkey={i}
+                    data-longname={handleText(geo.properties.NAME_LONG)}
+                    data-shortname={geo.properties.NAME}
+                    data-continent={geo.properties.CONTINENT}
+                    data-subregion={geo.properties.SUBREGION}
+                    onClick={() => handleClick(geo.properties.NAME_LONG)}
+                    key={geo.properties.NAME}
+                    geography={geo}
+                    className="gameCountry"
+                  />
+                ));
+              }}
+            </Geographies>
+          </ZoomableGroup>
+        </ComposableMap>
+      ) : null}
+      <ReactTooltip place="top" type="dark" effect="float" />
+    </div>
   );
 };
 

@@ -5,10 +5,10 @@ import {
   faSpinner,
   faStar
 } from '@fortawesome/free-solid-svg-icons';
-import { Alert, Button, Card, Grid2, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, Grid2, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
 import { Link, useNavigate } from 'react-router-dom';
-import { BreakpointProvider, Breakpoint } from 'react-socks';
+
 import PropTypes, { shape } from 'prop-types';
 import {
   getFirestore,
@@ -36,6 +36,7 @@ import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
+import MediaQuery from 'react-responsive';
 
 function getOccurrence(array: string[], value: string) {
   return array.filter((v) => v === value).length;
@@ -43,7 +44,7 @@ function getOccurrence(array: string[], value: string) {
 
 interface DetailViewProps {
   freezeLoad: (loadState: boolean) => void;
-  countryDetail: CountryType;
+  countryDetail: CountryType | null;
   data: DataType;
   user: User | null;
   loadingState: boolean;
@@ -213,8 +214,8 @@ const DetailView = (props: DetailViewProps) => {
       <FontAwesomeIcon icon={faSpinner} spin size="3x" />
     </Grid2>
   ) : (
-    <BreakpointProvider>
-      {countryDetail === undefined ? (
+    <Box>
+      {!countryDetail ? (
         errorMsg
       ) : (
         <Grid2
@@ -254,7 +255,7 @@ const DetailView = (props: DetailViewProps) => {
                     alignItems: 'center'
                   }}
                 >
-                  <Breakpoint medium up>
+                  <MediaQuery minWidth={768}>
                     <Grid2 size={{ lg: 12 }}>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
                         {countryDetail.name}
@@ -270,7 +271,7 @@ const DetailView = (props: DetailViewProps) => {
                              (${countryDetail.people.population.global_rank})`}
                       </Typography>
                     </Grid2>
-                  </Breakpoint>
+                  </MediaQuery>
 
                   <Flag
                     className="detailFlag order-lg-12 align-self-end text-right img-thumbnail"
@@ -314,7 +315,7 @@ const DetailView = (props: DetailViewProps) => {
               />
             </Card>
           </Grid2>
-          <Breakpoint medium down>
+          <MediaQuery maxWidth={768}>
             <SidebarView
               data={data}
               changeView={changeView}
@@ -325,10 +326,10 @@ const DetailView = (props: DetailViewProps) => {
               handleSideBar={handleSideBar}
               filterCountryByName={filterCountryByName}
             />
-          </Breakpoint>
+          </MediaQuery>
         </Grid2>
       )}
-    </BreakpointProvider>
+    </Box>
   );
 };
 export default DetailView;

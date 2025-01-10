@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { Route, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from 'react-router';
-import { BreakpointProvider, Breakpoint } from 'react-socks';
+
 import {
   Button,
   Dialog,
@@ -29,6 +29,7 @@ import { DataType } from './helpers/types';
 import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
 import { filter } from 'd3';
+import MediaQuery from 'react-responsive';
 
 interface AppProps {
   location: {
@@ -63,7 +64,7 @@ const App = (props: AppProps) => {
   const [filterNations, setFilterNations] = useState<CountryType[] | null>([]);
   const [searchText, setSearchText] = useState('');
   const [worldData, setWorldData] = useState<DataType>([]);
-  const [countryDetail, setCountryDetail] = useState<CountryDetail>('');
+  const [countryDetail, setCountryDetail] = useState<CountryType | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState<Modal>({
     title: '',
@@ -136,7 +137,7 @@ const App = (props: AppProps) => {
           name.toUpperCase()
     );
     if (!match || match.length === 0) {
-      setCountryDetail('error');
+      setCountryDetail(null);
     }
     console.log(match[0]);
     setCountryDetail(match[0]);
@@ -297,8 +298,8 @@ const App = (props: AppProps) => {
     return <h1>{error}</h1>;
   }
   return (
-    <BreakpointProvider>
-      <Breakpoint large up>
+    <>
+      <MediaQuery minWidth={992}>
         <SideNaviBar
           loadingState={loadingState}
           changeView={handleViews}
@@ -307,7 +308,7 @@ const App = (props: AppProps) => {
           data={worldData}
           filterCountryByName={filterCountryByName}
         />
-      </Breakpoint>
+      </MediaQuery>
       <div className="main container-fluid">
         <NaviBar
           searchText={searchText}
@@ -417,7 +418,7 @@ const App = (props: AppProps) => {
           </DialogActions>
         </Dialog>
       </div>
-    </BreakpointProvider>
+    </>
   );
 };
 
