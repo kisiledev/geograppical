@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { BreakpointProvider } from 'react-socks';
 import { Alert, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   countryType,
@@ -12,7 +13,8 @@ import {
   matchType,
   DataType,
   UserType,
-  MatchType
+  MatchType,
+  Message
 } from '../../helpers/types/index';
 import * as ROUTES from '../../constants/Routes';
 import Result from './Result';
@@ -26,7 +28,7 @@ interface SearchResultsProps {
   countries: CountryType[] | null;
   data: DataType;
   user: User | null;
-  getCountryInfo: Function;
+  getCountryInfo: (country: string, capital: string) => void;
   changeView: Function;
   handleRefresh: Function;
   handleOpen: Function;
@@ -36,7 +38,12 @@ interface SearchResultsProps {
 const SearchResults = (props: SearchResultsProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [favorite, setFavorite] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<Message>({
+    link: '',
+    linkContent: '',
+    content: '',
+    style: 'info'
+  });
   const [alert, setAlert] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -59,67 +66,17 @@ const SearchResults = (props: SearchResultsProps) => {
     setLoadingState(false);
   }, [data]);
 
-  const makeFavorite = (e, country) => {
-    e.persist();
-    setShow(true);
-    if (!user) {
-      setMessage({
-        style: 'warning',
-        content: 'You need to sign in to favorite countries. Login ',
-        link: ROUTES.SIGN_IN,
-        linkContent: 'here'
-      });
-    } else if (!favorite) {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .set({
-          country
-        })
-        .then(() => {
-          setAlert(true);
-          setMessage({
-            style: 'success',
-            content: `Added ${country.name} to favorites`
-          });
-          setFavorite(true);
-        })
-        .catch((err) => {
-          setAlert(true);
-          setMessage({
-            style: 'danger',
-            content: `Error adding ${country.name} to favorites, ${err}`
-          });
-        });
-    } else {
-      db.collection(`users/${user.uid}/favorites`)
-        .doc(`${country.name}`)
-        .delete()
-        .then(() => {
-          setAlert(true);
-          setMessage({
-            style: 'warning',
-            content: `Removed ${country.name} from favorites`
-          });
-          setFavorite(false);
-          setShow(true);
-        })
-        .catch((err) => {
-          setAlert(true);
-          setMessage({
-            style: 'danger',
-            content: `Error adding ${country.name} to favorites, ${err}`
-          });
-        });
-    }
-  };
   return (
     <div className="row">
       <main className="col-md-9 px-5">
-        {countries[0] === undefined ? null : null}
         {alert && show && (
           <Alert
             severity={message.style}
-            action={<Link to={message.link}>{message.linkContent}</Link>}
+            action={
+              <Link component={RouterLink} to={message.link}>
+                {message.linkContent}
+              </Link>
+            }
           >
             {message.content}
           </Alert>
@@ -131,32 +88,27 @@ const SearchResults = (props: SearchResultsProps) => {
             <h4 className="my-3">No search terms are entered</h4>
           ) : (
             <h4 className="my-3">
-              Search Results for {data ? searchText : match.params.input}
+              Search Results for {data ? searchText : params.input}
             </h4>
           )}
         </div>
-        {countries[0] &&
+        {countries &&
+          countries[0] &&
           countries.map((country) => (
             <Result
               filtered={countries[0]}
-              worldData={data}
-              makeFavorite={makeFavorite}
-              changeView={changeView}
               getCountryInfo={getCountryInfo}
               name={country.name}
-              region={country.geography.map_references}
               subregion={country.geography.location}
               capital={country.government.capital.name}
-              excerpt={country.excerpt}
               population={country.people.population.total}
-              flag={country.flag}
               flagCode={country.government.country_name.isoCode}
-              imgalt={`${country.name}'s flag`}
               key={country.alpha3Code}
               country={country}
-              code={country.alpha3Code}
               user={user}
-              login={login}
+              setMessage={setMessage}
+              setShow={setShow}
+              message={message}
             />
           ))}
       </main>

@@ -27,6 +27,7 @@ import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
 import * as ROUTES from '../../constants/Routes';
 import { AlertColor, Card } from '@mui/material';
 import { CountryType } from '../../helpers/types/CountryType';
+import { User } from 'firebase/auth';
 
 type Message = {
   link: string;
@@ -37,7 +38,7 @@ type Message = {
 interface ResultProps {
   getCountryInfo: (country: string, capital: string) => void;
   filtered: CountryType;
-  user: UserType;
+  user: User | null;
   country: CountryType;
   name: string;
   subregion: string;
@@ -75,6 +76,9 @@ const Result = (props: ResultProps) => {
     }, 4000);
   };
   const checkFavorite = async (coun: string) => {
+    if (!user) {
+      return;
+    }
     const docRef = doc(
       favoritesCollection,
       ...`users/${user.uid}/favorites/${coun}`.split('/')
@@ -102,6 +106,9 @@ const Result = (props: ResultProps) => {
       });
     }
     if (!favorite) {
+      if (!user) {
+        return;
+      }
       const docRef = doc(
         favoritesCollection,
         ...`users/${user.uid}/favorites/${coun.name}`.split('/')
@@ -126,6 +133,9 @@ const Result = (props: ResultProps) => {
         showFunc();
       }
     } else {
+      if (!user) {
+        return;
+      }
       const docRef = doc(
         favoritesCollection,
         ...`users/${user.uid}/favorites/${coun.name}`.split('/')
@@ -205,17 +215,4 @@ const Result = (props: ResultProps) => {
   );
 };
 
-// Result.propTypes = {
-//   getCountryInfo: PropTypes.func.isRequired,
-//   filtered: dataType.isRequired,
-//   user: userType.isRequired,
-//   country: countryType.isRequired,
-//   name: PropTypes.string.isRequired,
-//   subregion: PropTypes.string.isRequired,
-//   capital: PropTypes.string.isRequired,
-//   population: PropTypes.number.isRequired,
-//   flagCode: PropTypes.string.isRequired,
-//   setShow: PropTypes.func.isRequired,
-//   setMessage: PropTypes.func.isRequired
-// };
 export default Result;

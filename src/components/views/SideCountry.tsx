@@ -13,11 +13,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { Box, Button, List } from '@mui/material';
 import { useTheme } from '@mui/styles';
-import { dataType } from '../../helpers/types/index';
+import { DataType, dataType } from '../../helpers/types/index';
 import Sidebar from './Sidebar';
 // import '../../App.css';
 
-const SideCountry = (props) => {
+interface SideCountryProps {
+  data: DataType;
+  loadingState: boolean;
+  changeView: Function;
+  uniqueRegions: string[];
+  totalRegions: number;
+  getOccurrence: Function;
+  getCountryInfo: Function;
+  handleSideBar: Function;
+  filterCountryByName: Function;
+}
+const SideCountry = (props: SideCountryProps) => {
   const [showSideBar, setShowSideBar] = useState(true);
 
   const {
@@ -38,42 +49,39 @@ const SideCountry = (props) => {
   };
 
   return (
-    <BreakpointProvider>
-      <List component="nav" sx={{ padding: '20px' }}>
-        <Button
-          sx={{ fontFamily: theme.typography.fontFamily }}
-          variant="contained"
-          color="primary"
-          onClick={() => toggleSidebar()}
-        >
-          {showSideBar ? 'Hide ' : 'Show '}
-          Countries List
-          <FontAwesomeIcon
-            style={{ marginLeft: '5px' }}
-            icon={showSideBar ? faEyeSlash : faEye}
-            size="sm"
+    <List component="nav" sx={{ padding: '20px' }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => toggleSidebar()}
+      >
+        {showSideBar ? 'Hide ' : 'Show '}
+        Countries List
+        <FontAwesomeIcon
+          style={{ marginLeft: '5px' }}
+          icon={showSideBar ? faEyeSlash : faEye}
+          size="sm"
+        />
+      </Button>
+      {showSideBar ? (
+        loadingState ? (
+          <Box sx={{ margin: '0 auto', textAlign: 'center' }}>
+            <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+          </Box>
+        ) : (
+          <Sidebar
+            data={data}
+            changeView={changeView}
+            totalRegions={totalRegions}
+            uniqueRegions={uniqueRegions}
+            getOccurrence={getOccurrence}
+            getCountryInfo={getCountryInfo}
+            handleSideBar={handleSideBar}
+            filterCountryByName={filterCountryByName}
           />
-        </Button>
-        {showSideBar ? (
-          loadingState ? (
-            <Box sx={{ margin: '0 auto', textAlign: 'center' }}>
-              <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-            </Box>
-          ) : (
-            <Sidebar
-              data={data}
-              changeView={changeView}
-              totalRegions={totalRegions}
-              uniqueRegions={uniqueRegions}
-              getOccurrence={getOccurrence}
-              getCountryInfo={getCountryInfo}
-              handleSideBar={handleSideBar}
-              filterCountryByName={filterCountryByName}
-            />
-          )
-        ) : null}
-      </List>
-    </BreakpointProvider>
+        )
+      ) : null}
+    </List>
   );
 };
 export default SideCountry;
