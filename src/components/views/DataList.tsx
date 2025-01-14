@@ -47,7 +47,6 @@ interface RecursivePropertyProps {
 }
 
 const RecursiveProperty = (props: RecursivePropertyProps) => {
-  console.log(props);
   return (
     <RecursivePropertyContainer excludeBottomBorder={props.excludeBottomBorder}>
       {props.property ? (

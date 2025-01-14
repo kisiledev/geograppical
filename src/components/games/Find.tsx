@@ -45,9 +45,6 @@ const Find = (props: FindProps) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
-  const [regions, setRegions] = useState([]);
-  const [continents, setContinents] = useState([]);
-  const [countries, setCountries] = useState([]);
   const [readyToCheck, setReadyToCheck] = useState(false);
   // const [bypassClick, setBypassClick] = useState(false);
 

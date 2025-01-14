@@ -317,6 +317,7 @@ const DetailView = (props: DetailViewProps) => {
           </Grid2>
           <MediaQuery maxWidth={768}>
             <SidebarView
+              loadingState={loadingState}
               data={data}
               changeView={changeView}
               totalRegions={totalRegions}
@@ -324,7 +325,6 @@ const DetailView = (props: DetailViewProps) => {
               getOccurrence={getOccurrence}
               getCountryInfo={getCountryInfo}
               handleSideBar={handleSideBar}
-              filterCountryByName={filterCountryByName}
             />
           </MediaQuery>
         </Grid2>
