@@ -1,6 +1,7 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 import {
+  FavoriteData,
   FavoritePayload,
   FavoriteState,
   InitialGameState,
@@ -38,7 +39,7 @@ const favoriteSlice = createSlice({
   reducers: {
     saveFavorite: (
       state: FavoriteState,
-      action: PayloadAction<FavoritePayload>
+      action: PayloadAction<FavoriteData>
     ) => {
       const { payload } = action;
       state.data = [...state.data, payload.data];
@@ -175,7 +176,9 @@ const reducers = {
   gameMode: gameModeSlice.reducer,
   user: userSlice.reducer
 };
-
-export default configureStore({
+const store = configureStore({
   reducer: reducers
 });
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

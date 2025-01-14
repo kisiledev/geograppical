@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch, RootStateOrAny } from 'react-redux';
 import { Route, useLocation, useNavigate } from 'react-router-dom';
 import { Routes } from 'react-router';
 
@@ -30,6 +29,7 @@ import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
 import { filter } from 'd3';
 import MediaQuery from 'react-responsive';
+import { useDispatch, useSelector } from './redux-hooks';
 
 interface AppProps {
   location: {
@@ -51,7 +51,7 @@ type Modal = {
 };
 const App = (props: AppProps) => {
   const dispatch = useDispatch();
-  const mapView = useSelector((state: RootStateOrAny) => {
+  const mapView = useSelector((state) => {
     console.log(state);
     return state.mapView.value;
   });

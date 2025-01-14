@@ -39,7 +39,7 @@ interface ResultViewProps {
   user: User | null;
   data: DataType;
   countries: CountryType[] | null;
-  mapVisible: boolean;
+  mapVisible: string;
   changeMapView: () => void;
   changeView: (view: string) => void;
   getCountryInfo: (country: string) => void;
@@ -89,6 +89,7 @@ const ResultView = (props: ResultViewProps) => {
         link: ROUTES.SIGN_IN,
         linkContent: 'here'
       });
+      return;
     }
     if (!favorite) {
       const docRef = doc(
@@ -152,7 +153,6 @@ const ResultView = (props: ResultViewProps) => {
   return (
     <div className="row">
       <main className="col-md-9 col-lg-12 px-0">
-        {countries[0] === undefined ? null : null}
         {alert && show && (
           <Alert
             severity={message.style || 'warning'}
@@ -173,7 +173,8 @@ const ResultView = (props: ResultViewProps) => {
             getCountryInfo={getCountryInfo}
           />
         </MediaQuery>
-        {countries[0] &&
+        {countries &&
+          countries[0] &&
           countries.map((country) => (
             <Result
               filtered={countries[0]}
@@ -201,7 +202,7 @@ const ResultView = (props: ResultViewProps) => {
           uniqueRegions={uniqueRegions}
           getOccurrence={getOccurrence}
           getCountryInfo={getCountryInfo}
-          filterCountryByName={filterCountryByName}
+          loadingState={false}
         />
       </MediaQuery>
     </div>

@@ -92,8 +92,11 @@ const hoverOnRegion = (e, region) => {
   if (typeof countries === 'object') {
     svgs = countries.map((country) => simplifyString(country.name));
   }
-  let nodes = document.getElementsByClassName('country');
-  nodes = [...nodes];
+  let nodes = [
+    ...(document.getElementsByClassName(
+      'gameCountry'
+    ) as HTMLCollectionOf<HTMLElement>)
+  ];
   console.log(nodes);
   console.log(svgs);
   nodes = nodes.filter(
@@ -193,10 +196,8 @@ export {
   removeIsoNull,
   removeNull,
   loadCodes,
-  loadWorldData,
   hoverOffCountry,
   hoverOnRegion,
-  hoverOnCountry,
   hoverOffRegion,
   getCountryInfo,
   getResults,
