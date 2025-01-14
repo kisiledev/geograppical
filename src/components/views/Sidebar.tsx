@@ -17,10 +17,11 @@ import {
   Typography
 } from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
-import { dispatch } from 'd3';
-import { changeView } from 'redux-toolkit';
-import { useSelector } from 'react-redux';
 import { simplifyString } from '../../helpers/utils';
+import { changeView } from '../../redux-toolkit';
+import { DataType } from '../../helpers/types';
+import { CountryType } from '../../helpers/types/CountryType';
+import { useSelector } from '../../redux-hooks';
 
 const useStyles = makeStyles({
   region: {
@@ -54,95 +55,101 @@ const useStyles = makeStyles({
     textTransform: 'none'
   }
 });
-console.log('running second');
-const Sidebar = (props) => {
-  const [regions, setRegions] = useState('');
+
+interface RegionsType {
+  [key: string]: RegionDataType;
+}
+interface RegionDataType {
+  visible: number;
+  start: number;
+  countries: CountryType[];
+  open: boolean;
+}
+
+interface SidebarProps {
+  data: DataType;
+  getCountryInfo: Function;
+  totalRegions: string[];
+  uniqueRegions: string[];
+  getOccurrence: Function;
+}
+const Sidebar = (props: SidebarProps) => {
+  const [regions, setRegions] = useState<RegionsType>({});
   const view = useSelector((state) => state.view.value);
   const { data, getCountryInfo, totalRegions, uniqueRegions, getOccurrence } =
     props;
 
+  console.log('this is the unique regions', uniqueRegions);
   const theme = useTheme();
   const classes = useStyles();
 
-  const hoverOnCountry = (e, region, country) => {
+  const hoverCountry = (
+    e: React.FocusEvent | React.MouseEvent,
+    direction: string,
+    country: string
+  ) => {
+    const on = direction === 'on';
     e.stopPropagation();
-    if (view === 'detail') {
-      dispatch(changeView('default'));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        simplifyString(country) === simplifyString(y.dataset.longname) ||
-        simplifyString(country) === simplifyString(y.dataset.shortname)
-    );
+    let nodes = [
+      ...(document.getElementsByClassName(
+        'gameCountry'
+      ) as HTMLCollectionOf<HTMLElement>)
+    ];
+    nodes = nodes.filter((y) => {
+      if (y.dataset.longname && y.dataset.shortname) {
+        return (
+          simplifyString(country) === simplifyString(y.dataset.longname) ||
+          simplifyString(country) === simplifyString(y.dataset.shortname)
+        );
+      }
+    });
     nodes.forEach((node) => {
-      node.style.fill = '#ee0a43';
+      if (!on) {
+        node.removeAttribute('style');
+      }
+      node.style.fill = on ? '#ee0a43' : '#024e1b';
       node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
+      node.style.strokeWidth = '0.1';
       node.style.outline = 'none';
       node.style.willChange = 'all';
     });
   };
-  const hoverOffCountry = (e, region, country) => {
+
+  const hoverRegion = (
+    e: React.FocusEvent | React.MouseEvent,
+    direction: string,
+    region: string
+  ) => {
+    const on = direction === 'on';
     e.stopPropagation();
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        simplifyString(country) === simplifyString(y.dataset.longname) ||
-        simplifyString(country) === simplifyString(y.dataset.shortname)
-    );
+    let nodes = [
+      ...(document.getElementsByClassName(
+        'gameCountry'
+      ) as HTMLCollectionOf<HTMLElement>)
+    ];
+    const countries = regions[region].countries;
+    const svgs = countries.map((country) => simplifyString(country.name));
+    nodes = nodes.filter((y) => {
+      if (y.dataset.longname && y.dataset.shortname) {
+        return (
+          svgs.includes(simplifyString(y.dataset.longname)) ||
+          svgs.includes(simplifyString(y.dataset.shortname))
+        );
+      }
+    });
     nodes.forEach((node) => {
-      node.removeAttribute('style');
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
+      if (!on) {
+        node.removeAttribute('style');
+      } else {
+        node.style.fill = '#024e1b';
+        node.style.stroke = '#111';
+        node.style.strokeWidth = '0.1';
+        node.style.outline = 'none';
+        node.style.willChange = 'all';
+      }
     });
   };
-  const hoverOnRegion = (e, region) => {
-    let svgs = [];
-    e.stopPropagation();
-    const countries = region && Object.values(region)[2];
-    if (typeof countries === 'object') {
-      svgs = countries.map((country) => simplifyString(country.name));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        svgs.includes(simplifyString(y.dataset.longname)) ||
-        svgs.includes(simplifyString(y.dataset.shortname))
-    );
-    nodes.forEach((node) => {
-      node.style.fill = '#024e1b';
-      node.style.stroke = '#111';
-      node.style.strokeWidth = 0.1;
-      node.style.outline = 'none';
-      node.style.willChange = 'all';
-    });
-  };
-  const hoverOffRegion = (e, region) => {
-    let svgs = [];
-    e.stopPropagation();
-    const countries = Object.values(region)[2];
-    if (typeof countries === 'object') {
-      svgs = countries.map((country) => simplifyString(country.name));
-    }
-    let nodes = document.getElementsByClassName('country');
-    nodes = [...nodes];
-    nodes = nodes.filter(
-      (y) =>
-        svgs.includes(simplifyString(y.dataset.longname)) ||
-        svgs.includes(simplifyString(y.dataset.shortname))
-    );
-    nodes.forEach((node) => {
-      node.removeAttribute('style');
-    });
-  };
-  const removeNull = (array) => {
+  const removeNull = (array: CountryType[]) => {
     array
       .filter(
         (item) =>
@@ -154,7 +161,7 @@ const Sidebar = (props) => {
       .map((item) => (Array.isArray(item) ? removeNull(item) : item));
   };
 
-  const getRegion = (region) => {
+  const getRegion = (region: string) => {
     const searchDB = Object.values(data);
     removeNull(searchDB);
     const match = searchDB.filter(
@@ -163,34 +170,25 @@ const Sidebar = (props) => {
     return match;
   };
 
-  const setDynamicRegions = (reg) => {
+  const setDynamicRegions = (reg: string[]) => {
     if (!reg) {
       return;
     }
-    const regionsState = {};
-    reg.forEach((region) => {
-      if (reg[region] && reg[region].countries[0]) {
-        regionsState[region] = {
-          visible: 5,
-          start: 0,
-          countries: reg[region].countries,
-          open: false
-        };
-      } else {
-        getRegion(region);
-        regionsState[region] = {
-          visible: 5,
-          start: 0,
-          countries: getRegion(region),
-          open: false
-        };
-      }
+    const regionsState: RegionsType = {};
+    reg.forEach((region: string) => {
+      const countries = getRegion(region);
+      regionsState[region] = {
+        visible: 5,
+        start: 0,
+        countries,
+        open: false
+      };
     });
-    // console.log(regionsState);
+    console.log(regionsState, 'regions state');
     setRegions({ ...regionsState });
     // console.log(regions)
   };
-  const updateOpen = (region) => {
+  const updateOpen = (region: string) => {
     const open = {
       visible: 5,
       start: 0,
@@ -202,7 +200,12 @@ const Sidebar = (props) => {
     setRegions(oldReg);
   };
 
-  const sidebarDataHandling = (event, region, change, start) => {
+  const sidebarDataHandling = (
+    event: React.MouseEvent,
+    region: string,
+    change: number,
+    start: number
+  ) => {
     event.stopPropagation();
     const more = {
       visible: regions[region].visible + change,
@@ -215,12 +218,13 @@ const Sidebar = (props) => {
     setRegions(oldReg);
   };
 
-  const handleRegion = (e, region) => {
+  const handleRegion = (e: React.MouseEvent, region: string) => {
     e.stopPropagation();
     updateOpen(region);
   };
 
   useEffect(() => {
+    console.log(uniqueRegions);
     setDynamicRegions(uniqueRegions);
   }, []);
 
@@ -242,9 +246,9 @@ const Sidebar = (props) => {
             <Button
               key={region}
               onClick={(e) => handleRegion(e, region)}
-              onFocus={(e) => hoverOnRegion(e, regions[region])}
-              onMouseOver={(e) => hoverOnRegion(e, regions[region])}
-              onMouseLeave={(e) => hoverOffRegion(e, regions[region])}
+              onFocus={(e) => hoverRegion(e, 'on', region)}
+              onMouseOver={(e) => hoverRegion(e, 'on', region)}
+              onMouseLeave={(e) => hoverRegion(e, 'off', region)}
               sx={{
                 cursor: 'pointer',
                 backgroundColor: '#28a745',
@@ -260,7 +264,7 @@ const Sidebar = (props) => {
                 }
               }}
             >
-              <Typography sx={{ fontFamily: theme.typography.fontFamily }}>
+              <Typography>
                 <strong>{region}</strong>-{getOccurrence(totalRegions, region)}
               </Typography>
             </Button>
@@ -273,14 +277,12 @@ const Sidebar = (props) => {
                   regions[region].countries[0] &&
                   regions[region].countries
                     .slice(regions[region].start, regions[region].visible)
-                    .map((country) => (
+                    .map((country: CountryType) => (
                       <ListItemButton
-                        LinkComponent={RouterLink}
+                        component={RouterLink}
                         to={`/${country.name.toLowerCase()}`}
                         key={country.name}
-                        onFocus={(e) =>
-                          hoverOnCountry(e, regions[region], country.name)
-                        }
+                        onFocus={(e) => hoverCountry(e, 'on', country.name)}
                         onClick={(e) =>
                           getCountryInfo(
                             e,
@@ -288,11 +290,9 @@ const Sidebar = (props) => {
                             country.government.capital.name
                           )
                         }
-                        onMouseOver={(e) =>
-                          hoverOnCountry(e, regions[region], country.name)
-                        }
+                        onMouseOver={(e) => hoverCountry(e, 'on', country.name)}
                         onMouseLeave={(e) =>
-                          hoverOffCountry(e, regions[region], country.name)
+                          hoverCountry(e, 'off', country.name)
                         }
                         sx={{
                           display: 'flex',

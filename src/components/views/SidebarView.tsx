@@ -7,8 +7,19 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Sidebar from './Sidebar';
 import MediaQuery from 'react-responsive';
+import { Button } from '@mui/material';
 
-const SidebarView = (props) => {
+interface SidebarViewProps {
+  data: any;
+  handleSideBar: Function;
+  changeView: Function;
+  loadingState: boolean;
+  getCountryInfo: Function;
+  totalRegions: any;
+  uniqueRegions: any;
+  getOccurrence: any;
+}
+const SidebarView = (props: SidebarViewProps) => {
   const [sidebar, setSidebar] = useState('Show');
   const [loadingState, setLoadingState] = useState(true);
 
@@ -34,13 +45,13 @@ const SidebarView = (props) => {
   return (
     <nav className="sidebar card col-md-12 col-lg-12">
       <MediaQuery maxWidth={767}>
-        <button
+        <Button
           variant="contained"
           className="btn btn-sm btn-block btn-outline-secondary mb-3"
           onClick={() => viewSidebar()}
         >
           {sidebar === 'Hide' ? 'Show ' : 'Hide '}
-        </button>
+        </Button>
         {sidebar === 'Show' ? show : null}
       </MediaQuery>
     </nav>

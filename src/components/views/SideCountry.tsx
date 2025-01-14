@@ -22,7 +22,7 @@ interface SideCountryProps {
   loadingState: boolean;
   changeView: Function;
   uniqueRegions: string[];
-  totalRegions: number;
+  totalRegions: string[];
   getOccurrence: Function;
   getCountryInfo: Function;
   handleSideBar: Function;
@@ -71,13 +71,10 @@ const SideCountry = (props: SideCountryProps) => {
         ) : (
           <Sidebar
             data={data}
-            changeView={changeView}
             totalRegions={totalRegions}
             uniqueRegions={uniqueRegions}
             getOccurrence={getOccurrence}
             getCountryInfo={getCountryInfo}
-            handleSideBar={handleSideBar}
-            filterCountryByName={filterCountryByName}
           />
         )
       ) : null}
