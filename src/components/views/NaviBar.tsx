@@ -15,7 +15,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, User } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase/firebase';
 import { userType } from '../../helpers/types/index';
 // import * as ROUTES from '../../Constants/Routes';
@@ -46,7 +46,12 @@ const useStyles = makeStyles({
   }
 });
 
-function NaviBar(props) {
+interface NaviBarProps {
+  searchText: string;
+  handleInput: Function;
+  user: User | null;
+}
+function NaviBar(props: NaviBarProps) {
   const { searchText, handleInput, user = null } = props;
 
   const settings = [
@@ -60,9 +65,9 @@ function NaviBar(props) {
   const classes = useStyles();
 
   const navigate = useNavigate();
-  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState<Element | null>(null);
 
-  const handleOpenUserMenu = (event) => {
+  const handleOpenUserMenu = (event: React.MouseEvent) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -70,23 +75,15 @@ function NaviBar(props) {
     setAnchorElUser(null);
   };
 
-  const login = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      throw new Error(error);
-    }
-  };
   const logout = () => {
     auth.signOut();
     navigate('/');
     console.log('pushing to root');
   };
 
-  const handleMenuClick = (name) => {
+  const handleMenuClick = (name: string) => {
     const selected = settings.filter((s) => s.name === name)[0];
     if (name === 'Logout') {
-      console.log('logging out');
       logout();
     }
     if (name === 'Sign In') {
@@ -102,7 +99,7 @@ function NaviBar(props) {
   const searchMarkup = (
     <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
       <Box className={classes.search}>
-        <Box className={classes.searchIconWrapper}>
+        <Box>
           <Search />
         </Box>
         <InputBase

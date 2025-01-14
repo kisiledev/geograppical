@@ -3,13 +3,21 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, Drawer, Typography } from '@mui/material';
 import { useTheme } from '@mui/styles';
-import { dataType } from '../../helpers/types/index';
+import { DataType, dataType } from '../../helpers/types/index';
 import SideCountry from './SideCountry';
 import * as ROUTES from '../../constants/Routes';
 
-const SideNaviBar = (props) => {
-  const [uniqueRegions, setUniqueRegions] = useState([]);
-  const [totalRegions, setTotalRegions] = useState([]);
+interface SideNaviBarProps {
+  loadingState: boolean;
+  data: DataType;
+  getCountryInfo: Function;
+  changeView: Function;
+  handleSideBar: Function;
+  filterCountryByName: Function;
+}
+const SideNaviBar = (props: SideNaviBarProps) => {
+  const [uniqueRegions, setUniqueRegions] = useState<string[]>([]);
+  const [totalRegions, setTotalRegions] = useState<string[]>([]);
   const {
     loadingState,
     data,
@@ -34,10 +42,10 @@ const SideNaviBar = (props) => {
       setTotalRegions(data.map((a) => a.geography.map_references));
     }
   };
-  function getOccurrence(array, value) {
+  function getOccurrence(array: string[], value: string) {
     return array.filter((v) => v === value).length;
   }
-  const getUniqueRegions = (totRegs) => {
+  const getUniqueRegions = (totRegs: string[]) => {
     setUniqueRegions(
       totRegs.filter((v, i, a) => a.indexOf(v) === i).filter(Boolean)
     );
@@ -77,8 +85,7 @@ const SideNaviBar = (props) => {
           padding: '10px',
           textDecoration: 'none',
           lineHeight: '62px',
-          color: '#fff',
-          fontFamily: theme.typography.fontFamily
+          color: '#fff'
         }}
         variant="h5"
         component={Link}
