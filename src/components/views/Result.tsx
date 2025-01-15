@@ -13,13 +13,6 @@ import {
   deleteDoc,
   setDoc
 } from 'firebase/firestore';
-import {
-  countryType,
-  userType,
-  dataType,
-  UserType,
-  DataType
-} from '../../helpers/types/index';
 import '../../App.css';
 
 import { favoritesCollection, firebaseApp } from '../../firebase/firebase';

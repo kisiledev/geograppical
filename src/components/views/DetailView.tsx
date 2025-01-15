@@ -18,14 +18,7 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { count } from 'd3';
-import {
-  countryType,
-  dataType,
-  userType,
-  matchType,
-  DataType,
-  Message
-} from '../../helpers/types/index';
+import { DataType, Message } from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
 import * as ROUTES from '../../constants/Routes';

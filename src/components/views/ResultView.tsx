@@ -15,14 +15,7 @@ import {
   setDoc,
   collection
 } from 'firebase/firestore';
-import {
-  countryType,
-  DataType,
-  dataType,
-  Message,
-  UserType,
-  userType
-} from '../../helpers/types/index';
+import { DataType, Message, UserType } from '../../helpers/types/index';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import '../../App.css';

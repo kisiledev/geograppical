@@ -29,12 +29,7 @@ import {
 } from 'firebase/firestore';
 import { firebaseApp } from '../../firebase/firebase';
 import * as ROUTES from '../../constants/Routes';
-import {
-  DataType,
-  dataType,
-  Question,
-  userType
-} from '../../helpers/types/index';
+import { DataType, Question } from '../../helpers/types/index';
 import Highlight from './Highlight';
 import Find from './Find';
 import Scoreboard from './Scoreboard';
@@ -517,18 +512,5 @@ const Game = (props: GameProps) => {
       </Card>
     </>
   );
-};
-Game.defaultProps = {
-  user: null
-};
-Game.propTypes = {
-  changeMapView: PropTypes.func.isRequired,
-  mapVisible: PropTypes.string.isRequired,
-  data: dataType.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  user: userType,
-  handleOpen: PropTypes.func.isRequired,
-  setStateModal: PropTypes.func.isRequired,
-  login: PropTypes.func.isRequired
 };
 export default Game;

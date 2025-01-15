@@ -1,13 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import {
-  countryType,
-  acctDataType,
-  scoreType,
-  ScorePayload,
-  ScoreData
-} from '../../helpers/types/index';
+import { ScorePayload, ScoreData } from '../../helpers/types/index';
 import { Box, Collapse, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
