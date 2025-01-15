@@ -8,8 +8,6 @@ import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import PropTypes from 'prop-types';
-import { userType } from '../../helpers/types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
 import { makeStyles } from '@mui/styles';

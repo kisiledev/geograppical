@@ -35,7 +35,7 @@ import {
 import X from '@mui/icons-material/X';
 import { auth, firebaseApp } from '../../firebase/firebase';
 import LinkEmailModal from '../views/LinkEmailModal';
-import { Message, userType } from '../../helpers/types';
+import { Message } from '../../helpers/types';
 
 interface AccountEditProps {
   user: User | null;

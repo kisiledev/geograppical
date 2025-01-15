@@ -8,7 +8,6 @@ import {
   signInWithPopup,
   User
 } from 'firebase/auth';
-import { userType } from '../../helpers/types/index';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
