@@ -25,7 +25,7 @@ import * as ROUTES from '../../constants/Routes';
 // import '../../App.css';
 
 import SidebarView from './SidebarView';
-import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
+import { usersCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
@@ -87,8 +87,8 @@ const DetailView = (props: DetailViewProps) => {
       return;
     }
     const docRef = doc(
-      favoritesCollection,
-      ...`users/${user.uid}/favorites/${country}`.split('/')
+      usersCollection,
+      ...`${user.uid}/favorites/${country}`.split('/')
     );
 
     try {
@@ -118,8 +118,8 @@ const DetailView = (props: DetailViewProps) => {
         return;
       }
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
@@ -145,8 +145,8 @@ const DetailView = (props: DetailViewProps) => {
         return;
       }
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {

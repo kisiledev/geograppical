@@ -23,7 +23,7 @@ import SidebarView from './SidebarView';
 import Maps from './Maps';
 import Result from './Result';
 import * as ROUTES from '../../constants/Routes';
-import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
+import { usersCollection, firebaseApp } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import MediaQuery from 'react-responsive';
@@ -86,8 +86,8 @@ const ResultView = (props: ResultViewProps) => {
     }
     if (!favorite) {
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
@@ -110,8 +110,8 @@ const ResultView = (props: ResultViewProps) => {
       }
     } else {
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${country.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${country.name}`.split('/')
       );
 
       try {
@@ -200,8 +200,5 @@ const ResultView = (props: ResultViewProps) => {
       </MediaQuery>
     </div>
   );
-};
-ResultView.defaultProps = {
-  user: null
 };
 export default ResultView;
