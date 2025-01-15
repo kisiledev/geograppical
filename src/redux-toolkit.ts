@@ -1,21 +1,10 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
-import logger from 'redux-logger';
 import {
-  FavoriteData,
-  FavoritePayload,
-  FavoriteState,
   InitialGameState,
   Question,
-  ScorePayload,
-  ScoreState,
   SliceStates,
   UserState
 } from './helpers/types';
-
-const initialDataState = {
-  isOpen: false,
-  data: []
-};
 
 const initialGameState = {
   questions: null,
@@ -32,42 +21,6 @@ const initialGameState = {
   gameComplete: false,
   timeMode: 'countdown'
 };
-
-const favoriteSlice = createSlice({
-  name: 'favorites',
-  initialState: initialDataState,
-  reducers: {
-    saveFavorite: (
-      state: FavoriteState,
-      action: PayloadAction<FavoriteData>
-    ) => {
-      const { payload } = action;
-      state.data = [...state.data, payload.data];
-    },
-    unsaveFavorite: (
-      state: FavoriteState,
-      action: PayloadAction<FavoritePayload>
-    ) => {
-      const { payload } = action;
-      state.data = state.data.filter((fav) => payload.data !== fav);
-    }
-  }
-});
-
-const scoreSlice = createSlice({
-  name: 'scores',
-  initialState: initialDataState,
-  reducers: {
-    saveScore: (state: ScoreState, action: PayloadAction<ScorePayload>) => {
-      const { payload } = action;
-      state.data = [...state.data, payload.data];
-    },
-    unsaveScore: (state: ScoreState, action: PayloadAction<ScorePayload>) => {
-      const { payload } = action;
-      state.data = state.data.filter((score) => payload.data !== score);
-    }
-  }
-});
 
 const mapViewSlice = createSlice({
   name: 'mapView',
@@ -153,9 +106,6 @@ const gameSlice = createSlice({
     }
   }
 });
-export const { saveFavorite, unsaveFavorite } = favoriteSlice.actions;
-
-export const { saveScore, unsaveScore } = scoreSlice.actions;
 
 export const { changeMap } = mapViewSlice.actions;
 
@@ -168,8 +118,6 @@ export const { changeGame } = gameModeSlice.actions;
 export const { loginUser } = userSlice.actions;
 
 const reducers = {
-  favorites: favoriteSlice.reducer,
-  scores: scoreSlice.reducer,
   mapView: mapViewSlice.reducer,
   view: viewSlice.reducer,
   mode: modeSlice.reducer,
@@ -179,6 +127,8 @@ const reducers = {
 const store = configureStore({
   reducer: reducers
 });
+
+export default store;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

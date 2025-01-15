@@ -24,18 +24,6 @@ export interface GameData {
   userId: string;
 }
 
-interface DataItem<T> {
-  id: string;
-  data: T;
-}
-
-interface AcctDataType {
-  isOpen: boolean;
-  data: DataItem<CountryType | GameData>[];
-}
-
-export type { AcctDataType };
-
 export interface ScoreType {
   isOpen: boolean;
   data: {

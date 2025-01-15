@@ -18,7 +18,6 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Favs from './Favs';
 import Scores from './Scores';
 import {
-  acctDataType,
   FavoriteData,
   FavoritePayload,
   ScoreData,
@@ -99,15 +98,5 @@ const AccountData = (props: AccountDataProps) => {
       </AccordionDetails>
     </Accordion>
   );
-};
-AccountData.propTypes = {
-  boolean: PropTypes.bool.isRequired,
-  acctData: acctDataType.isRequired,
-  deleteDocument: PropTypes.func.isRequired,
-  simplifyString: PropTypes.func.isRequired,
-  capitalize: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
-  toggleData: PropTypes.func.isRequired,
-  loadingState: PropTypes.bool.isRequired
 };
 export default AccountData;

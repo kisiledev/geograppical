@@ -5,8 +5,6 @@ import React, { useState, useEffect } from 'react';
 import firebase from 'firebase/compat/app';
 import 'firebaseui';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { userType } from '../../helpers/types/index';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
 import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
