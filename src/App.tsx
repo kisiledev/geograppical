@@ -29,30 +29,17 @@ import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
 import { filter } from 'd3';
 import MediaQuery from 'react-responsive';
+// import { useDispatch, useSelector } from 'react-redux';
 import { useDispatch, useSelector } from './redux-hooks';
 
-interface AppProps {
-  location: {
-    pathname: string;
-    search: string;
-    hash: string;
-    key: string;
-  };
-  history: {
-    goBack: () => void;
-  };
-}
-
-type CountryDetail = CountryType | string;
 type Modal = {
   title: string;
   body: string;
   primaryButton: string;
 };
-const App = (props: AppProps) => {
+const App = () => {
   const dispatch = useDispatch();
   const mapView = useSelector((state) => {
-    console.log(state);
     return state.mapView.value;
   });
   const [user, setUser] = useState<User | null>(null);

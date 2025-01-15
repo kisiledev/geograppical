@@ -6,16 +6,7 @@ import { BreakpointProvider } from 'react-socks';
 import { Alert, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  countryType,
-  dataType,
-  userType,
-  matchType,
-  DataType,
-  UserType,
-  MatchType,
-  Message
-} from '../../helpers/types/index';
+import { DataType, Message } from '../../helpers/types/index';
 import * as ROUTES from '../../constants/Routes';
 import Result from './Result';
 import { db } from '../../firebase/firebase';

@@ -1,8 +1,12 @@
 import { Card, CardMedia } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { countryType } from '../../helpers/types';
+import { CountryType } from '../../helpers/types/CountryType';
 
-const AudioPlayer = ({ nation }) => {
+interface AudioPlayerProps {
+  nation: CountryType;
+}
+const AudioPlayer = ({ nation }: AudioPlayerProps) => {
   const {
     government: {
       national_anthem: { audio_url: audioUrl, name: anthemName }
@@ -31,9 +35,5 @@ const AudioPlayer = ({ nation }) => {
       <CardMedia component="audio" src={audioUrl} />
     </Card>
   ) : null;
-};
-
-AudioPlayer.propTypes = {
-  nation: countryType.isRequired
 };
 export default AudioPlayer;

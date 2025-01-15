@@ -16,12 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import * as d3 from 'd3';
-import {
-  Answer,
-  DataType,
-  dataType,
-  Question
-} from '../../helpers/types/index';
+import { Answer, DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
@@ -455,18 +450,6 @@ const Highlight = (props: HighlightProps) => {
   );
 };
 
-Highlight.propTypes = {
-  data: dataType.isRequired,
-  isStarted: PropTypes.bool.isRequired,
-  saved: PropTypes.bool.isRequired,
-  gameOver: PropTypes.bool.isRequired,
-  handlePoints: PropTypes.func.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  updateScore: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired,
-  mapVisible: PropTypes.string.isRequired,
-  changeMapView: PropTypes.func.isRequired
-};
 export default Highlight;
 // const BlockPageScroll = ({ children }) => {
 //   const scrollRef = useRef(null);

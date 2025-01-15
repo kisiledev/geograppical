@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
-import { DataType, dataType, Question } from '../../helpers/types/index';
+import { DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';

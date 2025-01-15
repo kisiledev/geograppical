@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, Drawer, Typography } from '@mui/material';
 import { useTheme } from '@mui/styles';
-import { DataType, dataType } from '../../helpers/types/index';
+import { DataType } from '../../helpers/types/index';
 import SideCountry from './SideCountry';
 import * as ROUTES from '../../constants/Routes';
 
@@ -115,14 +115,6 @@ const SideNaviBar = (props: SideNaviBarProps) => {
       />
     </Drawer>
   );
-};
-SideNaviBar.propTypes = {
-  loadingState: PropTypes.bool.isRequired,
-  data: dataType.isRequired,
-  getCountryInfo: PropTypes.func.isRequired,
-  changeView: PropTypes.func.isRequired,
-  handleSideBar: PropTypes.func.isRequired,
-  filterCountryByName: PropTypes.func.isRequired
 };
 
 export default SideNaviBar;

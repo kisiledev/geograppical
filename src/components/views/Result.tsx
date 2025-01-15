@@ -13,16 +13,9 @@ import {
   deleteDoc,
   setDoc
 } from 'firebase/firestore';
-import {
-  countryType,
-  userType,
-  dataType,
-  UserType,
-  DataType
-} from '../../helpers/types/index';
 import '../../App.css';
 
-import { favoritesCollection, firebaseApp } from '../../firebase/firebase';
+import { firebaseApp, usersCollection } from '../../firebase/firebase';
 
 import * as ROUTES from '../../constants/Routes';
 import { AlertColor, Card } from '@mui/material';
@@ -80,8 +73,8 @@ const Result = (props: ResultProps) => {
       return;
     }
     const docRef = doc(
-      favoritesCollection,
-      ...`users/${user.uid}/favorites/${coun}`.split('/')
+      usersCollection,
+      ...`${user.uid}/favorites/${coun}`.split('/')
     );
 
     try {
@@ -109,8 +102,8 @@ const Result = (props: ResultProps) => {
         return;
       }
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${coun.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {
@@ -135,8 +128,8 @@ const Result = (props: ResultProps) => {
         return;
       }
       const docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/favorites/${coun.name}`.split('/')
+        usersCollection,
+        ...`${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {

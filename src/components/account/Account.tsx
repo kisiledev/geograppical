@@ -16,11 +16,7 @@ import {
   getFirestore
 } from 'firebase/firestore';
 import AccountData from './AccountData';
-import {
-  favoritesCollection,
-  firebaseApp,
-  scoresCollection
-} from '../../firebase/firebase';
+import { firebaseApp, usersCollection } from '../../firebase/firebase';
 import {
   AccountDataType,
   FavoriteData,
@@ -28,8 +24,7 @@ import {
   GameData,
   Message,
   ScoreData,
-  ScorePayload,
-  userType
+  ScorePayload
 } from '../../helpers/types/index';
 import AcctHeader from './AcctHeader';
 import AccountEdit from './AccountEdit';
@@ -69,15 +64,9 @@ const Account = (props: AccountProps) => {
     }
     let docRef;
     if (type === 'favorites') {
-      docRef = doc(
-        favoritesCollection,
-        ...`users/${user.uid}/${type}/${id}`.split('/')
-      );
+      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split('/'));
     } else {
-      docRef = doc(
-        scoresCollection,
-        ...`users/${user.uid}/${type}/${id}`.split('/')
-      );
+      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split('/'));
     }
     try {
       await deleteDoc(docRef);

@@ -38,8 +38,7 @@ const firestoreGet = getFirestore();
 const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(firestoreGet, collectionName) as CollectionReference<T>;
 };
-export const favoritesCollection = createCollection<CountryType>('favorites');
-export const scoresCollection = createCollection<ScoreData>('scores');
+export const usersCollection = createCollection('users');
 export {
   db,
   auth,

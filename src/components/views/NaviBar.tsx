@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import { signInWithPopup, User } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase/firebase';
-import { userType } from '../../helpers/types/index';
 // import * as ROUTES from '../../Constants/Routes';
 import userImg from '../../img/user.png';
 import { useNavigate } from 'react-router';
@@ -154,9 +153,4 @@ function NaviBar(props: NaviBarProps) {
     </AppBar>
   );
 }
-NaviBar.propTypes = {
-  searchText: PropTypes.string.isRequired,
-  handleInput: PropTypes.func.isRequired,
-  user: userType
-};
 export default NaviBar;
