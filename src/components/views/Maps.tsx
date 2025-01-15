@@ -237,14 +237,3 @@ const Maps = (props: MapsProps) => {
   );
 };
 export default Maps;
-// const BlockPageScroll = ({ children }) => {
-//   console.log(children)
-//   const stopScroll = (e) => e.preventDefault();
-//   const scrollRef = useRef(null);
-//   useEffect(() => {
-//     const scrollEl = scrollRef.current;
-//     scrollEl.addEventListener('wheel', stopScroll);
-//     return () => scrollEl.removeEventListener('wheel', stopScroll);
-//   }, []);
-//   return <div ref={scrollRef}>{children}</div>;
-// };

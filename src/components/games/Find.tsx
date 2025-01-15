@@ -160,15 +160,12 @@ const Find = (props: FindProps) => {
         'gameCountry'
       ) as HTMLCollectionOf<HTMLElement>)
     ];
-    console.log(nodes);
-    console.log('getting country data in Find');
     nodes = nodes.filter((y) => {
       if (y.dataset.shortname && y.dataset.longname) {
         handleText(country) === handleText(y.dataset.longname) ||
           handleText(country) === handleText(y.dataset.shortname);
       }
     });
-    console.log(nodes);
     const changeStyle = (n: HTMLElement[]) => {
       n.forEach((node) => {
         node.style.fill = '#FF0000';

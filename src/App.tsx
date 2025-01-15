@@ -77,7 +77,6 @@ const App = (props: AppProps) => {
 
   const db = getFirestore(firebaseApp);
   const handleViews = (selectedView: string) => {
-    console.log(selectedView);
     dispatch(changeView({ value: selectedView }));
   };
 
@@ -89,11 +88,9 @@ const App = (props: AppProps) => {
         const country = doc.data() as CountryType;
         data.push(country);
       });
-      console.log(data);
       setWorldData(data);
     } catch (err) {
       setError(err as Error);
-      console.log(err);
     }
   };
   const simplifyString = (string: string) =>
@@ -113,7 +110,6 @@ const App = (props: AppProps) => {
     setModal(modalsetting);
   };
   const freezeLoad = (loadState: boolean) => {
-    console.log('running freezeLoad');
     setLoadingState(loadState);
   };
   const login = async () => {
@@ -139,7 +135,6 @@ const App = (props: AppProps) => {
     if (!match || match.length === 0) {
       setCountryDetail(null);
     }
-    console.log(match[0]);
     setCountryDetail(match[0]);
     handleViews('detail');
   };
@@ -165,7 +160,6 @@ const App = (props: AppProps) => {
   };
 
   useEffect(() => {
-    console.log('loading world dta');
     loadWorldData();
   }, []);
   const changeMapView = () => {
@@ -183,12 +177,10 @@ const App = (props: AppProps) => {
     alert('clicked');
     e.preventDefault();
     const { value } = e.target as HTMLInputElement;
-    console.log('handling submit');
     navigate(value);
   };
   const handleData = (type: string) => {
     if (location.pathname !== '/account') {
-      console.log('not on account page');
       navigate('/account');
     }
     if (type === 'favorites') {
@@ -198,9 +190,7 @@ const App = (props: AppProps) => {
     }
   };
   const handleInput = (e: React.KeyboardEvent) => {
-    console.log(e, typeof e);
     e.persist();
-    // console.log('changing')
     const { value } = e.target as HTMLInputElement;
     if (value != null && value.trim() !== '') {
       setSearchText(value);
@@ -238,7 +228,6 @@ const App = (props: AppProps) => {
       setSearchText(value);
       setFilterNations([]);
       const nodes = [...document.getElementsByClassName('country')];
-      // console.log(filterNations)
       nodes.forEach((node) => {
         node.removeAttribute('style');
       });
@@ -249,31 +238,9 @@ const App = (props: AppProps) => {
       if (value != null && value.trim() !== '') {
         setSearchText(value);
         filterCountryByName(value);
-        // let nodes = [...(document.getElementsByClassName("country"))];
-        // nodes.forEach( node => {
-        //   node.style.fill =  "#ECEFF1";
-        //   node.style.stroke =  "#111";
-        //   node.style.strokeWidth =  .75;
-        //   node.style.outline =  "none";
-        //   node.style.transition = "all 250ms"
-        // })
-        // nodes = nodes.filter(e => filterCountryByName(value).map((country, i) => country.name).includes(e.dataset.tip));
-        // // console.log(nodes);
-        // nodes.forEach( node => {
-        //   node.style.fill =  "#024e1b";
-        //   node.style.stroke =  "#111";
-        //   node.style.strokeWidth =  1;
-        //   node.style.outline =  "none";
-        //   node.style.transition = "all 250ms"
-        // })
       } else {
         setSearchText(value);
         setFilterNations([]);
-        // let nodes = [...(document.getElementsByClassName("country"))];
-        // // console.log(filterNations)
-        // nodes.forEach( node => {
-        //   node.removeAttribute("style")
-        // })
       }
     }
   };

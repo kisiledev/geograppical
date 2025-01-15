@@ -310,7 +310,6 @@ const Game = (props: GameProps) => {
           collection(db, `users/${user.uid}/scores`),
           newData
         );
-        console.log('Data written successfully', docRef, docRef.id);
         setSaved(true);
         setIsStarted(false);
         setLoadingState(false);

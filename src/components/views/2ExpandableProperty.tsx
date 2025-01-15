@@ -25,7 +25,6 @@ interface ExpandablePropertyProps {
 }
 
 const ExpandableProperty = (props: ExpandablePropertyProps) => {
-  console.log(props.country);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -33,7 +32,6 @@ const ExpandableProperty = (props: ExpandablePropertyProps) => {
   }, [isOpen]);
 
   const setTrue = () => {
-    console.log(isOpen);
     if (props.country.name) {
       setIsOpen(isOpen);
     } else {

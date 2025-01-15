@@ -60,7 +60,6 @@ const Account = (props: AccountProps) => {
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  console.log(acctScores, acctFavorites);
   const { user, scores = [], favorites = [], simplifyString } = props;
 
   const db = getFirestore(firebaseApp);

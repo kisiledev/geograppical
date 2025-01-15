@@ -47,7 +47,6 @@ const SignIn = (props: SignInProps) => {
     // console.log('reunning login');
     fetchSignInMethodsForEmail(auth, inputs.email)
       .then((u) => {
-        console.log(u);
         setMethods(u);
         if (u.length === 0 || u.includes('password')) {
           console.log('no methods');

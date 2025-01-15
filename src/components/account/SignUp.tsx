@@ -49,19 +49,15 @@ const SignUp = (props: SignUpProps) => {
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(signup);
 
-  console.log(inputs.passwordOne);
-
   const checkEmail = (value: string) => {
     const regex =
       /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const isEMV = regex.test(value);
-    console.log(isEmailValid);
     setIsEmailValid(isEMV);
   };
   const checkPWValue = (value: string) => {
     const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
     const isPWV = !re2.test(value);
-    console.log(isPWValid);
     setIsPWValid(isPWV);
   };
   const googleSignUp = () => {
@@ -76,12 +72,10 @@ const SignUp = (props: SignUpProps) => {
       });
   };
   useEffect(() => {
-    console.log('checking email');
     checkEmail(inputs.email);
   }, [inputs.email]);
 
   useEffect(() => {
-    console.log('checking password');
     checkPWValue(inputs.passwordOne);
   }, [inputs.passwordOne]);
 

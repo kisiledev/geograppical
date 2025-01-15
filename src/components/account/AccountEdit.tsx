@@ -65,7 +65,6 @@ const AccountEdit = (props: AccountEditProps) => {
       return;
     }
     try {
-      console.log('provider', provider);
       await unlink(auth.currentUser, provider);
       setMessage({
         ...message,
@@ -99,7 +98,6 @@ const AccountEdit = (props: AccountEditProps) => {
           style: 'success',
           content: 'Linked email credentials to account'
         });
-        console.log('success', funcuser);
       })
       .catch((error) => {
         console.log(error);
@@ -131,14 +129,11 @@ const AccountEdit = (props: AccountEditProps) => {
           return;
         }
         const token = credential.accessToken;
-        console.log(credential, token);
         setProviders(user.providerData);
-        console.log(user.providerData);
       }
     } catch (error: any) {
       console.error(error);
       const { credential } = error;
-      console.log(credential);
     }
     // auth
     //   .getRedirectResult()

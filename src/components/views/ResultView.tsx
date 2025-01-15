@@ -80,7 +80,6 @@ const ResultView = (props: ResultViewProps) => {
     }, 4000);
   };
   const makeFavorite = async (e: Event, country: CountryType) => {
-    console.log('adding');
     if (!user) {
       setAlert(true);
       setMessage({
@@ -106,7 +105,6 @@ const ResultView = (props: ResultViewProps) => {
           content: `Added ${country.name} to favorites`
         });
         setFavorite(true);
-        console.log('added favorite');
         setShow(true);
       } catch (error) {
         setMessage({

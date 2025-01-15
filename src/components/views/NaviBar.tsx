@@ -78,7 +78,6 @@ function NaviBar(props: NaviBarProps) {
   const logout = () => {
     auth.signOut();
     navigate('/');
-    console.log('pushing to root');
   };
 
   const handleMenuClick = (name: string) => {

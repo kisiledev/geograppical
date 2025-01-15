@@ -111,7 +111,6 @@ const DetailView = (props: DetailViewProps) => {
   };
   const makeFavorite = async (e: React.MouseEvent, country: CountryType) => {
     e.persist();
-    console.log('adding');
     if (!user) {
       setMessage({
         style: 'warning',
@@ -137,7 +136,6 @@ const DetailView = (props: DetailViewProps) => {
           content: `Added ${country.name} to favorites`
         });
         setFavorite(true);
-        console.log('added favorite');
         showFunc();
       } catch (error) {
         setMessage({

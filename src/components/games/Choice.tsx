@@ -77,7 +77,6 @@ interface ChoiceProps {
   mode: keyof typeof gameModes;
 }
 const Choice = (props: ChoiceProps) => {
-  console.log(props);
   const [currentCountry, setCurrentCountry] = useState<CountryType | null>(
     null
   );

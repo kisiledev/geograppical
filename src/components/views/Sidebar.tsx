@@ -79,10 +79,6 @@ const Sidebar = (props: SidebarProps) => {
   const { data, getCountryInfo, totalRegions, uniqueRegions, getOccurrence } =
     props;
 
-  console.log('this is the unique regions', uniqueRegions);
-  const theme = useTheme();
-  const classes = useStyles();
-
   const hoverCountry = (
     e: React.FocusEvent | React.MouseEvent,
     direction: string,
@@ -184,9 +180,7 @@ const Sidebar = (props: SidebarProps) => {
         open: false
       };
     });
-    console.log(regionsState, 'regions state');
     setRegions({ ...regionsState });
-    // console.log(regions)
   };
   const updateOpen = (region: string) => {
     const open = {
@@ -224,17 +218,10 @@ const Sidebar = (props: SidebarProps) => {
   };
 
   useEffect(() => {
-    console.log(uniqueRegions);
     setDynamicRegions(uniqueRegions);
   }, []);
 
   useEffect(() => {
-    // console.log(regions)
-    // console.log(uniqueRegions)
-  }, [regions]);
-
-  useEffect(() => {
-    // console.log(uniqueRegions);
     setDynamicRegions(uniqueRegions);
   }, [uniqueRegions]);
 

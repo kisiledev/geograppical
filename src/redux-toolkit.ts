@@ -75,7 +75,7 @@ const mapViewSlice = createSlice({
   reducers: {
     changeMap: (state: SliceStates, action: PayloadAction<SliceStates>) => {
       const { payload } = action;
-      console.log(payload);
+
       state.value = payload.value;
     }
   }
@@ -86,9 +86,8 @@ const viewSlice = createSlice({
   initialState: { value: 'Default' },
   reducers: {
     changeView: (state: SliceStates, action: PayloadAction<SliceStates>) => {
-      console.log(action);
       const { payload } = action;
-      console.log(payload);
+
       state.value = payload.value;
     }
   }
@@ -100,7 +99,7 @@ const modeSlice = createSlice({
   reducers: {
     changeMode: (state: SliceStates, action: PayloadAction<SliceStates>) => {
       const { payload } = action;
-      console.log(payload);
+
       state.value = payload.value;
     }
   }
@@ -112,7 +111,7 @@ const gameModeSlice = createSlice({
   reducers: {
     changeGame: (state: SliceStates, action: PayloadAction<SliceStates>) => {
       const { payload } = action;
-      console.log(payload);
+
       state.value = payload.value;
     }
   }

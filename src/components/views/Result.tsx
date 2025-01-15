@@ -96,7 +96,6 @@ const Result = (props: ResultProps) => {
     }
   };
   const makeFavorite = async (e: React.MouseEvent, coun: CountryType) => {
-    console.log('adding');
     if (!user) {
       setMessage({
         style: 'warning',
@@ -122,7 +121,6 @@ const Result = (props: ResultProps) => {
           content: `Added ${coun.name} to favorites`
         });
         setFavorite(true);
-        console.log('added favorite');
         showFunc();
       } catch (error) {
         setMessage({

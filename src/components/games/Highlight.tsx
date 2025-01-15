@@ -51,7 +51,6 @@ const Highlight = (props: HighlightProps) => {
   const [zoom, setZoom] = useState(1);
   const [answers, setAnswers] = useState<Answer[] | null>(null);
 
-  console.log(props);
   const {
     isStarted,
     gameOver,
@@ -65,12 +64,6 @@ const Highlight = (props: HighlightProps) => {
     saved,
     mode
   } = props;
-
-  console.log(gameModes, mode);
-  const proj = d3
-    .geoEqualEarth()
-    .translate([800 / 2, 400 / 2])
-    .scale(150);
 
   const endGame = () => {
     setQuestions([]);
@@ -95,7 +88,6 @@ const Highlight = (props: HighlightProps) => {
   }: {
     coordinates: [number, number];
   }) => {
-    console.log(coordinates);
     setCenter(coordinates);
     // setBypassClick(true);
   };
