@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Radio = ({ className, checked, ...props }) => (
+interface RadioProps {
+  className?: string;
+  checked: boolean;
+}
+const Radio = ({ className, checked = false, ...props }: RadioProps) => (
   <RadioContainer className={className}>
     <HiddenRadio checked={checked} {...props} />
     <StyledRadio checked={checked}>
@@ -11,16 +15,27 @@ const Radio = ({ className, checked, ...props }) => (
     </StyledRadio>
   </RadioContainer>
 );
-const RadioContainer = styled.div`
+const RadioContainer = styled.div<{
+  className?: string;
+  children: React.ReactNode;
+}>`
   display: inline-block;
   vertical-align: middle;
 `;
-const Icon = styled.svg`
+const Icon = styled.svg.attrs(
+  (props: { viewBox: string; children: React.ReactNode }) => ({
+    viewBox: props.viewBox,
+    children: props.children
+  })
+)`
   fill: none;
   stroke: white;
   stroke-width: 2px;
 `;
-const HiddenRadio = styled.input.attrs({ type: 'radio' })`
+const HiddenRadio = styled.input.attrs((props: { checked: boolean }) => ({
+  type: 'radio',
+  checked: props.checked
+}))`
   border: 0;
   clip: rect (0 0 0 0);
   clippath: inset(50%);
@@ -32,7 +47,10 @@ const HiddenRadio = styled.input.attrs({ type: 'radio' })`
   white-space: nowrap;
   width: 1px;
 `;
-const StyledRadio = styled.div`
+const StyledRadio = styled.div<{
+  children: React.ReactNode;
+  checked?: boolean;
+}>`
     display: inline-block;
     width: 16px;
     height: 16px;

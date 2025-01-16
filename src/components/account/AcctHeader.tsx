@@ -12,14 +12,24 @@ import {
   Avatar,
   Button,
   Card,
-  Grid,
+  Grid2,
   IconButton,
   Typography
 } from '@mui/material';
 import { ArrowBack, Edit } from '@mui/icons-material';
 import userImg from '../../img/user.png';
+import { FavoriteData, ScoreData } from '../../helpers/types';
+import { User } from 'firebase/auth';
 
-const AcctHeader = (props) => {
+interface AcctHeaderProps {
+  loadingState: boolean;
+  favorites: FavoriteData;
+  scores: ScoreData;
+  user: User | null;
+  edit: boolean;
+  setEdit: Function;
+}
+const AcctHeader = (props: AcctHeaderProps) => {
   const { loadingState, favorites, scores, user, edit, setEdit } = props;
   const [hover, setHover] = useState(false);
   return (
@@ -33,7 +43,7 @@ const AcctHeader = (props) => {
         fontSize: 16
       }}
     >
-      <Grid
+      <Grid2
         container
         sx={{
           justifyContent: 'center',
@@ -42,9 +52,8 @@ const AcctHeader = (props) => {
           flexDirection: 'column'
         }}
       >
-        <Grid
-          item
-          sm={12}
+        <Grid2
+          size={{ sm: 12 }}
           sx={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -64,7 +73,7 @@ const AcctHeader = (props) => {
               backgroundColor: '#000'
             }}
             src={user ? user.photoURL : userImg}
-            alt={user.name}
+            alt={user?.displayName || 'User'}
           />
           {edit && hover && (
             <IconButton
@@ -75,14 +84,13 @@ const AcctHeader = (props) => {
               }}
               component="label"
             >
-              <Edit color="#f4a" titleAccess="Click to edit" />
+              <Edit sx={{ color: '#f4a' }} titleAccess="Click to edit" />
               <input type="file" id="upload-img" hidden />
             </IconButton>
           )}
-        </Grid>
-        <Grid
-          item
-          sm={12}
+        </Grid2>
+        <Grid2
+          size={{ sm: 12 }}
           sx={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -91,18 +99,20 @@ const AcctHeader = (props) => {
           }}
         >
           <Typography component="h5" variant="h5" sx={{ marginTop: '5px' }}>
-            {user.displayName}
+            {user?.displayName}
           </Typography>
-          <Typography component="p" variant="p">
-            {`User since ${new Date(
-              user.metadata.creationTime
-            ).toLocaleDateString()}`}
+          {user?.metadata?.creationTime && (
+            <Typography component="p" variant="body1">
+              {`User since ${new Date(
+                user.metadata.creationTime
+              ).toLocaleDateString()}`}
+            </Typography>
+          )}
+          <Typography component="p" variant="body1" sx={{ fontWeight: 600 }}>
+            {user?.email}
           </Typography>
-          <Typography component="p" variant="p" sx={{ fontWeight: 600 }}>
-            {user.email}
-          </Typography>
-          <Typography component="p" variant="p">
-            {user.phoneNumber ? user.phoneNumber : 'No phone number added'}
+          <Typography component="p" variant="body1">
+            {user?.phoneNumber || 'No phone number added'}
           </Typography>
           {loadingState ? (
             <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="2x" />
@@ -129,8 +139,8 @@ const AcctHeader = (props) => {
               </Typography>
             </>
           )}
-        </Grid>
-        <Grid item sm={12}>
+        </Grid2>
+        <Grid2 size={{ sm: 12 }}>
           <Button
             variant="contained"
             color="success"
@@ -140,8 +150,8 @@ const AcctHeader = (props) => {
           >
             {edit ? 'Back to Account' : 'Edit Account'}
           </Button>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Card>
   );
 };

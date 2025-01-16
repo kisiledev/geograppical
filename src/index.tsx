@@ -5,14 +5,13 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import theme from './helpers/Theme';
 import App from './App';
-import toolkitStore from './redux-toolkit';
-import * as serviceWorker from './serviceWorker';
+import store from './redux-toolkit';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
   <BrowserRouter>
-    <Provider store={toolkitStore}>
+    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
@@ -27,4 +26,3 @@ root.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

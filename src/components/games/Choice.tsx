@@ -14,12 +14,7 @@ import {
   ListItemButton,
   Typography
 } from '@mui/material';
-import {
-  Answer,
-  DataType,
-  dataType,
-  Question
-} from '../../helpers/types/index';
+import { Answer, DataType, Question } from '../../helpers/types/index';
 import gameModes from '../../constants/GameContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
