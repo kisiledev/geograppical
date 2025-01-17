@@ -9,15 +9,7 @@ import { Alert, Box, Button, Card, Grid2, Typography } from '@mui/material';
 import Flag from 'react-world-flags';
 import { Link, useNavigate } from 'react-router-dom';
 
-import PropTypes, { shape } from 'prop-types';
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  deleteDoc,
-  setDoc
-} from 'firebase/firestore';
-import { count } from 'd3';
+import { doc, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { DataType, Message } from '../../helpers/types/index';
 import RecursiveProperty from './DataList';
 import AudioPlayer from './AudioPlayer';
@@ -25,7 +17,7 @@ import * as ROUTES from '../../constants/Routes';
 // import '../../App.css';
 
 import SidebarView from './SidebarView';
-import { usersCollection, firebaseApp } from '../../firebase/firebase';
+import { usersCollection } from '../../firebase/firebase';
 import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
@@ -62,14 +54,10 @@ const DetailView = (props: DetailViewProps) => {
     data,
     user,
     loadingState,
-    freezeLoad,
     getCountryInfo,
     changeView,
-    handleSideBar,
-    filterCountryByName
+    handleSideBar
   } = props;
-
-  const db = getFirestore(firebaseApp);
 
   const params = useParams();
   const { country = '' } = params;

@@ -26,7 +26,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import PropTypes from 'prop-types';
 import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
 import data from '../../data/world-50m.json';
 import { DataType } from '../../helpers/types';

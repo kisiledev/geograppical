@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Card, Grid2 } from '@mui/material';
 import Timer from './Timer';
 import Score from './Score';
@@ -18,7 +16,6 @@ const Scoreboard = (props: ScoreboardProps) => {
   const {
     timeChecked,
     isStarted,
-    timeMode,
     currentCount,
     score,
     correct,

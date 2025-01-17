@@ -13,7 +13,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import * as d3 from 'd3';
 import { Answer, DataType, Question } from '../../helpers/types/index';

@@ -5,7 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import theme from './helpers/Theme';
 import App from './App';
-import store from './redux-toolkit';
+import { store } from './helpers/toolkitSlices';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+
 import { makeStyles } from '@mui/styles';
 import { Search } from '@mui/icons-material';
 import {

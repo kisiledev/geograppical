@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, useLocation, useNavigate } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { Routes } from 'react-router';
 
 import {
@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogActions
 } from '@mui/material';
-import PropTypes, { shape } from 'prop-types';
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 import ResultView from './components/views/ResultView';
 import DetailView from './components/views/DetailView';
@@ -23,11 +22,10 @@ import PrivateRoute from './components/account/PrivateRoutes';
 import PasswordReset from './components/account/PasswordReset';
 import SearchResults from './components/views/SearchResults';
 import SideNaviBar from './components/views/SideNaviBar';
-import { changeView, changeMap } from './redux-toolkit';
+import { changeView, changeMap } from './helpers/toolkitSlices';
 import { DataType } from './helpers/types';
 import { CountryType } from './helpers/types/CountryType';
 import { signInWithPopup, User } from 'firebase/auth';
-import { filter } from 'd3';
 import MediaQuery from 'react-responsive';
 // import { useDispatch, useSelector } from 'react-redux';
 import { useDispatch, useSelector } from './redux-hooks';
@@ -43,8 +41,8 @@ const App = () => {
     return state.mapView.value;
   });
   const [user, setUser] = useState<User | null>(null);
-  const [favorites, setFavorites] = useState(false);
-  const [scores, setScores] = useState(false);
+  const favorites = false;
+  const scores = false;
   const [error, setError] = useState<Error | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [loadingState, setLoadingState] = useState(true);
@@ -58,9 +56,6 @@ const App = () => {
     body: '',
     primaryButton: ''
   });
-
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const db = getFirestore(firebaseApp);
   const handleViews = (selectedView: string) => {
@@ -166,24 +161,6 @@ const App = () => {
     alert('handling sidebar');
     setFilterNations(filterCountryByName(string));
   };
-  const handleSubmit = (e: React.MouseEvent) => {
-    alert('clicked');
-    e.preventDefault();
-    const { value } = e.target as HTMLInputElement;
-    console.log('handling submit');
-    navigate(value);
-  };
-  const handleData = (type: string) => {
-    if (location.pathname !== '/account') {
-      console.log('not on account page');
-      navigate('/account');
-    }
-    if (type === 'favorites') {
-      setFavorites(!favorites);
-    } else {
-      setScores(!scores);
-    }
-  };
   const handleInput = (e: React.KeyboardEvent) => {
     console.log(e, typeof e);
     e.persist();
@@ -207,7 +184,7 @@ const App = () => {
       let filtered = null;
       const filteredCountry = filterCountryByName(value);
       if (filteredCountry) {
-        filtered = filteredCountry.map((country, i) => country.name);
+        filtered = filteredCountry.map((country) => country.name);
       }
       nodes = nodes.filter((y) => {
         if (filtered && y.dataset.shortname) {

@@ -1,26 +1,21 @@
 import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
-import {
-  InitialGameState,
-  Question,
-  SliceStates,
-  UserState
-} from './helpers/types';
+import { SliceStates, UserState } from './types';
 
-const initialGameState = {
-  questions: null,
-  questionsSet: [],
-  score: 0,
-  correct: 0,
-  incorrect: 0,
-  gameMode: '',
-  isStarted: false,
-  gameOver: false,
-  scoreChecked: true,
-  timeChecked: true,
-  currentCount: 60,
-  gameComplete: false,
-  timeMode: 'countdown'
-};
+// const initialGameState = {
+//   questions: null,
+//   questionsSet: [],
+//   score: 0,
+//   correct: 0,
+//   incorrect: 0,
+//   gameMode: '',
+//   isStarted: false,
+//   gameOver: false,
+//   scoreChecked: true,
+//   timeChecked: true,
+//   currentCount: 60,
+//   gameComplete: false,
+//   timeMode: 'countdown'
+// };
 
 const mapViewSlice = createSlice({
   name: 'mapView',
@@ -82,30 +77,30 @@ const userSlice = createSlice({
   }
 });
 
-const gameSlice = createSlice({
-  name: 'game',
-  initialState: initialGameState,
-  reducers: {
-    reset: (
-      state: InitialGameState,
-      action: PayloadAction<InitialGameState>
-    ) => {
-      const { payload } = action;
-      state = payload;
-    },
-    changeGame: (
-      state: InitialGameState,
-      action: PayloadAction<SliceStates>
-    ) => {
-      const { payload } = action;
-      state.gameMode = payload.value;
-    },
-    addQuestion: (state: InitialGameState, action: PayloadAction<Question>) => {
-      const { payload } = action;
-      state.questionsSet.push(payload);
-    }
-  }
-});
+// const gameSlice = createSlice({
+//   name: 'game',
+//   initialState: initialGameState,
+//   reducers: {
+//     reset: (
+//       state: InitialGameState,
+//       action: PayloadAction<InitialGameState>
+//     ) => {
+//       const { payload } = action;
+//       state = payload;
+//     },
+//     changeGame: (
+//       state: InitialGameState,
+//       action: PayloadAction<SliceStates>
+//     ) => {
+//       const { payload } = action;
+//       state.gameMode = payload.value;
+//     },
+//     addQuestion: (state: InitialGameState, action: PayloadAction<Question>) => {
+//       const { payload } = action;
+//       state.questionsSet.push(payload);
+//     }
+//   }
+// });
 
 export const { changeMap } = mapViewSlice.actions;
 
@@ -124,11 +119,6 @@ const reducers = {
   gameMode: gameModeSlice.reducer,
   user: userSlice.reducer
 };
-const store = configureStore({
+export const store = configureStore({
   reducer: reducers
 });
-
-export default store;
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;

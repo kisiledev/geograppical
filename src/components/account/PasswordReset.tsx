@@ -1,11 +1,11 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link as RouterLink } from 'react-router-dom';
 import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
-import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { EmailRounded } from '@mui/icons-material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useSignUpForm from '../../helpers/CustomHooks';

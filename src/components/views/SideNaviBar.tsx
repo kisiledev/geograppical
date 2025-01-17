@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+
 import { Link as RouterLink, Drawer, Typography } from '@mui/material';
 import { useTheme } from '@mui/styles';
 import { DataType } from '../../helpers/types/index';

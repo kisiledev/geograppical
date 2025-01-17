@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import firebase from 'firebase/compat/app';
 import {
   Alert,
@@ -14,9 +14,7 @@ import {
   IconButton,
   Typography
 } from '@mui/material';
-import { getFirestore } from 'firebase/firestore';
 import {
-  AuthProvider,
   FacebookAuthProvider,
   getRedirectResult,
   GoogleAuthProvider,
@@ -33,7 +31,7 @@ import {
   LinkOff
 } from '@mui/icons-material';
 import X from '@mui/icons-material/X';
-import { auth, firebaseApp } from '../../firebase/firebase';
+import { auth } from '../../firebase/firebase';
 import LinkEmailModal from '../views/LinkEmailModal';
 import { Message } from '../../helpers/types';
 
@@ -59,7 +57,6 @@ const AccountEdit = (props: AccountEditProps) => {
   });
   const [show, setShow] = useState(false);
 
-  const db = getFirestore(firebaseApp);
   const unlinkProvider = async (provider: string) => {
     if (!auth.currentUser || !user) {
       return;
@@ -122,7 +119,7 @@ const AccountEdit = (props: AccountEditProps) => {
         return providerSource;
     }
     try {
-      const result = await signInWithPopup(auth, new providerSource());
+      await signInWithPopup(auth, new providerSource());
       const redirectResult = await getRedirectResult(auth);
 
       if (redirectResult) {
@@ -187,12 +184,6 @@ const AccountEdit = (props: AccountEditProps) => {
       onClick: () => setShow(true)
     }
   ];
-  interface Providers {
-    providerId: string;
-    uid: string;
-    displayName: string;
-    email: string;
-  }
   const userProvs: string[] = [];
   if (providers) {
     providers.map((data) => userProvs.push(data.providerId));

@@ -2,13 +2,13 @@
 /* eslint-disable no-console */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import 'firebaseui';
-import { Link as RouterLink, Route, Navigate } from 'react-router-dom';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
 import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import PropTypes from 'prop-types';
+
 import {
   fetchSignInMethodsForEmail,
   signInWithEmailAndPassword,
@@ -17,7 +17,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
-import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { EmailRounded, Google } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
@@ -172,7 +172,7 @@ const SignIn = (props: SignInProps) => {
         />
         <Button
           onClick={handleSubmit}
-          disabled={isInvalid}
+          disabled={isInvalid && !isEmailValid}
           variant="contained"
           fullWidth
           className={classes.loginButtons}

@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { Box, Grid2, Typography } from '@mui/material';
 
 interface TimerProps {

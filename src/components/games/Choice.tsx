@@ -3,14 +3,12 @@
 /* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
-import React, { useState, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
   Card,
   List,
-  ListItem,
   ListItemButton,
   Typography
 } from '@mui/material';

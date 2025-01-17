@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
+
 import {
   addDoc,
   collection,

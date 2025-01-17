@@ -3,7 +3,6 @@ import React from 'react';
 import { Navigate, Outlet, Route, RouterProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import PropTypes from 'prop-types';
 
 interface PrivateRouteProps extends RouterProps {
   authenticated: boolean;

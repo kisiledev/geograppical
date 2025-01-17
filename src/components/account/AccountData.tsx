@@ -1,10 +1,5 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faSpinner,
-  faAngleUp,
-  faAngleDown
-} from '@fortawesome/free-solid-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import {
   Accordion,
   AccordionDetails,
@@ -13,8 +8,8 @@ import {
   Chip,
   Typography
 } from '@mui/material';
-import PropTypes from 'prop-types';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+
+import { ExpandMore } from '@mui/icons-material';
 import Favs from './Favs';
 import Scores from './Scores';
 import {

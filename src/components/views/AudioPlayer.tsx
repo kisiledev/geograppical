@@ -1,5 +1,5 @@
 import { Card, CardMedia } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { CountryType } from '../../helpers/types/CountryType';
 
 interface AudioPlayerProps {

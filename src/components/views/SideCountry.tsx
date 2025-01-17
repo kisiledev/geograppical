@@ -10,7 +10,7 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
+
 import { Box, Button, List } from '@mui/material';
 import { useTheme } from '@mui/styles';
 import { DataType } from '../../helpers/types/index';

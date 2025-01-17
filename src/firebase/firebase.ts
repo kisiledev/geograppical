@@ -13,8 +13,6 @@ import {
   EmailAuthProvider,
   TwitterAuthProvider
 } from 'firebase/auth';
-import { CountryType } from '../helpers/types/CountryType';
-import { ScoreData } from '../helpers/types';
 
 const { initializeApp } = firebase;
 const firebaseApp = initializeApp({
@@ -33,7 +31,6 @@ const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 const emailProvider = new EmailAuthProvider();
 const twitterProvider = new TwitterAuthProvider();
-const firestore = firebase.firestore;
 const firestoreGet = getFirestore();
 const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(firestoreGet, collectionName) as CollectionReference<T>;
@@ -46,7 +43,6 @@ export {
   facebookProvider,
   emailProvider,
   twitterProvider,
-  firestore,
   firebaseApp
 };
 

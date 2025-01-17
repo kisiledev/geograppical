@@ -7,6 +7,7 @@
 
 import { AlertColor } from '@mui/material';
 import { CountryType } from './CountryType';
+import { store } from '../toolkitSlices';
 
 interface DateCreated {
   seconds: number;
@@ -24,6 +25,8 @@ export interface GameData {
   userId: string;
 }
 
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export interface ScoreType {
   isOpen: boolean;
   data: {

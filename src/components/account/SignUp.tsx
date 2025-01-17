@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
 import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
 import 'firebaseui';
@@ -10,7 +10,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase/firebase';
 import useSignUpForm from '../../helpers/CustomHooks';
-import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { EmailRounded, Google } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({

@@ -1,14 +1,14 @@
 /* eslint-disable global-require */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/compat/app';
+import { useState, useEffect } from 'react';
+import { EmailAuthProvider } from 'firebase/auth';
 import 'firebaseui';
 import { Link } from 'react-router-dom';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
 import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
-import { EmailOutlined, EmailRounded, Google } from '@mui/icons-material';
+import { EmailRounded } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import { linkWithCredential, User } from 'firebase/auth';
 import { Route } from 'react-router';
@@ -33,11 +33,11 @@ const LinkEmailModal = (props: LinkEmailModalProps) => {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isPWValid, setIsPWValid] = useState(false);
 
-  const { message, close, show, user } = props;
+  const { message, close, user } = props;
 
   const classes = useStyles();
   const linkEmail = () => {
-    const credential = firebase.auth.EmailAuthProvider.credential(
+    const credential = EmailAuthProvider.credential(
       inputs.email,
       inputs.passwordOne
     );
@@ -85,7 +85,9 @@ const LinkEmailModal = (props: LinkEmailModalProps) => {
     inputs.passwordOne !== inputs.passwordTwo ||
     inputs.passwordOne === '' ||
     inputs.email === '' ||
-    inputs.username === '';
+    inputs.username === '' ||
+    !isEmailValid ||
+    !isPWValid;
 
   return (
     <Box

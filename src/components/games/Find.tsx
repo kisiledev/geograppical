@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
   Geography
 } from 'react-simple-maps';
-import { geoEqualEarth } from 'd3-geo';
-import * as d3 from 'd3';
 import ReactTooltip from 'react-tooltip';
 import {
   faPlus,
@@ -15,7 +13,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import PropTypes from 'prop-types';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import { DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
@@ -61,11 +58,6 @@ const Find = (props: FindProps) => {
     mapVisible,
     mode
   } = props;
-
-  const proj = d3
-    .geoEqualEarth()
-    .translate([800 / 2, 400 / 2])
-    .scale(150);
 
   const endGame = () => {
     setQuestions([]);
@@ -333,7 +325,7 @@ const Find = (props: FindProps) => {
                 });
               }}
             >
-              {({ geographies: geos, projection: proj }) => {
+              {({ geographies: geos }) => {
                 return geos.map((geo, i) => (
                   <Geography
                     data-idkey={i}

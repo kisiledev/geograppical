@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { makeStyles, useTheme } from '@mui/styles';
 import { simplifyString } from '../../helpers/utils';
-import { changeView } from '../../redux-toolkit';
+import { changeView } from '../../helpers/toolkitSlices';
 import { DataType } from '../../helpers/types';
 import { CountryType } from '../../helpers/types/CountryType';
 import { useSelector } from '../../redux-hooks';
