@@ -1,17 +1,11 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import { Navigate, Outlet, Route, RouterProps } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Navigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
-interface PrivateRouteProps extends RouterProps {
-  authenticated: boolean;
-  loadingState: boolean;
-}
 const PrivateRoute = ({
   children,
   authenticated,
-  loadingState
+  loadingState,
 }: {
   children: JSX.Element;
   authenticated: boolean;

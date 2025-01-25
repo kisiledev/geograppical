@@ -1,22 +1,21 @@
-/* eslint-disable no-use-before-define */
-import { useState, useEffect } from 'react';
-import { Link, Route } from 'react-router-dom';
-import { Alert, AlertColor, Box, Button, TextField } from '@mui/material';
-import 'firebaseui';
+import { useState, useEffect, useCallback } from "react";
+import { Link, Route } from "react-router-dom";
+import { Alert, AlertColor, Box, Button, TextField } from "@mui/material";
+import "firebaseui";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
-  User
-} from 'firebase/auth';
-import { auth, googleProvider } from '../../firebase/firebase';
-import useSignUpForm from '../../helpers/CustomHooks';
-import { EmailRounded, Google } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
+  User,
+} from "firebase/auth";
+import { auth, googleProvider } from "../../firebase/firebase";
+import useSignUpForm from "../../helpers/CustomHooks";
+import { EmailRounded, Google } from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   loginButtons: {
-    marginBottom: '10px'
-  }
+    marginBottom: "10px",
+  },
 });
 
 interface SignUpProps {
@@ -29,8 +28,8 @@ const SignUp = (props: SignUpProps) => {
     style: AlertColor;
     content: string;
   }>({
-    style: 'info',
-    content: ''
+    style: "info",
+    content: "",
   });
 
   const classes = useStyles();
@@ -38,31 +37,37 @@ const SignUp = (props: SignUpProps) => {
     createUserWithEmailAndPassword(auth, inputs.email, inputs.passwordOne)
       .then((u) => {
         setMessage({
-          style: 'success',
-          content: `Created user ${u.user.email}`
+          style: "success",
+          content: `Created user ${u.user.email}`,
         });
       })
       .catch((error) => {
-        setMessage({ style: 'error', content: `${error.message}` });
+        setMessage({ style: "error", content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(signup);
 
   console.log(inputs.passwordOne);
 
-  const checkEmail = (value: string) => {
-    const regex =
-      /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    const isEMV = regex.test(value);
-    console.log(isEmailValid);
-    setIsEmailValid(isEMV);
-  };
-  const checkPWValue = (value: string) => {
-    const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
-    const isPWV = !re2.test(value);
-    console.log(isPWValid);
-    setIsPWValid(isPWV);
-  };
+  const checkEmail = useCallback(
+    (value: string) => {
+      const regex =
+        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+      const isEMV = regex.test(value);
+      console.log(isEmailValid);
+      setIsEmailValid(isEMV);
+    },
+    [isEmailValid]
+  );
+  const checkPWValue = useCallback(
+    (value: string) => {
+      const re2 = /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$/;
+      const isPWV = !re2.test(value);
+      console.log(isPWValid);
+      setIsPWValid(isPWV);
+    },
+    [isPWValid]
+  );
   const googleSignUp = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
@@ -75,14 +80,14 @@ const SignUp = (props: SignUpProps) => {
       });
   };
   useEffect(() => {
-    console.log('checking email');
+    console.log("checking email");
     checkEmail(inputs.email);
-  }, [inputs.email]);
+  }, [inputs.email, checkEmail]);
 
   useEffect(() => {
-    console.log('checking password');
+    console.log("checking password");
     checkPWValue(inputs.passwordOne);
-  }, [inputs.passwordOne]);
+  }, [inputs.passwordOne, checkPWValue]);
 
   const { user } = props;
   if (user && user.uid) {
@@ -91,19 +96,19 @@ const SignUp = (props: SignUpProps) => {
 
   const isInvalid =
     inputs.passwordOne !== inputs.passwordTwo ||
-    inputs.passwordOne === '' ||
-    inputs.email === '' ||
-    inputs.username === '';
+    inputs.passwordOne === "" ||
+    inputs.email === "" ||
+    inputs.username === "";
 
   return (
     <Box
       sx={{
-        maxWidth: '600px',
-        margin: '50px auto 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
+        maxWidth: "600px",
+        margin: "50px auto 20px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {Object.keys(message)?.length > 0 && (
@@ -117,23 +122,23 @@ const SignUp = (props: SignUpProps) => {
       <Box
         component="form"
         sx={{
-          margin: '10px',
-          display: 'flex',
-          width: '80%',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          '& .MuiTextField-root': {
+          margin: "10px",
+          display: "flex",
+          width: "80%",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          "& .MuiTextField-root": {
             margin: 1,
-            width: '100%'
-          }
+            width: "100%",
+          },
         }}
       >
         <TextField
           variant="outlined"
           size="small"
           label="Full Name"
-          value={inputs.username || ''}
+          value={inputs.username || ""}
           onChange={handleInputChange}
           type="text"
           name="username"
@@ -143,7 +148,7 @@ const SignUp = (props: SignUpProps) => {
           variant="outlined"
           size="small"
           label="Email Address"
-          value={inputs.email || ''}
+          value={inputs.email || ""}
           onChange={handleInputChange}
           type="email"
           name="email"
@@ -153,7 +158,7 @@ const SignUp = (props: SignUpProps) => {
           variant="outlined"
           size="small"
           label="Enter Password"
-          value={inputs.passwordOne || ''}
+          value={inputs.passwordOne || ""}
           onChange={handleInputChange}
           type="password"
           name="passwordOne"
@@ -165,10 +170,10 @@ const SignUp = (props: SignUpProps) => {
           label="Confirm Password"
           error={
             (inputs.passwordTwo && inputs.passwordTwo !== inputs.passwordOne) ||
-            inputs.passwordTwo === '' ||
+            inputs.passwordTwo === "" ||
             !inputs.passwordTwo
           }
-          value={inputs.passwordTwo || ''}
+          value={inputs.passwordTwo || ""}
           onChange={handleInputChange}
           type="password"
           name="passwordTwo"

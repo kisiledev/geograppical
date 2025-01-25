@@ -1,12 +1,10 @@
-import React from 'react';
-
-import { ScorePayload, ScoreData } from '../../helpers/types/index';
-import { Box, Collapse, IconButton } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { ScorePayload } from "../../helpers/types/index";
+import { Box, IconButton } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 
 interface ScoresProps {
   acctData: ScorePayload;
-  deleteDocument: Function;
+  deleteDocument: (id: string, collection: string) => void;
 }
 const Scores = (props: ScoresProps) => {
   const { acctData, deleteDocument } = props;
@@ -21,9 +19,9 @@ const Scores = (props: ScoresProps) => {
             <li className="list-group-item" key={score.id}>
               <Box
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
                 <div className="d-flex flex-column">
@@ -38,10 +36,10 @@ const Scores = (props: ScoresProps) => {
                   <h6>{`Incorrect - ${score.data.incorrect}`}</h6>
                 </div>
                 <IconButton
-                  sx={{ marginLeft: 'auto' }}
+                  sx={{ marginLeft: "auto" }}
                   size="large"
                   color="error"
-                  onClick={() => deleteDocument(score.id, 'scores')}
+                  onClick={() => deleteDocument(score.id, "scores")}
                 >
                   <Delete />
                 </IconButton>

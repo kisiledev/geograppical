@@ -1,23 +1,20 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import { useState, useEffect } from 'react';
-import 'firebaseui';
-import { Link as RouterLink } from 'react-router-dom';
-import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
-import { EmailRounded } from '@mui/icons-material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import useSignUpForm from '../../helpers/CustomHooks';
-import { auth } from '../../firebase/firebase';
-import { makeStyles } from '@mui/styles';
-import { sendPasswordResetEmail, User } from 'firebase/auth';
-import { Route } from 'react-router';
+import { useState, useEffect } from "react";
+import "firebaseui";
+import { Link as RouterLink } from "react-router-dom";
+import { Alert, Box, Button, TextField, Link, AlertColor } from "@mui/material";
+import { EmailRounded } from "@mui/icons-material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import useSignUpForm from "../../helpers/CustomHooks";
+import { auth } from "../../firebase/firebase";
+import { makeStyles } from "@mui/styles";
+import { sendPasswordResetEmail, User } from "firebase/auth";
+import { Route } from "react-router";
 
 const useStyles = makeStyles({
   loginButtons: {
-    marginBottom: '10px'
-  }
+    marginBottom: "10px",
+  },
 });
 
 interface PasswordResetProps {
@@ -29,8 +26,8 @@ const PasswordReset = (props: PasswordResetProps) => {
     style: AlertColor;
     content: string;
   }>({
-    style: 'info',
-    content: ''
+    style: "info",
+    content: "",
   });
   const [loadingState, setLoadingState] = useState(true);
 
@@ -39,12 +36,12 @@ const PasswordReset = (props: PasswordResetProps) => {
     sendPasswordResetEmail(auth, inputs.email)
       .then(() => {
         setMessage({
-          style: 'success',
-          content: `Password Reset Link sent to: ${inputs.email}`
+          style: "success",
+          content: `Password Reset Link sent to: ${inputs.email}`,
         });
       })
       .catch((error) => {
-        setMessage({ style: 'error', content: `${error.message}` });
+        setMessage({ style: "error", content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(reset);
@@ -83,12 +80,12 @@ const PasswordReset = (props: PasswordResetProps) => {
   ) : (
     <Box
       sx={{
-        maxWidth: '600px',
-        margin: '50px auto 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
+        maxWidth: "600px",
+        margin: "50px auto 20px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       {Object.keys(message)?.length > 0 && (
@@ -103,23 +100,23 @@ const PasswordReset = (props: PasswordResetProps) => {
       <Box
         component="form"
         sx={{
-          margin: '10px',
-          display: 'flex',
-          width: '80%',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          '& .MuiTextField-root': {
+          margin: "10px",
+          display: "flex",
+          width: "80%",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          "& .MuiTextField-root": {
             margin: 1,
-            width: '100%'
-          }
+            width: "100%",
+          },
         }}
       >
         <TextField
           variant="outlined"
           size="small"
           label="Email Address"
-          value={inputs.email || ''}
+          value={inputs.email || ""}
           onChange={handleInputChange}
           type="email"
           name="email"
