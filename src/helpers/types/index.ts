@@ -1,13 +1,6 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-undef */
-/* eslint-disable linebreak-style */
-/* eslint-disable indent */
-/* eslint-disable linebreak-style */
-
-import { AlertColor } from '@mui/material';
-import { CountryType } from './CountryType';
-import { store } from '../toolkitSlices';
+import { AlertColor } from "@mui/material";
+import { CountryType } from "./CountryType";
+import { store } from "../toolkitSlices";
 
 interface DateCreated {
   seconds: number;
@@ -152,7 +145,7 @@ export interface Question {
 export interface IsoData {
   [key: string]: number | string;
 }
-export type AccountDataType = 'favorites' | 'scores';
+export type AccountDataType = "favorites" | "scores";
 
 export type Message = {
   link: string;
@@ -166,7 +159,7 @@ export interface ProviderData {
   displayName?: string;
   photoURL?: string;
   email?: string;
-  phoneNumber?: any;
+  phoneNumber?: string;
   providerId?: string;
 }
 
@@ -183,15 +176,15 @@ export interface UserType {
   photoURL?: string;
   email?: string;
   emailVerified?: boolean;
-  phoneNumber?: any;
+  phoneNumber?: string;
   isAnonymous?: boolean;
-  tenantId?: any;
+  tenantId?: string;
   providerData?: ProviderData[];
   apiKey?: string;
   appName?: string;
   authDomain?: string;
   stsTokenManager?: StsTokenManager;
-  redirectEventId?: any;
+  redirectEventId?: string;
   lastLoginAt?: string;
   createdAt?: string;
 }

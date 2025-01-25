@@ -1,6 +1,6 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-shadow */
-/* eslint-disable linebreak-style */
+ 
+ 
+ 
 import React, { useState } from 'react';
 
 interface Inputs {

@@ -1,9 +1,9 @@
-declare module '*.png' {
-  const value: any;
+declare module "*.png" {
+  const value: string;
   export = value;
 }
 
-declare module '*.css' {
+declare module "*.css" {
   const content: Record<string, string>;
   export default content;
 }

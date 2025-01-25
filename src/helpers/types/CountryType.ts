@@ -21,7 +21,7 @@ interface NaturalHazard {
 
 interface InternationalAgreements {
   party_to: string[];
-  signed_but_not_ratified: any;
+  signed_but_not_ratified: string[] | null;
 }
 
 interface GeographicCoordinates {
@@ -126,14 +126,14 @@ interface AgeStructure {
   females: number;
 }
 
-interface DependencyRatio extends ValueUnit {}
+// Removed DependencyRatio interface as it is equivalent to ValueUnit
 
 interface DependencyRatios {
   ratios: {
-    total_dependency_ratio: DependencyRatio;
-    youth_dependency_ratio: DependencyRatio;
-    elderly_dependency_ratio: DependencyRatio;
-    potential_support_ratio: DependencyRatio;
+    total_dependency_ratio: ValueUnit;
+    youth_dependency_ratio: ValueUnit;
+    elderly_dependency_ratio: ValueUnit;
+    potential_support_ratio: ValueUnit;
   };
   date: string;
 }
@@ -167,15 +167,13 @@ interface UrbanArea {
   is_capital: boolean;
 }
 
-interface SexRatio extends ValueUnit {}
-
 interface SexRatiosByAge {
-  at_birth: SexRatio;
-  '0_to_14_years': SexRatio;
-  '15_to_24_years': SexRatio;
-  '25_to_54_years': SexRatio;
-  '55_to_64_years': SexRatio;
-  '65_years_and_over': SexRatio;
+  at_birth: ValueUnit;
+  "0_to_14_years": ValueUnit;
+  "15_to_24_years": ValueUnit;
+  "25_to_54_years": ValueUnit;
+  "55_to_64_years": ValueUnit;
+  "65_years_and_over": ValueUnit;
 }
 
 interface People {
@@ -194,11 +192,11 @@ interface People {
   };
   demographic_profile: string;
   age_structure: {
-    '0_to_14': AgeStructure;
-    '15_to_24': AgeStructure;
-    '25_to_54': AgeStructure;
-    '55_to_64': AgeStructure;
-    '65_and_over': AgeStructure;
+    "0_to_14": AgeStructure;
+    "15_to_24": AgeStructure;
+    "25_to_54": AgeStructure;
+    "55_to_64": AgeStructure;
+    "65_and_over": AgeStructure;
     date: string;
   };
   dependency_ratios: DependencyRatios;
@@ -214,7 +212,7 @@ interface People {
   };
   sex_ratio: {
     by_age: SexRatiosByAge;
-    total_population: SexRatio;
+    total_population: ValueUnit;
     date: string;
   };
   maternal_mortality_rate: {
@@ -761,17 +759,17 @@ interface AirTransport {
     paved: {
       total: number;
       over_3047_metres: number;
-      '2438_to_3047_metres': number;
-      '1524_to_2437_metres': number;
-      '914_to_1523_metres': number;
+      "2438_to_3047_metres": number;
+      "1524_to_2437_metres": number;
+      "914_to_1523_metres": number;
       under_914_metres: number;
       date: string;
     };
     unpaved: {
       total: number;
-      '2438_to_3047_metres': number;
-      '1524_to_2437_metres': number;
-      '914_to_1523_metres': number;
+      "2438_to_3047_metres": number;
+      "1524_to_2437_metres": number;
+      "914_to_1523_metres": number;
       under_914_metres: number;
       date: string;
     };

@@ -1,4 +1,4 @@
-/* eslint-disable prefer-destructuring */
+ 
 import firebase from 'firebase/compat/app';
 import {
   collection,
