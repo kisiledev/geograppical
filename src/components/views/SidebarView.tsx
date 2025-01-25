@@ -1,33 +1,32 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-mixed-operators */
-import React, { useState, useEffect } from 'react';
-//
+import React, { useState, useEffect } from "react";
 
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Sidebar from './Sidebar';
-import MediaQuery from 'react-responsive';
-import { Button } from '@mui/material';
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Sidebar from "./Sidebar";
+import MediaQuery from "react-responsive";
+import { Button } from "@mui/material";
+import { DataType } from "../../helpers/types";
 
 interface SidebarViewProps {
-  data: any;
-  handleSideBar: Function;
-  changeView: Function;
+  data: DataType;
   loadingState: boolean;
-  getCountryInfo: Function;
-  totalRegions: any;
-  uniqueRegions: any;
-  getOccurrence: any;
+  uniqueRegions: string[];
+  totalRegions: string[];
+  getOccurrence: (array: string[], value: string) => number;
+  getCountryInfo: (country: string) => void;
+  changeView: (view: string) => void;
+  handleSideBar: (string: string) => void;
+  filterCountryByName: (name: string) => void;
 }
 const SidebarView = (props: SidebarViewProps) => {
-  const [sidebar, setSidebar] = useState('Show');
+  const [sidebar, setSidebar] = useState("Show");
   const [loadingState, setLoadingState] = useState(true);
 
   const viewSidebar = () => {
-    if (sidebar === 'Show') {
-      setSidebar('Hide');
+    if (sidebar === "Show") {
+      setSidebar("Hide");
     } else {
-      setSidebar('Show');
+      setSidebar("Show");
     }
   };
 
@@ -50,9 +49,9 @@ const SidebarView = (props: SidebarViewProps) => {
           className="btn btn-sm btn-block btn-outline-secondary mb-3"
           onClick={() => viewSidebar()}
         >
-          {sidebar === 'Hide' ? 'Show ' : 'Hide '}
+          {sidebar === "Hide" ? "Show " : "Hide "}
         </Button>
-        {sidebar === 'Show' ? show : null}
+        {sidebar === "Show" ? show : null}
       </MediaQuery>
     </nav>
   );

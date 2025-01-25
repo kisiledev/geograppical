@@ -1,6 +1,6 @@
-import { Card, CardMedia } from '@mui/material';
-import { useState, useEffect } from 'react';
-import { CountryType } from '../../helpers/types/CountryType';
+import { Card, CardMedia } from "@mui/material";
+import { useState, useEffect } from "react";
+import { CountryType } from "../../helpers/types/CountryType";
 
 interface AudioPlayerProps {
   nation: CountryType;
@@ -8,25 +8,25 @@ interface AudioPlayerProps {
 const AudioPlayer = ({ nation }: AudioPlayerProps) => {
   const {
     government: {
-      national_anthem: { audio_url: audioUrl, name: anthemName }
+      national_anthem: { audio_url: audioUrl, name: anthemName },
     },
-    name
+    name,
   } = nation;
   const [active, setActive] = useState(false);
 
-  const getResponse = async () => {
-    const response = await fetch(audioUrl, { mode: 'no-cors' });
-    if (response.status === 200 && audioUrl !== undefined) {
-      setActive(true);
-      // The url exists
-    } else {
-      // The url does not exist
-      setActive(false);
-    }
-  };
   useEffect(() => {
+    const getResponse = async () => {
+      const response = await fetch(audioUrl, { mode: "no-cors" });
+      if (response.status === 200 && audioUrl !== undefined) {
+        setActive(true);
+        // The url exists
+      } else {
+        // The url does not exist
+        setActive(false);
+      }
+    };
     getResponse();
-  }, [nation]);
+  }, [nation, audioUrl]);
 
   return active ? (
     <Card raised className="card align-self-start my-3">

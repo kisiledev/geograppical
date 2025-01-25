@@ -1,6 +1,6 @@
-/* eslint-disable global-require */
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-nested-ternary */
+ 
+ 
+ 
 import { useState, useEffect } from 'react';
 import { EmailAuthProvider } from 'firebase/auth';
 import 'firebaseui';

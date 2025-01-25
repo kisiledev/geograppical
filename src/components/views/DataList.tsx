@@ -1,16 +1,13 @@
-/* eslint-disable max-len */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/destructuring-assignment */
-import styled from 'styled-components';
-import ExpandableProperty from './ExpandableProperty';
-import React from 'react';
-import { CountryType } from '../../helpers/types/CountryType';
+import styled from "styled-components";
+import ExpandableProperty from "./ExpandableProperty";
+import React from "react";
+import { CountryType } from "../../helpers/types/CountryType";
 
 const camelCaseToNormal = (str: string) =>
   str
-    .split('_')
-    .join(' ')
-    .replace(/([A-Z])/g, ' $1')
+    .split("_")
+    .join(" ")
+    .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str2) => str2.toUpperCase());
 
 const RecursivePropertyContainer = styled.div<{
@@ -21,7 +18,7 @@ const RecursivePropertyContainer = styled.div<{
   padding-left: 3px;
   margin-left: 10px;
   ${(props) =>
-    props.excludeBottomBorder ? '' : 'border-bottom: 2px solid #eeeeee;'}
+    props.excludeBottomBorder ? "" : "border-bottom: 2px solid #eeeeee;"}
   color: #666;
   font-size: 16px;
 `;
@@ -35,7 +32,7 @@ export const PropertyName = styled.span`
 `;
 
 interface MappedProperty {
-  [key: string]: RecursivePropertyProps['property'];
+  [key: string]: RecursivePropertyProps["property"];
 }
 interface RecursivePropertyProps {
   property: CountryType | MappedProperty | string | number | boolean;
@@ -50,9 +47,9 @@ const RecursiveProperty = (props: RecursivePropertyProps) => {
   return (
     <RecursivePropertyContainer excludeBottomBorder={props.excludeBottomBorder}>
       {props.property ? (
-        typeof props.property === 'number' ||
-        typeof props.property === 'string' ||
-        typeof props.property === 'boolean' ? (
+        typeof props.property === "number" ||
+        typeof props.property === "string" ||
+        typeof props.property === "boolean" ? (
           <>
             <PropertyName>
               {`${camelCaseToNormal(props.propertyName)}: `}
@@ -61,7 +58,7 @@ const RecursiveProperty = (props: RecursivePropertyProps) => {
           </>
         ) : (
           <ExpandableProperty
-            country={props.property}
+            country={props.property as CountryType}
             title={camelCaseToNormal(props.propertyName)}
             expanded={!!props.rootProperty}
           >
@@ -71,7 +68,7 @@ const RecursiveProperty = (props: RecursivePropertyProps) => {
                   <RecursiveProperty
                     rootProperty={props.rootProperty}
                     key={`${index}`}
-                    property={property as RecursivePropertyProps['property']}
+                    property={property as RecursivePropertyProps["property"]}
                     propertyName={
                       Object.getOwnPropertyNames(props.property)[index]
                     }
@@ -83,7 +80,7 @@ const RecursiveProperty = (props: RecursivePropertyProps) => {
           </ExpandableProperty>
         )
       ) : (
-        'Property is empty'
+        "Property is empty"
       )}
     </RecursivePropertyContainer>
   );

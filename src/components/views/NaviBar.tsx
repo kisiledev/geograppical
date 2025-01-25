@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { makeStyles } from '@mui/styles';
-import { Search } from '@mui/icons-material';
+import { makeStyles } from "@mui/styles";
+import { Search } from "@mui/icons-material";
 import {
   AppBar,
   Avatar,
@@ -13,53 +13,55 @@ import {
   MenuItem,
   Toolbar,
   Tooltip,
-  Typography
-} from '@mui/material';
-import { signInWithPopup, User } from 'firebase/auth';
-import { auth, googleProvider } from '../../firebase/firebase';
+  Typography,
+} from "@mui/material";
+import { User } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
 // import * as ROUTES from '../../Constants/Routes';
-import userImg from '../../img/user.png';
-import { useNavigate } from 'react-router';
+import userImg from "../../img/user.png";
+import { useNavigate } from "react-router";
 
 const useStyles = makeStyles({
   appbar: {
-    marginBottom: '50px',
-    paddingLeft: '275px'
+    marginBottom: "50px",
+    paddingLeft: "275px",
   },
   search: {
-    position: 'relative',
-    borderRadius: '3px',
-    border: '1px solid white',
-    width: '20vw',
-    display: 'flex',
-    alignItems: 'center',
-    padding: '5px'
+    position: "relative",
+    borderRadius: "3px",
+    border: "1px solid white",
+    width: "20vw",
+    display: "flex",
+    alignItems: "center",
+    padding: "5px",
   },
   searchField: {
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: '1px 1px 1px 0',
-      textAlign: 'initial',
-      marginLeft: '5px'
-    }
-  }
+    color: "inherit",
+    "& .MuiInputBase-input": {
+      padding: "1px 1px 1px 0",
+      textAlign: "initial",
+      marginLeft: "5px",
+    },
+  },
 });
 
 interface NaviBarProps {
   searchText: string;
-  handleInput: Function;
+  handleInput: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   user: User | null;
 }
 function NaviBar(props: NaviBarProps) {
   const { searchText, handleInput, user = null } = props;
 
   const settings = [
-    { name: 'Profile', link: '/account', loggedIn: true },
-    { name: 'Favorites', link: '/favorites', loggedIn: true },
-    { name: 'Dashboard', link: '/account', loggedIn: true },
-    { name: 'Logout', link: '/logout', loggedIn: true },
-    { name: 'Sign In', link: '/login', loggedIn: false },
-    { name: 'Sign Up', link: '/signup', loggedIn: false }
+    { name: "Profile", link: "/account", loggedIn: true },
+    { name: "Favorites", link: "/favorites", loggedIn: true },
+    { name: "Dashboard", link: "/account", loggedIn: true },
+    { name: "Logout", link: "/logout", loggedIn: true },
+    { name: "Sign In", link: "/login", loggedIn: false },
+    { name: "Sign Up", link: "/signup", loggedIn: false },
   ];
   const classes = useStyles();
 
@@ -76,32 +78,33 @@ function NaviBar(props: NaviBarProps) {
 
   const logout = () => {
     auth.signOut();
-    navigate('/');
-    console.log('pushing to root');
+    navigate("/");
+    console.log("pushing to root");
   };
 
   const handleMenuClick = (name: string) => {
     const selected = settings.filter((s) => s.name === name)[0];
-    if (name === 'Logout') {
+    if (name === "Logout") {
       logout();
     }
-    if (name === 'Sign In') {
-      navigate('/login');
+    if (name === "Sign In") {
+      navigate("/login");
     }
-    if (name === 'Sign Up') {
-      navigate('/signup');
+    if (name === "Sign Up") {
+      navigate("/signup");
     } else {
       navigate(selected.link);
     }
   };
 
   const searchMarkup = (
-    <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
       <Box className={classes.search}>
         <Box>
           <Search />
         </Box>
         <InputBase
+          type="text"
           value={searchText}
           onChange={(e) => handleInput(e)}
           className={classes.searchField}
@@ -114,21 +117,21 @@ function NaviBar(props: NaviBarProps) {
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar src={user ? user.photoURL : userImg} alt="avatar" />
+          <Avatar src={user?.photoURL || userImg} alt="avatar" />
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: '45px' }}
+        sx={{ mt: "45px" }}
         id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
+          vertical: "top",
+          horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
+          vertical: "top",
+          horizontal: "right",
         }}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
@@ -147,7 +150,7 @@ function NaviBar(props: NaviBarProps) {
   );
   return (
     <AppBar className={classes.appbar}>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
         {searchMarkup}
         {accountMarkup}
       </Toolbar>

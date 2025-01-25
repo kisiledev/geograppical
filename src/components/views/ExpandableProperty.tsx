@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
-import { faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CountryType } from "../../helpers/types/CountryType";
 
 export const PropertyName = styled.div.attrs({
-  role: 'button'
+  role: "button",
 })<{
   onClick?: () => void;
   children?: React.ReactNode;
@@ -20,23 +21,22 @@ export const PropertyName = styled.div.attrs({
 interface ExpandablePropertyProps {
   title: string;
   expanded?: boolean;
-  country?: any;
+  country?: CountryType;
   children?: React.ReactNode;
 }
 const ExpandableProperty = (props: ExpandablePropertyProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { country, title, children } = props;
-
-  const setTrue = () => {
-    if (country.name) {
-      setIsOpen(true);
-    }
-  };
+  const { country = null, title, children } = props;
 
   useEffect(() => {
+    const setTrue = () => {
+      if (country?.name) {
+        setIsOpen(true);
+      }
+    };
     setTrue();
-  }, []);
+  }, [country?.name]);
   const toggleValue = () => {
     setIsOpen(!isOpen);
   };
@@ -52,7 +52,7 @@ const ExpandableProperty = (props: ExpandablePropertyProps) => {
       </PropertyName>
       {isOpen ? children : null}
       {React.Children.count(children) === 0 && isOpen
-        ? 'The list is empty!'
+        ? "The list is empty!"
         : null}
     </>
   );

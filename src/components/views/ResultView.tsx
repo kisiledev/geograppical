@@ -1,32 +1,17 @@
-import React, { useState } from 'react';
-import { Breakpoint, BreakpointProvider } from 'react-socks';
-import {
-  Alert,
-  AlertColor,
-  AlertPropsColorOverrides,
-  Link
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState } from "react";
+import { Alert, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
-import {
-  getFirestore,
-  doc,
-  deleteDoc,
-  setDoc,
-  collection
-} from 'firebase/firestore';
-import { DataType, Message, UserType } from '../../helpers/types/index';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import '../../App.css';
-import SidebarView from './SidebarView';
-import Maps from './Maps';
-import Result from './Result';
-import * as ROUTES from '../../constants/Routes';
-import { usersCollection, firebaseApp } from '../../firebase/firebase';
-import { CountryType } from '../../helpers/types/CountryType';
-import { User } from 'firebase/auth';
-import MediaQuery from 'react-responsive';
+import { DataType, Message } from "../../helpers/types/index";
+
+import "../../App.css";
+import SidebarView from "./SidebarView";
+import Maps from "./Maps";
+import Result from "./Result";
+
+import { CountryType } from "../../helpers/types/CountryType";
+import { User } from "firebase/auth";
+import MediaQuery from "react-responsive";
 
 interface ResultViewProps {
   user: User | null;
@@ -43,14 +28,12 @@ interface ResultViewProps {
 
 const ResultView = (props: ResultViewProps) => {
   const [show, setShow] = useState(false);
-  const [favorite, setFavorite] = useState(false);
   const [message, setMessage] = useState<Message>({
-    link: '',
-    linkContent: '',
-    content: '',
-    style: 'info'
+    link: "",
+    linkContent: "",
+    content: "",
+    style: "info",
   });
-  const [alert, setAlert] = useState(false);
 
   const {
     user,
@@ -62,80 +45,10 @@ const ResultView = (props: ResultViewProps) => {
     getCountryInfo,
     handleSideBar,
     filterCountryByName,
-    login
   } = props;
 
-  const db = getFirestore(firebaseApp);
-  const showFunc = () => {
-    setShow(true);
-    setTimeout(() => {
-      setShow(false);
-    }, 4000);
-  };
-  const makeFavorite = async (e: Event, country: CountryType) => {
-    console.log('adding');
-    if (!user) {
-      setAlert(true);
-      setMessage({
-        style: 'warning',
-        content: 'You need to sign in to favorite countries. Login ',
-        link: ROUTES.SIGN_IN,
-        linkContent: 'here'
-      });
-      return;
-    }
-    if (!favorite) {
-      const docRef = doc(
-        usersCollection,
-        ...`${user.uid}/favorites/${country.name}`.split('/')
-      );
-
-      try {
-        await setDoc(docRef, country);
-        setAlert(true);
-        setMessage({
-          ...message,
-          style: 'success',
-          content: `Added ${country.name} to favorites`
-        });
-        setFavorite(true);
-        console.log('added favorite');
-        setShow(true);
-      } catch (error) {
-        setMessage({
-          ...message,
-          style: 'error',
-          content: `Error adding ${country.name} to favorites, ${error}`
-        });
-      }
-    } else {
-      const docRef = doc(
-        usersCollection,
-        ...`${user.uid}/favorites/${country.name}`.split('/')
-      );
-
-      try {
-        await deleteDoc(docRef);
-        setMessage({
-          ...message,
-          style: 'warning',
-          content: `Removed ${country.name} from favorites`
-        });
-        setFavorite(false);
-        showFunc();
-      } catch (error) {
-        setMessage({
-          ...message,
-          style: 'error',
-          content: `Error adding ${country.name} to favorites, ${error}`
-        });
-        showFunc();
-      }
-    }
-  };
-
   const totalRegions = data.map((a) =>
-    a.geography.map_references.replace(/;/g, '')
+    a.geography.map_references.replace(/;/g, "")
   );
   function getOccurrence(array: string[], value: string) {
     return array.filter((v) => v === value).length;
@@ -146,9 +59,9 @@ const ResultView = (props: ResultViewProps) => {
   return (
     <div className="row">
       <main className="col-md-9 col-lg-12 px-0">
-        {alert && show && (
+        {message && show && (
           <Alert
-            severity={message.style || 'warning'}
+            severity={message.style || "warning"}
             action={
               <Link to={message.link} component={RouterLink}>
                 {message.linkContent}
@@ -196,6 +109,7 @@ const ResultView = (props: ResultViewProps) => {
           getOccurrence={getOccurrence}
           getCountryInfo={getCountryInfo}
           loadingState={false}
+          filterCountryByName={filterCountryByName}
         />
       </MediaQuery>
     </div>

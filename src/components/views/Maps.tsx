@@ -1,35 +1,24 @@
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-/* eslint-disable no-alert */
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-shadow */
-/* eslint-disable max-len */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-console */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from "react";
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography
-} from 'react-simple-maps';
-import * as d3 from 'd3';
-import ReactTooltip from 'react-tooltip';
-import { Link } from 'react-router-dom';
-import Flag from 'react-world-flags';
+  Geography,
+} from "react-simple-maps";
+import ReactTooltip from "react-tooltip";
+import { Link } from "react-router-dom";
+import Flag from "react-world-flags";
 import {
   faPlus,
   faMinus,
-  faGlobeAfrica
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  faGlobeAfrica,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
-import data from '../../data/world-50m.json';
-import { DataType } from '../../helpers/types';
-import MediaQuery from 'react-responsive';
+import { Button, ButtonGroup, Card, Grid2 } from "@mui/material";
+import data from "../../data/world-50m.json";
+import { DataType } from "../../helpers/types";
+import MediaQuery from "react-responsive";
 
 interface MapsProps {
   mapVisible: string;
@@ -42,13 +31,7 @@ const Maps = (props: MapsProps) => {
   const [zoom, setZoom] = useState(1);
   // const [bypassClick, setBypassClick] = useState(false);
 
-  const { mapVisible, changeMapView, worldData, getCountryInfo } = props;
-
-  const proj = d3
-    .geoEqualEarth()
-    .translate([800 / 2, 400 / 2])
-    .scale(150);
-
+  const { mapVisible, changeMapView, getCountryInfo } = props;
   const handleZoomIn = () => {
     setZoom((prevZoom) => prevZoom * 2);
   };
@@ -56,11 +39,11 @@ const Maps = (props: MapsProps) => {
     setZoom((prevZoom) => prevZoom / 2);
   };
 
-  const handleClick = (e: React.MouseEvent, country: string) => {
+  const handleClick = (country: string) => {
     getCountryInfo(country);
   };
   const handleMoveStart = ({
-    coordinates
+    coordinates,
   }: {
     coordinates: [number, number];
   }) => {
@@ -68,7 +51,7 @@ const Maps = (props: MapsProps) => {
   };
 
   const handleMoveEnd = ({
-    coordinates
+    coordinates,
   }: {
     coordinates: [number, number];
   }) => {
@@ -100,7 +83,7 @@ const Maps = (props: MapsProps) => {
   const handleContent = (dataTip: string) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
-      return '';
+      return "";
     }
     const obj = JSON.parse(dataTip);
     return obj.NAME ? (
@@ -110,7 +93,7 @@ const Maps = (props: MapsProps) => {
         <Flag
           className="mapFlag text-center"
           code={
-            (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
+            (obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`
           }
           alt={`${obj.NAME}'s Flag`}
         />
@@ -123,9 +106,9 @@ const Maps = (props: MapsProps) => {
       <Card
         sx={{
           margin: 5,
-          padding: '15px',
+          padding: "15px",
           boxShadow:
-            '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
+            "0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)",
         }}
         className="card mr-3 mb-3"
       >
@@ -133,17 +116,17 @@ const Maps = (props: MapsProps) => {
           <Grid2
             container
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '20px',
-              flexDirection: 'row',
-              height: '100%'
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+              flexDirection: "row",
+              height: "100%",
             }}
           >
             <ButtonGroup
               variant="contained"
               size="small"
-              sx={{ height: '48px' }}
+              sx={{ height: "48px" }}
             >
               <Button
                 variant="contained"
@@ -167,24 +150,24 @@ const Maps = (props: MapsProps) => {
             </h2>
             <Button
               variant="contained"
-              sx={{ height: '48px' }}
+              sx={{ height: "48px" }}
               onClick={() => changeMapView()}
               startIcon={
                 <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
               }
             >
-              {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
+              {`${mapVisible === "Show" ? "Hide" : "Show"} Map`}
             </Button>
           </Grid2>
         </MediaQuery>
-        {mapVisible === 'Show' ? (
+        {mapVisible === "Show" ? (
           <ComposableMap
             projection="geoEqualEarth"
             width={800}
             height={400}
             style={{
-              width: '100%',
-              height: 'auto'
+              width: "100%",
+              height: "auto",
             }}
           >
             <ZoomableGroup
@@ -195,7 +178,7 @@ const Maps = (props: MapsProps) => {
               onMoveEnd={handleMoveEnd}
             >
               <Geographies geography={data}>
-                {({ geographies, projection }) =>
+                {({ geographies }) =>
                   geographies &&
                   geographies.map((geo) => (
                     <Link
@@ -205,15 +188,15 @@ const Maps = (props: MapsProps) => {
                       <Geography
                         key={geo.properties.NAME}
                         onWheel={(e) => handleWheel(e)}
-                        data-longname={geo.properties.NAME_LONG.normalize('NFD')
-                          .replace(/[\u0300-\u036f]/g, '')
-                          .replace(/[^a-z\s]/gi, '')}
+                        data-longname={geo.properties.NAME_LONG.normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .replace(/[^a-z\s]/gi, "")}
                         data-tip={JSON.stringify(geo.properties)}
                         data-shortname={geo.properties.NAME}
                         data-continent={geo.properties.CONTINENT}
                         data-subregion={geo.properties.SUBREGION}
                         data-iso={geo.properties.ISO_A3}
-                        onClick={(e) => handleClick(e, geo.properties.ISO_A3)}
+                        onClick={() => handleClick(geo.properties.ISO_A3)}
                         geography={geo}
                         // projection={projection}
                         className="country"
