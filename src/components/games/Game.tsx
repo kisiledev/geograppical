@@ -1,6 +1,5 @@
-/* eslint-disable no-nested-ternary */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Link } from "react-router-dom";
 import {
   Button,
   Checkbox,
@@ -16,26 +15,31 @@ import {
   Radio,
   Card,
   Box,
-  Grid2
-} from '@mui/material';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  Grid2,
+} from "@mui/material";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   addDoc,
   collection,
   getFirestore,
-  Timestamp
-} from 'firebase/firestore';
-import { firebaseApp } from '../../firebase/firebase';
-import * as ROUTES from '../../constants/Routes';
-import { DataType, Question } from '../../helpers/types/index';
-import Highlight from './Highlight';
-import Find from './Find';
-import Scoreboard from './Scoreboard';
-import Choice from './Choice';
-import { User } from 'firebase/auth';
+  Timestamp,
+} from "firebase/firestore";
+import { firebaseApp } from "../../firebase/firebase";
+import * as ROUTES from "../../constants/Routes";
+import { DataType, Question } from "../../helpers/types/index";
+import Highlight from "./Highlight";
+import Find from "./Find";
+import Scoreboard from "./Scoreboard";
+import Choice from "./Choice";
+import { User } from "firebase/auth";
 
+interface Modal {
+  title: string;
+  body: string;
+  primaryButton: JSX.Element;
+}
 interface GameProps {
   changeMapView: () => void;
   mapVisible: string;
@@ -43,7 +47,7 @@ interface GameProps {
   getCountryInfo: (country: string) => void;
   user: User | null;
   handleOpen: () => void;
-  setStateModal: (modal: any) => void;
+  setStateModal: (modal: Modal) => void;
   login: () => void;
 }
 
@@ -59,23 +63,23 @@ interface BundledPropsType {
   endGame: () => void;
   updateScore: (int: number) => void;
   saved: boolean;
-  handlePoints: (q: any) => void;
+  handlePoints: (q: Question[]) => void;
   handleOpen: () => void;
   data: DataType;
 }
 interface GameModeProps {
-  gameMode: 'choice' | 'find' | 'highlight' | null;
+  gameMode: "choice" | "find" | "highlight" | null;
   props: BundledPropsType;
 }
 const GameMode = ({ gameMode, props }: GameModeProps) => {
   switch (gameMode) {
-    case 'choice': {
+    case "choice": {
       return <Choice {...props} mode={gameMode} />;
     }
-    case 'find': {
+    case "find": {
       return <Find {...props} mode={gameMode} />;
     }
-    case 'highlight': {
+    case "highlight": {
       return <Highlight {...props} mode={gameMode} />;
     }
     default:
@@ -91,7 +95,7 @@ const Game = (props: GameProps) => {
   const [correct, setCorrect] = useState(0);
   const [incorrect, setIncorrect] = useState(0);
   const [gameMode, setGameMode] = useState<
-    'choice' | 'find' | 'highlight' | null
+    "choice" | "find" | "highlight" | null
   >(null);
   const [isStarted, setIsStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -100,10 +104,10 @@ const Game = (props: GameProps) => {
   const [currentCount, setCurrentCount] = useState<number>(60);
   const [gameComplete, setGameComplete] = useState(false);
   // const [isRunning, setIsRunning] = useState(false)
-  const [timeMode, setTimeMode] = useState('cd');
+  const [timeMode, setTimeMode] = useState("cd");
   const [show, setShow] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [modalBody, setModalBody] = useState('');
+  const [modalBody, setModalBody] = useState("");
 
   const {
     changeMapView,
@@ -113,21 +117,21 @@ const Game = (props: GameProps) => {
     user,
     handleOpen,
     setStateModal,
-    login
+    login,
   } = props;
 
   const db = getFirestore(firebaseApp);
 
-  const tick = () => {
+  const intervalRef = useRef<number | null>(null);
+
+  const tick = useCallback(() => {
     if (gameOver || !timeChecked) return;
-    if (timeMode === 'cd' && currentCount === 0) {
+    if (timeMode === "cd" && currentCount === 0) {
       setGameOver(true);
     } else {
-      setCurrentCount((curC) => (timeMode === 'cd' ? curC - 1 : curC + 1));
+      setCurrentCount((curC) => (timeMode === "cd" ? curC - 1 : curC + 1));
     }
-  };
-
-  const intervalRef = useRef<NodeJS.Timer | null>(null);
+  }, [gameOver, timeChecked, timeMode, currentCount]);
 
   const stop = useCallback(() => {
     if (intervalRef.current === null) {
@@ -142,16 +146,16 @@ const Game = (props: GameProps) => {
       return;
     }
     if (timeChecked) {
-      intervalRef.current = setInterval(() => tick(), 1000);
+      intervalRef.current = window.setInterval(() => tick(), 1000);
     }
-  }, []);
+  }, [tick, timeChecked]);
 
   const reset = useCallback(() => {
     setCurrentCount(60);
   }, []);
 
   useEffect(() => {
-    if (timeMode === 'cd') {
+    if (timeMode === "cd") {
       setCurrentCount(60);
     } else {
       setCurrentCount(0);
@@ -183,13 +187,13 @@ const Game = (props: GameProps) => {
     stop();
     reset();
   };
-  const endGameModal = () => {
+  const endGameModal = useCallback(() => {
     if (isStarted && currentCount === 0) setShow(true);
-  };
+  }, [isStarted, currentCount]);
 
   useEffect(() => {
     endGameModal();
-  }, [gameOver, currentCount]);
+  }, [gameOver, currentCount, endGameModal]);
 
   const handleModalClose = () => {
     setShow(false);
@@ -221,13 +225,13 @@ const Game = (props: GameProps) => {
     oldString
       .replace(
         /([a-z])([A-Z])/g,
-        (allMatches, firstMatch, secondMatch) => `${firstMatch} ${secondMatch}`
+        (firstMatch, secondMatch) => `${firstMatch} ${secondMatch}`
       )
       .toLowerCase()
       .replace(
         /([ -_]|^)(.)/g,
-        (allMatches, firstMatch, secondMatch) =>
-          (firstMatch ? ' ' : '') + secondMatch.toUpperCase()
+        (firstMatch, secondMatch) =>
+          (firstMatch ? " " : "") + secondMatch.toUpperCase()
       );
   const resetMode = () => {
     setQuestions(0);
@@ -255,11 +259,11 @@ const Game = (props: GameProps) => {
     setCurrentCount(!timeChecked ? 60 : 0);
     setTimeChecked(isChecked);
   };
-  const handleModalUse = () => {
+  const handleModalUse = useCallback(() => {
     const ModalText = `Congrats! You've reached the end of the game. You answered ${correct} questions correctly and ${incorrect} incorrectly.\n Thanks for playing`;
-    const timeExpired = 'Sorry, time expired! Try again';
+    const timeExpired = "Sorry, time expired! Try again";
     setModalBody(gameComplete ? ModalText : timeExpired);
-  };
+  }, [correct, incorrect, gameComplete]);
   const handleScoreCheck = (e: React.ChangeEvent) => {
     if (score === null) {
       setScore(0);
@@ -274,17 +278,17 @@ const Game = (props: GameProps) => {
 
   useEffect(() => {
     handleModalUse();
-  }, [questions]);
+  }, [questions, handleModalUse]);
   const saveScore = async () => {
     if (!user) {
       const modal = {
-        title: 'Not Logged In',
-        body: 'You need to sign in to favorite countries',
+        title: "Not Logged In",
+        body: "You need to sign in to favorite countries",
         primaryButton: (
           <Button variant="contained" onClick={login}>
             Sign In/ Sign Up
           </Button>
-        )
+        ),
       };
       setStateModal(modal);
       handleOpen();
@@ -298,14 +302,14 @@ const Game = (props: GameProps) => {
         correct,
         incorrect,
         ...(timeChecked && { time: 60 - currentCount }),
-        questions: questionsSet
+        questions: questionsSet,
       };
       try {
         const docRef = await addDoc(
           collection(db, `users/${user.uid}/scores`),
           newData
         );
-        console.log('Data written successfully', docRef, docRef.id);
+        console.log("Data written successfully", docRef, docRef.id);
         setSaved(true);
         setIsStarted(false);
         setLoadingState(false);
@@ -316,22 +320,6 @@ const Game = (props: GameProps) => {
     }
   };
 
-  interface BundledPropsType {
-    isStarted: boolean;
-    gameOver: boolean;
-    correct: number;
-    incorrect: number;
-    mapVisible: string;
-    changeMapView: () => void;
-    getCountryInfo: (country: string) => void;
-    startGame: () => void;
-    endGame: () => void;
-    updateScore: (int: number) => void;
-    saved: boolean;
-    handlePoints: (q: any) => void;
-    handleOpen: () => void;
-    data: DataType;
-  }
   const bundledProps = {
     isStarted,
     gameOver,
@@ -346,7 +334,7 @@ const Game = (props: GameProps) => {
     saved,
     handlePoints: handlePointsQuestions,
     handleOpen: handleGameOpen,
-    data
+    data,
   };
   const back = !isStarted && gameMode !== null && (
     <Button variant="contained" color="primary" onClick={() => resetMode()}>
@@ -355,7 +343,7 @@ const Game = (props: GameProps) => {
   );
   const timeButtons = timeChecked && (
     <Grid
-      sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+      sx={{ justifyContent: "center", display: "flex", flexWrap: "wrap" }}
       item
       xs={12}
     >
@@ -363,7 +351,7 @@ const Game = (props: GameProps) => {
         control={
           <Radio
             value="et"
-            checked={timeMode === 'et'}
+            checked={timeMode === "et"}
             onChange={(e) => toggleMode(e)}
           />
         }
@@ -373,7 +361,7 @@ const Game = (props: GameProps) => {
         control={
           <Radio
             value="cd"
-            checked={timeMode === 'cd'}
+            checked={timeMode === "cd"}
             onChange={(e) => toggleMode(e)}
           />
         }
@@ -405,7 +393,7 @@ const Game = (props: GameProps) => {
                 {loadingState ? (
                   <FontAwesomeIcon icon={faSpinner} spin size="3x" />
                 ) : (
-                  'View Score'
+                  "View Score"
                 )}
               </Link>
             </Button>
@@ -426,49 +414,49 @@ const Game = (props: GameProps) => {
         incorrect={incorrect}
         questions={questions}
       />
-      <Card sx={{ margin: '20px', padding: '20px' }} elevation={4}>
+      <Card sx={{ margin: "20px", padding: "20px" }} elevation={4}>
         {back}
         <Typography
-          sx={{ textAlign: 'center', fontWeight: 600 }}
+          sx={{ textAlign: "center", fontWeight: 600 }}
           textAlign="center"
           variant="h4"
         >
           {gameMode
             ? `Game Mode: ${titleCase(gameMode)}`
-            : 'Choose a Game Mode'}
+            : "Choose a Game Mode"}
         </Typography>
         {!gameMode && (
           <Stack
-            sx={{ width: '800px', alignItems: 'center', margin: '0 auto' }}
+            sx={{ width: "800px", alignItems: "center", margin: "0 auto" }}
           >
             <ButtonGroup orientation="vertical" className="px-0 text-center">
-              <Button variant="outlined" onClick={() => setGameMode('choice')}>
+              <Button variant="outlined" onClick={() => setGameMode("choice")}>
                 Questions
               </Button>
-              <Button variant="outlined" onClick={() => setGameMode('find')}>
+              <Button variant="outlined" onClick={() => setGameMode("find")}>
                 Find Country on Map
               </Button>
               <Button
                 variant="outlined"
-                onClick={() => setGameMode('highlight')}
+                onClick={() => setGameMode("highlight")}
               >
                 Select Highlighted Country
               </Button>
             </ButtonGroup>
           </Stack>
         )}
-        <Grid2 size={{ md: 8, lg: 12 }} sx={{ textAlign: 'center' }}>
+        <Grid2 size={{ md: 8, lg: 12 }} sx={{ textAlign: "center" }}>
           <GameMode props={bundledProps} gameMode={gameMode} />
         </Grid2>
         {!isStarted && (
           <Stack
-            sx={{ justifyContent: 'center', display: 'flex', flexWrap: 'wrap' }}
+            sx={{ justifyContent: "center", display: "flex", flexWrap: "wrap" }}
           >
             <Grid2
               sx={{
-                justifyContent: 'center',
-                display: 'flex',
-                flexWrap: 'wrap'
+                justifyContent: "center",
+                display: "flex",
+                flexWrap: "wrap",
               }}
               size={{ xs: 12 }}
             >
@@ -497,12 +485,12 @@ const Game = (props: GameProps) => {
           </Stack>
         )}
         {isStarted && (
-          <Box sx={{ margin: '15px auto 9px', textAlign: 'center' }}>
+          <Box sx={{ margin: "15px auto 9px", textAlign: "center" }}>
             <Button
               type="button"
               variant="contained"
               color="error"
-              sx={{ justifyContent: 'center' }}
+              sx={{ justifyContent: "center" }}
               onClick={() => endGame()}
             >
               End Game

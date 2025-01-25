@@ -22,9 +22,9 @@ const Timer = (props: TimerProps) => {
     // round seconds
     seconds = Math.round(seconds * 100) / 100;
 
-    let result: Result = minutes < 10 ? minutes : minutes;
+    const result: Result = minutes < 10 ? minutes : minutes;
 
-    let finalResult = `${result}:${seconds < 10 ? `0${seconds}` : seconds}`;
+    const finalResult = `${result}:${seconds < 10 ? `0${seconds}` : seconds}`;
     return finalResult;
   };
   // Perform any necessary cleanup in this method, such as invalidating timers, canceling network requests, or cleaning up any subscriptions that were created in componentDidMount().

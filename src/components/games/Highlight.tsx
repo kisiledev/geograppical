@@ -1,37 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, WheelEvent } from "react";
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography
-} from 'react-simple-maps';
-import ReactTooltip from 'react-tooltip';
+  Geography,
+} from "react-simple-maps";
+import ReactTooltip from "react-tooltip";
 import {
   faPlus,
   faMinus,
-  faGlobeAfrica
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  faGlobeAfrica,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Box, Button, ButtonGroup, Typography } from '@mui/material';
-import * as d3 from 'd3';
-import { Answer, DataType, Question } from '../../helpers/types/index';
-import data from '../../data/world-50m.json';
-import gameModes from '../../constants/GameContent';
-import { CountryType } from '../../helpers/types/CountryType';
-import MediaQuery from 'react-responsive';
+import { Box, Button, ButtonGroup, Typography } from "@mui/material";
+import { Answer, DataType, Question } from "../../helpers/types/index";
+import data from "../../data/world-50m.json";
+import gameModes from "../../constants/GameContent";
+import { CountryType } from "../../helpers/types/CountryType";
+import MediaQuery from "react-responsive";
 
 interface HighlightProps {
   data: DataType;
   isStarted: boolean;
   saved: boolean;
   gameOver: boolean;
-  handlePoints: Function;
-  handleOpen: Function;
-  updateScore: Function;
-  startGame: Function;
+  handlePoints: (questions: Question[]) => void;
+  handleOpen: () => void;
+  updateScore: (score: number) => void;
+  startGame: () => void;
   mapVisible: string;
-  changeMapView: Function;
+  changeMapView: () => void;
   mode: keyof typeof gameModes;
 }
 const Highlight = (props: HighlightProps) => {
@@ -57,14 +56,8 @@ const Highlight = (props: HighlightProps) => {
     handlePoints,
     handleOpen,
     saved,
-    mode
+    mode,
   } = props;
-
-  console.log(gameModes, mode);
-  const proj = d3
-    .geoEqualEarth()
-    .translate([800 / 2, 400 / 2])
-    .scale(150);
 
   const endGame = () => {
     setQuestions([]);
@@ -78,14 +71,14 @@ const Highlight = (props: HighlightProps) => {
   const handleZoomOut = () => {
     setZoom((prevZoom) => prevZoom / 2);
   };
-  const handleText = (str: string) => {
+  const handleText = useCallback((str: string) => {
     return str
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z\s]/gi, '');
-  };
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z\s]/gi, "");
+  }, []);
   const handleMoveStart = ({
-    coordinates
+    coordinates,
   }: {
     coordinates: [number, number];
   }) => {
@@ -95,14 +88,14 @@ const Highlight = (props: HighlightProps) => {
   };
 
   const handleMoveEnd = ({
-    coordinates
+    coordinates,
   }: {
     coordinates: [number, number];
   }) => {
     setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
-  const handleWheel = (event: React.WheelEvent) => {
+  const handleWheel = (event: WheelEvent) => {
     const oldZoom = zoom;
     const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
 
@@ -154,18 +147,18 @@ const Highlight = (props: HighlightProps) => {
       answerQuestions = [...questions];
     }
     const question: Question = {
-      country: '',
+      country: "",
       answers: [],
-      correct: null
+      correct: null,
     };
     question.country = currentCountry.name;
     question.correct = null;
     const fetchanswers = [];
     if (currentCountry) {
       fetchanswers.push({
-        name: currentCountry.name.split(';')[0],
+        name: currentCountry.name.split(";")[0],
         id: 0,
-        correct: 2
+        correct: 2,
       });
     }
     if (!currentCountryId) {
@@ -175,15 +168,15 @@ const Highlight = (props: HighlightProps) => {
       let ran = randomExcluded(0, worldData.length - 1, currentCountryId);
       let newName;
       if (worldData[ran].name || ran < 0) {
-        [newName] = worldData[ran].name.split(';');
+        [newName] = worldData[ran].name.split(";");
       } else {
         ran = randomExcluded(0, worldData.length - 1, currentCountryId);
-        [newName] = worldData[ran].name.split(';');
+        [newName] = worldData[ran].name.split(";");
       }
       const capital = {
         name: newName,
         id: x + 1,
-        correct: 2
+        correct: 2,
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
@@ -195,43 +188,48 @@ const Highlight = (props: HighlightProps) => {
     }
     setQuestions(answerQuestions);
   };
-  const getCountryInfo = (country: CountryType) => {
-    let nodes = [
-      ...(document.getElementsByClassName(
-        'gameCountry'
-      ) as HTMLCollectionOf<HTMLElement>)
-    ];
-    if (currentCountry && country) {
-      nodes = nodes.filter((node) => {
-        if (node.dataset.shortname && node.dataset.longname) {
-          handleText(country.name) === handleText(node.dataset.longname) ||
-            handleText(country.name) === handleText(node.dataset.shortname);
-        }
-      });
-    }
-    // highVisibility = (nodes) => {
-    //   const highViz = country.name;
-    //   console.log(highViz + ' - ' + currentCountry.name);
-    //   nodes.forEach( (node) => {
-    //     node.style.outline =  'solid red';
-    //     node.style.outlineOffset = '10px';
-    //   });
-    // };
-    const changeStyle = (nodes: HTMLElement[]) => {
-      nodes.forEach((node) => {
-        node.style.fill = '#FF0000';
-        node.style.stroke = '#111';
-        node.style.strokeWidth = '0.1';
-        node.style.outline = 'solid red';
-        node.style.outlineOffset = '10px';
-        node.style.boxShadow = '0 0 10px #9ecaed';
-        node.style.transition = 'all 250ms';
-      });
-    };
-    if (currentCountry) {
-      setTimeout(() => changeStyle(nodes), 300);
-    }
-  };
+  const getCountryInfo = useCallback(
+    (country: CountryType) => {
+      let nodes = [
+        ...(document.getElementsByClassName(
+          "gameCountry"
+        ) as HTMLCollectionOf<HTMLElement>),
+      ];
+      if (currentCountry && country) {
+        nodes = nodes.filter((node) => {
+          if (node.dataset.shortname && node.dataset.longname) {
+            return (
+              handleText(country.name) === handleText(node.dataset.longname) ||
+              handleText(country.name) === handleText(node.dataset.shortname)
+            );
+          }
+        });
+      }
+      // highVisibility = (nodes) => {
+      //   const highViz = country.name;
+      //   console.log(highViz + ' - ' + currentCountry.name);
+      //   nodes.forEach( (node) => {
+      //     node.style.outline =  'solid red';
+      //     node.style.outlineOffset = '10px';
+      //   });
+      // };
+      const changeStyle = (nodes: HTMLElement[]) => {
+        nodes.forEach((node) => {
+          node.style.fill = "#FF0000";
+          node.style.stroke = "#111";
+          node.style.strokeWidth = "0.1";
+          node.style.outline = "solid red";
+          node.style.outlineOffset = "10px";
+          node.style.boxShadow = "0 0 10px #9ecaed";
+          node.style.transition = "all 250ms";
+        });
+      };
+      if (currentCountry) {
+        setTimeout(() => changeStyle(nodes), 300);
+      }
+    },
+    [currentCountry, handleText]
+  );
 
   const takeTurn = () => {
     if (!isStarted) {
@@ -244,18 +242,18 @@ const Highlight = (props: HighlightProps) => {
     if (questions && questions.length < 10) {
       getCountryInfo(country);
     }
-    const nodes = [...document.getElementsByClassName('gameCountry')];
+    const nodes = [...document.getElementsByClassName("gameCountry")];
     // console.log(filterNations)
     nodes.forEach((node) => {
-      node.removeAttribute('style');
+      node.removeAttribute("style");
     });
     if (questions && questions.length === 10) {
       handleOpen();
       // alert("Congrats! You've reached the end of the game. You answered " + correct + " questions correctly and " + incorrect + " incorrectly.\n Thanks for playing");
-      const nodes = [...document.getElementsByClassName('gameCountry')];
+      const nodes = [...document.getElementsByClassName("gameCountry")];
       // console.log(filterNations)
       nodes.forEach((node) => {
-        node.removeAttribute('style');
+        node.removeAttribute("style");
       });
     }
   };
@@ -304,7 +302,7 @@ const Highlight = (props: HighlightProps) => {
   };
   useEffect(() => {
     handlePoints(questions);
-  }, [questions]);
+  }, [handlePoints, questions]);
   useEffect(() => {
     endGame();
   }, [saved, gameOver]);
@@ -313,7 +311,7 @@ const Highlight = (props: HighlightProps) => {
     if (currentCountry) {
       getCountryInfo(currentCountry);
     }
-  }, [currentCountry]);
+  }, [currentCountry, getCountryInfo]);
 
   useEffect(() => {
     endGame();
@@ -323,7 +321,7 @@ const Highlight = (props: HighlightProps) => {
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
       <Typography variant="body1">{gameModes[mode].directions}</Typography>
-      <Box sx={{ margin: '10px' }}>
+      <Box sx={{ margin: "10px" }}>
         <Button variant="contained" color="success" onClick={() => takeTurn()}>
           Start Game
         </Button>
@@ -336,9 +334,9 @@ const Highlight = (props: HighlightProps) => {
       answerChoices = [];
     } else {
       answerChoices = answers.map((answer) => {
-        const navClass = 'possible card mx-1 mt-3';
-        const correct = 'bg-success possible card mx-1 mt-3';
-        const incorrect = 'bg-danger possible card mx-1 mt-3 disabled';
+        const navClass = "possible card mx-1 mt-3";
+        const correct = "bg-success possible card mx-1 mt-3";
+        const incorrect = "bg-danger possible card mx-1 mt-3 disabled";
         return (
           <li
             role="button"
@@ -360,24 +358,24 @@ const Highlight = (props: HighlightProps) => {
     }
   }
   return (
-    <Box sx={{ marginBottom: '5px', marginRight: '5px' }}>
+    <Box sx={{ marginBottom: "5px", marginRight: "5px" }}>
       {!isStarted && directions}
       {isStarted && guesses && (
-        <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
+        <div>{`${guesses} ${guesses === 1 ? " guess" : " guesses"}`}</div>
       )}
       {isStarted && guesses && (
         <div>
           {`For ${3 - guesses} ${
-            guesses === 2 || guesses === 4 ? ' point' : ' points'
+            guesses === 2 || guesses === 4 ? " point" : " points"
           }`}
         </div>
       )}
       <MediaQuery minWidth={576}>
         <Box
           sx={{
-            justifyContent: 'space-between',
-            display: 'flex',
-            margin: '10px 0px'
+            justifyContent: "space-between",
+            display: "flex",
+            margin: "10px 0px",
           }}
         >
           <ButtonGroup variant="contained">
@@ -403,7 +401,7 @@ const Highlight = (props: HighlightProps) => {
               <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
             }
           >
-            {mapVisible === 'Show' ? 'Hide ' : 'Show '}
+            {mapVisible === "Show" ? "Hide " : "Show "}
             Map
           </Button>
         </Box>
@@ -412,15 +410,15 @@ const Highlight = (props: HighlightProps) => {
       {answers && answers.length > 0 && (
         <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>
       )}
-      {mapVisible === 'Show' ? (
+      {mapVisible === "Show" ? (
         <div onWheel={handleWheel}>
           <ComposableMap
             width={800}
             height={400}
             projection="geoEqualEarth"
             style={{
-              width: '100%',
-              height: 'auto'
+              width: "100%",
+              height: "auto",
             }}
           >
             <ZoomableGroup
@@ -430,7 +428,7 @@ const Highlight = (props: HighlightProps) => {
               onMoveEnd={handleMoveEnd}
             >
               <Geographies geography={data}>
-                {({ geographies, projection }) =>
+                {({ geographies }) =>
                   geographies.map((geo, i) => (
                     <Geography
                       data-idkey={i}
