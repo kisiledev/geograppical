@@ -1,22 +1,14 @@
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable linebreak-style */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-console */
-/* eslint-disable global-require */
-import React, { useState, useEffect } from 'react';
-import { Alert, Grid2 } from '@mui/material';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from "react";
+import { Alert, Grid2 } from "@mui/material";
 import {
   collection,
   deleteDoc,
   doc,
   getDocs,
-  getFirestore
-} from 'firebase/firestore';
-import AccountData from './AccountData';
-import { firebaseApp, usersCollection } from '../../firebase/firebase';
+  getFirestore,
+} from "firebase/firestore";
+import AccountData from "./AccountData";
+import { firebaseApp, usersCollection } from "../../firebase/firebase";
 import {
   AccountDataType,
   FavoriteData,
@@ -24,11 +16,11 @@ import {
   GameData,
   Message,
   ScoreData,
-  ScorePayload
-} from '../../helpers/types/index';
-import AcctHeader from './AcctHeader';
-import AccountEdit from './AccountEdit';
-import { User } from 'firebase/auth';
+  ScorePayload,
+} from "../../helpers/types/index";
+import AcctHeader from "./AcctHeader";
+import AccountEdit from "./AccountEdit";
+import { User } from "firebase/auth";
 
 interface AccountProps {
   user: User | null;
@@ -40,17 +32,17 @@ const Account = (props: AccountProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [acctFavorites, setAcctFavorites] = useState<FavoritePayload>({
     isOpen: false,
-    data: []
+    data: [],
   });
   const [acctScores, setAcctScores] = useState<ScorePayload>({
     isOpen: false,
-    data: []
+    data: [],
   });
   const [message, setMessage] = useState<Message>({
-    link: '',
-    linkContent: '',
-    content: '',
-    style: 'info'
+    link: "",
+    linkContent: "",
+    content: "",
+    style: "info",
   });
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -64,30 +56,30 @@ const Account = (props: AccountProps) => {
       return;
     }
     let docRef;
-    if (type === 'favorites') {
-      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split('/'));
+    if (type === "favorites") {
+      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split("/"));
     } else {
-      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split('/'));
+      docRef = doc(usersCollection, ...`${user.uid}/${type}/${id}`.split("/"));
     }
     try {
       await deleteDoc(docRef);
       setShow(true);
       setMessage({
         ...message,
-        style: 'warning',
-        content: `Removed ${id} from ${type}`
+        style: "warning",
+        content: `Removed ${id} from ${type}`,
       });
     } catch (error) {
       setMessage({
         ...message,
-        style: 'error',
-        content: `Error removing ${id} from ${type}, ${error}`
+        style: "error",
+        content: `Error removing ${id} from ${type}, ${error}`,
       });
     }
   };
 
   const toggleData = (type: AccountDataType) => {
-    if (type === 'favorites') {
+    if (type === "favorites") {
       if (acctFavorites.isOpen) {
         const oldFav = { ...acctFavorites };
         oldFav.isOpen = false;
@@ -98,7 +90,7 @@ const Account = (props: AccountProps) => {
         setAcctFavorites(oldFav);
       }
     }
-    if (type === 'scores') {
+    if (type === "scores") {
       if (acctScores.isOpen) {
         const oldSco = { ...acctScores };
         oldSco.isOpen = false;
@@ -126,7 +118,7 @@ const Account = (props: AccountProps) => {
         querySnapshot.forEach((favoriteDoc) => {
           const info = {
             id: favoriteDoc.id,
-            data: favoriteDoc.data().country
+            data: favoriteDoc.data().country,
           };
           data.push(info);
         });
@@ -151,7 +143,7 @@ const Account = (props: AccountProps) => {
         querySnapshot.forEach((scoreDoc) => {
           const info = {
             id: scoreDoc.id,
-            data: scoreDoc.data() as GameData
+            data: scoreDoc.data() as GameData,
           };
           data.push(info);
         });
@@ -165,39 +157,39 @@ const Account = (props: AccountProps) => {
     };
     getFavoritesData();
     getScoresData();
-    // eslint-disable-next-line no-return-assign
+
     return () => {
       isSubscribed = false;
     };
-  }, [user, favorites, scores]);
+  }, [user, favorites, scores, db]);
 
   const data = [
     {
-      name: 'favorites',
+      name: "favorites",
       data: acctFavorites,
-      boolean: favorites
+      boolean: favorites,
     },
     {
-      name: 'scores',
+      name: "scores",
       data: acctScores,
-      boolean: scores
-    }
+      boolean: scores,
+    },
   ];
   const acct: JSX.Element[] = [];
   const capitalize = (s: string) => {
-    if (typeof s !== 'string') return '';
+    if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
   data.forEach((piece) => {
     const dynamicProps = {
       key: piece.name,
-      name: piece.name,
+      name: piece.name as AccountDataType,
       toggleData,
       loadingState,
       simplifyString,
       capitalize,
       deleteDocument,
-      acctData: piece.data
+      acctData: piece.data,
     };
     acct.push(<AccountData {...dynamicProps} />);
   });
@@ -206,11 +198,11 @@ const Account = (props: AccountProps) => {
       container
       spacing={2}
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: '0 auto'
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "0 auto",
       }}
     >
       {show && <Alert severity={message.style}>{message.content}</Alert>}

@@ -1,8 +1,5 @@
-/* eslint-disable global-require */
-/* eslint-disable no-console */
-/* eslint-disable linebreak-style */
-import { useState } from 'react';
-import firebase from 'firebase/compat/app';
+import { useState } from "react";
+import firebase from "firebase/compat/app";
 import {
   Alert,
   AlertColor,
@@ -12,8 +9,8 @@ import {
   Dialog,
   Icon,
   IconButton,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 import {
   FacebookAuthProvider,
   getRedirectResult,
@@ -22,18 +19,18 @@ import {
   signInWithPopup,
   TwitterAuthProvider,
   unlink,
-  User
-} from 'firebase/auth';
+  User,
+} from "firebase/auth";
 import {
   EmailTwoTone,
   FacebookTwoTone,
   Google,
-  LinkOff
-} from '@mui/icons-material';
-import X from '@mui/icons-material/X';
-import { auth } from '../../firebase/firebase';
-import LinkEmailModal from '../views/LinkEmailModal';
-import { Message } from '../../helpers/types';
+  LinkOff,
+} from "@mui/icons-material";
+import X from "@mui/icons-material/X";
+import { auth } from "../../firebase/firebase";
+import LinkEmailModal from "../views/LinkEmailModal";
+import { Message } from "../../helpers/types";
 
 interface AccountEditProps {
   user: User | null;
@@ -43,17 +40,17 @@ const AccountEdit = (props: AccountEditProps) => {
 
   const [providers, setProviders] = useState(user ? user.providerData : []);
   const [message, setMessage] = useState<Message>({
-    link: '',
-    linkContent: '',
-    content: '',
-    style: 'info'
+    link: "",
+    linkContent: "",
+    content: "",
+    style: "info",
   });
   const [modalMessage, setModalMessage] = useState<{
     style: AlertColor;
     content: string;
   }>({
-    content: '',
-    style: 'info'
+    content: "",
+    style: "info",
   });
   const [show, setShow] = useState(false);
 
@@ -62,12 +59,12 @@ const AccountEdit = (props: AccountEditProps) => {
       return;
     }
     try {
-      console.log('provider', provider);
+      console.log("provider", provider);
       await unlink(auth.currentUser, provider);
       setMessage({
         ...message,
-        style: 'error',
-        content: `Unlinked provider ${provider}`
+        style: "error",
+        content: `Unlinked provider ${provider}`,
       });
       setProviders(user.providerData);
     } catch (error) {
@@ -93,26 +90,26 @@ const AccountEdit = (props: AccountEditProps) => {
       .then((usercred) => {
         const funcuser = usercred.user;
         setModalMessage({
-          style: 'success',
-          content: 'Linked email credentials to account'
+          style: "success",
+          content: "Linked email credentials to account",
         });
-        console.log('success', funcuser);
+        console.log("success", funcuser);
       })
       .catch((error) => {
         console.log(error);
-        setModalMessage({ style: 'error', content: error.message });
+        setModalMessage({ style: "error", content: error.message });
       });
   };
   const providerLink = async (provider: string) => {
     let providerSource;
     switch (provider) {
-      case 'Twitter':
+      case "Twitter":
         providerSource = TwitterAuthProvider;
         break;
-      case 'Facebook':
+      case "Facebook":
         providerSource = FacebookAuthProvider;
         break;
-      case 'Google':
+      case "Google":
         providerSource = GoogleAuthProvider;
         break;
       default:
@@ -132,10 +129,8 @@ const AccountEdit = (props: AccountEditProps) => {
         setProviders(user.providerData);
         console.log(user.providerData);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      const { credential } = error;
-      console.log(credential);
     }
     // auth
     //   .getRedirectResult()
@@ -156,33 +151,33 @@ const AccountEdit = (props: AccountEditProps) => {
   const providersArray = [
     {
       id: 1,
-      name: 'Google',
-      provName: 'google.com',
+      name: "Google",
+      provName: "google.com",
       icon: <Google />,
-      onClick: () => providerLink('Google')
+      onClick: () => providerLink("Google"),
     },
     {
       id: 2,
-      name: 'Facebook',
-      provName: 'facebook.com',
+      name: "Facebook",
+      provName: "facebook.com",
       icon: <FacebookTwoTone />,
-      onClick: () => providerLink('Facebook')
+      onClick: () => providerLink("Facebook"),
     },
     {
       id: 3,
-      name: 'X',
-      provName: 'x.com',
+      name: "X",
+      provName: "x.com",
       icon: <X />,
-      onClick: () => providerLink('Twitter')
+      onClick: () => providerLink("Twitter"),
     },
     {
       id: 4,
-      name: 'Email',
-      provName: 'password',
+      name: "Email",
+      provName: "password",
       icon: <EmailTwoTone />,
-      color: 'primary',
-      onClick: () => setShow(true)
-    }
+      color: "primary",
+      onClick: () => setShow(true),
+    },
   ];
   const userProvs: string[] = [];
   if (providers) {
@@ -190,7 +185,7 @@ const AccountEdit = (props: AccountEditProps) => {
   }
   const provIcons = [];
   providersArray.map((prov) => {
-    const provider = { name: '', icon: <Icon /> };
+    const provider = { name: "", icon: <Icon /> };
     provider.name = prov.provName;
     provider.icon = prov.icon;
     return provIcons.push(provider);
@@ -212,9 +207,9 @@ const AccountEdit = (props: AccountEditProps) => {
 
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <Typography variant="h5" margin="30px">
@@ -222,13 +217,13 @@ const AccountEdit = (props: AccountEditProps) => {
         </Typography>
 
         <Typography variant="h6" margin="15px">
-          {providers && providers.length === 0 && 'No '} Linked Auth Providers
+          {providers && providers.length === 0 && "No "} Linked Auth Providers
         </Typography>
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {providers &&
@@ -236,11 +231,11 @@ const AccountEdit = (props: AccountEditProps) => {
               <Card
                 key={data.uid}
                 sx={{
-                  padding: '20px',
-                  width: '200px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center'
+                  padding: "20px",
+                  width: "200px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 {providersArray.map((prov) => {
@@ -249,12 +244,12 @@ const AccountEdit = (props: AccountEditProps) => {
                       <Box
                         key={prov.id}
                         sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center'
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
                         }}
                       >
-                        <IconButton sx={{ marginRight: '10px' }}>
+                        <IconButton sx={{ marginRight: "10px" }}>
                           {prov.icon}
                         </IconButton>
                         <Typography>{prov.name}</Typography>
@@ -263,8 +258,8 @@ const AccountEdit = (props: AccountEditProps) => {
                   }
                   return null;
                 })}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box sx={{ alignItems: 'flex-start' }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Box sx={{ alignItems: "flex-start" }}>
                     <Typography fontSize="16px" component="p">
                       {data.displayName}
                     </Typography>
@@ -285,7 +280,7 @@ const AccountEdit = (props: AccountEditProps) => {
                   variant="contained"
                   size="small"
                   endIcon={<LinkOff />}
-                  sx={{ marginTop: '10px' }}
+                  sx={{ marginTop: "10px" }}
                 >
                   Unlink
                 </Button>
@@ -298,11 +293,11 @@ const AccountEdit = (props: AccountEditProps) => {
         </Typography>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            marginBottom: '50px'
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            marginBottom: "50px",
           }}
         >
           {providersArray.map((provider) => {
