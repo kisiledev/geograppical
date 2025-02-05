@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
   Card,
   List,
   ListItemButton,
-  Typography,
-} from "@mui/material";
-import { Answer, DataType, Question } from "../../helpers/types/index";
-import gameModes from "../../constants/GameContent";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { CountryType } from "../../helpers/types/CountryType";
+  Typography
+} from '@mui/material';
+import { Answer, DataType, Question } from '../../helpers/types/index';
+import gameModes from '../../constants/GameContent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { CountryType } from '../../helpers/types/CountryType';
 
 interface CustomAnswerProps {
   answers: { id: number; name: string; correct: number }[];
@@ -24,20 +24,20 @@ const CustomAnswer = ({
   answers,
   checkAnswer,
   options,
-  loading,
+  loading
 }: CustomAnswerProps) => (
   <List
     sx={{
-      padding: "5px",
-      display: "flex",
-      justifyContent: "center",
-      flexWrap: "wrap",
+      padding: '5px',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap'
     }}
   >
     {loading && <FontAwesomeIcon icon={faSpinner} />}
     {!loading &&
       answers.map((answer) => (
-        <List sx={{ width: "45%", padding: "20px" }} key={answer.id}>
+        <List sx={{ width: '45%', padding: '20px' }} key={answer.id}>
           <ListItemButton
             role="button"
             tabIndex={0}
@@ -86,34 +86,34 @@ const Choice = (props: ChoiceProps) => {
     endGame,
     startGame,
     updateScore,
-    mode,
+    mode
   } = props;
 
   const options = {
     0: {
-      marginTop: "10px",
-      margin: "10px 8px none",
-      padding: "10px",
-      borderRadius: "3px",
-      display: "flex",
-      backgroundColor: "green",
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'green'
     },
     1: {
-      marginTop: "10px",
-      margin: "10px 8px none",
-      padding: "10px",
-      borderRadius: "3px",
-      display: "flex",
-      backgroundColor: "red",
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'red'
     },
     2: {
-      marginTop: "10px",
-      margin: "10px 8px none",
-      padding: "10px",
-      borderRadius: "3px",
-      display: "flex",
-      backgroundColor: "initial",
-    },
+      marginTop: '10px',
+      margin: '10px 8px none',
+      padding: '10px',
+      borderRadius: '3px',
+      display: 'flex',
+      backgroundColor: 'initial'
+    }
   };
   const shuffle = (a: Answer[]) => {
     for (let i = a.length - 1; i > 0; i -= 1) {
@@ -153,9 +153,9 @@ const Choice = (props: ChoiceProps) => {
       answerQuestions = [...questions];
     }
     const question: Question = {
-      country: "",
+      country: '',
       answers: [],
-      correct: null,
+      correct: null
     };
     question.country = country.name;
     question.correct = null;
@@ -164,10 +164,10 @@ const Choice = (props: ChoiceProps) => {
     if (country) {
       fetchanswers.push({
         name: country.government.capital.name
-          ? country.government.capital.name.split(";")[0]
-          : "no capital",
+          ? country.government.capital.name.split(';')[0]
+          : 'no capital',
         id: 0,
-        correct: 2,
+        correct: 2
       });
     }
     if (!currentCountryId) {
@@ -181,7 +181,7 @@ const Choice = (props: ChoiceProps) => {
       usedCaps.push(ran);
       let newName;
       if (data[ran].government.capital.name || ran < 0) {
-        [newName] = data[ran].government.capital.name.split(";");
+        [newName] = data[ran].government.capital.name.split(';');
         usedCaps.push(ran);
       } else {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
@@ -189,12 +189,12 @@ const Choice = (props: ChoiceProps) => {
           ran = randomExcluded(0, data.length - 1, currentCountryId);
         }
         usedCaps.push(ran);
-        [newName] = data[ran].government.capital.name.split(";");
+        [newName] = data[ran].government.capital.name.split(';');
       }
       const capital = {
         name: newName,
         id: x + 1,
-        correct: 2,
+        correct: 2
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
@@ -277,7 +277,7 @@ const Choice = (props: ChoiceProps) => {
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
       <Typography variant="body1">{gameModes[mode].directions}</Typography>
-      <Box sx={{ margin: "10px" }}>
+      <Box sx={{ margin: '10px' }}>
         <Button
           disabled={data?.length === 0}
           variant="contained"
@@ -306,21 +306,21 @@ const Choice = (props: ChoiceProps) => {
             ? `What is the capital of
           ${currentCountry && currentCountry.name}
           ? `
-            : "The Game is Over"}
+            : 'The Game is Over'}
         </div>
       )}
       <div className="guesses">
         {isStarted && guesses && (
           <div>
             {guesses}
-            {guesses === 1 ? " guess" : " guesses"}
+            {guesses === 1 ? ' guess' : ' guesses'}
           </div>
         )}
         {isStarted && guesses && (
           <div>
             {`For 
             ${3 - guesses}
-            ${guesses === 2 || guesses === 4 ? " point" : " points"}`}
+            ${guesses === 2 || guesses === 4 ? ' point' : ' points'}`}
           </div>
         )}
       </div>

@@ -12,7 +12,7 @@ const gameModes = {
   find: {
     name: 'Find',
     directions:
-      "A country's name will appear above the map. Click the correct country on the map for the maximum number of points. You have 4 chances to find the correct country. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!'"
+      "A country's name will appear above the map. Click the correct country on the map for the maximum number of points. You have 4 chances to find the correct country. Incorrect answers will receive less points and make two incorrect choices will yield no points. Select all incorrect answers and you will LOSE a point. Good luck!"
   }
 };
 
