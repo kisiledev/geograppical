@@ -31,19 +31,22 @@ const Timer = (props: TimerProps) => {
   let time;
   if (timeChecked) {
     time = (
-      <Grid2>
+      <Grid2
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}
+      >
         Time
         <Grid2>
           <Box>
             <Typography
-              variant="h6"
+              variant="h5"
               color={timeChecked && isStarted ? 'danger' : 'success'}
             >
-              <strong>
-                {timeChecked !== null && SecondsToHHMMSS(currentCount)}
-              </strong>
+              {timeChecked !== null && SecondsToHHMMSS(currentCount)}
             </Typography>
-            <div />
           </Box>
         </Grid2>
       </Grid2>

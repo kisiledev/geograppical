@@ -1,4 +1,4 @@
-import { Card, Grid2 } from '@mui/material';
+import { Card, Grid2, Typography } from '@mui/material';
 import Timer from './Timer';
 import Score from './Score';
 
@@ -47,12 +47,18 @@ const Scoreboard = (props: ScoreboardProps) => {
             currentCount={currentCount}
           />
         </Grid2>
-        <Grid2>
+        <Grid2 sx={{ paddingX: '10px' }}>
           <Score score={score} correct={correct} incorrect={incorrect} />
         </Grid2>
-        <Grid2>
+        <Grid2
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
           Questions
-          <div className="col text-danger">{questions}</div>
+          <Typography variant="h5">{questions}</Typography>
         </Grid2>
       </Grid2>
     </Card>
