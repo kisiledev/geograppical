@@ -12,43 +12,102 @@ import gameModes from '../../constants/GameContent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { CountryType } from '../../helpers/types/CountryType';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { keyframes } from '@mui/system';
 
 interface CustomAnswerProps {
-  answers: { id: number; name: string; correct: number }[];
-  checkAnswer: (answer: { id: number; name: string; correct: number }) => void;
+  answers: Answer[];
+  checkAnswer: (e: React.MouseEvent<HTMLDivElement>, answer: Answer) => void;
   options: { [key: number]: React.CSSProperties };
   loading: boolean;
+  otherOptions: React.CSSProperties;
 }
+
+// Add the shake animation keyframes
+const shakeAnimation = keyframes`
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+`;
 
 const CustomAnswer = ({
   answers,
   checkAnswer,
   options,
-  loading
+  loading,
+  otherOptions
 }: CustomAnswerProps) => (
   <List
     sx={{
       padding: '5px',
       display: 'flex',
       justifyContent: 'center',
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
+      maxWidth: '600px',
+      margin: '0 auto'
     }}
   >
-    {loading && <FontAwesomeIcon icon={faSpinner} />}
-    {!loading &&
+    {loading ? (
+      <FontAwesomeIcon icon={faSpinner} />
+    ) : (
       answers.map((answer) => (
-        <List sx={{ width: '45%', padding: '20px' }} key={answer.id}>
+        <List
+          sx={{
+            width: '45%',
+            padding: '10px',
+            boxSizing: 'border-box'
+          }}
+          key={answer.id}
+        >
           <ListItemButton
             role="button"
             tabIndex={0}
-            onClick={() => checkAnswer(answer)}
+            onClick={(e) => checkAnswer(e, answer)}
             component={Card}
-            style={options[answer.correct]}
+            style={{
+              ...otherOptions,
+              backgroundColor:
+                answer.correct === 2
+                  ? 'initial'
+                  : options[answer.correct].backgroundColor,
+              height: '60px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              animation:
+                answer.id === 0 &&
+                answers.some((a) => a.correct === 1) &&
+                answers.filter((a) => a.correct === 1).length >= 3
+                  ? `${shakeAnimation} 0.5s ease-in-out`
+                  : 'none'
+            }}
           >
             {answer.name}
+            {answer.correct === 0 && (
+              <CheckCircleIcon
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  color: 'white'
+                }}
+              />
+            )}
+            {answer.correct === 1 && (
+              <CancelIcon
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  color: 'white'
+                }}
+              />
+            )}
           </ListItemButton>
         </List>
-      ))}
+      ))
+    )}
   </List>
 );
 
@@ -65,7 +124,6 @@ interface ChoiceProps {
   mode: keyof typeof gameModes;
 }
 const Choice = (props: ChoiceProps) => {
-  console.log(props);
   const [currentCountry, setCurrentCountry] = useState<CountryType | null>(
     null
   );
@@ -75,6 +133,7 @@ const Choice = (props: ChoiceProps) => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [usedCountry, setUsedCountry] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [points, setPoints] = useState<number>(2);
 
   const {
     handlePoints,
@@ -89,29 +148,24 @@ const Choice = (props: ChoiceProps) => {
     mode
   } = props;
 
+  const otherOptions = {
+    marginTop: '10px',
+    margin: '10px 8px none',
+    padding: '10px',
+    borderRadius: '3px',
+    display: 'flex'
+  };
   const options = {
     0: {
-      marginTop: '10px',
-      margin: '10px 8px none',
-      padding: '10px',
-      borderRadius: '3px',
-      display: 'flex',
+      ...otherOptions,
       backgroundColor: 'green'
     },
     1: {
-      marginTop: '10px',
-      margin: '10px 8px none',
-      padding: '10px',
-      borderRadius: '3px',
-      display: 'flex',
+      ...otherOptions,
       backgroundColor: 'red'
     },
     2: {
-      marginTop: '10px',
-      margin: '10px 8px none',
-      padding: '10px',
-      borderRadius: '3px',
-      display: 'flex',
+      ...otherOptions,
       backgroundColor: 'initial'
     }
   };
@@ -137,7 +191,7 @@ const Choice = (props: ChoiceProps) => {
     const usedArray = usedCountry;
     usedArray.push(int);
     setUsedCountry(usedArray);
-    return country;
+    return { country, int };
   };
   const randomExcluded = (min: number, max: number, excluded: number) => {
     let n = Math.floor(Math.random() * (max - min) + min);
@@ -147,7 +201,12 @@ const Choice = (props: ChoiceProps) => {
     return n;
   };
 
-  const getAnswers = (country: CountryType) => {
+  useEffect(() => {
+    console.log(answers);
+  }, [answers]);
+
+  const getAnswers = (country: CountryType, currentCountryId: number) => {
+    const fetchanswers: Answer[] = [];
     let answerQuestions: Question[] = [];
     if (questions) {
       answerQuestions = [...questions];
@@ -159,7 +218,9 @@ const Choice = (props: ChoiceProps) => {
     };
     question.country = country.name;
     question.correct = null;
-    const fetchanswers = [];
+
+    setAnswers([]);
+
     const usedCaps: number[] = [];
     if (country) {
       fetchanswers.push({
@@ -167,13 +228,11 @@ const Choice = (props: ChoiceProps) => {
           ? country.government.capital.name.split(';')[0]
           : 'no capital',
         id: 0,
-        correct: 2
+        correct: 2,
+        clicked: false
       });
     }
-    if (!currentCountryId) {
-      return;
-    }
-    for (let x = 0; x < 3; x += 1) {
+    for (let x = 0; x < 3; x++) {
       let ran = randomExcluded(0, data.length - 1, currentCountryId);
       if (usedCaps.includes(ran) || usedCaps.includes(currentCountryId)) {
         ran = randomExcluded(0, data.length - 1, currentCountryId);
@@ -194,71 +253,75 @@ const Choice = (props: ChoiceProps) => {
       const capital = {
         name: newName,
         id: x + 1,
-        correct: 2
+        correct: 2,
+        clicked: false
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
     }
-
-    setAnswers(fetchanswers);
     question.answers = fetchanswers;
 
     answerQuestions.push(question);
     setQuestions(answerQuestions);
+    console.log(fetchanswers);
+    setAnswers(fetchanswers);
   };
   const takeTurn = () => {
     if (!isStarted) {
+      console.log('startGame');
       startGame();
     }
-    setLoading(false);
-    const country = getRandomCountry();
+    console.log('takeTurn');
+    const { country, int } = getRandomCountry();
     setGuesses((prevGuess) => (prevGuess !== null ? prevGuess + 1 : 1));
     setCurrentCountry(country);
-    getAnswers(country);
+    getAnswers(country, int);
     const usedCountries = [];
     usedCountries.push();
     if (questions && questions.length === 10) {
       handleOpen();
       // setState({questions: [], answers: [], guesses: null})
     }
+    setLoading(false);
   };
 
-  const checkAnswer = (answer: Answer) => {
-    if (!currentCountry) {
-      return;
-    }
-    //  if answer is correct answer (all correct answers have ID of 0)
-    const checkquestions = questions;
-    const checkquestion = checkquestions.find(
+  const checkAnswer = (e: React.MouseEvent<HTMLDivElement>, answer: Answer) => {
+    e.stopPropagation();
+    if (!currentCountry) return;
+
+    const checkquestion = questions.find(
       (question) => question.country === currentCountry.name
     );
+    if (!checkquestion) return;
 
-    if (!checkquestion) {
-      return;
-    }
     let checkguesses = guesses;
+    const updatedAnswers = answers.map((a) => ({
+      ...a,
+      correct: a.id === answer.id ? (answer.id === 0 ? 0 : 1) : a.correct
+    }));
+    setAnswers(updatedAnswers);
+
     if (answer.id === 0) {
-      //  give score of 2
-      updateScore(3 - guesses);
-      //  set answer style
-      answer.correct = 0;
-      // alert('your answer is correct');
-      //  initialize correct counter for game
+      updateScore(points);
       if (guesses === 1) {
         checkquestion.correct = true;
       }
       checkguesses = 0;
+      setGuesses(checkguesses);
+      handlePoints(questions);
       setTimeout(() => {
-        setLoading(true);
-        takeTurn();
-      }, 500);
+        setAnswers(answers.map((a) => ({ ...a, correct: 2 })));
+        setPoints(2);
+        setTimeout(() => {
+          takeTurn();
+        }, 100);
+      }, 1900);
     } else {
-      answer.correct = 1;
       checkquestion.correct = false;
       checkguesses += 1;
+      setGuesses(checkguesses);
+      setPoints(Math.max(0, points - 1));
     }
-    setGuesses(checkguesses);
-    handlePoints(questions);
   };
   useEffect(() => {
     handlePoints(questions);
@@ -289,50 +352,51 @@ const Choice = (props: ChoiceProps) => {
       </Box>
     </Box>
   );
-  // let answerChoices;
-  // if (answers && answers.length > 0) {
-  //   if (questions < 0) {
-  //     answerChoices = [];
-  //   } else {
-  //     answerChoices =
-  //   }
-  // }
   return (
-    <div>
+    <Box sx={{ maxWidth: 600, margin: '0 auto', padding: 2 }}>
       {!isStarted && directions}
       {isStarted && (
-        <div>
-          {isStarted
-            ? `What is the capital of
-          ${currentCountry && currentCountry.name}
-          ? `
-            : 'The Game is Over'}
-        </div>
+        <>
+          <Typography variant="h6" sx={{ textAlign: 'center', mb: 2 }}>
+            What is the capital of {currentCountry && currentCountry.name}?
+          </Typography>
+
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            {points}
+            {guesses > 0 && (
+              <Typography variant="body1">
+                {guesses} {guesses === 1 ? 'guess' : 'guesses'} - For {points}{' '}
+                {points === 1 ? 'point' : 'points'}
+              </Typography>
+            )}
+            {answers.some((a) => a.correct === 0) && (
+              <Typography
+                variant="body1"
+                sx={{ color: 'green', fontWeight: 'bold' }}
+              >
+                Correct! You earned {points} {points === 1 ? 'point' : 'points'}
+                !
+              </Typography>
+            )}
+            {answers.some((a) => a.correct === 1) && (
+              <Typography variant="body1" sx={{ color: '#666' }}>
+                Not quite - try again, you've got this!
+              </Typography>
+            )}
+          </Box>
+
+          {answers && !loading && answers.length > 0 && (
+            <CustomAnswer
+              answers={answers}
+              options={options}
+              checkAnswer={checkAnswer}
+              loading={loading}
+              otherOptions={otherOptions}
+            />
+          )}
+        </>
       )}
-      <div className="guesses">
-        {isStarted && guesses && (
-          <div>
-            {guesses}
-            {guesses === 1 ? ' guess' : ' guesses'}
-          </div>
-        )}
-        {isStarted && guesses && (
-          <div>
-            {`For 
-            ${3 - guesses}
-            ${guesses === 2 || guesses === 4 ? ' point' : ' points'}`}
-          </div>
-        )}
-      </div>
-      {answers && !gameOver && answers.length > 0 && (
-        <CustomAnswer
-          answers={answers}
-          options={options}
-          checkAnswer={checkAnswer}
-          loading={loading}
-        />
-      )}
-    </div>
+    </Box>
   );
 };
 

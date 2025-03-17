@@ -1,6 +1,6 @@
-import { AlertColor } from "@mui/material";
-import { CountryType } from "./CountryType";
-import { store } from "../toolkitSlices";
+import { AlertColor } from '@mui/material';
+import { CountryType } from './CountryType';
+import { store } from '../toolkitSlices';
 
 interface DateCreated {
   seconds: number;
@@ -134,6 +134,7 @@ export interface Answer {
   correct: number;
   id: number;
   name: string;
+  clicked: boolean;
 }
 
 export interface Question {
@@ -145,7 +146,7 @@ export interface Question {
 export interface IsoData {
   [key: string]: number | string;
 }
-export type AccountDataType = "favorites" | "scores";
+export type AccountDataType = 'favorites' | 'scores';
 
 export type Message = {
   link: string;

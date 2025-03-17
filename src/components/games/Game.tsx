@@ -72,19 +72,17 @@ interface GameModeProps {
   props: BundledPropsType;
 }
 const GameMode = ({ gameMode, props }: GameModeProps) => {
-  switch (gameMode) {
-    case 'choice': {
-      return <Choice {...props} mode={gameMode} />;
-    }
-    case 'find': {
-      return <Find {...props} mode={gameMode} />;
-    }
-    case 'highlight': {
-      return <Highlight {...props} mode={gameMode} />;
-    }
-    default:
-      return null;
+  if (!gameMode) return null;
+  if (gameMode === 'choice') {
+    return <Choice {...props} mode={gameMode} />;
   }
+  if (gameMode === 'find') {
+    return <Find {...props} mode={gameMode} />;
+  }
+  if (gameMode === 'highlight') {
+    return <Highlight {...props} mode={gameMode} />;
+  }
+  return null;
 };
 
 const Game = (props: GameProps) => {
@@ -169,7 +167,7 @@ const Game = (props: GameProps) => {
       start();
     }
   };
-  const endGame = () => {
+  const endGame = useCallback(() => {
     if (timeChecked) {
       stop();
       reset();
@@ -186,14 +184,28 @@ const Game = (props: GameProps) => {
     setGameOver(true);
     stop();
     reset();
-  };
+  }, [timeChecked, stop, reset]);
   const endGameModal = useCallback(() => {
-    if (isStarted && currentCount === 0) setShow(true);
-  }, [isStarted, currentCount]);
+    if (isStarted && timeChecked && currentCount === 0) {
+      setShow(true);
+    }
+  }, [isStarted, timeChecked, currentCount]);
 
   useEffect(() => {
-    endGameModal();
-  }, [gameOver, currentCount, endGameModal]);
+    if (gameOver) {
+      stop();
+      reset();
+      if (timeChecked) {
+        setCurrentCount(60);
+      }
+      setIsStarted(false);
+      setScore(0);
+      setCorrect(0);
+      setIncorrect(0);
+      setSaved(false);
+      setQuestions(0);
+    }
+  }, [gameOver, timeChecked, stop, reset]);
 
   const handleModalClose = () => {
     setShow(false);
@@ -422,7 +434,7 @@ const Game = (props: GameProps) => {
         </Typography>
         {!gameMode && (
           <Stack
-            sx={{ width: '800px', alignItems: 'center', margin: '0 auto' }}
+            sx={{ maxWidth: '800px', alignItems: 'center', margin: '0 auto' }}
           >
             <ButtonGroup orientation="vertical" className="px-0 text-center">
               <Button variant="outlined" onClick={() => setGameMode('choice')}>
