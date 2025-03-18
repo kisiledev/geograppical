@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Sidebar from "./Sidebar";
-import MediaQuery from "react-responsive";
-import { Button } from "@mui/material";
-import { DataType } from "../../helpers/types";
+import Sidebar from './Sidebar';
+import MediaQuery from 'react-responsive';
+import { Button, CircularProgress } from '@mui/material';
+import { DataType } from '../../helpers/types';
 
 interface SidebarViewProps {
   data: DataType;
@@ -19,14 +17,14 @@ interface SidebarViewProps {
   filterCountryByName: (name: string) => void;
 }
 const SidebarView = (props: SidebarViewProps) => {
-  const [sidebar, setSidebar] = useState("Show");
+  const [sidebar, setSidebar] = useState('Show');
   const [loadingState, setLoadingState] = useState(true);
 
   const viewSidebar = () => {
-    if (sidebar === "Show") {
-      setSidebar("Hide");
+    if (sidebar === 'Show') {
+      setSidebar('Hide');
     } else {
-      setSidebar("Show");
+      setSidebar('Show');
     }
   };
 
@@ -36,7 +34,7 @@ const SidebarView = (props: SidebarViewProps) => {
 
   const show = loadingState ? (
     <div className="mx-auto text-center">
-      <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+      <CircularProgress />
     </div>
   ) : (
     <Sidebar {...props} />
@@ -49,9 +47,9 @@ const SidebarView = (props: SidebarViewProps) => {
           className="btn btn-sm btn-block btn-outline-secondary mb-3"
           onClick={() => viewSidebar()}
         >
-          {sidebar === "Hide" ? "Show " : "Hide "}
+          {sidebar === 'Hide' ? 'Show ' : 'Hide '}
         </Button>
-        {sidebar === "Show" ? show : null}
+        {sidebar === 'Show' ? show : null}
       </MediaQuery>
     </nav>
   );

@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Flag from "react-world-flags";
-import { Link } from "react-router-dom";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useCallback } from 'react';
+import Flag from 'react-world-flags';
+import { Link } from 'react-router-dom';
+import { doc, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import '../../App.css';
 
-import { doc, getDoc, deleteDoc, setDoc } from "firebase/firestore";
-import "../../App.css";
+import { usersCollection } from '../../firebase/firebase';
 
-import { usersCollection } from "../../firebase/firebase";
-
-import * as ROUTES from "../../constants/Routes";
-import { AlertColor, Card } from "@mui/material";
-import { CountryType } from "../../helpers/types/CountryType";
-import { User } from "firebase/auth";
+import * as ROUTES from '../../constants/Routes';
+import { AlertColor, Card } from '@mui/material';
+import { CountryType } from '../../helpers/types/CountryType';
+import { User } from 'firebase/auth';
+import { StarRounded } from '@mui/icons-material';
 
 type Message = {
   link: string;
@@ -49,7 +47,7 @@ const Result = (props: ResultProps) => {
     flagCode,
     setShow,
     setMessage,
-    message,
+    message
   } = props;
 
   const showFunc = () => {
@@ -65,7 +63,7 @@ const Result = (props: ResultProps) => {
       }
       const docRef = doc(
         usersCollection,
-        ...`${user.uid}/favorites/${coun}`.split("/")
+        ...`${user.uid}/favorites/${coun}`.split('/')
       );
 
       try {
@@ -76,19 +74,19 @@ const Result = (props: ResultProps) => {
           setFavorite(false);
         }
       } catch (error) {
-        console.log("Error getting document:", error);
+        console.log('Error getting document:', error);
       }
     },
     [user]
   );
   const makeFavorite = async (coun: CountryType) => {
-    console.log("adding");
+    console.log('adding');
     if (!user) {
       setMessage({
-        style: "warning",
-        content: "You need to sign in to favorite countries. Login ",
+        style: 'warning',
+        content: 'You need to sign in to favorite countries. Login ',
         link: ROUTES.SIGN_IN,
-        linkContent: "here",
+        linkContent: 'here'
       });
     }
     if (!favorite) {
@@ -97,24 +95,24 @@ const Result = (props: ResultProps) => {
       }
       const docRef = doc(
         usersCollection,
-        ...`${user.uid}/favorites/${coun.name}`.split("/")
+        ...`${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {
         await setDoc(docRef, coun);
         setMessage({
           ...message,
-          style: "success",
-          content: `Added ${coun.name} to favorites`,
+          style: 'success',
+          content: `Added ${coun.name} to favorites`
         });
         setFavorite(true);
-        console.log("added favorite");
+        console.log('added favorite');
         showFunc();
       } catch (error) {
         setMessage({
           ...message,
-          style: "error",
-          content: `Error adding ${coun.name} to favorites, ${error}`,
+          style: 'error',
+          content: `Error adding ${coun.name} to favorites, ${error}`
         });
         showFunc();
       }
@@ -124,23 +122,23 @@ const Result = (props: ResultProps) => {
       }
       const docRef = doc(
         usersCollection,
-        ...`${user.uid}/favorites/${coun.name}`.split("/")
+        ...`${user.uid}/favorites/${coun.name}`.split('/')
       );
 
       try {
         await deleteDoc(docRef);
         setMessage({
           ...message,
-          style: "warning",
-          content: `Removed ${coun.name} from favorites`,
+          style: 'warning',
+          content: `Removed ${coun.name} from favorites`
         });
         setFavorite(false);
         showFunc();
       } catch (error) {
         setMessage({
           ...message,
-          style: "error",
-          content: `Error adding ${coun.name} to favorites, ${error}`,
+          style: 'error',
+          content: `Error adding ${coun.name} to favorites, ${error}`
         });
         showFunc();
       }
@@ -161,7 +159,7 @@ const Result = (props: ResultProps) => {
             )
             <br />
             <small>
-              Capital: {capital?.split(";")[0]} | Pop: {population}
+              Capital: {capital?.split(';')[0]} | Pop: {population}
             </small>
           </h4>
           <p className="subregion">
@@ -178,17 +176,16 @@ const Result = (props: ResultProps) => {
         </div>
         {user && (
           <div className="stars">
-            <FontAwesomeIcon
+            <StarRounded
               onClick={() => makeFavorite(country)}
-              size="2x"
-              color={favorite ? "gold" : "gray"}
-              icon={faStar}
+              fontSize="large"
+              sx={{ color: favorite ? 'gold' : 'gray' }}
             />
           </div>
         )}
         <Flag
           className="img-thumbnail"
-          code={flagCode || "_unknown"}
+          code={flagCode || '_unknown'}
           alt={`${name}'s Flag`}
         />
       </div>

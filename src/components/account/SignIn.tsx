@@ -1,25 +1,31 @@
-import { useState, useEffect } from "react";
-import "firebaseui";
-import { Link as RouterLink, Navigate } from "react-router-dom";
-import { Alert, Box, Button, TextField, Link, AlertColor } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useState, useEffect } from 'react';
+import 'firebaseui';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
+import {
+  Alert,
+  Box,
+  Button,
+  TextField,
+  Link,
+  AlertColor,
+  CircularProgress
+} from '@mui/material';
 
 import {
   fetchSignInMethodsForEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  User,
-} from "firebase/auth";
-import { auth, googleProvider } from "../../firebase/firebase";
-import useSignUpForm from "../../helpers/CustomHooks";
-import { EmailRounded, Google } from "@mui/icons-material";
-import { makeStyles } from "@mui/styles";
+  User
+} from 'firebase/auth';
+import { auth, googleProvider } from '../../firebase/firebase';
+import useSignUpForm from '../../helpers/CustomHooks';
+import { EmailRounded, Google } from '@mui/icons-material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   loginButtons: {
-    marginBottom: "10px",
-  },
+    marginBottom: '10px'
+  }
 });
 
 interface SignInProps {
@@ -33,8 +39,8 @@ const SignIn = (props: SignInProps) => {
     style: AlertColor;
     content: string;
   }>({
-    style: "info",
-    content: "",
+    style: 'info',
+    content: ''
   });
 
   const classes = useStyles();
@@ -44,22 +50,22 @@ const SignIn = (props: SignInProps) => {
       .then((u) => {
         console.log(u);
         setMethods(u);
-        if (u.length === 0 || u.includes("password")) {
-          console.log("no methods");
+        if (u.length === 0 || u.includes('password')) {
+          console.log('no methods');
           signInWithEmailAndPassword(auth, inputs.email, inputs.password)
             .then((us) => {
               // console.log(us);
               setMessage({
-                style: "success",
-                content: `Logged in user ${us.user.email}`,
+                style: 'success',
+                content: `Logged in user ${us.user.email}`
               });
             })
             .catch((error) => {
               // console.log(error);
               // console.log(error.message);
               setMessage({
-                style: "error",
-                content: `${error.message} Sign up using the link below`,
+                style: 'error',
+                content: `${error.message} Sign up using the link below`
               });
             });
         } else {
@@ -68,13 +74,13 @@ const SignIn = (props: SignInProps) => {
           const content = `You already have an account at ${u[0]} 
         Please login using this authentication method. Method: ${methods}`;
           // console.log(content);
-          setMessage({ style: "warning", content });
+          setMessage({ style: 'warning', content });
         }
       })
       .catch((error) => {
         console.log(error);
         console.log(error.message);
-        setMessage({ style: "error", content: `${error.message}` });
+        setMessage({ style: 'error', content: `${error.message}` });
       });
   };
   const { inputs, handleInputChange, handleSubmit } = useSignUpForm(login);
@@ -103,24 +109,24 @@ const SignIn = (props: SignInProps) => {
   }
 
   const isInvalid =
-    inputs.password === "" ||
+    inputs.password === '' ||
     !inputs.password ||
-    inputs.email === "" ||
+    inputs.email === '' ||
     !inputs.email;
 
   return loadingState ? (
     <div className="mx-auto col-lg-4 text-center">
-      <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+      <CircularProgress />
     </div>
   ) : (
     <Box
       sx={{
-        maxWidth: "600px",
-        margin: "50px auto 20px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        maxWidth: '600px',
+        margin: '50px auto 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
     >
       {Object.keys(message)?.length > 0 && (
@@ -134,23 +140,23 @@ const SignIn = (props: SignInProps) => {
       <Box
         component="form"
         sx={{
-          margin: "10px",
-          display: "flex",
-          width: "80%",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          "& .MuiTextField-root": {
+          margin: '10px',
+          display: 'flex',
+          width: '80%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          '& .MuiTextField-root': {
             margin: 1,
-            width: "100%",
-          },
+            width: '100%'
+          }
         }}
       >
         <TextField
           variant="outlined"
           size="small"
           label="Email Address"
-          value={inputs.email || ""}
+          value={inputs.email || ''}
           onChange={handleInputChange}
           type="email"
           name="email"
@@ -160,7 +166,7 @@ const SignIn = (props: SignInProps) => {
           variant="outlined"
           size="small"
           label="Password"
-          value={inputs.password || ""}
+          value={inputs.password || ''}
           onChange={handleInputChange}
           type="password"
           name="password"

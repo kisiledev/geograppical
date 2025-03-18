@@ -1,24 +1,18 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography,
-} from "react-simple-maps";
-import ReactTooltip from "react-tooltip";
-import { Link } from "react-router-dom";
-import Flag from "react-world-flags";
-import {
-  faPlus,
-  faMinus,
-  faGlobeAfrica,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { Button, ButtonGroup, Card, Grid2 } from "@mui/material";
-import data from "../../data/world-50m.json";
-import { DataType } from "../../helpers/types";
-import MediaQuery from "react-responsive";
+  Geography
+} from 'react-simple-maps';
+import ReactTooltip from 'react-tooltip';
+import { Link } from 'react-router-dom';
+import Flag from 'react-world-flags';
+import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
+import data from '../../data/world-50m.json';
+import { DataType } from '../../helpers/types';
+import MediaQuery from 'react-responsive';
+import { Add, Public, Remove } from '@mui/icons-material';
 
 interface MapsProps {
   mapVisible: string;
@@ -43,7 +37,7 @@ const Maps = (props: MapsProps) => {
     getCountryInfo(country);
   };
   const handleMoveStart = ({
-    coordinates,
+    coordinates
   }: {
     coordinates: [number, number];
   }) => {
@@ -51,7 +45,7 @@ const Maps = (props: MapsProps) => {
   };
 
   const handleMoveEnd = ({
-    coordinates,
+    coordinates
   }: {
     coordinates: [number, number];
   }) => {
@@ -83,7 +77,7 @@ const Maps = (props: MapsProps) => {
   const handleContent = (dataTip: string) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
-      return "";
+      return '';
     }
     const obj = JSON.parse(dataTip);
     return obj.NAME ? (
@@ -93,7 +87,7 @@ const Maps = (props: MapsProps) => {
         <Flag
           className="mapFlag text-center"
           code={
-            (obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`
+            (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
           alt={`${obj.NAME}'s Flag`}
         />
@@ -106,9 +100,9 @@ const Maps = (props: MapsProps) => {
       <Card
         sx={{
           margin: 5,
-          padding: "15px",
+          padding: '15px',
           boxShadow:
-            "0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)",
+            '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
         }}
         className="card mr-3 mb-3"
       >
@@ -116,33 +110,29 @@ const Maps = (props: MapsProps) => {
           <Grid2
             container
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-              flexDirection: "row",
-              height: "100%",
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '20px',
+              flexDirection: 'row',
+              height: '100%'
             }}
           >
-            <ButtonGroup
-              variant="contained"
-              size="small"
-              sx={{ height: "48px" }}
-            >
+            <ButtonGroup variant="contained" sx={{ height: '48px' }}>
               <Button
                 variant="contained"
                 className="btn btn-info"
-                size="small"
                 onClick={() => handleZoomOut()}
+                size="small"
               >
-                <FontAwesomeIcon icon={faMinus} />
+                <Remove />
               </Button>
               <Button
-                type="button"
+                variant="contained"
                 className="btn btn-info"
-                size="small"
                 onClick={() => handleZoomIn()}
+                size="small"
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <Add />
               </Button>
             </ButtonGroup>
             <h2 className="text-center">
@@ -150,24 +140,23 @@ const Maps = (props: MapsProps) => {
             </h2>
             <Button
               variant="contained"
-              sx={{ height: "48px" }}
+              sx={{ height: '48px' }}
               onClick={() => changeMapView()}
-              startIcon={
-                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-              }
+              startIcon={<Public sx={{ marginRight: '5px' }} />}
             >
-              {`${mapVisible === "Show" ? "Hide" : "Show"} Map`}
+              {mapVisible === 'Show' ? 'Hide ' : 'Show '}
+              Map
             </Button>
           </Grid2>
         </MediaQuery>
-        {mapVisible === "Show" ? (
+        {mapVisible === 'Show' ? (
           <ComposableMap
             projection="geoEqualEarth"
             width={800}
             height={400}
             style={{
-              width: "100%",
-              height: "auto",
+              width: '100%',
+              height: 'auto'
             }}
           >
             <ZoomableGroup
@@ -188,9 +177,9 @@ const Maps = (props: MapsProps) => {
                       <Geography
                         key={geo.properties.NAME}
                         onWheel={(e) => handleWheel(e)}
-                        data-longname={geo.properties.NAME_LONG.normalize("NFD")
-                          .replace(/[\u0300-\u036f]/g, "")
-                          .replace(/[^a-z\s]/gi, "")}
+                        data-longname={geo.properties.NAME_LONG.normalize('NFD')
+                          .replace(/[\u0300-\u036f]/g, '')
+                          .replace(/[^a-z\s]/gi, '')}
                         data-tip={JSON.stringify(geo.properties)}
                         data-shortname={geo.properties.NAME}
                         data-continent={geo.properties.CONTINENT}
