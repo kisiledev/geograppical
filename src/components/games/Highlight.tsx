@@ -6,14 +6,132 @@ import {
   Geography
 } from 'react-simple-maps';
 import ReactTooltip from 'react-tooltip';
-import { Box, Button, ButtonGroup, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  CircularProgress,
+  List,
+  ListItemButton,
+  Typography
+} from '@mui/material';
 import { Answer, DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
 import MediaQuery from 'react-responsive';
 import { Add, Public, Remove } from '@mui/icons-material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { keyframes } from '@mui/system';
 
+interface CustomAnswerProps {
+  answers: Answer[];
+  checkAnswer: (e: React.MouseEvent<HTMLDivElement>, answer: Answer) => void;
+  options: { [key: number]: React.CSSProperties };
+  loading: boolean;
+  otherOptions: React.CSSProperties;
+}
+
+// Add the shake animation keyframes
+const shakeAnimation = keyframes`
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+`;
+
+// Add the bouncy grow animation keyframes
+const bouncyGrowAnimation = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
+const CustomAnswer = ({
+  answers,
+  checkAnswer,
+  options,
+  loading,
+  otherOptions
+}: CustomAnswerProps) => (
+  <List
+    sx={{
+      padding: '5px',
+      display: 'flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      maxWidth: '600px',
+      margin: '0 auto'
+    }}
+  >
+    {loading ? (
+      <CircularProgress />
+    ) : (
+      answers.map((answer) => (
+        <List
+          sx={{
+            width: '45%',
+            padding: '10px',
+            boxSizing: 'border-box'
+          }}
+          key={answer.id}
+        >
+          <ListItemButton
+            role="button"
+            tabIndex={0}
+            onClick={(e) => checkAnswer(e, answer)}
+            component={Card}
+            sx={{
+              ...otherOptions,
+              backgroundColor:
+                answer.correct === 2
+                  ? 'initial'
+                  : options[answer.correct].backgroundColor,
+              '&:hover': {
+                backgroundColor:
+                  answer.correct === 2
+                    ? 'initial'
+                    : options[answer.correct].backgroundColor
+              },
+              height: '60px',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              animation:
+                answer.correct === 1
+                  ? `${shakeAnimation} 0.5s ease-in-out`
+                  : answer.correct === 0
+                  ? `${bouncyGrowAnimation} 0.5s ease-in-out`
+                  : 'none'
+            }}
+          >
+            {answer.name}
+            {answer.correct === 0 && (
+              <CheckCircleIcon
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  color: 'white'
+                }}
+              />
+            )}
+            {answer.correct === 1 && (
+              <CancelIcon
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  color: 'white'
+                }}
+              />
+            )}
+          </ListItemButton>
+        </List>
+      ))
+    )}
+  </List>
+);
 interface HighlightProps {
   data: DataType;
   isStarted: boolean;
@@ -34,11 +152,12 @@ const Highlight = (props: HighlightProps) => {
   const [currentCountryId, setCurrentCountryId] = useState<number | null>(null);
   const [guesses, setGuesses] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [usedCountry, setUsedCountry] = useState<number[]>([]);
   const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [answers, setAnswers] = useState<Answer[] | null>(null);
 
-  console.log(props);
   const {
     isStarted,
     gameOver,
@@ -53,6 +172,27 @@ const Highlight = (props: HighlightProps) => {
     mode
   } = props;
 
+  const otherOptions = {
+    marginTop: '10px',
+    margin: '10px 8px none',
+    padding: '10px',
+    borderRadius: '3px',
+    display: 'flex'
+  };
+  const options = {
+    0: {
+      ...otherOptions,
+      backgroundColor: 'green'
+    },
+    1: {
+      ...otherOptions,
+      backgroundColor: 'red'
+    },
+    2: {
+      ...otherOptions,
+      backgroundColor: 'initial'
+    }
+  };
   const endGame = () => {
     setQuestions([]);
     setGuesses(0);
@@ -124,10 +264,16 @@ const Highlight = (props: HighlightProps) => {
     return Math.floor(Math.random() * (maxFloor - minCeil)) + minCeil;
   };
   const getRandomCountry = () => {
-    const int = getRandomInt(0, worldData.length);
-    const country = worldData[int];
+    let int;
+    do {
+      int = getRandomInt(0, worldData.length);
+    } while (usedCountry.includes(int));
     setCurrentCountryId(int);
-    return country;
+    const country = worldData[int];
+    const usedArray = usedCountry;
+    usedArray.push(int);
+    setUsedCountry(usedArray);
+    return { country, int };
   };
   const randomExcluded = (min: number, max: number, excluded: number) => {
     let n = Math.floor(Math.random() * (max - min) + min);
@@ -147,12 +293,13 @@ const Highlight = (props: HighlightProps) => {
     };
     question.country = currentCountry.name;
     question.correct = null;
-    const fetchanswers = [];
+    const fetchanswers: Answer[] = [];
     if (currentCountry) {
       fetchanswers.push({
         name: currentCountry.name.split(';')[0],
         id: 0,
-        correct: 2
+        correct: 2,
+        clicked: false
       });
     }
     if (!currentCountryId) {
@@ -170,7 +317,8 @@ const Highlight = (props: HighlightProps) => {
       const capital = {
         name: newName,
         id: x + 1,
-        correct: 2
+        correct: 2,
+        clicked: false
       };
       fetchanswers.push(capital);
       shuffle(fetchanswers);
@@ -229,7 +377,7 @@ const Highlight = (props: HighlightProps) => {
     if (!isStarted) {
       startGame();
     }
-    const country = getRandomCountry();
+    const { country, int } = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
     getAnswers(country);
@@ -250,9 +398,14 @@ const Highlight = (props: HighlightProps) => {
         node.removeAttribute('style');
       });
     }
+    setLoading(false);
   };
 
-  const checkAnswer = (country: Answer) => {
+  const checkAnswer = (
+    e: React.MouseEvent<HTMLDivElement>,
+    country: Answer
+  ) => {
+    e.stopPropagation();
     if (!isStarted) {
       return;
     }
@@ -267,6 +420,7 @@ const Highlight = (props: HighlightProps) => {
       return;
     }
     let checkguesses = guesses;
+    console.log(country);
     if (
       country.name === currentCountry.name ||
       country.name === currentCountry.name ||
@@ -311,6 +465,7 @@ const Highlight = (props: HighlightProps) => {
     endGame();
   }, [saved, gameOver]);
 
+  console.log(answers);
   const directions = (
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
@@ -322,35 +477,6 @@ const Highlight = (props: HighlightProps) => {
       </Box>
     </Box>
   );
-  let answerChoices;
-  if (answers && answers.length > 0) {
-    if (questions.length < 0) {
-      answerChoices = [];
-    } else {
-      answerChoices = answers.map((answer) => {
-        const navClass = 'possible card mx-1 mt-3';
-        const correct = 'bg-success possible card mx-1 mt-3';
-        const incorrect = 'bg-danger possible card mx-1 mt-3 disabled';
-        return (
-          <li
-            role="button"
-            onClick={() => checkAnswer(answer)}
-            className={
-              answer.correct === 2
-                ? navClass
-                : answer.correct === 1
-                ? incorrect
-                : correct
-            }
-            value={answer.id}
-            key={answer.id}
-          >
-            {answer.name}
-          </li>
-        );
-      });
-    }
-  }
   return (
     <Box sx={{ marginBottom: '5px', marginRight: '5px' }}>
       {!isStarted && directions}
@@ -399,8 +525,14 @@ const Highlight = (props: HighlightProps) => {
         </Box>
       </MediaQuery>
       <hr />
-      {answers && answers.length > 0 && (
-        <ul className="px-0 d-flex flex-wrap">{answerChoices}</ul>
+      {answers && !loading && answers.length > 0 && (
+        <CustomAnswer
+          answers={answers}
+          options={options}
+          checkAnswer={checkAnswer}
+          loading={loading}
+          otherOptions={otherOptions}
+        />
       )}
       {mapVisible === 'Show' ? (
         <div onWheel={handleWheel}>
@@ -430,7 +562,6 @@ const Highlight = (props: HighlightProps) => {
                       data-subregion={geo.properties.SUBREGION}
                       // onMouseEnter={(() => onRegionHover(geo))}
                       // onMouseLeave={(() => onRegionLeave(geo))}
-                      onClick={() => checkAnswer(geo.properties.NAME_LONG)}
                       key={geo.properties.NAME}
                       geography={geo}
                       className="gameCountry"
