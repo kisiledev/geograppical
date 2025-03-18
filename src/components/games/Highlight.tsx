@@ -156,7 +156,8 @@ const Highlight = (props: HighlightProps) => {
   const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [answers, setAnswers] = useState<Answer[] | null>(null);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [points, setPoints] = useState<number>(2);
 
   const {
     isStarted,
@@ -281,7 +282,10 @@ const Highlight = (props: HighlightProps) => {
     return n;
   };
 
-  const getAnswers = (currentCountry: CountryType) => {
+  const getAnswers = (
+    currentCountry: CountryType,
+    currentCountryId: number
+  ) => {
     let answerQuestions: Question[] = [];
     if (questions) {
       answerQuestions = [...questions];
@@ -301,9 +305,6 @@ const Highlight = (props: HighlightProps) => {
         correct: 2,
         clicked: false
       });
-    }
-    if (!currentCountryId) {
-      return;
     }
     for (let x = 0; x < 3; x += 1) {
       let ran = randomExcluded(0, worldData.length - 1, currentCountryId);
@@ -380,7 +381,7 @@ const Highlight = (props: HighlightProps) => {
     const { country, int } = getRandomCountry();
     setGuesses((prevGuess) => prevGuess + 1);
     setCurrentCountry(country);
-    getAnswers(country);
+    getAnswers(country, int);
     if (questions && questions.length < 10) {
       getCountryInfo(country);
     }
@@ -401,52 +402,47 @@ const Highlight = (props: HighlightProps) => {
     setLoading(false);
   };
 
-  const checkAnswer = (
-    e: React.MouseEvent<HTMLDivElement>,
-    country: Answer
-  ) => {
+  const checkAnswer = (e: React.MouseEvent<HTMLDivElement>, answer: Answer) => {
     e.stopPropagation();
-    if (!isStarted) {
-      return;
-    }
-    if (!currentCountry) {
-      return;
-    }
-    const checkquestions = questions;
-    const checkquestion = checkquestions.find(
+    if (!isStarted) return;
+    if (!currentCountry) return;
+    const checkquestion = questions.find(
       (question) => question.country === currentCountry.name
     );
     if (!checkquestion) {
       return;
     }
     let checkguesses = guesses;
-    console.log(country);
-    if (
-      country.name === currentCountry.name ||
-      country.name === currentCountry.name ||
-      guesses === 4
-    ) {
-      // give score of 2
-      updateScore(3 - guesses);
+    const updatedAnswers = answers.map((a) => ({
+      ...a,
+      correct: a.id === answer.id ? (answer.id === 0 ? 0 : 1) : a.correct
+    }));
+    setAnswers(updatedAnswers);
 
-      if (!checkquestion) {
-        return;
-      }
-      // set answer style
-      country.correct = 0;
-      // initialize correct counter for game
+    if (
+      answer.name === currentCountry.name ||
+      answer.name === currentCountry.name
+    ) {
+      updateScore(points);
       if (guesses === 1) {
         checkquestion.correct = true;
       }
       checkguesses = 0;
-      setTimeout(() => takeTurn(), 300);
+      setGuesses(checkguesses);
+      handlePoints(questions);
+      setTimeout(() => {
+        setAnswers(answers.map((a) => ({ ...a, correct: 2 })));
+        setPoints(2);
+        setTimeout(() => {
+          takeTurn();
+        }, 100);
+      }, 1900);
     } else {
-      country.correct = 1;
       checkquestion.correct = false;
       checkguesses += 1;
+      setGuesses(checkguesses);
+      setPoints(Math.max(0, points - 1));
     }
-    setGuesses(checkguesses);
-    handlePoints(questions);
   };
   useEffect(() => {
     handlePoints(questions);
@@ -465,7 +461,6 @@ const Highlight = (props: HighlightProps) => {
     endGame();
   }, [saved, gameOver]);
 
-  console.log(answers);
   const directions = (
     <Box className="directions">
       <Typography variant="h5">Directions</Typography>
@@ -480,15 +475,29 @@ const Highlight = (props: HighlightProps) => {
   return (
     <Box sx={{ marginBottom: '5px', marginRight: '5px' }}>
       {!isStarted && directions}
-      {isStarted && guesses && (
-        <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
-      )}
-      {isStarted && guesses && (
-        <div>
-          {`For ${3 - guesses} ${
-            guesses === 2 || guesses === 4 ? ' point' : ' points'
-          }`}
-        </div>
+      {isStarted && answers && (
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          {guesses > 0 && (
+            <Typography variant="body1">
+              {guesses} {guesses === 1 ? 'guess' : 'guesses'} - For {points}{' '}
+              {points === 1 ? 'point' : 'points'}
+            </Typography>
+          )}
+          {answers.some((a) => a.correct === 0) && (
+            <Typography
+              variant="body1"
+              sx={{ color: 'green', fontWeight: 'bold' }}
+            >
+              Correct! You earned {points} {points === 1 ? 'point' : 'points'}!
+            </Typography>
+          )}
+          {answers.some((a) => a.correct === 1) &&
+            answers.every((a) => a.correct !== 0) && (
+              <Typography variant="body1" sx={{ color: 'red' }}>
+                Not quite - try again, you've got this!
+              </Typography>
+            )}
+        </Box>
       )}
       <MediaQuery minWidth={576}>
         <Box
