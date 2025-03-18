@@ -18,9 +18,6 @@ import {
   Grid2,
   CircularProgress
 } from '@mui/material';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import {
   addDoc,
   collection,
@@ -234,12 +231,9 @@ const Game = (props: GameProps) => {
     setScore(score + int);
   };
 
-  const titleCase = (str: string): string => {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+  const titleCase = (word: string) => {
+    if (!word) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1);
   };
   const resetMode = () => {
     setQuestions(0);

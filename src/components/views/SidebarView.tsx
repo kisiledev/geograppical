@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Sidebar from './Sidebar';
 import MediaQuery from 'react-responsive';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { DataType } from '../../helpers/types';
 
 interface SidebarViewProps {

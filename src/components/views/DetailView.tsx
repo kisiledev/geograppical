@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faArrowLeft,
-  faSpinner,
-  faStar
-} from '@fortawesome/free-solid-svg-icons';
-import { Alert, Box, Button, Card, Grid2, Typography } from '@mui/material';
+  Alert,
+  Box,
+  Button,
+  Card,
+  CircularProgress,
+  Grid2,
+  Typography
+} from '@mui/material';
 import Flag from 'react-world-flags';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -22,6 +24,7 @@ import { CountryType } from '../../helpers/types/CountryType';
 import { User } from 'firebase/auth';
 import { useParams } from 'react-router';
 import MediaQuery from 'react-responsive';
+import { ArrowBack, StarRounded } from '@mui/icons-material';
 
 function getOccurrence(array: string[], value: string) {
   return array.filter((v) => v === value).length;
@@ -217,8 +220,8 @@ const DetailView = (props: DetailViewProps) => {
               className="btn btn-primary justify-content"
               onClick={() => navigate(-1)}
               sx={{ margin: '20px auto' }}
+              startIcon={<ArrowBack />}
             >
-              <FontAwesomeIcon icon={faArrowLeft} className="mr-3" />
               Back
             </Button>
             <Card elevation={5} sx={{ padding: '10px' }}>
@@ -277,10 +280,9 @@ const DetailView = (props: DetailViewProps) => {
                     sx={{ margin: '0 auto', textAlign: 'center' }}
                     onClick={(e) => makeFavorite(e, countryDetail)}
                     endIcon={
-                      <FontAwesomeIcon
-                        size="2x"
-                        color={favorite ? 'gold' : 'gray'}
-                        icon={faStar}
+                      <StarRounded
+                        fontSize="large"
+                        sx={{ color: favorite ? 'gold' : 'gray' }}
                       />
                     }
                     variant="contained"

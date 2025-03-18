@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import 'firebaseui';
 import { Link as RouterLink, Navigate } from 'react-router-dom';
-import { Alert, Box, Button, TextField, Link, AlertColor } from '@mui/material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  Alert,
+  Box,
+  Button,
+  TextField,
+  Link,
+  AlertColor,
+  CircularProgress
+} from '@mui/material';
 
 import {
   fetchSignInMethodsForEmail,

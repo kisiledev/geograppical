@@ -6,20 +6,13 @@ import {
   Geography
 } from 'react-simple-maps';
 import ReactTooltip from 'react-tooltip';
-import {
-  faPlus,
-  faMinus,
-  faGlobeAfrica
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
 import { DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
 import MediaQuery from 'react-responsive';
-import { Replay } from '@mui/icons-material';
+import { Add, Public, Remove } from '@mui/icons-material';
 
 interface FindProps {
   isStarted: boolean;
@@ -77,15 +70,10 @@ const Find = (props: FindProps) => {
   }, [worldData]);
 
   const handleZoomIn = () => {
-    setZoom((prevZoom) => prevZoom + 1);
+    setZoom((prevZoom) => prevZoom * 2);
   };
   const handleZoomOut = () => {
-    setZoom((prevZoom) => prevZoom / 1.5);
-  };
-  const resetZoom = () => {
-    console.log('resetting zoom');
-    setZoom(1);
-    setCenter([0, 0]);
+    setZoom((prevZoom) => prevZoom / 2);
   };
   const handleText = (str: string) =>
     str
@@ -308,30 +296,20 @@ const Find = (props: FindProps) => {
               className="btn btn-info"
               onClick={() => handleZoomOut()}
             >
-              <FontAwesomeIcon icon={faMinus} />
+              <Remove />
             </Button>
             <Button
               variant="contained"
               className="btn btn-info"
               onClick={() => handleZoomIn()}
             >
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-            <Button
-              type="button"
-              className="btn btn-info"
-              size="small"
-              onClick={() => resetZoom()}
-            >
-              <Replay />
+              <Add />
             </Button>
           </ButtonGroup>
           <Button
             variant="contained"
             onClick={() => changeMapView()}
-            startIcon={
-              <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-            }
+            startIcon={<Public sx={{ marginRight: '5px' }} />}
           >
             {mapVisible === 'Show' ? 'Hide ' : 'Show '}
             Map
@@ -342,6 +320,8 @@ const Find = (props: FindProps) => {
       {currentCountry && <div>{`Find ${currentCountry.name}`}</div>}
       {mapVisible === 'Show' ? (
         <ComposableMap
+          width={800}
+          height={400}
           projection={'geoEqualEarth'}
           style={{
             width: '100%',
@@ -351,8 +331,8 @@ const Find = (props: FindProps) => {
           <ZoomableGroup
             zoom={zoom}
             center={center}
-            // onMoveStart={handleMoveStart}
-            // onMoveEnd={handleMoveEnd}
+            onMoveStart={handleMoveStart}
+            onMoveEnd={handleMoveEnd}
           >
             <Geographies
               geography={data}

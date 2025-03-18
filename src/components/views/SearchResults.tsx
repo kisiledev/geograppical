@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { Alert, Link } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { useState, useEffect } from 'react';
 
-import { DataType, Message } from "../../helpers/types/index";
-import Result from "./Result";
-import "../../App.css";
-import { CountryType } from "../../helpers/types/CountryType";
-import { User } from "firebase/auth";
-import { useParams } from "react-router";
+import { Alert, CircularProgress, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+
+import { DataType, Message } from '../../helpers/types/index';
+import Result from './Result';
+import '../../App.css';
+import { CountryType } from '../../helpers/types/CountryType';
+import { User } from 'firebase/auth';
+import { useParams } from 'react-router';
 
 interface SearchResultsProps {
   countries: CountryType[] | null;
@@ -25,14 +24,14 @@ interface SearchResultsProps {
 const SearchResults = (props: SearchResultsProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [message, setMessage] = useState<Message>({
-    link: "",
-    linkContent: "",
-    content: "",
-    style: "info",
+    link: '',
+    linkContent: '',
+    content: '',
+    style: 'info'
   });
   const [show, setShow] = useState(false);
 
-  const { input = "" } = useParams();
+  const { input = '' } = useParams();
 
   const { searchText, user, data, countries, getCountryInfo, handleRefresh } =
     props;
@@ -59,8 +58,8 @@ const SearchResults = (props: SearchResultsProps) => {
         )}
         <div className="col-12 text-center">
           {loadingState ? (
-            <FontAwesomeIcon className="my-5" icon={faSpinner} spin size="3x" />
-          ) : searchText === "" ? (
+            <CircularProgress />
+          ) : searchText === '' ? (
             <h4 className="my-3">No search terms are entered</h4>
           ) : (
             <h4 className="my-3">

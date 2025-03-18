@@ -1,7 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   ButtonGroup,
@@ -13,6 +11,7 @@ import {
 import { simplifyString } from '../../helpers/utils';
 import { DataType } from '../../helpers/types';
 import { CountryType } from '../../helpers/types/CountryType';
+import { Info } from '@mui/icons-material';
 
 interface RegionsType {
   [key: string]: RegionDataType;
@@ -251,11 +250,7 @@ const Sidebar = (props: SidebarProps) => {
                         }}
                       >
                         <strong>{country.name}</strong>
-                        <FontAwesomeIcon
-                          size="lg"
-                          color="white"
-                          icon={faInfoCircle}
-                        />
+                        <Info fontSize="large" sx={{ color: 'white' }} />
                       </ListItemButton>
                     ))}
                 {regions[region] &&

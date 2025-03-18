@@ -10,12 +10,10 @@ import {
 } from '@mui/material';
 import { Answer, DataType, Question } from '../../helpers/types/index';
 import gameModes from '../../constants/GameContent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { CountryType } from '../../helpers/types/CountryType';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { keyframes } from '@mui/system';
+import { CountryType } from '../../helpers/types/CountryType';
 
 interface CustomAnswerProps {
   answers: Answer[];

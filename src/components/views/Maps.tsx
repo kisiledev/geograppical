@@ -8,18 +8,11 @@ import {
 import ReactTooltip from 'react-tooltip';
 import { Link } from 'react-router-dom';
 import Flag from 'react-world-flags';
-import {
-  faPlus,
-  faMinus,
-  faGlobeAfrica
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
 import data from '../../data/world-50m.json';
 import { DataType } from '../../helpers/types';
 import MediaQuery from 'react-responsive';
-import { Replay } from '@mui/icons-material';
+import { Add, Public, Remove, Replay } from '@mui/icons-material';
 
 interface MapsProps {
   mapVisible: string;
@@ -128,26 +121,22 @@ const Maps = (props: MapsProps) => {
               height: '100%'
             }}
           >
-            <ButtonGroup
-              variant="contained"
-              size="small"
-              sx={{ height: '48px' }}
-            >
+            <ButtonGroup variant="contained" sx={{ height: '48px' }}>
               <Button
                 variant="contained"
                 className="btn btn-info"
-                size="small"
                 onClick={() => handleZoomOut()}
+                size="small"
               >
-                <FontAwesomeIcon icon={faMinus} />
+                <Remove />
               </Button>
               <Button
-                type="button"
+                variant="contained"
                 className="btn btn-info"
-                size="small"
                 onClick={() => handleZoomIn()}
+                size="small"
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <Add />
               </Button>
               <Button
                 type="button"
@@ -165,11 +154,10 @@ const Maps = (props: MapsProps) => {
               variant="contained"
               sx={{ height: '48px' }}
               onClick={() => changeMapView()}
-              startIcon={
-                <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
-              }
+              startIcon={<Public sx={{ marginRight: '5px' }} />}
             >
-              {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
+              {mapVisible === 'Show' ? 'Hide ' : 'Show '}
+              Map
             </Button>
           </Grid2>
         </MediaQuery>

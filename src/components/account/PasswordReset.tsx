@@ -11,8 +11,6 @@ import {
   CircularProgress
 } from '@mui/material';
 import { EmailRounded } from '@mui/icons-material';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import useSignUpForm from '../../helpers/CustomHooks';
 import { auth } from '../../firebase/firebase';
 import { makeStyles } from '@mui/styles';

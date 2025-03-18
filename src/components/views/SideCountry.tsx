@@ -1,14 +1,9 @@
 import { useState } from 'react';
-import {
-  faEye,
-  faEyeSlash,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Box, Button, List } from '@mui/material';
+import { Box, Button, CircularProgress, List } from '@mui/material';
 import { DataType } from '../../helpers/types/index';
 import Sidebar from './Sidebar';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 // import '../../App.css';
 
 interface SideCountryProps {
@@ -44,14 +39,10 @@ const SideCountry = (props: SideCountryProps) => {
         variant="contained"
         color="primary"
         onClick={() => toggleSidebar()}
+        endIcon={showSideBar ? <VisibilityOff /> : <Visibility />}
       >
         {showSideBar ? 'Hide ' : 'Show '}
         Countries List
-        <FontAwesomeIcon
-          style={{ marginLeft: '5px' }}
-          icon={showSideBar ? faEyeSlash : faEye}
-          size="sm"
-        />
       </Button>
       {showSideBar ? (
         loadingState ? (

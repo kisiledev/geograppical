@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
-import { faAngleUp, faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CountryType } from "../../helpers/types/CountryType";
+import { CountryType } from '../../helpers/types/CountryType';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 export const PropertyName = styled.div.attrs({
-  role: "button",
+  role: 'button'
 })<{
   onClick?: () => void;
   children?: React.ReactNode;
@@ -44,15 +43,11 @@ const ExpandableProperty = (props: ExpandablePropertyProps) => {
     <>
       <PropertyName onClick={() => toggleValue()}>
         {title}
-        {isOpen ? (
-          <FontAwesomeIcon icon={faAngleUp} />
-        ) : (
-          <FontAwesomeIcon icon={faAngleDown} />
-        )}
+        {isOpen ? <ExpandLess /> : <ExpandMore />}
       </PropertyName>
       {isOpen ? children : null}
       {React.Children.count(children) === 0 && isOpen
-        ? "The list is empty!"
+        ? 'The list is empty!'
         : null}
     </>
   );
