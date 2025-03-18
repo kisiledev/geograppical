@@ -59,7 +59,6 @@ const App = () => {
 
   const db = getFirestore(firebaseApp);
   const handleViews = (selectedView: string) => {
-    console.log(selectedView);
     dispatch(changeView({ value: selectedView }));
   };
 
@@ -71,11 +70,9 @@ const App = () => {
         const country = doc.data() as CountryType;
         data.push(country);
       });
-      console.log(data);
       setWorldData(data);
     } catch (err) {
       setError(err as Error);
-      console.log(err);
     }
   };
   const simplifyString = (string: string) =>
@@ -95,7 +92,6 @@ const App = () => {
     setModal(modalsetting);
   };
   const freezeLoad = (loadState: boolean) => {
-    console.log('running freezeLoad');
     setLoadingState(loadState);
   };
   const login = async () => {
@@ -121,7 +117,6 @@ const App = () => {
     if (!match || match.length === 0) {
       setCountryDetail(null);
     }
-    console.log(match[0]);
     setCountryDetail(match[0]);
     handleViews('detail');
   };
@@ -147,7 +142,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log('loading world dta');
     loadWorldData();
   }, []);
   const changeMapView = () => {
@@ -162,9 +156,7 @@ const App = () => {
     setFilterNations(filterCountryByName(string));
   };
   const handleInput = (e: React.KeyboardEvent) => {
-    console.log(e, typeof e);
     e.persist();
-    // console.log('changing')
     const { value } = e.target as HTMLInputElement;
     if (value != null && value.trim() !== '') {
       setSearchText(value);

@@ -1,24 +1,25 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography,
-} from "react-simple-maps";
-import ReactTooltip from "react-tooltip";
-import { Link } from "react-router-dom";
-import Flag from "react-world-flags";
+  Geography
+} from 'react-simple-maps';
+import ReactTooltip from 'react-tooltip';
+import { Link } from 'react-router-dom';
+import Flag from 'react-world-flags';
 import {
   faPlus,
   faMinus,
-  faGlobeAfrica,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  faGlobeAfrica
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Button, ButtonGroup, Card, Grid2 } from "@mui/material";
-import data from "../../data/world-50m.json";
-import { DataType } from "../../helpers/types";
-import MediaQuery from "react-responsive";
+import { Button, ButtonGroup, Card, Grid2 } from '@mui/material';
+import data from '../../data/world-50m.json';
+import { DataType } from '../../helpers/types';
+import MediaQuery from 'react-responsive';
+import { Replay } from '@mui/icons-material';
 
 interface MapsProps {
   mapVisible: string;
@@ -33,17 +34,21 @@ const Maps = (props: MapsProps) => {
 
   const { mapVisible, changeMapView, getCountryInfo } = props;
   const handleZoomIn = () => {
-    setZoom((prevZoom) => prevZoom * 2);
+    setZoom((prevZoom) => prevZoom + 1);
+  };
+  const resetZoom = () => {
+    setZoom(1);
+    setCenter([0, 0]);
   };
   const handleZoomOut = () => {
-    setZoom((prevZoom) => prevZoom / 2);
+    setZoom((prevZoom) => prevZoom / 1.5);
   };
 
   const handleClick = (country: string) => {
     getCountryInfo(country);
   };
   const handleMoveStart = ({
-    coordinates,
+    coordinates
   }: {
     coordinates: [number, number];
   }) => {
@@ -51,39 +56,39 @@ const Maps = (props: MapsProps) => {
   };
 
   const handleMoveEnd = ({
-    coordinates,
+    coordinates
   }: {
     coordinates: [number, number];
   }) => {
     setCenter(coordinates);
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
-  const handleWheel = (event: React.WheelEvent) => {
-    const oldZoom = zoom;
-    const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
+  // const handleWheel = (event: React.WheelEvent) => {
+  //   const oldZoom = zoom;
+  //   const zoomDirectionFactor = event.deltaY > 0 ? 1 : -1;
 
-    // Set new zoom level
-    const newZoom = oldZoom + zoomDirectionFactor;
-    // Ignore nonsens
-    if (newZoom > 10 || newZoom < 1) {
-      return null;
-    }
-    setZoom(newZoom);
-    // const cursor = getCursorLocation(event);
-    // const oldCenter = center;
+  //   // Set new zoom level
+  //   const newZoom = oldZoom + zoomDirectionFactor;
+  //   // Ignore nonsens
+  //   if (newZoom > 10 || newZoom < 1) {
+  //     return null;
+  //   }
+  //   setZoom(newZoom);
+  //   // const cursor = getCursorLocation(event);
+  //   // const oldCenter = center;
 
-    // const newCenter = [
-    //   oldCenter[0] +
-    //     ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
-    //   oldCenter[1] +
-    //     ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
-    // ];
-    // setState({zoom: newZoom, center: newCenter})
-  };
+  //   // const newCenter = [
+  //   //   oldCenter[0] +
+  //   //     ((cursor[0] - oldCenter[0]) / newZoom) * zoomDirectionFactor,
+  //   //   oldCenter[1] +
+  //   //     ((cursor[1] - oldCenter[1]) / newZoom) * zoomDirectionFactor
+  //   // ];
+  //   // setState({zoom: newZoom, center: newCenter})
+  // };
   const handleContent = (dataTip: string) => {
     ReactTooltip.rebuild();
     if (!dataTip) {
-      return "";
+      return '';
     }
     const obj = JSON.parse(dataTip);
     return obj.NAME ? (
@@ -93,7 +98,7 @@ const Maps = (props: MapsProps) => {
         <Flag
           className="mapFlag text-center"
           code={
-            (obj.ISO_A3 ? obj.ISO_A3 : "_unknown") ? obj.ISO_A3 : `_${obj.NAME}`
+            (obj.ISO_A3 ? obj.ISO_A3 : '_unknown') ? obj.ISO_A3 : `_${obj.NAME}`
           }
           alt={`${obj.NAME}'s Flag`}
         />
@@ -106,9 +111,9 @@ const Maps = (props: MapsProps) => {
       <Card
         sx={{
           margin: 5,
-          padding: "15px",
+          padding: '15px',
           boxShadow:
-            "0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)",
+            '0 5px 15px 0 rgba(37, 97, 52, 0.15), 0 2px 4px 0 rgba(93, 148, 100, 0.2)'
         }}
         className="card mr-3 mb-3"
       >
@@ -116,17 +121,17 @@ const Maps = (props: MapsProps) => {
           <Grid2
             container
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-              flexDirection: "row",
-              height: "100%",
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '20px',
+              flexDirection: 'row',
+              height: '100%'
             }}
           >
             <ButtonGroup
               variant="contained"
               size="small"
-              sx={{ height: "48px" }}
+              sx={{ height: '48px' }}
             >
               <Button
                 variant="contained"
@@ -144,39 +149,33 @@ const Maps = (props: MapsProps) => {
               >
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
+              <Button
+                type="button"
+                className="btn btn-info"
+                size="small"
+                onClick={() => resetZoom()}
+              >
+                <Replay />
+              </Button>
             </ButtonGroup>
             <h2 className="text-center">
               <strong>Capstone Geography</strong>
             </h2>
             <Button
               variant="contained"
-              sx={{ height: "48px" }}
+              sx={{ height: '48px' }}
               onClick={() => changeMapView()}
               startIcon={
                 <FontAwesomeIcon className="mr-1" icon={faGlobeAfrica} />
               }
             >
-              {`${mapVisible === "Show" ? "Hide" : "Show"} Map`}
+              {`${mapVisible === 'Show' ? 'Hide' : 'Show'} Map`}
             </Button>
           </Grid2>
         </MediaQuery>
-        {mapVisible === "Show" ? (
-          <ComposableMap
-            projection="geoEqualEarth"
-            width={800}
-            height={400}
-            style={{
-              width: "100%",
-              height: "auto",
-            }}
-          >
-            <ZoomableGroup
-              onWheel={handleWheel}
-              zoom={zoom}
-              center={center}
-              onMoveStart={handleMoveStart}
-              onMoveEnd={handleMoveEnd}
-            >
+        {mapVisible === 'Show' ? (
+          <ComposableMap projection="geoEqualEarth">
+            <ZoomableGroup zoom={zoom} center={center}>
               <Geographies geography={data}>
                 {({ geographies }) =>
                   geographies &&
@@ -187,10 +186,10 @@ const Maps = (props: MapsProps) => {
                     >
                       <Geography
                         key={geo.properties.NAME}
-                        onWheel={(e) => handleWheel(e)}
-                        data-longname={geo.properties.NAME_LONG.normalize("NFD")
-                          .replace(/[\u0300-\u036f]/g, "")
-                          .replace(/[^a-z\s]/gi, "")}
+                        // onWheel={(e) => handleWheel(e)}
+                        data-longname={geo.properties.NAME_LONG.normalize('NFD')
+                          .replace(/[\u0300-\u036f]/g, '')
+                          .replace(/[^a-z\s]/gi, '')}
                         data-tip={JSON.stringify(geo.properties)}
                         data-shortname={geo.properties.NAME}
                         data-continent={geo.properties.CONTINENT}

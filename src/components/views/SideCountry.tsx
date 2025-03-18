@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   faEye,
   faEyeSlash,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Box, Button, List } from "@mui/material";
-import { DataType } from "../../helpers/types/index";
-import Sidebar from "./Sidebar";
+import { Box, Button, List } from '@mui/material';
+import { DataType } from '../../helpers/types/index';
+import Sidebar from './Sidebar';
 // import '../../App.css';
 
 interface SideCountryProps {
@@ -31,7 +31,7 @@ const SideCountry = (props: SideCountryProps) => {
     uniqueRegions,
     totalRegions,
     getOccurrence,
-    getCountryInfo,
+    getCountryInfo
   } = props;
 
   const toggleSidebar = () => {
@@ -39,24 +39,24 @@ const SideCountry = (props: SideCountryProps) => {
   };
 
   return (
-    <List component="nav" sx={{ padding: "20px" }}>
+    <List component="nav" sx={{ padding: '20px' }}>
       <Button
         variant="contained"
         color="primary"
         onClick={() => toggleSidebar()}
       >
-        {showSideBar ? "Hide " : "Show "}
+        {showSideBar ? 'Hide ' : 'Show '}
         Countries List
         <FontAwesomeIcon
-          style={{ marginLeft: "5px" }}
+          style={{ marginLeft: '5px' }}
           icon={showSideBar ? faEyeSlash : faEye}
           size="sm"
         />
       </Button>
       {showSideBar ? (
         loadingState ? (
-          <Box sx={{ margin: "0 auto", textAlign: "center" }}>
-            <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+          <Box sx={{ margin: '0 auto', textAlign: 'center' }}>
+            <CircularProgress />
           </Box>
         ) : (
           <Sidebar

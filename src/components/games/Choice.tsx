@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   List,
   ListItemButton,
   Typography
@@ -33,6 +34,13 @@ const shakeAnimation = keyframes`
   100% { transform: translateX(0); }
 `;
 
+// Add the bouncy grow animation keyframes
+const bouncyGrowAnimation = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
+
 const CustomAnswer = ({
   answers,
   checkAnswer,
@@ -51,7 +59,7 @@ const CustomAnswer = ({
     }}
   >
     {loading ? (
-      <FontAwesomeIcon icon={faSpinner} />
+      <CircularProgress />
     ) : (
       answers.map((answer) => (
         <List
@@ -67,21 +75,27 @@ const CustomAnswer = ({
             tabIndex={0}
             onClick={(e) => checkAnswer(e, answer)}
             component={Card}
-            style={{
+            sx={{
               ...otherOptions,
               backgroundColor:
                 answer.correct === 2
                   ? 'initial'
                   : options[answer.correct].backgroundColor,
+              '&:hover': {
+                backgroundColor:
+                  answer.correct === 2
+                    ? 'initial'
+                    : options[answer.correct].backgroundColor
+              },
               height: '60px',
               justifyContent: 'center',
               alignItems: 'center',
               position: 'relative',
               animation:
-                answer.id === 0 &&
-                answers.some((a) => a.correct === 1) &&
-                answers.filter((a) => a.correct === 1).length >= 3
+                answer.correct === 1
                   ? `${shakeAnimation} 0.5s ease-in-out`
+                  : answer.correct === 0
+                  ? `${bouncyGrowAnimation} 0.5s ease-in-out`
                   : 'none'
             }}
           >
@@ -201,10 +215,6 @@ const Choice = (props: ChoiceProps) => {
     return n;
   };
 
-  useEffect(() => {
-    console.log(answers);
-  }, [answers]);
-
   const getAnswers = (country: CountryType, currentCountryId: number) => {
     const fetchanswers: Answer[] = [];
     let answerQuestions: Question[] = [];
@@ -263,15 +273,12 @@ const Choice = (props: ChoiceProps) => {
 
     answerQuestions.push(question);
     setQuestions(answerQuestions);
-    console.log(fetchanswers);
     setAnswers(fetchanswers);
   };
   const takeTurn = () => {
     if (!isStarted) {
-      console.log('startGame');
       startGame();
     }
-    console.log('takeTurn');
     const { country, int } = getRandomCountry();
     setGuesses((prevGuess) => (prevGuess !== null ? prevGuess + 1 : 1));
     setCurrentCountry(country);
@@ -362,7 +369,6 @@ const Choice = (props: ChoiceProps) => {
           </Typography>
 
           <Box sx={{ textAlign: 'center', mb: 2 }}>
-            {points}
             {guesses > 0 && (
               <Typography variant="body1">
                 {guesses} {guesses === 1 ? 'guess' : 'guesses'} - For {points}{' '}
@@ -378,11 +384,12 @@ const Choice = (props: ChoiceProps) => {
                 !
               </Typography>
             )}
-            {answers.some((a) => a.correct === 1) && (
-              <Typography variant="body1" sx={{ color: '#666' }}>
-                Not quite - try again, you've got this!
-              </Typography>
-            )}
+            {answers.some((a) => a.correct === 1) &&
+              answers.every((a) => a.correct !== 0) && (
+                <Typography variant="body1" sx={{ color: 'red' }}>
+                  Not quite - try again, you've got this!
+                </Typography>
+              )}
           </Box>
 
           {answers && !loading && answers.length > 0 && (

@@ -1,22 +1,23 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Chip,
-  Typography,
-} from "@mui/material";
+  CircularProgress,
+  Typography
+} from '@mui/material';
 
-import { ExpandMore } from "@mui/icons-material";
-import Favs from "./Favs";
-import Scores from "./Scores";
+import { ExpandMore } from '@mui/icons-material';
+import Favs from './Favs';
+import Scores from './Scores';
 import {
   AccountDataType,
   FavoritePayload,
-  ScorePayload,
-} from "../../helpers/types/index";
+  ScorePayload
+} from '../../helpers/types/index';
 
 interface AccountDataProps {
   acctData: ScorePayload | FavoritePayload;
@@ -35,37 +36,37 @@ const AccountData = (props: AccountDataProps) => {
     name,
     toggleData,
     loadingState,
-    acctData,
+    acctData
   } = props;
 
   return (
     <Accordion onClick={() => toggleData(name)}>
       <AccordionSummary
-        sx={{ justifyContent: "space-evenly" }}
+        sx={{ justifyContent: 'space-evenly' }}
         expandIcon={<ExpandMore />}
       >
         <Typography variant="h6">{capitalize(name)}</Typography>
         <Box
           sx={{
-            margin: "0 10px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            margin: '0 10px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           <Chip
             label={
               loadingState ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
+                <CircularProgress />
               ) : (
                 acctData && acctData.data.length > 0 && acctData.data.length
               )
             }
             sx={{
-              margin: "0 10px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              margin: '0 10px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
             color="primary"
             variant="filled"
@@ -77,7 +78,7 @@ const AccountData = (props: AccountDataProps) => {
         {loadingState
           ? null
           : acctData &&
-            (name === "favorites" ? (
+            (name === 'favorites' ? (
               <Favs
                 acctData={acctData as FavoritePayload}
                 simplifyString={simplifyString}

@@ -15,7 +15,8 @@ import {
   Radio,
   Card,
   Box,
-  Grid2
+  Grid2,
+  CircularProgress
 } from '@mui/material';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -397,11 +398,7 @@ const Game = (props: GameProps) => {
           {saved ? (
             <Button color="success">
               <Link to={ROUTES.ACCOUNT}>
-                {loadingState ? (
-                  <FontAwesomeIcon icon={faSpinner} spin size="3x" />
-                ) : (
-                  'View Score'
-                )}
+                {loadingState ? <CircularProgress /> : 'View Score'}
               </Link>
             </Button>
           ) : (

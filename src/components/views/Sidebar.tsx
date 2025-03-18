@@ -1,18 +1,18 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, Fragment } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   ButtonGroup,
   Collapse,
   List,
   ListItemButton,
-  Typography,
-} from "@mui/material";
-import { simplifyString } from "../../helpers/utils";
-import { DataType } from "../../helpers/types";
-import { CountryType } from "../../helpers/types/CountryType";
+  Typography
+} from '@mui/material';
+import { simplifyString } from '../../helpers/utils';
+import { DataType } from '../../helpers/types';
+import { CountryType } from '../../helpers/types/CountryType';
 
 interface RegionsType {
   [key: string]: RegionDataType;
@@ -42,12 +42,12 @@ const Sidebar = (props: SidebarProps) => {
     direction: string,
     country: string
   ) => {
-    const on = direction === "on";
+    const on = direction === 'on';
     e.stopPropagation();
     let nodes = [
       ...(document.getElementsByClassName(
-        "gameCountry"
-      ) as HTMLCollectionOf<HTMLElement>),
+        'gameCountry'
+      ) as HTMLCollectionOf<HTMLElement>)
     ];
     nodes = nodes.filter((y) => {
       if (y.dataset.longname && y.dataset.shortname) {
@@ -59,13 +59,13 @@ const Sidebar = (props: SidebarProps) => {
     });
     nodes.forEach((node) => {
       if (!on) {
-        node.removeAttribute("style");
+        node.removeAttribute('style');
       }
-      node.style.fill = on ? "#ee0a43" : "#024e1b";
-      node.style.stroke = "#111";
-      node.style.strokeWidth = "0.1";
-      node.style.outline = "none";
-      node.style.willChange = "all";
+      node.style.fill = on ? '#ee0a43' : '#024e1b';
+      node.style.stroke = '#111';
+      node.style.strokeWidth = '0.1';
+      node.style.outline = 'none';
+      node.style.willChange = 'all';
     });
   };
 
@@ -74,12 +74,12 @@ const Sidebar = (props: SidebarProps) => {
     direction: string,
     region: string
   ) => {
-    const on = direction === "on";
+    const on = direction === 'on';
     e.stopPropagation();
     let nodes = [
       ...(document.getElementsByClassName(
-        "gameCountry"
-      ) as HTMLCollectionOf<HTMLElement>),
+        'gameCountry'
+      ) as HTMLCollectionOf<HTMLElement>)
     ];
     const countries = regions[region].countries;
     const svgs = countries.map((country) => simplifyString(country.name));
@@ -93,13 +93,13 @@ const Sidebar = (props: SidebarProps) => {
     });
     nodes.forEach((node) => {
       if (!on) {
-        node.removeAttribute("style");
+        node.removeAttribute('style');
       } else {
-        node.style.fill = "#024e1b";
-        node.style.stroke = "#111";
-        node.style.strokeWidth = "0.1";
-        node.style.outline = "none";
-        node.style.willChange = "all";
+        node.style.fill = '#024e1b';
+        node.style.stroke = '#111';
+        node.style.strokeWidth = '0.1';
+        node.style.outline = 'none';
+        node.style.willChange = 'all';
       }
     });
   };
@@ -136,12 +136,10 @@ const Sidebar = (props: SidebarProps) => {
           visible: 5,
           start: 0,
           countries,
-          open: false,
+          open: false
         };
       });
-      console.log(regionsState, "regions state");
       setRegions({ ...regionsState });
-      // console.log(regions)
     },
     [data]
   );
@@ -150,7 +148,7 @@ const Sidebar = (props: SidebarProps) => {
       visible: 5,
       start: 0,
       countries: regions[region].countries,
-      open: !regions[region].open,
+      open: !regions[region].open
     };
     const oldReg = { ...regions };
     oldReg[region] = open;
@@ -168,7 +166,7 @@ const Sidebar = (props: SidebarProps) => {
       visible: regions[region].visible + change,
       start: regions[region].start + start,
       open: true,
-      countries: regions[region].countries,
+      countries: regions[region].countries
     };
     const oldReg = { ...regions };
     oldReg[region] = more;
@@ -181,17 +179,10 @@ const Sidebar = (props: SidebarProps) => {
   };
 
   useEffect(() => {
-    console.log(uniqueRegions);
     setDynamicRegions(uniqueRegions);
   }, [setDynamicRegions, uniqueRegions]);
 
   useEffect(() => {
-    // console.log(regions)
-    // console.log(uniqueRegions)
-  }, [regions]);
-
-  useEffect(() => {
-    // console.log(uniqueRegions);
     setDynamicRegions(uniqueRegions);
   }, [setDynamicRegions, uniqueRegions]);
 
@@ -203,22 +194,22 @@ const Sidebar = (props: SidebarProps) => {
             <Button
               key={region}
               onClick={(e) => handleRegion(e, region)}
-              onFocus={(e) => hoverRegion(e, "on", region)}
-              onMouseOver={(e) => hoverRegion(e, "on", region)}
-              onMouseLeave={(e) => hoverRegion(e, "off", region)}
+              onFocus={(e) => hoverRegion(e, 'on', region)}
+              onMouseOver={(e) => hoverRegion(e, 'on', region)}
+              onMouseLeave={(e) => hoverRegion(e, 'off', region)}
               sx={{
-                cursor: "pointer",
-                backgroundColor: "#28a745",
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                marginBottom: "5px",
-                textDecoration: "none",
-                textTransform: "none",
-                color: "black",
-                "&:hover": {
-                  backgroundColor: "#067520",
-                },
+                cursor: 'pointer',
+                backgroundColor: '#28a745',
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                marginBottom: '5px',
+                textDecoration: 'none',
+                textTransform: 'none',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: '#067520'
+                }
               }}
             >
               <Typography>
@@ -229,7 +220,7 @@ const Sidebar = (props: SidebarProps) => {
               orientation="vertical"
               in={regions[region] && regions[region].open}
             >
-              <List sx={{ marginLeft: "10px" }}>
+              <List sx={{ marginLeft: '10px' }}>
                 {regions[region] &&
                   regions[region].countries[0] &&
                   regions[region].countries
@@ -239,24 +230,24 @@ const Sidebar = (props: SidebarProps) => {
                         component={RouterLink}
                         to={`/${country.name.toLowerCase()}`}
                         key={country.name}
-                        onFocus={(e) => hoverCountry(e, "on", country.name)}
+                        onFocus={(e) => hoverCountry(e, 'on', country.name)}
                         onClick={() => getCountryInfo(country.name)}
-                        onMouseOver={(e) => hoverCountry(e, "on", country.name)}
+                        onMouseOver={(e) => hoverCountry(e, 'on', country.name)}
                         onMouseLeave={(e) =>
-                          hoverCountry(e, "off", country.name)
+                          hoverCountry(e, 'off', country.name)
                         }
                         sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          textDecoration: "none",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          backgroundColor: "#0dcaf0",
-                          borderRadius: "5px",
-                          marginBottom: "5px",
-                          "&:hover": {
-                            backgroundColor: "#0dcaf0",
-                          },
+                          display: 'flex',
+                          flexDirection: 'row',
+                          textDecoration: 'none',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backgroundColor: '#0dcaf0',
+                          borderRadius: '5px',
+                          marginBottom: '5px',
+                          '&:hover': {
+                            backgroundColor: '#0dcaf0'
+                          }
                         }}
                       >
                         <strong>{country.name}</strong>
@@ -276,11 +267,11 @@ const Sidebar = (props: SidebarProps) => {
                         variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, 5, 0)}
                         sx={{
-                          textTransform: "none",
-                          textDecoration: "none",
-                          color: "black",
-                          lineHeight: "inherit",
-                          backgroundColor: "#6c757d",
+                          textTransform: 'none',
+                          textDecoration: 'none',
+                          color: 'black',
+                          lineHeight: 'inherit',
+                          backgroundColor: '#6c757d'
                         }}
                         disableFocusRipple
                         disableRipple
@@ -291,11 +282,11 @@ const Sidebar = (props: SidebarProps) => {
                         variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, -5, -5)}
                         sx={{
-                          textTransform: "none",
-                          textDecoration: "none",
-                          color: "black",
-                          lineHeight: "inherit",
-                          backgroundColor: "#ffc107",
+                          textTransform: 'none',
+                          textDecoration: 'none',
+                          color: 'black',
+                          lineHeight: 'inherit',
+                          backgroundColor: '#ffc107'
                         }}
                         disableFocusRipple
                         disableRipple
@@ -307,11 +298,11 @@ const Sidebar = (props: SidebarProps) => {
                         variant="contained"
                         onClick={(e) => sidebarDataHandling(e, region, 5, 5)}
                         sx={{
-                          textTransform: "none",
-                          textDecoration: "none",
-                          color: "black",
-                          lineHeight: "inherit",
-                          backgroundColor: "#198754",
+                          textTransform: 'none',
+                          textDecoration: 'none',
+                          color: 'black',
+                          lineHeight: 'inherit',
+                          backgroundColor: '#198754'
                         }}
                         disableFocusRipple
                         disableRipple
