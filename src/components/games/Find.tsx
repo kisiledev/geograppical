@@ -7,12 +7,14 @@ import {
 } from 'react-simple-maps';
 import ReactTooltip from 'react-tooltip';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material';
-import { DataType, Question } from '../../helpers/types/index';
+import { Answer, DataType, Question } from '../../helpers/types/index';
 import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
 import MediaQuery from 'react-responsive';
 import { Add, Public, Remove } from '@mui/icons-material';
+import { geoPath } from 'd3-geo';
+import * as d3 from 'd3';
 
 interface FindProps {
   isStarted: boolean;
@@ -34,6 +36,11 @@ const Find = (props: FindProps) => {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [guesses, setGuesses] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [answer, setAnswer] = useState<{ guessed: boolean; correct: boolean }>({
+    guessed: false,
+    correct: false
+  });
+  const [points, setPoints] = useState<number>(2);
   const [center, setCenter] = useState<[number, number]>([0, 0]);
   const [zoom, setZoom] = useState(1);
   const [readyToCheck, setReadyToCheck] = useState(false);
@@ -53,6 +60,12 @@ const Find = (props: FindProps) => {
     mode
   } = props;
 
+  const projection = () => {
+    return d3
+      .geoEqualEarth()
+      .translate([800 / 2, 450 / 2])
+      .scale(160);
+  };
   const endGame = useCallback(() => {
     setQuestions([]);
     setGuesses(0);
@@ -98,33 +111,32 @@ const Find = (props: FindProps) => {
     // setBypassClick(JSON.stringify(newCenter) !== JSON.stringify(center));
   };
 
-  const getAnswers = useCallback(
-    (curcountry: CountryType) => {
-      let answerQuestions: Question[] = [];
-      if (questions) {
-        answerQuestions = [...questions];
-      }
-      const question: Question = {
-        country: '',
-        answers: [],
-        correct: null
-      };
-      question.country = curcountry.name;
-      question.correct = null;
-      const answers = [];
-      if (curcountry) {
-        answers.push({
-          name: curcountry.name.split(';')[0],
-          correct: 2
-        });
-      }
-      answerQuestions.push(question);
-      setQuestions(answerQuestions);
-    },
-    [questions]
-  );
+  const getAnswers = (curcountry: CountryType) => {
+    let answerQuestions: Question[] = [];
+    if (questions) {
+      answerQuestions = [...questions];
+    }
+    const question: Question = {
+      country: '',
+      answers: [],
+      correct: null
+    };
+    question.country = curcountry.name;
+    question.correct = null;
+    const answers = [];
+    if (curcountry) {
+      answers.push({
+        name: curcountry.name.split(';')[0],
+        correct: 2
+      });
+    }
+    console.log('running');
+    console.log(answerQuestions);
+    answerQuestions.push(question);
+    setQuestions(answerQuestions);
+  };
 
-  const takeTurn = useCallback(() => {
+  const takeTurn = () => {
     if (!isStarted) {
       startGame();
     }
@@ -142,24 +154,15 @@ const Find = (props: FindProps) => {
         endGame();
       }
     }
-  }, [
-    isStarted,
-    startGame,
-    getRandomCountry,
-    getAnswers,
-    questions,
-    handleOpen,
-    gameOver,
-    endGame
-  ]);
+  };
   const getCountryInfo = useCallback((country: string) => {
+    console.log(country);
     let nodes = [
       ...(document.getElementsByClassName(
         'gameCountry'
       ) as HTMLCollectionOf<HTMLElement>)
     ];
     console.log(nodes);
-    console.log('getting country data in Find');
     nodes = nodes.filter((y) => {
       if (y.dataset.shortname && y.dataset.longname) {
         return (
@@ -169,6 +172,16 @@ const Find = (props: FindProps) => {
       }
     });
     console.log(nodes);
+    nodes.forEach((node) => {
+      console.log(node);
+      if (node.dataset.geography) {
+        const geo = JSON.parse(node.dataset.geography);
+
+        console.log(geo.geometry);
+        setCenter(geo.geometry.coordinates);
+        setZoom(2);
+      }
+    });
     const changeStyle = (n: HTMLElement[]) => {
       n.forEach((node) => {
         node.style.fill = '#FF0000';
@@ -186,67 +199,65 @@ const Find = (props: FindProps) => {
     setReadyToCheck(true);
     setSelectedCountry(country);
   };
-  const checkAnswer = useCallback(
-    (country: string) => {
-      if (!currentCountry) {
-        return;
-      }
+  const checkAnswer = (country: string) => {
+    if (!currentCountry) {
+      return;
+    }
 
-      // if answer is correct answer (all correct answers have ID of 0)
-      const checkquestions = questions;
-      const foundquestion = checkquestions.find(
-        (question) => question.country === currentCountry.name
-      );
+    // if answer is correct answer (all correct answers have ID of 0)
+    const checkquestions = questions;
+    const foundquestion = checkquestions.find(
+      (question) => question.country === currentCountry.name
+    );
+    if (!foundquestion) {
+      return;
+    }
+    let checkguesses = guesses;
+    if (
+      country === currentCountry.name ||
+      country === currentCountry.name ||
+      guesses === 4
+    ) {
+      updateScore(3 - guesses);
+
       if (!foundquestion) {
         return;
       }
-      let checkguesses = guesses;
-      if (
-        country === currentCountry.name ||
-        country === currentCountry.name ||
-        guesses === 4
-      ) {
-        updateScore(3 - guesses);
-
-        if (!foundquestion) {
-          return;
-        }
-        if (guesses === 1) {
-          foundquestion.correct = true;
-        }
-        checkguesses = 0;
-        setTimeout(() => takeTurn(), 300);
-      } else {
-        foundquestion.correct = false;
-        checkguesses += 1;
-        if (guesses === 3) {
-          getCountryInfo(currentCountry.name);
-        }
+      if (guesses === 1) {
+        foundquestion.correct = true;
       }
-      setGuesses(checkguesses);
-      handlePoints(questions);
-      setReadyToCheck(false);
-    },
-    [
-      currentCountry,
-      guesses,
-      questions,
-      updateScore,
-      takeTurn,
-      getCountryInfo,
-      handlePoints
-    ]
-  );
+      setAnswer((prevState) => ({
+        ...prevState,
+        guessed: true,
+        correct: true
+      }));
+      checkguesses = 0;
+      setTimeout(() => {
+        takeTurn();
+        setPoints(2);
+        setAnswer({ guessed: false, correct: false });
+      }, 1900);
+    } else {
+      foundquestion.correct = false;
+      checkguesses += 1;
+      setAnswer((prevState) => ({
+        ...prevState,
+        guessed: true,
+        correct: false
+      }));
+      if (guesses === 3) {
+        getCountryInfo(currentCountry.name);
+      }
+      setPoints(Math.max(0, points - 1));
+    }
+    setGuesses(checkguesses);
+    handlePoints(questions);
+    setReadyToCheck(false);
+  };
 
   useEffect(() => {
     handlePoints(questions);
   }, [handlePoints, questions]);
-
-  useEffect(() => {
-    if (currentCountry) {
-      getAnswers(currentCountry);
-    }
-  }, [currentCountry, getAnswers]);
 
   useEffect(() => {
     if (readyToCheck && selectedCountry) {
@@ -263,28 +274,24 @@ const Find = (props: FindProps) => {
       <Typography variant="h5">Directions</Typography>
       <Typography variant="body1">{gameModes[mode].directions}</Typography>
       <Box sx={{ margin: '10px' }}>
-        <Button variant="contained" color="success" onClick={() => takeTurn()}>
+        <Button
+          disabled={worldData?.length === 0}
+          variant="contained"
+          color="success"
+          onClick={() => takeTurn()}
+        >
           Start Game
         </Button>
       </Box>
     </Box>
   );
   return (
-    <div className="mr-3 mb-3">
+    <Box sx={{ marginBottom: '5px', marginRight: '5px' }}>
       {!isStarted && directions}
-      {isStarted && guesses && (
-        <div>{`${guesses} ${guesses === 1 ? ' guess' : ' guesses'}`}</div>
-      )}
-      {isStarted && guesses && (
-        <div>
-          {`For ${3 - guesses} ${
-            guesses === 2 || guesses === 4 ? ' point' : ' points'
-          }`}
-        </div>
-      )}
       <MediaQuery minWidth={576}>
         <Box
           sx={{
+            alignItems: 'center',
             justifyContent: 'space-between',
             display: 'flex',
             margin: '10px 0px'
@@ -306,6 +313,35 @@ const Find = (props: FindProps) => {
               <Add />
             </Button>
           </ButtonGroup>
+          <Box sx={{ textAlign: 'center' }}>
+            {currentCountry && (
+              <Typography variant="h5">{`Find ${currentCountry.name}`}</Typography>
+            )}
+            {isStarted && (
+              <Box sx={{ textAlign: 'center', mb: 2 }}>
+                {guesses > 0 && (
+                  <Typography variant="body1">
+                    {guesses} {guesses === 1 ? 'guess' : 'guesses'} - For{' '}
+                    {points} {points === 1 ? 'point' : 'points'}
+                  </Typography>
+                )}
+                {answer.guessed && answer.correct && (
+                  <Typography
+                    variant="body1"
+                    sx={{ color: 'green', fontWeight: 'bold' }}
+                  >
+                    Correct! You earned {points}{' '}
+                    {points === 1 ? 'point' : 'points'}!
+                  </Typography>
+                )}
+                {answer.guessed && !answer.correct && (
+                  <Typography variant="body1" sx={{ color: 'red' }}>
+                    Not quite - try again, you've got this!
+                  </Typography>
+                )}
+              </Box>
+            )}
+          </Box>
           <Button
             variant="contained"
             onClick={() => changeMapView()}
@@ -316,8 +352,6 @@ const Find = (props: FindProps) => {
           </Button>
         </Box>
       </MediaQuery>
-      <hr />
-      {currentCountry && <div>{`Find ${currentCountry.name}`}</div>}
       {mapVisible === 'Show' ? (
         <ComposableMap
           width={800}
@@ -328,12 +362,7 @@ const Find = (props: FindProps) => {
             height: 'auto'
           }}
         >
-          <ZoomableGroup
-            zoom={zoom}
-            center={center}
-            onMoveStart={handleMoveStart}
-            onMoveEnd={handleMoveEnd}
-          >
+          <ZoomableGroup zoom={zoom} center={center}>
             <Geographies
               geography={data}
               parseGeographies={(geos) => {
@@ -353,6 +382,7 @@ const Find = (props: FindProps) => {
                     onClick={() => handleClick(geo.properties.NAME_LONG)}
                     key={geo.properties.NAME}
                     geography={geo}
+                    data-geography={JSON.stringify(geo)}
                     className="gameCountry"
                   />
                 ));
@@ -362,7 +392,7 @@ const Find = (props: FindProps) => {
         </ComposableMap>
       ) : null}
       <ReactTooltip place="top" type="dark" effect="float" />
-    </div>
+    </Box>
   );
 };
 

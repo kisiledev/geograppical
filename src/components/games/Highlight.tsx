@@ -466,7 +466,12 @@ const Highlight = (props: HighlightProps) => {
       <Typography variant="h5">Directions</Typography>
       <Typography variant="body1">{gameModes[mode].directions}</Typography>
       <Box sx={{ margin: '10px' }}>
-        <Button variant="contained" color="success" onClick={() => takeTurn()}>
+        <Button
+          disabled={worldData?.length === 0}
+          variant="contained"
+          color="success"
+          onClick={() => takeTurn()}
+        >
           Start Game
         </Button>
       </Box>
