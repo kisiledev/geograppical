@@ -12,7 +12,7 @@ import data from '../../data/world-50m.json';
 import gameModes from '../../constants/GameContent';
 import { CountryType } from '../../helpers/types/CountryType';
 import MediaQuery from 'react-responsive';
-import { Add, Public, Remove } from '@mui/icons-material';
+import { Add, Public, Remove, Replay } from '@mui/icons-material';
 import { geoPath } from 'd3-geo';
 import * as d3 from 'd3';
 
@@ -130,8 +130,6 @@ const Find = (props: FindProps) => {
         correct: 2
       });
     }
-    console.log('running');
-    console.log(answerQuestions);
     answerQuestions.push(question);
     setQuestions(answerQuestions);
   };
@@ -148,6 +146,10 @@ const Find = (props: FindProps) => {
     nodes.forEach((node) => {
       node.removeAttribute('style');
     });
+    resetZoom();
+    setAnswer({ guessed: false, correct: false });
+    setPoints(2);
+    setGuesses(0);
     if (questions && questions.length === 10) {
       handleOpen();
       if (gameOver) {
@@ -155,14 +157,16 @@ const Find = (props: FindProps) => {
       }
     }
   };
+  const resetZoom = () => {
+    setZoom(1);
+    setCenter([0, 0]);
+  };
   const getCountryInfo = useCallback((country: string) => {
-    console.log(country);
     let nodes = [
       ...(document.getElementsByClassName(
         'gameCountry'
       ) as HTMLCollectionOf<HTMLElement>)
     ];
-    console.log(nodes);
     nodes = nodes.filter((y) => {
       if (y.dataset.shortname && y.dataset.longname) {
         return (
@@ -171,25 +175,31 @@ const Find = (props: FindProps) => {
         );
       }
     });
-    console.log(nodes);
     nodes.forEach((node) => {
-      console.log(node);
       if (node.dataset.geography) {
+        const path = geoPath().projection(projection());
         const geo = JSON.parse(node.dataset.geography);
-
-        console.log(geo.geometry);
-        setCenter(geo.geometry.coordinates);
-        setZoom(2);
+        const centroid = d3.geoCentroid(geo);
+        setCenter(centroid);
+        setZoom(6);
       }
     });
     const changeStyle = (n: HTMLElement[]) => {
       n.forEach((node) => {
         node.style.fill = '#FF0000';
         node.style.stroke = '#111';
-        node.style.strokeWidth = '1px';
+        node.style.strokeWidth = '0.5px';
+        node.style.strokeMiterlimit = '10';
         node.style.outline = 'none';
         node.style.boxShadow = '0 0 10px #9ecaed';
         node.style.transition = 'all 250ms';
+        if (node.dataset.geography) {
+          const path = geoPath().projection(projection());
+          const area = path.area(JSON.parse(node.dataset.geography));
+          if (area < 20) {
+            node.style.outline = '1px solid blue';
+          }
+        }
       });
     };
     setTimeout(() => changeStyle(nodes), 300);
@@ -234,8 +244,6 @@ const Find = (props: FindProps) => {
       checkguesses = 0;
       setTimeout(() => {
         takeTurn();
-        setPoints(2);
-        setAnswer({ guessed: false, correct: false });
       }, 1900);
     } else {
       foundquestion.correct = false;
@@ -312,14 +320,23 @@ const Find = (props: FindProps) => {
             >
               <Add />
             </Button>
+            <Button
+              type="button"
+              className="btn btn-info"
+              size="small"
+              onClick={() => resetZoom()}
+            >
+              <Replay />
+            </Button>
           </ButtonGroup>
           <Box sx={{ textAlign: 'center' }}>
+            {zoom}
             {currentCountry && (
               <Typography variant="h5">{`Find ${currentCountry.name}`}</Typography>
             )}
             {isStarted && (
               <Box sx={{ textAlign: 'center', mb: 2 }}>
-                {guesses > 0 && (
+                {guesses > 0 && guesses < 4 && (
                   <Typography variant="body1">
                     {guesses} {guesses === 1 ? 'guess' : 'guesses'} - For{' '}
                     {points} {points === 1 ? 'point' : 'points'}
@@ -334,10 +351,19 @@ const Find = (props: FindProps) => {
                     {points === 1 ? 'point' : 'points'}!
                   </Typography>
                 )}
-                {answer.guessed && !answer.correct && (
+                {answer.guessed && !answer.correct && guesses !== 4 && (
                   <Typography variant="body1" sx={{ color: 'red' }}>
                     Not quite - try again, you've got this!
                   </Typography>
+                )}
+                {guesses === 4 && (
+                  <Button
+                    variant="contained"
+                    onClick={() => takeTurn()}
+                    sx={{ marginTop: '5px' }}
+                  >
+                    Next Question
+                  </Button>
                 )}
               </Box>
             )}
@@ -362,7 +388,14 @@ const Find = (props: FindProps) => {
             height: 'auto'
           }}
         >
-          <ZoomableGroup zoom={zoom} center={center}>
+          <ZoomableGroup
+            zoom={zoom}
+            center={center}
+            onMoveEnd={({ coordinates, zoom }) => {
+              setZoom(zoom);
+              setCenter(coordinates);
+            }}
+          >
             <Geographies
               geography={data}
               parseGeographies={(geos) => {

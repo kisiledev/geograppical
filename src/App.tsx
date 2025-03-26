@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Route } from 'react-router-dom';
 import { Routes } from 'react-router';
 
@@ -33,7 +33,7 @@ import { useDispatch, useSelector } from './redux-hooks';
 type Modal = {
   title: string;
   body: string;
-  primaryButton: string;
+  primaryButton: JSX.Element;
 };
 const App = () => {
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ const App = () => {
   const [modal, setModal] = useState<Modal>({
     title: '',
     body: '',
-    primaryButton: ''
+    primaryButton: <></>
   });
 
   const db = getFirestore(firebaseApp);
@@ -155,7 +155,7 @@ const App = () => {
     alert('handling sidebar');
     setFilterNations(filterCountryByName(string));
   };
-  const handleInput = (e: React.KeyboardEvent) => {
+  const handleInput = (e: ChangeEvent) => {
     e.persist();
     const { value } = e.target as HTMLInputElement;
     if (value != null && value.trim() !== '') {
